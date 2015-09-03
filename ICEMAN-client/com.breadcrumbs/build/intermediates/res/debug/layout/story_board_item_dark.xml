@@ -1,0 +1,39 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/storyBoardItem"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical" >
+
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="170px"
+        android:background="@drawable/borderdark"
+        android:orientation="vertical" >
+
+        <TextView
+            android:id="@+id/Title"
+            android:layout_width="wrap_content"
+            android:textSize="12pt"
+            android:layout_height="wrap_content"
+            android:text="Josiah Kendall"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:textColor="#ADFF2F" />
+
+        <TextView
+            android:id="@+id/lastModified"
+            android:layout_width="match_parent"
+            android:textSize="8pt"
+            android:layout_height="50dp"
+            android:layout_weight="0.07"
+            android:textColor="@android:color/white"
+            android:text="Last Modified" />
+    </LinearLayout>
+    <!-- Extra text view because I cant get the margins right -->
+
+    <TextView
+        android:id="@+id/textView1"
+        android:layout_width="wrap_content"
+        android:layout_height="20px"
+        android:text="" />
+
+</LinearLayout><!-- From: file:/C:/Users/aDirtyCanvas/Desktop/bc17-04-15/com.breadcrumbs/res/layout/story_board_item_dark.xml -->

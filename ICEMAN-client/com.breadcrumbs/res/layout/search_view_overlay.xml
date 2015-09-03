@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <EditText
+        android:layout_margin="50px"
+        android:hint="Type to search ..."
+        android:gravity="center"
+        android:layout_width="match_parent"
+        android:layout_height="120px"
+        android:background="@drawable/rounded_edit_text_background"
+        android:id="@+id/sub_manager_search_text"
+        android:layout_gravity="center_horizontal" />
+
+    <ScrollView
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:layout_weight="34">
+
+        <LinearLayout
+            android:animateLayoutChanges="true"
+            android:id="@+id/search_story_board"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="5dp"
+            android:paddingTop="20dp">
+        </LinearLayout>
+    </ScrollView>
+</LinearLayout>

@@ -1,0 +1,10 @@
+<component name="libraryTable">
+  <library name="mapbox-android-sdk-0.7.3">
+    <CLASSES>
+      <root url="file://$PROJECT_DIR$/build/intermediates/exploded-aar/com.mapbox.mapboxsdk/mapbox-android-sdk/0.7.3/res" />
+      <root url="jar://$PROJECT_DIR$/build/intermediates/exploded-aar/com.mapbox.mapboxsdk/mapbox-android-sdk/0.7.3/classes.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>

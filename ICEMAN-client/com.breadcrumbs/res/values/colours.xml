@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="home">#3F51B5</color>
+    <color name="accent">#FF4081</color>
+    <color name="home_pressed">#BA68C8</color>
+    <color name="black_semi_transparent">#B2000000</color>
+    <color name="background">#e5e5e5</color>
+    <color name="half_black">#808080</color>
+    <color name="white">#fafafa</color>
+    <color name="red"> #FF0000</color>
+    <color name="red_pressed">#FF7070</color>
+    <color name="white_pressed">#f1f1f1</color>
+    <color name="pink">#e91e63</color>
+    <color name="pink_pressed">#ec407a</color>
+    <color name="blue_semi_transparent">#805677fc</color>
+    <color name="blue_semi_transparent_pressed">#80738ffe</color>
+    <color name="ColorPrimary">#3F51B5</color>
+    <color name="ColorPrimaryDark">#1A237E</color>
+    <color name="my_primary_text">#ffffff</color>
+    <color name="my_secondary_text">#ffffff</color>
+    <color name="my_icons">#FFFFFF</color>
+    <color name="my_divider">#B6B6B6</color>
+</resources>
