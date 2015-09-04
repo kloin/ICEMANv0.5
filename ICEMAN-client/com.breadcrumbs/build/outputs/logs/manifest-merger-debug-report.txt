@@ -169,7 +169,7 @@ ADDED from AndroidManifest.xml:65:10
 		ADDED from AndroidManifest.xml:66:13
 	android:name
 		ADDED from AndroidManifest.xml:65:20
-activity#com.breadcrumbs.client.tabs.CameraCapture
+activity#com.breadcrumbs.client.Camera.CameraCapture
 ADDED from AndroidManifest.xml:69:9
 	android:name
 		ADDED from AndroidManifest.xml:69:19

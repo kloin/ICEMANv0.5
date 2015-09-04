@@ -11,6 +11,7 @@ public class DisplayCrumb implements ClusterItem {
     private final String extension;
     private final String id;
     private int iconDrawable;
+
     public DisplayCrumb(double lat, double lng, String extension, String id, int iconDrawable) {
         mPosition = new LatLng(lat, lng);
         this.extension = extension;

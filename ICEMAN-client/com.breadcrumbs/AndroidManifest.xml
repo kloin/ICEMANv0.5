@@ -66,7 +66,7 @@
             android:screenOrientation="portrait"
              android:windowSoftInputMode="stateHidden"> <!-- hide keyboard by default -->
          </activity>
-        <activity android:name=".tabs.CameraCapture">
+        <activity android:name=".Camera.CameraCapture">
         </activity>
         <activity android:name=".BreadCrumbsImageSelector"
             android:screenOrientation="portrait"></activity>

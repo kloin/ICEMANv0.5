@@ -37,4 +37,4 @@
     <item android:state_focused="true" android:state_selected="true"
         android:state_pressed="true"
         android:drawable="@color/white" />
-</selector><!-- From: file:/C:/Users/aDirtyCanvas/Desktop/bc17-04-15/com.breadcrumbs/res/drawable-xhdpi/action_bar_tab_indicator.xml -->
+</selector><!-- From: file:/C:/Users/aDirtyCanvas/ICEMANv0.5/ICEMAN-client/com.breadcrumbs/res/drawable-xhdpi/action_bar_tab_indicator.xml -->

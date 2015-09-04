@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <!-- From: file:/C:/Users/aDirtyCanvas/Desktop/bc17-04-15/com.breadcrumbs/res/values-v11/styles.xml -->
+    <!-- From: file:/C:/Users/aDirtyCanvas/ICEMANv0.5/ICEMAN-client/com.breadcrumbs/res/values-v11/styles.xml -->
     <eat-comment/>
     <style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar">
 
@@ -10,7 +10,7 @@
         <item name="android:textColorSecondary">@color/my_secondary_text</item>
         <!-- Customize your theme here. -->
     </style>
-    <!-- From: file:/C:/Users/aDirtyCanvas/Desktop/bc17-04-15/com.breadcrumbs/build/intermediates/exploded-aar/com.android.support/appcompat-v7/22.2.0/res/values-v11/values-v11.xml -->
+    <!-- From: file:/C:/Users/aDirtyCanvas/ICEMANv0.5/ICEMAN-client/com.breadcrumbs/build/intermediates/exploded-aar/com.android.support/appcompat-v7/22.2.0/res/values-v11/values-v11.xml -->
     <eat-comment/>
     <style name="Base.TextAppearance.AppCompat.Inverse">
         <item name="android:textColor">?android:attr/textColorPrimaryInverse</item>

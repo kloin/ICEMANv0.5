@@ -2,4 +2,4 @@
     <corners android:radius="2dp"/>
     <padding android:left="10dp" android:right="10dp" android:top="10dp" android:bottom="10dp"/>
     <solid android:color="@color/white"/>
-</shape><!-- From: file:/C:/Users/aDirtyCanvas/Desktop/bc17-04-15/com.breadcrumbs/res/drawable/white_border.xml -->
+</shape><!-- From: file:/C:/Users/aDirtyCanvas/ICEMANv0.5/ICEMAN-client/com.breadcrumbs/res/drawable/white_border.xml -->

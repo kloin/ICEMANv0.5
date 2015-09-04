@@ -75,7 +75,7 @@
             android:windowSoftInputMode="stateHidden" >
  <!-- hide keyboard by default -->
         </activity>
-        <activity android:name="com.breadcrumbs.client.tabs.CameraCapture" >
+        <activity android:name="com.breadcrumbs.client.Camera.CameraCapture" >
         </activity>
         <activity
             android:name="com.breadcrumbs.client.BreadCrumbsImageSelector"

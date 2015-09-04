@@ -2,4 +2,4 @@
 <selector xmlns:android="http://schemas.android.com/apk/res/android">
     <item android:color="@color/white" android:state_selected="true"/>
     <item android:color="@color/black"/>
-</selector><!-- From: file:/C:/Users/aDirtyCanvas/Desktop/bc17-04-15/com.breadcrumbs/res/drawable-xhdpi/tab_text_color.xml -->
+</selector><!-- From: file:/C:/Users/aDirtyCanvas/ICEMANv0.5/ICEMAN-client/com.breadcrumbs/res/drawable-xhdpi/tab_text_color.xml -->
