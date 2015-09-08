@@ -3012,8 +3012,8 @@ containing a value of this type.
         public static final int action_mode_bar=0x7f0a006e;
         public static final int action_mode_bar_stub=0x7f0a006d;
         public static final int action_mode_close_button=0x7f0a0056;
-        public static final int action_search=0x7f0a011f;
-        public static final int action_settings=0x7f0a011e;
+        public static final int action_search=0x7f0a0120;
+        public static final int action_settings=0x7f0a011f;
         public static final int activity_chooser_view_content=0x7f0a0057;
         public static final int add_friend=0x7f0a00e6;
         public static final int alertTitle=0x7f0a0061;
@@ -3083,7 +3083,7 @@ containing a value of this type.
         public static final int disableHome=0x7f0a0011;
         public static final int doneButton=0x7f0a00ec;
         public static final int down=0x7f0a002d;
-        public static final int drawer_holder=0x7f0a011a;
+        public static final int drawer_holder=0x7f0a011b;
         public static final int drawer_layout=0x7f0a0116;
         public static final int dropdown=0x7f0a003d;
         public static final int editText=0x7f0a009b;
@@ -3136,7 +3136,7 @@ containing a value of this type.
         public static final int item_touch_helper_previous_elevation=0x7f0a0007;
         public static final int lastModified=0x7f0a00f8;
         public static final int left=0x7f0a0028;
-        public static final int left_drawer=0x7f0a011b;
+        public static final int left_drawer=0x7f0a011c;
         public static final int like_button=0x7f0a00a3;
         public static final int line1=0x7f0a00d4;
         public static final int line3=0x7f0a00d8;
@@ -3158,9 +3158,9 @@ containing a value of this type.
         public static final int mini=0x7f0a002c;
         public static final int monochrome=0x7f0a0053;
         public static final int multiply=0x7f0a0041;
-        public static final int my_recycler_view=0x7f0a0118;
+        public static final int my_recycler_view=0x7f0a0119;
         public static final int never=0x7f0a0036;
-        public static final int new_content=0x7f0a0119;
+        public static final int new_content=0x7f0a011a;
         public static final int new_crumb_title=0x7f0a0087;
         public static final int new_trail_name=0x7f0a00c0;
         public static final int new_trail_title=0x7f0a00c3;
@@ -3181,7 +3181,7 @@ containing a value of this type.
         public static final int progress_circular=0x7f0a0008;
         public static final int progress_horizontal=0x7f0a0009;
         public static final int radio=0x7f0a006b;
-        public static final int reverse_camera=0x7f0a011d;
+        public static final int reverse_camera=0x7f0a011e;
         public static final int right=0x7f0a0029;
         public static final int sandbox=0x7f0a0049;
         public static final int satellite=0x7f0a0031;
@@ -3236,6 +3236,7 @@ containing a value of this type.
         public static final int sub_manager_search_text=0x7f0a00ee;
         public static final int submit_area=0x7f0a007c;
         public static final int subscription_tabs=0x7f0a0101;
+        public static final int swipeRefreshWrapper=0x7f0a0118;
         public static final int tabMode=0x7f0a0010;
         public static final int terrain=0x7f0a0032;
         public static final int text=0x7f0a000b;
@@ -3256,7 +3257,7 @@ containing a value of this type.
         public static final int tooltip_title=0x7f0a0105;
         public static final int top=0x7f0a002b;
         public static final int topPanel=0x7f0a005f;
-        public static final int tracking_toggle=0x7f0a011c;
+        public static final int tracking_toggle=0x7f0a011d;
         public static final int trail_description=0x7f0a00fe;
         public static final int trail_details_container=0x7f0a010d;
         public static final int trail_image=0x7f0a0109;

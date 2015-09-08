@@ -16,6 +16,8 @@ import com.google.maps.android.clustering.Cluster;
 
 import org.json.JSONObject;
 
+import java.util.ArrayList;
+
 /*
     TODO : Check the efficiency of this class. Check for mem leaks.
     I Feel like this class is bad. I would love an alternative, but this is just so fucken easy
@@ -46,6 +48,7 @@ public class GlobalContainer {
     private Activity cameraContext;
     private Cluster<DisplayCrumb> cluster;
     private String trails;
+    private ArrayList<String> currentTrailIds;
 	//Private constructor - the only way an instance of this class can be created.
 	private GlobalContainer() {
 	}
@@ -171,5 +174,13 @@ public class GlobalContainer {
 
     public void SetUserId(String userId) {
         this.userId = userId;
+    }
+
+    public void SetTrailIdsCurrentlyDisplayed(ArrayList<String> ids) {
+        this.currentTrailIds = ids;
+    }
+
+    public ArrayList<String> GetTrailIdsCurrentlyDisplayed() {
+        return this.currentTrailIds;
     }
 }

@@ -10,6 +10,7 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
@@ -64,17 +65,24 @@ public class BaseViewModel extends AppCompatActivity {
     private CharSequence mTitle;
     private String[] mPlanetTitles;
     private Toolbar toolbar;
+    private SwipeRefreshLayout mSwipeRefreshLayout;
     private LinearLayout mDrawerView;
     private int backPressedCounter = 0;
+    private boolean drawerIsOpen = false;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.viewpager_container);
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
         context = this;
 
         globalContainer = GlobalContainer.GetContainerInstance();
+        setUpTrackingButtons();
+
         mTitle = mDrawerTitle = getTitle();
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         mDrawerList = (ListView) findViewById(R.id.left_drawer);
@@ -82,10 +90,28 @@ public class BaseViewModel extends AppCompatActivity {
         mDrawerLayout.setDrawerShadow(R.drawable.drawer_shadow, GravityCompat.START);
         mDrawerList.setOnItemClickListener(new DrawerItemClickListener());
         mDrawerView= (LinearLayout) findViewById(R.id.drawer_holder);
+        mDrawerToggle = new ActionBarDrawerToggle(this,mDrawerLayout,toolbar,R.string.drawer_open,R.string.drawer_close){
+
+            @Override
+            public void onDrawerOpened(View drawerView) {
+                super.onDrawerOpened(drawerView);
+                drawerIsOpen = true;
+                // code here will execute once the drawer is opened( As I dont want anything happened whe drawer is
+                // open I am not going to put anything here)
+            }
+
+            @Override
+            public void onDrawerClosed(View drawerView) {
+                super.onDrawerClosed(drawerView);
+                drawerIsOpen = false;
+                // Code here will execute once drawer is closed
+            }
+        }; // Drawer Toggle Object Made
         mDrawerLayout.setDrawerListener(mDrawerToggle); // Drawer Listener set to the Drawer toggle
-        mDrawerLayout.setDrawerListener(mDrawerToggle);
         mRecyclerView = (RecyclerView) findViewById(R.id.my_recycler_view);
-        // use this setting to improve performance if you know that changes
+        mSwipeRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.swipeRefreshWrapper);
+        setUpRefreshLayout();
+                // use this setting to improve performance if you know that changes
         // in content do not change the layout size of the RecyclerView
         mRecyclerView.setHasFixedSize(true);
         // use a linear layout manager
@@ -93,60 +119,69 @@ public class BaseViewModel extends AppCompatActivity {
         mRecyclerView.setLayoutManager(mLayoutManager);
 
         ObjectDrawerItem[] drawerItem = new ObjectDrawerItem[3];
+
         drawerItem[0] = new ObjectDrawerItem(R.drawable.ic_action_person_dark, "Profile");
         drawerItem[1] = new ObjectDrawerItem(R.drawable.ic_action_new_dark, "Create Trail");
         drawerItem[2] = new ObjectDrawerItem(R.drawable.ic_action_camera_big, "Capture");
         DrawerItemCustomAdapter adapter = new DrawerItemCustomAdapter(this, R.layout.nav_drawer_item, drawerItem);
         mDrawerList.setAdapter(adapter);
-
-        // The array which holds our Objects which manage each drawer item.
-
-
-        // Set up views, elements
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
-        setUpTrackingButtons();
-        setUpDrawerToggle();
+        // Loads trailIds and triggers card creation when done
         loadTrails();
         setUserName();
-        setContentButton();
-
-
     }
 
-    // Not sure what I'm going to do with this yet.
-    private void setUpDrawerToggle() {
-        mDrawerToggle = new ActionBarDrawerToggle(this,mDrawerLayout,toolbar,R.string.drawer_open,R.string.drawer_close){
+    private void setUpRefreshLayout() {
 
+        mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
-            public void onDrawerOpened(View drawerView) {
-                super.onDrawerOpened(drawerView);
+            public void onRefresh() {
+                // Refresh items
+                refresh();
+
+            }
+            public void refresh() {
+                // Load all trails here
+                reloadTrails();
+                onLoaded();
             }
 
-            @Override
-            public void onDrawerClosed(View drawerView) {
-                super.onDrawerClosed(drawerView);
+            private void onLoaded() {
+
+                mSwipeRefreshLayout.setRefreshing(false);
             }
-        }; // Drawer Toggle Object Made
+
+        });
+
+
+
     }
 
     @Override
     public void onResume() {  // After a pause OR at startup
         super.onResume();
         setContentButton();
+        if (drawerIsOpen) {
+            mDrawerLayout.closeDrawer(mDrawerView);
+        }
         backPressedCounter = 0;
     }
 
     @Override
     public void onBackPressed() {
-        if (backPressedCounter > 0) {
-            Intent intent = new Intent(Intent.ACTION_MAIN);
-            intent.addCategory(Intent.CATEGORY_HOME);
-            startActivity(intent);
+        if (drawerIsOpen) {
+            mDrawerLayout.closeDrawer(mDrawerView);
+            drawerIsOpen = false;
         } else {
-            backPressedCounter += 1;
-           displayMessage("Press Back Button Again to Exit");
+            if (backPressedCounter > 0) {
+                Intent intent = new Intent(Intent.ACTION_MAIN);
+                intent.addCategory(Intent.CATEGORY_HOME);
+                startActivity(intent);
+            } else {
+                backPressedCounter += 1;
+                displayMessage("Press Back Button Again to Exit");
+            }
         }
+
 
     }
 
@@ -254,6 +289,67 @@ public class BaseViewModel extends AppCompatActivity {
 
 
 
+    public void reloadTrails() {
+
+        // Our url - just gets a json string of all trail ids.
+        String url = LoadBalancer.RequestServerAddress() + "/rest/TrailManager/GetAllTrailIds";
+        url = url.replaceAll(" ", "%20");
+
+        clientRequestProxy  = new AsyncDataRetrieval(url, new AsyncDataRetrieval.RequestListener() {
+            @Override
+            public void onFinished(String result) {
+                try {
+                    // Get our arrayList for the card adapter
+                    JSONObject jsonResult = new JSONObject(result);
+                    ArrayList<String> allIds = convertJSONToArrayList(jsonResult);
+                    ArrayList<String> newIds = new ArrayList<>();
+                    ArrayList<String> oldIds = globalContainer.GetTrailIdsCurrentlyDisplayed();
+
+                    // Look through all our old Ids and see if we have already loaded them.
+                    if (oldIds == null || allIds.size() == oldIds.size()) {
+                        // This should not happen, but it may.
+                        displayMessage("Trails up to date");
+                        return;
+                    }
+                    // This is for efficiency. However in the mean time it is only text so I am just going to reload all.
+                  /*  for (String item:allIds) {
+                        if (!oldIds.contains(item)){
+                            // Then we have a new Id, so add it to the end.
+                            newIds.add(item);
+                        }
+                    }*/
+
+                    globalContainer.SetTrailIdsCurrentlyDisplayed(allIds);
+
+                    mAdapter = new HomeCardAdapter(allIds, context);
+                    mRecyclerView.setAdapter(mAdapter);
+                    int difference = allIds.size() - oldIds.size();
+                    displayMessage(difference + " New Trails");
+                } catch (JSONException e) {
+                    // TODO Auto-generated catch block
+                    e.printStackTrace();
+                } catch (NullPointerException e) {
+                    Log.e("Cards", "Failed to reload trails : Stack Trace = " + e.toString());
+                }
+            }
+
+            // Covert our json result into an arrayList
+            private ArrayList<String> convertJSONToArrayList(JSONObject result) {
+                ArrayList<String> ids = new ArrayList<String>();
+                Iterator<String> keys = result.keys();
+                while (keys.hasNext()) {
+                    String nextKey = keys.next();
+                    try {
+                        ids.add(result.getString(nextKey));
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                }
+                return ids;
+            }
+        });
+        clientRequestProxy.execute();
+    }
     // Need this code but for now I am going to comment it out.
     public void loadTrails() {
 
@@ -265,9 +361,10 @@ public class BaseViewModel extends AppCompatActivity {
                 try {
                     // Get our arrayList for the card adapter
                     JSONObject jsonResult = new JSONObject(result);
-                    ArrayList<String> arrayList = convertJSONToArrayList(jsonResult);
+                    ArrayList<String> ids = convertJSONToArrayList(jsonResult);
+                    globalContainer.SetTrailIdsCurrentlyDisplayed(ids);
                     // Create the adapter, and set it to the recyclerView so that it displays
-                    mAdapter = new HomeCardAdapter(arrayList, context);
+                    mAdapter = new HomeCardAdapter(ids, context);
                     mRecyclerView.setAdapter(mAdapter);
                 } catch (JSONException e) {
                     // TODO Auto-generated catch block

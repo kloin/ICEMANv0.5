@@ -1,3 +1,4 @@
 dir_to_ignore/ICEMAN-client/com.breadcrumbs/build
 dir_to_ignore/ICEMAN-client/com.breadcrumbs/gen
 dir_to_ignore/ICEMAN-client/com.breadcrumbs/gradle
+dir_to_ignore/ICEMAN-server
