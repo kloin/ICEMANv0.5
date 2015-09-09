@@ -146,14 +146,9 @@ public class BaseViewModel extends AppCompatActivity {
             }
 
             private void onLoaded() {
-
                 mSwipeRefreshLayout.setRefreshing(false);
             }
-
         });
-
-
-
     }
 
     @Override
