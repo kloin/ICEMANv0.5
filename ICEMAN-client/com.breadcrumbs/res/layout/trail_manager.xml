@@ -22,6 +22,6 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_margin="12dp"
-            android:src="@drawable/ic_action_camera"
+            android:src="@drawable/ic_action_new"
             android:layout_gravity="bottom|end" />
 </android.support.design.widget.CoordinatorLayout>

@@ -70,7 +70,6 @@ public class BaseViewModel extends AppCompatActivity {
     private int backPressedCounter = 0;
     private boolean drawerIsOpen = false;
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
@@ -118,11 +117,12 @@ public class BaseViewModel extends AppCompatActivity {
         mLayoutManager = new LinearLayoutManager(this);
         mRecyclerView.setLayoutManager(mLayoutManager);
 
-        ObjectDrawerItem[] drawerItem = new ObjectDrawerItem[3];
+        ObjectDrawerItem[] drawerItem = new ObjectDrawerItem[4];
 
         drawerItem[0] = new ObjectDrawerItem(R.drawable.ic_action_person_dark, "Profile");
         drawerItem[1] = new ObjectDrawerItem(R.drawable.ic_action_new_dark, "Create Trail");
-        drawerItem[2] = new ObjectDrawerItem(R.drawable.ic_action_camera_big, "Capture");
+        drawerItem[2] = new ObjectDrawerItem(R.drawable.ic_action_settings_dark, "My Trails");
+        drawerItem[3] = new ObjectDrawerItem(R.drawable.ic_action_camera_big, "Capture");
         DrawerItemCustomAdapter adapter = new DrawerItemCustomAdapter(this, R.layout.nav_drawer_item, drawerItem);
         mDrawerList.setAdapter(adapter);
         // Loads trailIds and triggers card creation when done
@@ -227,7 +227,7 @@ public class BaseViewModel extends AppCompatActivity {
                     trackingButton.setText("START TRACKING");
                     PreferenceManager.getDefaultSharedPreferences(context).edit().putBoolean("TRACKING", false).commit();
                     isTracking = false;
-                }
+            }
 
                 // Start tracking
                 else {
@@ -478,7 +478,12 @@ public class BaseViewModel extends AppCompatActivity {
                 newIntent.setClassName("com.breadcrumbs.client", "com.breadcrumbs.client.EditTrail");
                 startActivity(newIntent);
                 break;
+
             case 2:
+                newIntent.setClassName("com.breadcrumbs.client", "com.breadcrumbs.client.TrailManager");
+                startActivity(newIntent);
+                break;
+            case 3:
                 newIntent.setClassName("com.breadcrumbs.client", "com.breadcrumbs.client.Camera.CameraCapture");
                 startActivity(newIntent);
                 break;

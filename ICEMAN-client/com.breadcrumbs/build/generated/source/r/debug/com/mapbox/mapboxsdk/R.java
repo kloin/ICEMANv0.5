@@ -23,7 +23,7 @@ public final class R {
 		public static final int clusteri = 0x7f020050;
 		public static final int defpin = 0x7f02006e;
 		public static final int direction_arrow = 0x7f02006f;
-		public static final int location_marker = 0x7f0200ad;
+		public static final int location_marker = 0x7f0200ae;
 	}
 	public static final class id {
 		public static final int tooltip_description = 0x7f0a0106;
@@ -31,7 +31,7 @@ public final class R {
 		public static final int tooltip_title = 0x7f0a0105;
 	}
 	public static final class layout {
-		public static final int tooltip = 0x7f030056;
+		public static final int tooltip = 0x7f030057;
 	}
 	public static final class string {
 		public static final int mapboxAndroidSDKVersion = 0x7f0c0039;

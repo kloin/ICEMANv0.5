@@ -207,6 +207,9 @@ public class HomeCardAdapter extends RecyclerView.Adapter<HomeCardAdapter.ViewHo
 
                 } catch (JSONException e) {
                     e.printStackTrace();
+                } catch (NullPointerException nullPointerException) {
+                    // Maybe I should be notifying the user here, but i would rather just not have this shit happen.
+                    nullPointerException.printStackTrace();
                 }
 
             }

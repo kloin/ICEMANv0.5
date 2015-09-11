@@ -49,6 +49,10 @@
             </intent-filter>
         </activity>
         <activity
+            android:name="com.breadcrumbs.client.TrailManager"
+            android:screenOrientation="portrait" >
+        </activity>
+        <activity
             android:name="com.breadcrumbs.client.BaseViewModel"
             android:screenOrientation="portrait" >
         </activity>
