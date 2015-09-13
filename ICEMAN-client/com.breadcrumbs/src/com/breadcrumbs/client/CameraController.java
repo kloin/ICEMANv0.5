@@ -96,6 +96,7 @@ public class CameraController extends SurfaceView implements SurfaceHolder.Callb
     }
     /*
     For some reason every phone i have tested this on, android sets the default preview to be sideways.
+    Even when activity is limited to portrait.
     Why the fuck this is ever a thing i will never know.
      */
     private void CheckOrientationIsNotAllFuckingRetarded(Camera.Parameters parameters, Display display) {
@@ -120,9 +121,17 @@ public class CameraController extends SurfaceView implements SurfaceHolder.Callb
             mCamera.startPreview();
             try {
                 Display display = ((WindowManager)context.getSystemService(context.WINDOW_SERVICE)).getDefaultDisplay();
+
+                // Set up our parameters
                 Camera.Parameters parameters = mCamera.getParameters();
-                parameters.setPictureSize(1280, 720);
+                List<Camera.Size> sizes = parameters.getSupportedPictureSizes();
+                Camera.Size size = sizes.get(sizes.size()-3);
+                //parameters.setJpegQuality(50);
+                 parameters.setPictureSize(size.width, size.height);
+              // parameters.setPictureSize(1280, 720);
+                //parameters.setPictureFormat(format);
                 mCamera.setParameters(parameters);
+
                 mCamera.setPreviewDisplay(holder);
                 CheckOrientationIsNotAllFuckingRetarded(parameters, display);
             } catch (IOException e) {
@@ -374,10 +383,11 @@ public class CameraController extends SurfaceView implements SurfaceHolder.Callb
                 }
             }
 
-          //  ByteArrayOutputStream os = new ByteArrayOutputStream();
-          //  bm.compress(Bitmap.CompressFormat.JPEG, 100, os);
+            //ByteArrayOutputStream os = new ByteArrayOutputStream();
+           // bm.compress(Bitmap.CompressFormat.PNG, 10, os);
            // byte[] array = os.toByteArray();
-         //   bm = BitmapFactory.decodeByteArray(array, 0, array.length);
+           // bm = BitmapFactory.decodeByteArray(array, 0, array.length);
+            bm = Bitmap.createBitmap(bm, 0, 100, 720, 1000);
             // Cache our photo.
             GlobalContainer.GetContainerInstance().SetBitMap(bm);
             Intent save = new Intent();

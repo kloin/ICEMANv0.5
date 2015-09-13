@@ -66,10 +66,10 @@ public class EditTrailCardAdapter extends RecyclerView.Adapter<EditTrailCardAdap
                                                          int viewType) {
         // create a new view
         View v = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.story_board_item_light, parent, false);
+                .inflate(R.layout.edit_trail_view, parent, false);
         // Set the name, user, views etc for a trail and go about loading its image
         // setTextAndHandlers(v);
-        CardView card = (CardView) v.findViewById(R.id.card_view);
+        CardView card = (CardView) v.findViewById(R.id.edit_card_view);
         card.setPreventCornerOverlap(false);
         ViewHolder vh = new ViewHolder(v);
 

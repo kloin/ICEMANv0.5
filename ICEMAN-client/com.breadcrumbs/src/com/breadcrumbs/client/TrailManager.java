@@ -12,6 +12,7 @@ import android.util.Log;
 import com.breadcrumbs.Network.LoadBalancer;
 import com.breadcrumbs.ServiceProxy.AsyncDataRetrieval;
 import com.breadcrumbs.caching.GlobalContainer;
+import com.breadcrumbs.client.Cards.EditTrailCardAdapter;
 import com.breadcrumbs.client.Cards.HomeCardAdapter;
 
 import org.json.JSONException;
@@ -66,7 +67,7 @@ public class TrailManager extends AppCompatActivity {
                     // Get our arrayList for the card adapter
                     JSONObject jsonResult = new JSONObject(result);
                     ArrayList<String> ids = convertJSONToArrayList(jsonResult);
-                   HomeCardAdapter mAdapter = new HomeCardAdapter(ids, context);
+                   EditTrailCardAdapter mAdapter = new EditTrailCardAdapter(ids, context);
                     mRecyclerView.setAdapter(mAdapter);
                 } catch (JSONException e) {
                     // TODO Auto-generated catch block

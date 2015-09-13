@@ -4,8 +4,8 @@ package com.breadcrumbs.Network;
  */
 public class LoadBalancer {
 	
-	private static String currentLocalIpAddress = "http://192.168.1.71:8080/BreadCrumbs"; //"http://ec2-52-27-252-87.us-west-2.compute.amazonaws.com:8080/BreadCrumbs";//"http://ec2-52-25-164-125.us-west-2.compute.amazonaws.com:8080/BreadCrumbs";
-    private static String currentDataAddress = "http://192.168.1.71:8080/BreadCrumbs"; /*"http://ec2-52-27-252-87.us-west-2.compute.amazonaws.com:8080";*///"http://192.168.1.79:8080/BreadCrumbs"; //"http://ec2-52-25-164-125.us-west-2.compute.amazonaws.com:8080";
+	private static String currentLocalIpAddress = "http://192.168.1.68:8080/BreadCrumbs"; //"http://ec2-52-27-252-87.us-west-2.compute.amazonaws.com:8080/BreadCrumbs";//"http://ec2-52-25-164-125.us-west-2.compute.amazonaws.com:8080/BreadCrumbs";
+    private static String currentDataAddress = "http://192.168.1.68:8080/BreadCrumbs"; /*"http://ec2-52-27-252-87.us-west-2.compute.amazonaws.com:8080";*///"http://192.168.1.79:8080/BreadCrumbs"; //"http://ec2-52-25-164-125.us-west-2.compute.amazonaws.com:8080";
 	public static String RequestServerAddress() {
 		return currentLocalIpAddress;
 	}
