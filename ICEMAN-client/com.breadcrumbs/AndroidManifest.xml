@@ -79,9 +79,9 @@
         </activity>
             <activity android:name=".Maps.MapViewer"
                 android:screenOrientation="portrait">
-
         </activity>
-        <activity android:name=".tabs.SaveVideoActivity"></activity>
+        <activity android:name=".tabs.SaveVideoActivity">
+        </activity>
         <activity android:name=".Maps.MapViewController"
                 android:screenOrientation="portrait">
         </activity>
@@ -91,7 +91,9 @@
         <activity android:name="com.breadcrumbs.client.OverflowNavigationDrawer"
             android:screenOrientation="portrait">
         </activity>
-
+        <activity android:name=".EditExistingTrail"
+            android:screenOrientation="portrait">
+        </activity>
 
     <service android:name="com.breadcrumbs.Location.LocationService"></service>
 

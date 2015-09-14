@@ -100,16 +100,15 @@
                 android:layout_height="wrap_content"
                 android:layout_margin="15dp">
                 <TextView
-                    android:id="@+id/follow_button"
+                    android:id="@+id/activate_button"
                     android:layout_width="wrap_content"
-
                     android:layout_height="wrap_content"
                     android:textSize="8pt"
                     android:text="ACTIVATE"
                     android:layout_marginLeft="80dp"
                     android:layout_alignParentBottom="true"/>
                 <TextView
-                    android:id="@+id/details_button"
+                    android:id="@+id/edit_button"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:textSize="8pt"

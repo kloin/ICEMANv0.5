@@ -26,23 +26,21 @@
   </component>
   <component name="FileEditorManager">
     <leaf>
-      <file leaf-file-name="TrailManager.java" pinned="false" current-in-tab="true">
+      <file leaf-file-name="TrailManager.java" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/com/breadcrumbs/client/TrailManager.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.5678497">
-              <caret line="67" column="67" selection-start-line="67" selection-start-column="67" selection-end-line="67" selection-end-column="67" />
-              <folding>
-                <element signature="e#3388#3396#0" expanded="true" />
-              </folding>
+            <state vertical-scroll-proportion="0.0">
+              <caret line="63" column="21" selection-start-line="63" selection-start-column="21" selection-end-line="63" selection-end-column="21" />
+              <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="EditTrailCardAdapter.java" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/com/breadcrumbs/client/Cards/EditTrailCardAdapter.java">
+      <file leaf-file-name="EditExistingTrail.java" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/com/breadcrumbs/client/EditExistingTrail.java">
           <provider selected="true" editor-type-id="text-editor">
             <state vertical-scroll-proportion="0.0">
-              <caret line="68" column="42" selection-start-line="68" selection-start-column="42" selection-end-line="68" selection-end-column="42" />
+              <caret line="35" column="44" selection-start-line="35" selection-start-column="44" selection-end-line="35" selection-end-column="44" />
               <folding>
                 <element signature="imports" expanded="true" />
               </folding>
@@ -50,193 +48,96 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="AsyncRetrieveImage.java" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/com/breadcrumbs/ServiceProxy/AsyncRetrieveImage.java">
+      <file leaf-file-name="AndroidManifest.xml" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/AndroidManifest.xml">
           <provider selected="true" editor-type-id="text-editor">
             <state vertical-scroll-proportion="0.0">
-              <caret line="42" column="26" selection-start-line="42" selection-start-column="26" selection-end-line="42" selection-end-column="26" />
+              <caret line="78" column="19" selection-start-line="78" selection-start-column="19" selection-end-line="78" selection-end-column="19" />
               <folding>
-                <element signature="imports" expanded="false" />
-                <element signature="e#834#835#0" expanded="false" />
-                <element signature="e#877#878#0" expanded="false" />
+                <element signature="e#1592#1610#0" expanded="true" />
               </folding>
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="CameraController.java" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/com/breadcrumbs/client/CameraController.java">
+      <file leaf-file-name="trail_editor_window.xml" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/res/layout/trail_editor_window.xml">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0">
-              <caret line="386" column="61" selection-start-line="386" selection-start-column="61" selection-end-line="386" selection-end-column="61" />
+            <state vertical-scroll-proportion="-3.5172415">
+              <caret line="6" column="0" selection-start-line="6" selection-start-column="0" selection-end-line="6" selection-end-column="0" />
               <folding />
             </state>
           </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="CrumbCardAdapter.java" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/com/breadcrumbs/client/Cards/CrumbCardAdapter.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0">
-              <caret line="47" column="13" selection-start-line="47" selection-start-column="13" selection-end-line="47" selection-end-column="13" />
-              <folding />
-            </state>
+          <provider editor-type-id="android-designer">
+            <state />
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="Bitmap.java" pinned="false" current-in-tab="false">
-        <entry file="file://$USER_HOME$/AppData/Local/Android/sdk/sources/android-22/android/graphics/Bitmap.java">
+      <file leaf-file-name="edit_trail.xml" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/res/layout/edit_trail.xml">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0">
-              <caret line="631" column="7" selection-start-line="631" selection-start-column="7" selection-end-line="631" selection-end-column="7" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="Camera.java" pinned="false" current-in-tab="false">
-        <entry file="file://$USER_HOME$/AppData/Local/Android/sdk/sources/android-22/android/hardware/Camera.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0">
-              <caret line="2965" column="59" selection-start-line="2965" selection-start-column="59" selection-end-line="2965" selection-end-column="59" />
+            <state vertical-scroll-proportion="0.5099778">
+              <caret line="40" column="43" selection-start-line="40" selection-start-column="43" selection-end-line="40" selection-end-column="43" />
               <folding>
-                <element signature="e#0#175841#0" expanded="false" />
-                <element signature="imports" expanded="false" />
-                <element signature="e#14385#14386#0" expanded="false" />
-                <element signature="e#14428#14429#0" expanded="false" />
-                <element signature="e#21164#21165#0" expanded="false" />
-                <element signature="e#21202#21203#0" expanded="false" />
-                <element signature="e#21279#21280#0" expanded="false" />
-                <element signature="e#21314#21315#0" expanded="false" />
-                <element signature="e#21443#21444#0" expanded="false" />
-                <element signature="e#21468#21469#0" expanded="false" />
-                <element signature="e#68120#68121#0" expanded="false" />
-                <element signature="e#68180#68181#0" expanded="false" />
-                <element signature="e#79026#79027#0" expanded="false" />
-                <element signature="e#79061#79062#0" expanded="false" />
-                <element signature="e#82597#82598#0" expanded="false" />
-                <element signature="e#82650#82651#0" expanded="false" />
-                <element signature="e#103727#103728#0" expanded="false" />
-                <element signature="e#103814#103815#0" expanded="false" />
-                <element signature="e#104269#104270#0" expanded="false" />
-                <element signature="e#104311#104312#0" expanded="false" />
-                <element signature="e#106691#106692#0" expanded="false" />
-                <element signature="e#106731#106732#0" expanded="false" />
-                <element signature="e#107699#107700#0" expanded="false" />
-                <element signature="e#107756#107757#0" expanded="false" />
-                <element signature="e#109353#109354#0" expanded="false" />
-                <element signature="e#109397#109398#0" expanded="false" />
-                <element signature="e#109630#109631#0" expanded="false" />
-                <element signature="e#109692#109693#0" expanded="false" />
-                <element signature="e#116004#116005#0" expanded="false" />
-                <element signature="e#116069#116070#0" expanded="false" />
-                <element signature="e#116343#116344#0" expanded="false" />
-                <element signature="e#116397#116398#0" expanded="false" />
-                <element signature="e#116585#116586#0" expanded="false" />
-                <element signature="e#116640#116641#0" expanded="false" />
-                <element signature="e#117026#117027#0" expanded="false" />
-                <element signature="e#117082#117083#0" expanded="false" />
-                <element signature="e#117493#117494#0" expanded="false" />
-                <element signature="e#117554#117555#0" expanded="false" />
-                <element signature="e#124219#124228#0" expanded="false" />
-                <element signature="e#127229#127238#0" expanded="false" />
-                <element signature="e#134808#134809#0" expanded="false" />
-                <element signature="e#134861#134862#0" expanded="false" />
-                <element signature="e#136411#136412#0" expanded="false" />
-                <element signature="e#136457#136458#0" expanded="false" />
-                <element signature="e#136670#136671#0" expanded="false" />
-                <element signature="e#136716#136717#0" expanded="false" />
-                <element signature="e#137484#137485#0" expanded="false" />
-                <element signature="e#137535#137536#0" expanded="false" />
-                <element signature="e#137748#137749#0" expanded="false" />
-                <element signature="e#137805#137806#0" expanded="false" />
-                <element signature="e#139045#139046#0" expanded="false" />
-                <element signature="e#139095#139096#0" expanded="false" />
-                <element signature="e#139722#139723#0" expanded="false" />
-                <element signature="e#139772#139773#0" expanded="false" />
-                <element signature="e#140559#140560#0" expanded="false" />
-                <element signature="e#140609#140610#0" expanded="false" />
-                <element signature="e#140794#140795#0" expanded="false" />
-                <element signature="e#140844#140845#0" expanded="false" />
-                <element signature="e#141859#141860#0" expanded="false" />
-                <element signature="e#141909#141910#0" expanded="false" />
-                <element signature="e#142094#142095#0" expanded="false" />
-                <element signature="e#142144#142145#0" expanded="false" />
-                <element signature="e#142801#142802#0" expanded="false" />
-                <element signature="e#142871#142872#0" expanded="false" />
-                <element signature="e#143899#143900#0" expanded="false" />
-                <element signature="e#143966#143967#0" expanded="false" />
-                <element signature="e#144544#144545#0" expanded="false" />
-                <element signature="e#144605#144606#0" expanded="false" />
-                <element signature="e#144958#144959#0" expanded="false" />
-                <element signature="e#145029#145030#0" expanded="false" />
-                <element signature="e#145382#145383#0" expanded="false" />
-                <element signature="e#145453#145454#0" expanded="false" />
-                <element signature="e#152582#152583#0" expanded="false" />
-                <element signature="e#152632#152633#0" expanded="false" />
-                <element signature="e#153207#153208#0" expanded="false" />
-                <element signature="e#153251#153252#0" expanded="false" />
-                <element signature="e#154102#154103#0" expanded="false" />
-                <element signature="e#154156#154157#0" expanded="false" />
-                <element signature="e#154736#154737#0" expanded="false" />
-                <element signature="e#154797#154798#0" expanded="false" />
-                <element signature="e#157555#157556#0" expanded="false" />
-                <element signature="e#157620#157621#0" expanded="false" />
-                <element signature="e#160063#160064#0" expanded="false" />
-                <element signature="e#160125#160126#0" expanded="false" />
-                <element signature="e#160375#160376#0" expanded="false" />
-                <element signature="e#160431#160432#0" expanded="false" />
-                <element signature="e#160823#160824#0" expanded="false" />
-                <element signature="e#160891#160892#0" expanded="false" />
-                <element signature="e#163216#163217#0" expanded="false" />
-                <element signature="e#163281#163282#0" expanded="false" />
-                <element signature="e#164087#164088#0" expanded="false" />
-                <element signature="e#164158#164159#0" expanded="false" />
-                <element signature="e#165201#165202#0" expanded="false" />
-                <element signature="e#165269#165270#0" expanded="false" />
-                <element signature="e#169610#169618#0" expanded="false" />
-                <element signature="e#170179#170188#0" expanded="false" />
-                <element signature="e#172219#172225#0" expanded="false" />
-                <element signature="e#173616#173623#0" expanded="false" />
-                <element signature="e#174693#174699#0" expanded="false" />
+                <element signature="e#2136#2176#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+          <provider editor-type-id="android-designer">
+            <state />
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="EditTrailCardAdapter.java" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/com/breadcrumbs/client/Cards/EditTrailCardAdapter.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state vertical-scroll-proportion="0.0">
+              <caret line="184" column="58" selection-start-line="184" selection-start-column="58" selection-end-line="184" selection-end-column="58" />
+              <folding>
+                <element signature="imports" expanded="true" />
+                <element signature="e#3564#11022#0" expanded="true" />
+                <element signature="e#5472#7741#0" expanded="true" />
+                <element signature="e#7740#7741#0" expanded="true" />
+                <element signature="e#8117#8654#0" expanded="true" />
+                <element signature="e#8653#8654#0" expanded="true" />
+                <element signature="e#8776#9445#0" expanded="true" />
+                <element signature="e#9444#9445#0" expanded="true" />
+                <element signature="e#9498#10116#0" expanded="true" />
+                <element signature="e#10115#10116#0" expanded="true" />
+                <element signature="e#11021#11022#0" expanded="true" />
+                <element signature="e#11274#11552#0" expanded="true" />
+                <element signature="e#11551#11552#0" expanded="true" />
+                <element signature="e#11725#12223#0" expanded="true" />
+                <element signature="e#12222#12223#0" expanded="true" />
+                <element signature="e#12415#12667#0" expanded="true" />
+                <element signature="e#12666#12667#0" expanded="true" />
+                <element signature="e#12852#12853#0" expanded="true" />
+                <element signature="e#12890#12891#0" expanded="true" />
               </folding>
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="edit_trail_view.xml" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/res/layout/edit_trail_view.xml">
-          <provider editor-type-id="android-designer">
-            <state />
-          </provider>
+      <file leaf-file-name="SelectedEventViewerBase.java" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/com/breadcrumbs/client/SelectedEventViewerBase.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="-11.413794">
-              <caret line="104" column="0" selection-start-line="104" selection-start-column="0" selection-end-line="104" selection-end-column="0" />
+            <state vertical-scroll-proportion="0.0">
+              <caret line="84" column="73" selection-start-line="84" selection-start-column="7" selection-end-line="84" selection-end-column="73" />
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="story_board_item_light.xml" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/res/layout/story_board_item_light.xml">
+      <file leaf-file-name="crumbs_holder.xml" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/res/layout/crumbs_holder.xml">
+          <provider selected="true" editor-type-id="text-editor">
+            <state vertical-scroll-proportion="-13.793103">
+              <caret line="47" column="50" selection-start-line="0" selection-start-column="0" selection-end-line="47" selection-end-column="50" />
+              <folding />
+            </state>
+          </provider>
           <provider editor-type-id="android-designer">
             <state />
-          </provider>
-          <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0">
-              <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="122" selection-end-column="15" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="LoadBalancer.java" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/com/breadcrumbs/Network/LoadBalancer.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0">
-              <caret line="7" column="67" selection-start-line="7" selection-start-column="67" selection-end-line="7" selection-end-column="67" />
-              <folding />
-            </state>
           </provider>
         </entry>
       </file>
@@ -1036,15 +937,18 @@
         <option value="$PROJECT_DIR$/src/com/breadcrumbs/client/Maps/DisplayCrumb.java" />
         <option value="$PROJECT_DIR$/src/com/breadcrumbs/caching/GlobalContainer.java" />
         <option value="$PROJECT_DIR$/res/layout/viewpager_container.xml" />
-        <option value="$PROJECT_DIR$/AndroidManifest.xml" />
         <option value="$PROJECT_DIR$/src/com/breadcrumbs/client/BaseViewModel.java" />
         <option value="$PROJECT_DIR$/res/layout/trail_manager.xml" />
         <option value="$PROJECT_DIR$/src/com/breadcrumbs/client/Cards/HomeCardAdapter.java" />
         <option value="$PROJECT_DIR$/src/com/breadcrumbs/Network/LoadBalancer.java" />
         <option value="$PROJECT_DIR$/src/com/breadcrumbs/client/CameraController.java" />
-        <option value="$PROJECT_DIR$/res/layout/edit_trail_view.xml" />
-        <option value="$PROJECT_DIR$/src/com/breadcrumbs/client/Cards/EditTrailCardAdapter.java" />
         <option value="$PROJECT_DIR$/src/com/breadcrumbs/client/TrailManager.java" />
+        <option value="$PROJECT_DIR$/res/layout/edit_trail_view.xml" />
+        <option value="$PROJECT_DIR$/src/com/breadcrumbs/client/SelectedEventViewerBase.java" />
+        <option value="$PROJECT_DIR$/AndroidManifest.xml" />
+        <option value="$PROJECT_DIR$/src/com/breadcrumbs/client/Cards/EditTrailCardAdapter.java" />
+        <option value="$PROJECT_DIR$/src/com/breadcrumbs/client/EditExistingTrail.java" />
+        <option value="$PROJECT_DIR$/res/layout/edit_trail.xml" />
       </list>
     </option>
   </component>
@@ -1081,9 +985,9 @@
     </navigator>
     <panes>
       <pane id="Scratches" />
-      <pane id="Scope" />
-      <pane id="ProjectPane" />
       <pane id="PackagesPane" />
+      <pane id="ProjectPane" />
+      <pane id="Scope" />
       <pane id="AndroidView">
         <subPane>
           <PATH>
@@ -1212,94 +1116,6 @@
             <PATH_ELEMENT>
               <option name="myItemId" value="res" />
               <option name="myItemType" value="com.android.tools.idea.navigator.nodes.AndroidResFolderNode" />
-            </PATH_ELEMENT>
-          </PATH>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="com.breadcrumbs" />
-              <option name="myItemType" value="com.android.tools.idea.navigator.nodes.AndroidViewProjectNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="com.breadcrumbs" />
-              <option name="myItemType" value="com.android.tools.idea.navigator.nodes.AndroidModuleNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="java" />
-              <option name="myItemType" value="com.android.tools.idea.navigator.nodes.AndroidSourceTypeNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="breadcrumbs" />
-              <option name="myItemType" value="com.android.tools.idea.navigator.nodes.AndroidPsiDirectoryNode" />
-            </PATH_ELEMENT>
-          </PATH>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="com.breadcrumbs" />
-              <option name="myItemType" value="com.android.tools.idea.navigator.nodes.AndroidViewProjectNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="com.breadcrumbs" />
-              <option name="myItemType" value="com.android.tools.idea.navigator.nodes.AndroidModuleNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="java" />
-              <option name="myItemType" value="com.android.tools.idea.navigator.nodes.AndroidSourceTypeNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="breadcrumbs" />
-              <option name="myItemType" value="com.android.tools.idea.navigator.nodes.AndroidPsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="Network" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-          </PATH>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="com.breadcrumbs" />
-              <option name="myItemType" value="com.android.tools.idea.navigator.nodes.AndroidViewProjectNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="com.breadcrumbs" />
-              <option name="myItemType" value="com.android.tools.idea.navigator.nodes.AndroidModuleNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="java" />
-              <option name="myItemType" value="com.android.tools.idea.navigator.nodes.AndroidSourceTypeNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="breadcrumbs" />
-              <option name="myItemType" value="com.android.tools.idea.navigator.nodes.AndroidPsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="client" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-          </PATH>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="com.breadcrumbs" />
-              <option name="myItemType" value="com.android.tools.idea.navigator.nodes.AndroidViewProjectNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="com.breadcrumbs" />
-              <option name="myItemType" value="com.android.tools.idea.navigator.nodes.AndroidModuleNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="java" />
-              <option name="myItemType" value="com.android.tools.idea.navigator.nodes.AndroidSourceTypeNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="breadcrumbs" />
-              <option name="myItemType" value="com.android.tools.idea.navigator.nodes.AndroidPsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="client" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="Cards" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
           </PATH>
           <PATH>
@@ -1535,29 +1351,29 @@
     <servers />
   </component>
   <component name="ToolWindowManager">
-    <frame x="-8" y="-8" width="1696" height="1026" extended-state="6" />
+    <frame x="-8" y="-8" width="1696" height="1026" extended-state="7" />
     <editor active="true" />
     <layout>
       <window_info id="Palette&#9;" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Designer" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
-      <window_info id="Preview" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.24938875" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
+      <window_info id="Preview" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.24938875" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Captures" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
-      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.3643678" sideWeight="0.49511003" order="3" side_tool="false" content_ui="tabs" />
-      <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.41724136" sideWeight="0.30378973" order="7" side_tool="true" content_ui="tabs" />
+      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.3643678" sideWeight="0.48777506" order="3" side_tool="false" content_ui="tabs" />
+      <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.41609195" sideWeight="0.3190709" order="7" side_tool="true" content_ui="tabs" />
       <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="2" side_tool="true" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Gradle Console" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="true" content_ui="tabs" />
       <window_info id="Build Variants" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="2" side_tool="true" content_ui="tabs" />
-      <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
-      <window_info id="Android" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.41724136" sideWeight="0.69621027" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32988507" sideWeight="0.49755502" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="Android" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.41609195" sideWeight="0.6809291" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="Gradle" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Maven Projects" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Application Servers" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
-      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.17298289" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
-      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32873562" sideWeight="0.49511003" order="2" side_tool="false" content_ui="tabs" />
+      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.20660147" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32873562" sideWeight="0.48533008" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Hierarchy" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="2" side_tool="false" content_ui="combo" />
       <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
@@ -1599,91 +1415,41 @@
           <option name="timeStamp" value="4" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/src/com/breadcrumbs/client/TrailManager.java</url>
-          <line>68</line>
-          <properties />
-          <option name="timeStamp" value="5" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/src/com/breadcrumbs/client/TrailManager.java</url>
-          <line>81</line>
-          <properties />
-          <option name="timeStamp" value="7" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/src/com/breadcrumbs/client/CameraController.java</url>
           <line>388</line>
           <properties />
           <option name="timeStamp" value="8" />
         </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/com/breadcrumbs/client/Cards/EditTrailCardAdapter.java</url>
+          <line>211</line>
+          <properties />
+          <option name="timeStamp" value="9" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/com/breadcrumbs/client/Cards/EditTrailCardAdapter.java</url>
+          <line>118</line>
+          <properties />
+          <option name="timeStamp" value="10" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/com/breadcrumbs/client/BaseViewModel.java</url>
+          <line>256</line>
+          <properties />
+          <option name="timeStamp" value="11" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/com/breadcrumbs/client/TrailManager.java</url>
+          <line>68</line>
+          <properties />
+          <option name="timeStamp" value="12" />
+        </line-breakpoint>
       </breakpoints>
-      <option name="time" value="9" />
+      <option name="time" value="13" />
     </breakpoint-manager>
     <watches-manager />
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/src/com/breadcrumbs/Network/LoadBalancer.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="4" column="27" selection-start-line="4" selection-start-column="27" selection-end-line="4" selection-end-column="27" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/com/breadcrumbs/caching/GlobalContainer.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="55" column="34" selection-start-line="55" selection-start-column="34" selection-end-line="55" selection-end-column="34" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/res/layout/viewpager_container.xml">
-      <provider editor-type-id="android-designer">
-        <state />
-      </provider>
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="21" column="49" selection-start-line="18" selection-start-column="11" selection-end-line="52" selection-end-column="33" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/AndroidManifest.xml">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="85" column="49" selection-start-line="85" selection-start-column="49" selection-end-line="85" selection-end-column="49" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/com/breadcrumbs/client/BreadCrumbsImageSelector.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="30" column="13" selection-start-line="30" selection-start-column="13" selection-end-line="30" selection-end-column="13" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/com/breadcrumbs/client/tabs/SaveVideoActivity.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="40" column="13" selection-start-line="40" selection-start-column="13" selection-end-line="40" selection-end-column="13" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/com/breadcrumbs/client/tabs/SubscriptionManagerController.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="9" column="13" selection-start-line="9" selection-start-column="13" selection-end-line="9" selection-end-column="13" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/com/breadcrumbs/client/tabs/SubscriptionManagerTab.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="55" column="13" selection-start-line="55" selection-start-column="13" selection-end-line="55" selection-end-column="13" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/com/breadcrumbs/client/tabs/SubscriptionTabHolder.java">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
@@ -1703,9 +1469,9 @@
         <state vertical-scroll-proportion="0.0">
           <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
           <folding>
-            <element signature="imports" expanded="false" />
-            <element signature="e#5991#5992#0" expanded="false" />
-            <element signature="e#6063#6064#0" expanded="false" />
+            <element signature="imports" expanded="true" />
+            <element signature="e#10592#10969#0" expanded="true" />
+            <element signature="e#10968#10969#0" expanded="true" />
           </folding>
         </state>
       </provider>
@@ -1718,14 +1484,14 @@
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/res/layout/viewpager_container.xml">
-      <provider editor-type-id="android-designer">
-        <state />
-      </provider>
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
           <caret line="19" column="48" selection-start-line="19" selection-start-column="48" selection-end-line="19" selection-end-column="48" />
           <folding />
         </state>
+      </provider>
+      <provider editor-type-id="android-designer">
+        <state />
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/com/breadcrumbs/client/CrumbViewer/CommentViewer.java">
@@ -1739,13 +1505,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
           <caret line="12" column="13" selection-start-line="12" selection-start-column="13" selection-end-line="12" selection-end-column="13" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/com/breadcrumbs/client/CrumbViewer/CrumbViewerAdapter.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="19" column="13" selection-start-line="19" selection-start-column="13" selection-end-line="19" selection-end-column="13" />
         </state>
       </provider>
     </entry>
@@ -1848,22 +1607,14 @@
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/res/layout/viewpager_container.xml">
-      <provider editor-type-id="android-designer">
-        <state />
-      </provider>
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="-27.827587">
           <caret line="60" column="54" selection-start-line="13" selection-start-column="3" selection-end-line="60" selection-end-column="54" />
           <folding />
         </state>
       </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/AndroidManifest.xml">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="46" column="49" selection-start-line="46" selection-start-column="49" selection-end-line="46" selection-end-column="49" />
-          <folding />
-        </state>
+      <provider editor-type-id="android-designer">
+        <state />
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/res/values/strings.xml">
@@ -1911,29 +1662,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/res/layout/trail_manager.xml">
-      <provider editor-type-id="android-designer">
-        <state />
-      </provider>
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="4" column="43" selection-start-line="4" selection-start-column="43" selection-end-line="4" selection-end-column="43" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/com/breadcrumbs/client/BaseViewModel.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="459" column="17" selection-start-line="459" selection-start-column="17" selection-end-line="459" selection-end-column="17" />
-          <folding>
-            <element signature="imports" expanded="false" />
-            <element signature="e#5991#5992#0" expanded="false" />
-            <element signature="e#6063#6064#0" expanded="false" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/com/breadcrumbs/client/Cards/HomeCardAdapter.java">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
@@ -1942,29 +1670,6 @@
             <element signature="imports" expanded="false" />
             <element signature="e#12435#12436#0" expanded="false" />
             <element signature="e#12473#12474#0" expanded="false" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/res/layout/story_board_item_light.xml">
-      <provider editor-type-id="android-designer">
-        <state />
-      </provider>
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="-0.0">
-          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="122" selection-end-column="15" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/com/breadcrumbs/ServiceProxy/AsyncRetrieveImage.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="42" column="26" selection-start-line="42" selection-start-column="26" selection-end-line="42" selection-end-column="26" />
-          <folding>
-            <element signature="imports" expanded="false" />
-            <element signature="e#834#835#0" expanded="false" />
-            <element signature="e#877#878#0" expanded="false" />
           </folding>
         </state>
       </provider>
@@ -2089,8 +1794,76 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
           <caret line="631" column="7" selection-start-line="631" selection-start-column="7" selection-end-line="631" selection-end-column="7" />
+          <folding>
+            <element signature="e#0#67664#0" expanded="false" />
+            <element signature="imports" expanded="false" />
+            <element signature="e#2910#2911#0" expanded="false" />
+            <element signature="e#2951#2952#0" expanded="false" />
+            <element signature="e#5599#5600#0" expanded="false" />
+            <element signature="e#5630#5631#0" expanded="false" />
+            <element signature="e#6164#6165#0" expanded="false" />
+            <element signature="e#6198#6199#0" expanded="false" />
+            <element signature="e#8995#8996#0" expanded="false" />
+            <element signature="e#9055#9056#0" expanded="false" />
+            <element signature="e#9528#9529#0" expanded="false" />
+            <element signature="e#9588#9589#0" expanded="false" />
+            <element signature="e#10061#10062#0" expanded="false" />
+            <element signature="e#10121#10122#0" expanded="false" />
+            <element signature="e#10302#10303#0" expanded="false" />
+            <element signature="e#10341#10342#0" expanded="false" />
+            <element signature="e#11910#11911#0" expanded="false" />
+            <element signature="e#11942#11943#0" expanded="false" />
+            <element signature="e#12253#12254#0" expanded="false" />
+            <element signature="e#12309#12310#0" expanded="false" />
+            <element signature="e#16345#16346#0" expanded="false" />
+            <element signature="e#16388#16389#0" expanded="false" />
+            <element signature="e#16436#16437#0" expanded="false" />
+            <element signature="e#16479#16480#0" expanded="false" />
+            <element signature="e#37091#37092#0" expanded="false" />
+            <element signature="e#37129#37130#0" expanded="false" />
+            <element signature="e#37588#37589#0" expanded="false" />
+            <element signature="e#37627#37628#0" expanded="false" />
+            <element signature="e#37848#37849#0" expanded="false" />
+            <element signature="e#37898#37899#0" expanded="false" />
+            <element signature="e#39986#39987#0" expanded="false" />
+            <element signature="e#40019#40020#0" expanded="false" />
+            <element signature="e#41323#41324#0" expanded="false" />
+            <element signature="e#41382#41383#0" expanded="false" />
+            <element signature="e#42657#42658#0" expanded="false" />
+            <element signature="e#42686#42687#0" expanded="false" />
+            <element signature="e#42761#42762#0" expanded="false" />
+            <element signature="e#42791#42792#0" expanded="false" />
+            <element signature="e#45747#45748#0" expanded="false" />
+            <element signature="e#45799#45800#0" expanded="false" />
+            <element signature="e#47485#47486#0" expanded="false" />
+            <element signature="e#47558#47559#0" expanded="false" />
+            <element signature="e#48102#48103#0" expanded="false" />
+            <element signature="e#48154#48155#0" expanded="false" />
+            <element signature="e#49437#49438#0" expanded="false" />
+            <element signature="e#49490#49491#0" expanded="false" />
+            <element signature="e#58837#58838#0" expanded="false" />
+            <element signature="e#58884#58885#0" expanded="false" />
+            <element signature="e#58979#58980#0" expanded="false" />
+            <element signature="e#59003#59004#0" expanded="false" />
+            <element signature="e#59851#59852#0" expanded="false" />
+            <element signature="e#59898#59899#0" expanded="false" />
+            <element signature="e#62780#62781#0" expanded="false" />
+            <element signature="e#62830#62831#0" expanded="false" />
+            <element signature="e#67624#67625#0" expanded="false" />
+            <element signature="e#67660#67661#0" expanded="false" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/res/layout/edit_trail_view.xml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="-7.9310346">
+          <caret line="110" column="49" selection-start-line="110" selection-start-column="49" selection-end-line="110" selection-end-column="49" />
           <folding />
         </state>
+      </provider>
+      <provider editor-type-id="android-designer">
+        <state />
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/com/breadcrumbs/client/CameraController.java">
@@ -2109,35 +1882,177 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/res/layout/story_board_item_light.xml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="-0.0">
+          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="122" selection-end-column="15" />
+          <folding />
+        </state>
+      </provider>
+      <provider editor-type-id="android-designer">
+        <state />
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/res/layout/trail_manager.xml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="-2.3448277">
+          <caret line="4" column="43" selection-start-line="4" selection-start-column="43" selection-end-line="4" selection-end-column="43" />
+          <folding />
+        </state>
+      </provider>
+      <provider editor-type-id="android-designer">
+        <state />
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/com/breadcrumbs/ServiceProxy/AsyncRetrieveImage.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="42" column="26" selection-start-line="42" selection-start-column="26" selection-end-line="42" selection-end-column="26" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$USER_HOME$/AppData/Local/Android/sdk/sources/android-22/com/android/internal/os/RuntimeInit.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="71" column="0" selection-start-line="71" selection-start-column="0" selection-end-line="71" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/com/breadcrumbs/client/BaseViewModel.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="253" column="22" selection-start-line="253" selection-start-column="22" selection-end-line="253" selection-end-column="22" />
+          <folding>
+            <element signature="imports" expanded="true" />
+            <element signature="e#10592#10969#0" expanded="true" />
+            <element signature="e#10968#10969#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/com/breadcrumbs/client/EditTrail.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="36" column="5" selection-start-line="24" selection-start-column="22" selection-end-line="36" selection-end-column="5" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/com/breadcrumbs/client/CrumbViewer/CrumbViewerAdapter.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.9291667">
+          <caret line="47" column="38" selection-start-line="47" selection-start-column="38" selection-end-line="47" selection-end-column="38" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/com/breadcrumbs/client/CrumbViewer/CrumbViewerFragment.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.24791667">
+          <caret line="38" column="13" selection-start-line="38" selection-start-column="13" selection-end-line="38" selection-end-column="13" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/res/layout/crumbs_holder.xml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="-13.793103">
+          <caret line="47" column="50" selection-start-line="0" selection-start-column="0" selection-end-line="47" selection-end-column="50" />
+          <folding />
+        </state>
+      </provider>
+      <provider editor-type-id="android-designer">
+        <state />
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/AndroidManifest.xml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="78" column="19" selection-start-line="78" selection-start-column="19" selection-end-line="78" selection-end-column="19" />
+          <folding>
+            <element signature="e#1592#1610#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/src/com/breadcrumbs/client/Cards/EditTrailCardAdapter.java">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
-          <caret line="68" column="42" selection-start-line="68" selection-start-column="42" selection-end-line="68" selection-end-column="42" />
+          <caret line="184" column="58" selection-start-line="184" selection-start-column="58" selection-end-line="184" selection-end-column="58" />
+          <folding>
+            <element signature="imports" expanded="true" />
+            <element signature="e#3564#11022#0" expanded="true" />
+            <element signature="e#5472#7741#0" expanded="true" />
+            <element signature="e#7740#7741#0" expanded="true" />
+            <element signature="e#8117#8654#0" expanded="true" />
+            <element signature="e#8653#8654#0" expanded="true" />
+            <element signature="e#8776#9445#0" expanded="true" />
+            <element signature="e#9444#9445#0" expanded="true" />
+            <element signature="e#9498#10116#0" expanded="true" />
+            <element signature="e#10115#10116#0" expanded="true" />
+            <element signature="e#11021#11022#0" expanded="true" />
+            <element signature="e#11274#11552#0" expanded="true" />
+            <element signature="e#11551#11552#0" expanded="true" />
+            <element signature="e#11725#12223#0" expanded="true" />
+            <element signature="e#12222#12223#0" expanded="true" />
+            <element signature="e#12415#12667#0" expanded="true" />
+            <element signature="e#12666#12667#0" expanded="true" />
+            <element signature="e#12852#12853#0" expanded="true" />
+            <element signature="e#12890#12891#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/com/breadcrumbs/client/TrailManager.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="63" column="21" selection-start-line="63" selection-start-column="21" selection-end-line="63" selection-end-column="21" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/com/breadcrumbs/client/SelectedEventViewerBase.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="84" column="73" selection-start-line="84" selection-start-column="7" selection-end-line="84" selection-end-column="73" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/com/breadcrumbs/client/EditExistingTrail.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="35" column="44" selection-start-line="35" selection-start-column="44" selection-end-line="35" selection-end-column="44" />
           <folding>
             <element signature="imports" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/res/layout/edit_trail_view.xml">
-      <provider editor-type-id="android-designer">
-        <state />
-      </provider>
+    <entry file="file://$PROJECT_DIR$/res/layout/trail_editor_window.xml">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="-11.413794">
-          <caret line="104" column="0" selection-start-line="104" selection-start-column="0" selection-end-line="104" selection-end-column="0" />
+        <state vertical-scroll-proportion="-3.5172415">
+          <caret line="6" column="0" selection-start-line="6" selection-start-column="0" selection-end-line="6" selection-end-column="0" />
           <folding />
         </state>
       </provider>
+      <provider editor-type-id="android-designer">
+        <state />
+      </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/com/breadcrumbs/client/TrailManager.java">
+    <entry file="file://$PROJECT_DIR$/res/layout/edit_trail.xml">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.5678497">
-          <caret line="67" column="67" selection-start-line="67" selection-start-column="67" selection-end-line="67" selection-end-column="67" />
+        <state vertical-scroll-proportion="0.5099778">
+          <caret line="40" column="43" selection-start-line="40" selection-start-column="43" selection-end-line="40" selection-end-column="43" />
           <folding>
-            <element signature="e#3388#3396#0" expanded="true" />
+            <element signature="e#2136#2176#0" expanded="true" />
           </folding>
         </state>
+      </provider>
+      <provider editor-type-id="android-designer">
+        <state />
       </provider>
     </entry>
   </component>

@@ -120,19 +120,16 @@ public class EditTrailCardAdapter extends RecyclerView.Adapter<EditTrailCardAdap
                     TextView belongsTo = (TextView) card.findViewById(R.id.belongs_to);
                     TextView viewsTextView = (TextView) card.findViewById(R.id.trail_views);
                     final Activity act = (Activity) mContext;
-                    final CoordinatorLayout coordinatorLayout = (CoordinatorLayout) act.findViewById(R.id.main_content);
-                    final TextView followButton = (TextView) card.findViewById(R.id.follow_button);
-                    final TextView detailsButton = (TextView) card.findViewById(R.id.details_button);
+                    final CoordinatorLayout coordinatorLayout = (CoordinatorLayout) act.findViewById(R.id.trail_manager_coordinator_layout);
+                    final TextView activateButton = (TextView) card.findViewById(R.id.activate_button);
+                    final TextView editButton = (TextView) card.findViewById(R.id.edit_button);
 
-                    followButton.setOnClickListener(new View.OnClickListener() {
+                    activateButton.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
-                            if (followButton.getTag() != null && followButton.getTag().toString().equals("0")) {
-                                followButton.setTextColor(Color.parseColor("#8a000000"));
-                                followButton.setTag("1");
-
+                            if (activateButton.getTag() != null && activateButton.getTag().toString().equals("0")) {
                                 Snackbar snackbar = Snackbar
-                                        .make(coordinatorLayout, "Unfollowed trail", Snackbar.LENGTH_LONG)
+                                        .make(coordinatorLayout, "Selected trail already active", Snackbar.LENGTH_LONG)
                                         .setAction("Undo", null);
                                 snackbar.setActionTextColor(Color.RED);
                                 View snackbarView = snackbar.getView();
@@ -141,10 +138,14 @@ public class EditTrailCardAdapter extends RecyclerView.Adapter<EditTrailCardAdap
                                 textView.setTextColor(act.getResources().getColor(R.color.accent));
                                 snackbar.show();
                             }   else {
-                                followButton.setTextColor(Color.parseColor("#FF4081"));
-                                followButton.setTag("0");
+                                activateButton.setTextColor(Color.parseColor("#8BC34A"));
+                                activateButton.setTag("0");
+
+                                //Set this as our active trail in the shared preferences so that we can reference it later when reloading.
+                                PreferenceManager.getDefaultSharedPreferences(mContext).edit().putString("TRAILID", "-1").commit();
+
                                 Snackbar snackbar = Snackbar
-                                        .make(coordinatorLayout, "Following trail", Snackbar.LENGTH_LONG)
+                                        .make(coordinatorLayout, "Active trail changed", Snackbar.LENGTH_LONG)
                                         .setAction("Undo", null);
                                 snackbar.setActionTextColor(Color.RED);
                                 View snackbarView = snackbar.getView();
@@ -173,17 +174,19 @@ public class EditTrailCardAdapter extends RecyclerView.Adapter<EditTrailCardAdap
                         asyncFetch.execute();
                     }
 
-                    detailsButton.setOnClickListener(new View.OnClickListener() {
+                    editButton.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
+                            // Need to go to the edit trail page here
                             Intent TrailViewer = new Intent();
-                            TrailViewer.setClassName("com.breadcrumbs.client", "com.breadcrumbs.client.Maps.MapViewer");
+                            TrailViewer.setClassName("com.breadcrumbs.client", "com.breadcrumbs.client.EditExistingTrail");
                             Bundle extras = new Bundle();
                             extras.putString("TrailId", trailId);
                             TrailViewer.putExtras(extras);
                             mContext.startActivity(TrailViewer);
                         }
                     });
+
                     belongsTo.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
@@ -204,11 +207,13 @@ public class EditTrailCardAdapter extends RecyclerView.Adapter<EditTrailCardAdap
                     setProfilePic(profilePic, trailsUserId);
                     profilePic.setOnClickListener(getProfilePicClickListener(trailsUserId, userName));
 
+                    // We check here to see if the trail is currently active
+                    String activeTrailId = PreferenceManager.getDefaultSharedPreferences(mContext).getString("TRAILID", "-1");
+                    if (trailId.equals(activeTrailId)) {
+                        activateButton.setTextColor(Color.parseColor("#8BC34A"));
+                    }
                 } catch (JSONException e) {
                     e.printStackTrace();
-                } catch (NullPointerException nullPointerException) {
-                    // Maybe I should be notifying the user here, but i would rather just not have this shit happen.
-                    nullPointerException.printStackTrace();
                 }
 
             }
