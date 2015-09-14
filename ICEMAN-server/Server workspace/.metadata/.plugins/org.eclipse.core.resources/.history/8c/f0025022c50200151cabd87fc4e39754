@@ -1,0 +1,66 @@
+package com.breadcrumbs.models;
+
+import org.neo4j.graphdb.Node;
+
+import com.breadcrumbs.database.DBMaster;
+import com.breadcrumbs.database.NodeController;
+import com.breadcrumbs.database.DBMaster.myRelationships;
+
+public class UserService {
+	private DBMaster dbMaster;
+	/*
+	 * Fetch just the users name
+	 */
+	public String FetchUserName(String UserId) {
+		NodeController nc = new NodeController();
+		Node userNode = nc.FetchNode(Integer.parseInt(UserId));
+		String name = userNode.getProperty("UserName").toString();
+		return name;
+	}
+
+	// Add a user to their contacts. Later this will need a bunch of validation/ waiting for acceptance etc..
+	public void PinUserForUser(String UserIdA, String UserIdB) {
+		dbMaster = DBMaster.GetAnInstanceOfDBMaster();
+		Node user1 = dbMaster.RetrieveNode(Integer.parseInt(UserIdA));
+		Node user2 = dbMaster.RetrieveNode(Integer.parseInt(UserIdB));
+		dbMaster.CreateRelationship(user1, user2, myRelationships.Has_Pinned);		
+	}
+	
+	// This is the method that deletes a user from their contacts.
+	public void UnPinUserForAUser(String UserIdA, String UserIdB) {
+		dbMaster = DBMaster.GetAnInstanceOfDBMaster();
+		String cypherQuery = "start user = node("+UserIdA+"), "
+				+ "loser = node("+UserIdB+") "
+				+ "match user-[rel:Has_Pinned]->loser "
+				+ "delete rel";		
+		dbMaster.ExecuteCypherQueryNoReturn(cypherQuery);
+	}
+
+	/*
+	 * Get a list of all trails that a user can edit. This populates the list when adding crumbs etc..
+	 */
+	public String GetAllEditibleTrailsForAUser(String userId) {
+		DBMaster dbMaster = DBMaster.GetAnInstanceOfDBMaster();
+		String cypherQuery = "start n = node("+userId+") match n-[rel:Controls]->(Trail) return Trail";	
+		return dbMaster.ExecuteCypherQueryJSONStringReturn(cypherQuery);
+	}
+
+	
+	//TODO all this shit.
+	public String GetAllContactsForAUser(String userId) {
+		return "";		
+	}
+	
+	public String AddContactForAUser(String UserId, String ContactsId) {
+		
+		return "";
+	}
+	
+	
+	public String DeleteContactForAUser(String UserId, String ContactsId) {
+		return "";
+	}
+	
+	
+	
+}
