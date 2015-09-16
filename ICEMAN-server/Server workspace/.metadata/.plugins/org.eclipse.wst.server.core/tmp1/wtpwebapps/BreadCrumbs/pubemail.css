@@ -1,0 +1,60 @@
+@CHARSET "ISO-8859-1";
+@font-face { font-family: raleway; src: url('/breadcrumbs/fonts/sansThin.otf'); format("truetype"); }
+@font-face { font-family: cartoon; src: url('/breadcrumbs/fonts/KOMTIT__.ttf'); format("truetype"); }
+
+li {
+    display: inline-block;
+    
+}
+
+li:onmouseover {
+	color:black;
+}
+
+#fixedHeader {
+	height: 60px;
+	background-color: #009cde;
+	padding-top: 10px;
+	padding-left:50px;
+	padding-right: 50px;
+	
+}
+
+#homePageContainer {
+	height: 400px;
+	margin:0 auto;
+	background-color: teal;
+}
+
+#homePageHeader {
+	top:198px;
+    left:365px;
+    font-size: 60pt;
+    position:absolute;
+    text-align:center;
+    color: white;
+    font-family: raleway;
+
+    
+}
+a {
+	color:white;
+	text-decoration: none;
+	padding:10px;
+	padding-top: 30px;
+	font-family: raleway;
+	font-weight: 400;
+
+}
+
+
+#brutalIntroduction {
+	padding:50px;
+	font-family: raleway;
+	background-color: white;
+	color : #333;
+}
+
+#videocontainer {
+	width:800px; margin:0 auto;
+}

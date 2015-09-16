@@ -1,8 +1,6 @@
 -- Merging decision tree log ---
 manifest
 ADDED from AndroidManifest.xml:2:1
-	xmlns:android
-		ADDED from AndroidManifest.xml:2:11
 	package
 		ADDED from AndroidManifest.xml:3:5
 	android:versionName
@@ -11,6 +9,8 @@ ADDED from AndroidManifest.xml:2:1
 		ADDED from AndroidManifest.xml:4:5
 		INJECTED from AndroidManifest.xml:0:0
 		INJECTED from AndroidManifest.xml:0:0
+	xmlns:android
+		ADDED from AndroidManifest.xml:2:11
 uses-permission#android.permission.INTERNET
 ADDED from AndroidManifest.xml:7:2
 	android:name
@@ -49,10 +49,10 @@ ADDED from AndroidManifest.xml:19:2
 		ADDED from AndroidManifest.xml:19:16
 uses-feature#0x00020000
 ADDED from AndroidManifest.xml:25:2
-	android:required
-		ADDED from AndroidManifest.xml:27:9
 	android:glEsVersion
 		ADDED from AndroidManifest.xml:26:9
+	android:required
+		ADDED from AndroidManifest.xml:27:9
 uses-sdk
 ADDED from AndroidManifest.xml:29:5
 MERGED from com.android.support:support-v13:21.0.3:15:5
@@ -169,10 +169,10 @@ ADDED from AndroidManifest.xml:64:9
 		ADDED from AndroidManifest.xml:65:13
 activity#com.breadcrumbs.client.ImageViewer
 ADDED from AndroidManifest.xml:68:10
-	android:windowSoftInputMode
-		ADDED from AndroidManifest.xml:70:14
 	android:screenOrientation
 		ADDED from AndroidManifest.xml:69:13
+	android:windowSoftInputMode
+		ADDED from AndroidManifest.xml:70:14
 	android:name
 		ADDED from AndroidManifest.xml:68:20
 activity#com.breadcrumbs.client.Camera.CameraCapture
@@ -235,13 +235,13 @@ ADDED from AndroidManifest.xml:98:5
 		ADDED from AndroidManifest.xml:98:14
 meta-data#com.google.android.maps.v2.API_KEY
 ADDED from AndroidManifest.xml:101:2
-	android:name
-		ADDED from AndroidManifest.xml:102:9
 	android:value
 		ADDED from AndroidManifest.xml:103:9
+	android:name
+		ADDED from AndroidManifest.xml:102:9
 meta-data#com.google.android.gms.version
 ADDED from AndroidManifest.xml:104:9
-	android:name
-		ADDED from AndroidManifest.xml:105:13
 	android:value
 		ADDED from AndroidManifest.xml:106:13
+	android:name
+		ADDED from AndroidManifest.xml:105:13

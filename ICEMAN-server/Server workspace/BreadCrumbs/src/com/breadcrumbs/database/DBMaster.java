@@ -41,7 +41,7 @@ public class DBMaster {
 	 */
 	private DBMaster() {
 		//The current address is localhost - needs to be changed at a later date
-		_db = new GraphDatabaseFactory().newEmbeddedDatabase("C:\\Users\\aDirtyCanvas\\Documents\\Neo4j\\default.graphdb");
+		_db = new GraphDatabaseFactory().newEmbeddedDatabase("C:\\Users\\jek40\\Documents\\Neo4j\\default.graphdb");
 		registerShutdownHook();
 	}
 	

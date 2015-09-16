@@ -9,4 +9,4 @@
     android:paddingRight="16dp"
     android:textColor="#33b5e5"
     android:background="?android:attr/activatedBackgroundIndicator"
-    android:minHeight="?android:attr/listPreferredItemHeightSmall"/><!-- From: file:/C:/Users/aDirtyCanvas/ICEMANv0.5/ICEMAN-client/com.breadcrumbs/res/layout/drawer_list_item.xml -->
+    android:minHeight="?android:attr/listPreferredItemHeightSmall"/><!-- From: file:/C:/Users/jek40/iceman/ICEMANv0.5/ICEMAN-client/com.breadcrumbs/res/layout/drawer_list_item.xml -->

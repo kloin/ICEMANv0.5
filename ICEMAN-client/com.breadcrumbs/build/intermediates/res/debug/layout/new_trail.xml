@@ -11,4 +11,4 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/new_trail_name"/>
-</LinearLayout><!-- From: file:/C:/Users/aDirtyCanvas/ICEMANv0.5/ICEMAN-client/com.breadcrumbs/res/layout/new_trail.xml -->
+</LinearLayout><!-- From: file:/C:/Users/jek40/iceman/ICEMANv0.5/ICEMAN-client/com.breadcrumbs/res/layout/new_trail.xml -->

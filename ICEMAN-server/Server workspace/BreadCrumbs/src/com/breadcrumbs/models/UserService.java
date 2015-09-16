@@ -57,7 +57,7 @@ public class UserService {
 	public String GetAllEditibleTrailsForAUser(String userId) {
 		DBMaster dbMaster = DBMaster.GetAnInstanceOfDBMaster();
 		String cypherQuery = "start n = node("+userId+") match n-[rel:Controls]->(Trail) return Trail";	
-		return dbMaster.ExecuteCypherQueryJSONStringReturn(cypherQuery);
+		return dbMaster.ExecuteCypherQueryJSONStringReturnJustIds(cypherQuery);
 	}
 
 	//TODO: all this shit.

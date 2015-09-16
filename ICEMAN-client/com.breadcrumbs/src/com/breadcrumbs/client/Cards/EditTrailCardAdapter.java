@@ -157,6 +157,7 @@ public class EditTrailCardAdapter extends RecyclerView.Adapter<EditTrailCardAdap
 
                         }
                     });
+
                     final ImageView trailCoverPhoto = (ImageView) card.findViewById(R.id.main_photo);
                     // Load cover photo here and set it
                     if (resultJSON.has("coverId")) {

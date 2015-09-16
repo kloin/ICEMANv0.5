@@ -57,6 +57,7 @@ public class CameraController extends SurfaceView implements SurfaceHolder.Callb
         getHolder().addCallback(this);
         this.context = (Activity) context;
 
+
     }
     public CameraController(Context context, AttributeSet attributeSet) {
         super(context, attributeSet);
@@ -69,6 +70,7 @@ public class CameraController extends SurfaceView implements SurfaceHolder.Callb
         getHolder().addCallback(this);
         this.context = (Activity) context;
     }
+
 
     @Override
     public void surfaceCreated(SurfaceHolder holder) {
@@ -87,6 +89,7 @@ public class CameraController extends SurfaceView implements SurfaceHolder.Callb
                 mCamera.setPreviewDisplay(holder);
                 // mCamera.setDisplayOrientation(90);
                 SetupCameraButtonListener();
+                setUpSwitchCameraListener();
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -103,6 +106,23 @@ public class CameraController extends SurfaceView implements SurfaceHolder.Callb
         if (display.getRotation() == Surface.ROTATION_0) {
             mCamera.setDisplayOrientation(90);
         }
+    }
+
+    private void setUpSwitchCameraListener() {
+        //If we are back camera, change to front camera.
+        ImageButton switchButton = (ImageButton) context.findViewById(R.id.font_or_back_camera);
+        switchButton.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (backCameraOpen) {
+                    SetFrontCamera();
+                } else {
+                    OpenBackCamera();
+                }
+            }
+        });
+
+        //otherwise, if we are front camera change to back
     }
 
     @Override
@@ -149,11 +169,18 @@ public class CameraController extends SurfaceView implements SurfaceHolder.Callb
         mCamera = null;
         mCamera = Camera.open(0);
         mCamera.startPreview();
+        Camera.Parameters parameters = mCamera.getParameters();
+        List<Camera.Size> sizes = parameters.getSupportedPictureSizes();
+        Camera.Size size = sizes.get(sizes.size()-3);
+        //parameters.setJpegQuality(50);
+        parameters.setPictureSize(size.width, size.height);
+        // parameters.setPictureSize(1280, 720);
+        //parameters.setPictureFormat(format);
+        mCamera.setParameters(parameters);
         isPreviewRunning = true;
 
         try {
             Display display = ((WindowManager)context.getSystemService(context.WINDOW_SERVICE)).getDefaultDisplay();
-            Camera.Parameters parameters = mCamera.getParameters();
             CheckOrientationIsNotAllFuckingRetarded(parameters, display);
             mCamera.setPreviewDisplay(mHolder);
         } catch (IOException e) {
@@ -171,11 +198,18 @@ public class CameraController extends SurfaceView implements SurfaceHolder.Callb
         mCamera = null;
         mCamera = Camera.open(1);
         mCamera.startPreview();
+        Camera.Parameters parameters = mCamera.getParameters();
+        List<Camera.Size> sizes = parameters.getSupportedPictureSizes();
+        Camera.Size size = sizes.get(sizes.size()-3);
+        //parameters.setJpegQuality(50);
+        parameters.setPictureSize(size.width, size.height);
+        // parameters.setPictureSize(1280, 720);
+        //parameters.setPictureFormat(format);
+        mCamera.setParameters(parameters);
         isPreviewRunning = true;
 
         try {
             Display display = ((WindowManager)context.getSystemService(context.WINDOW_SERVICE)).getDefaultDisplay();
-            Camera.Parameters parameters = mCamera.getParameters();
 
             CheckOrientationIsNotAllFuckingRetarded(parameters, display);
             mCamera.setPreviewDisplay(mHolder);
@@ -387,7 +421,9 @@ public class CameraController extends SurfaceView implements SurfaceHolder.Callb
            // bm.compress(Bitmap.CompressFormat.PNG, 10, os);
            // byte[] array = os.toByteArray();
            // bm = BitmapFactory.decodeByteArray(array, 0, array.length);
-            bm = Bitmap.createBitmap(bm, 0, 100, 720, 1000);
+             if (bm.getWidth() > 720 && bm.getHeight() > 1100 && backCameraOpen) {
+                 bm = Bitmap.createBitmap(bm, 0, 100, 720, 1000);
+             }
             // Cache our photo.
             GlobalContainer.GetContainerInstance().SetBitMap(bm);
             Intent save = new Intent();

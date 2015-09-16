@@ -2,165 +2,165 @@
 <items version="2" >
 
     <item
-        jar="C:\Users\aDirtyCanvas\ICEMANv0.5\ICEMAN-client\com.breadcrumbs\build\intermediates\exploded-aar\com.android.support\appcompat-v7\22.2.0\classes.jar"
-        jumboMode="false"
-        revision="21.1.2"
-        sha1="73753982da6bde518f3a4c6b372749981d14d1a0">
-        <dex dex="C:\Users\aDirtyCanvas\ICEMANv0.5\ICEMAN-client\com.breadcrumbs\build\intermediates\pre-dexed\debug\classes-ba30fba43d24abfc99742b8912e2bef98b88b07c.jar" />
-    </item>
-    <item
-        jar="C:\Users\aDirtyCanvas\.gradle\caches\modules-2\files-2.1\com.nineoldandroids\library\2.4.0\e9b63380f3a242dbdbf103a2355ad7e43bad17cb\library-2.4.0.jar"
-        jumboMode="false"
-        revision="21.1.2"
-        sha1="e9b63380f3a242dbdbf103a2355ad7e43bad17cb">
-        <dex dex="C:\Users\aDirtyCanvas\ICEMANv0.5\ICEMAN-client\com.breadcrumbs\build\intermediates\pre-dexed\debug\library-2.4.0-9ee60ef3a6a9c0f531efbe9f461acab65393f0d4.jar" />
-    </item>
-    <item
-        jar="C:\Users\aDirtyCanvas\ICEMANv0.5\ICEMAN-client\com.breadcrumbs\build\intermediates\exploded-aar\com.getbase\floatingactionbutton\1.9.0\classes.jar"
-        jumboMode="false"
-        revision="21.1.2"
-        sha1="f2b8a750df2a5d485d0c40b379b44371c5e6d98d">
-        <dex dex="C:\Users\aDirtyCanvas\ICEMANv0.5\ICEMAN-client\com.breadcrumbs\build\intermediates\pre-dexed\debug\classes-70c9fdd5b3d794d54c325f713e8fbf9bf0b44794.jar" />
-    </item>
-    <item
-        jar="C:\Users\aDirtyCanvas\AppData\Local\Android\sdk\extras\android\m2repository\com\android\support\support-annotations\22.2.0\support-annotations-22.2.0.jar"
-        jumboMode="false"
-        revision="21.1.2"
-        sha1="66b42a1f3eb7676070b7ef7f14b603483aecbee1">
-        <dex dex="C:\Users\aDirtyCanvas\ICEMANv0.5\ICEMAN-client\com.breadcrumbs\build\intermediates\pre-dexed\debug\support-annotations-22.2.0-8e30a715f563a091e541968e7c92cf5274a885b1.jar" />
-    </item>
-    <item
-        jar="C:\Users\aDirtyCanvas\ICEMANv0.5\ICEMAN-client\com.breadcrumbs\build\intermediates\exploded-aar\com.android.support\recyclerview-v7\22.2.0\classes.jar"
-        jumboMode="false"
-        revision="21.1.2"
-        sha1="5b37cf49773f7f17aca9830efd3053b0cac56728">
-        <dex dex="C:\Users\aDirtyCanvas\ICEMANv0.5\ICEMAN-client\com.breadcrumbs\build\intermediates\pre-dexed\debug\classes-a54dbe56edad8be90b83d29e470c06dd5681352c.jar" />
-    </item>
-    <item
-        jar="C:\Users\aDirtyCanvas\ICEMANv0.5\ICEMAN-client\com.breadcrumbs\build\intermediates\exploded-aar\com.google.maps.android\android-maps-utils\0.3.4\classes.jar"
-        jumboMode="false"
-        revision="21.1.2"
-        sha1="cf251baf39f5c5138224b67b4106eb6331abbd13">
-        <dex dex="C:\Users\aDirtyCanvas\ICEMANv0.5\ICEMAN-client\com.breadcrumbs\build\intermediates\pre-dexed\debug\classes-8dbe928f1b8390c2f5037343dac1ab094d3aac0e.jar" />
-    </item>
-    <item
-        jar="C:\Users\aDirtyCanvas\ICEMANv0.5\ICEMAN-client\com.breadcrumbs\build\intermediates\exploded-aar\com.android.support\support-v4\22.2.0\classes.jar"
-        jumboMode="false"
-        revision="21.1.2"
-        sha1="1ee588ff2c4daf7b97c1cbf922a6c7f027285c2f">
-        <dex dex="C:\Users\aDirtyCanvas\ICEMANv0.5\ICEMAN-client\com.breadcrumbs\build\intermediates\pre-dexed\debug\classes-63bd20e60df013450c9ff8197002ed0e0399d70b.jar" />
-    </item>
-    <item
-        jar="C:\Users\aDirtyCanvas\.gradle\caches\modules-2\files-2.1\org.apache.httpcomponents\httpmime\4.2.3\118ae1bc7f3aeeddfe564f0edfd79c11d09d17d1\httpmime-4.2.3.jar"
-        jumboMode="false"
-        revision="21.1.2"
-        sha1="118ae1bc7f3aeeddfe564f0edfd79c11d09d17d1">
-        <dex dex="C:\Users\aDirtyCanvas\ICEMANv0.5\ICEMAN-client\com.breadcrumbs\build\intermediates\pre-dexed\debug\httpmime-4.2.3-58f5bc13bfde4300635febb09f4e89a3ebea8add.jar" />
-    </item>
-    <item
-        jar="C:\Users\aDirtyCanvas\.gradle\caches\modules-2\files-2.1\com.squareup.okhttp\okhttp-urlconnection\2.3.0\4f12ec1e1455909e1f0b8530c719c90b2d01745\okhttp-urlconnection-2.3.0.jar"
-        jumboMode="false"
-        revision="21.1.2"
-        sha1="04f12ec1e1455909e1f0b8530c719c90b2d01745">
-        <dex dex="C:\Users\aDirtyCanvas\ICEMANv0.5\ICEMAN-client\com.breadcrumbs\build\intermediates\pre-dexed\debug\okhttp-urlconnection-2.3.0-a27e60a682231bed5d19645c56efc5a35c1967e3.jar" />
-    </item>
-    <item
-        jar="C:\Users\aDirtyCanvas\ICEMANv0.5\ICEMAN-client\com.breadcrumbs\build\intermediates\exploded-aar\com.pkmmte.view\circularimageview\1.1\classes.jar"
-        jumboMode="false"
-        revision="21.1.2"
-        sha1="c341a7ad32bc2eef9dcfab239262b77ac60788cc">
-        <dex dex="C:\Users\aDirtyCanvas\ICEMANv0.5\ICEMAN-client\com.breadcrumbs\build\intermediates\pre-dexed\debug\classes-fea4dd3b02fef22f88236e3e390b7fd9f61cf4a6.jar" />
-    </item>
-    <item
-        jar="C:\Users\aDirtyCanvas\ICEMANv0.5\ICEMAN-client\com.breadcrumbs\build\intermediates\exploded-aar\com.mapbox.mapboxsdk\mapbox-android-sdk\0.7.3\classes.jar"
-        jumboMode="false"
-        revision="21.1.2"
-        sha1="134f426b603b434542bc7cdedd3b3e3a199a8e98">
-        <dex dex="C:\Users\aDirtyCanvas\ICEMANv0.5\ICEMAN-client\com.breadcrumbs\build\intermediates\pre-dexed\debug\classes-995154784781074af674fb119d37799611f96bc4.jar" />
-    </item>
-    <item
-        jar="C:\Users\aDirtyCanvas\ICEMANv0.5\ICEMAN-client\com.breadcrumbs\build\intermediates\exploded-aar\com.android.support\support-v13\21.0.3\classes.jar"
-        jumboMode="false"
-        revision="21.1.2"
-        sha1="2c2071dcaf7a008c3b01a6381a33be55396bab09">
-        <dex dex="C:\Users\aDirtyCanvas\ICEMANv0.5\ICEMAN-client\com.breadcrumbs\build\intermediates\pre-dexed\debug\classes-f25c180114a941069a6973116bcbf962c8700159.jar" />
-    </item>
-    <item
-        jar="C:\Users\aDirtyCanvas\ICEMANv0.5\ICEMAN-client\com.breadcrumbs\build\intermediates\exploded-aar\com.android.support\cardview-v7\22.2.0\classes.jar"
-        jumboMode="false"
-        revision="21.1.2"
-        sha1="97f7e239e86ef994de894818fdd8a71d2e89d6aa">
-        <dex dex="C:\Users\aDirtyCanvas\ICEMANv0.5\ICEMAN-client\com.breadcrumbs\build\intermediates\pre-dexed\debug\classes-f4fee3d6dee72d2dc6d09a79f9242813224257c7.jar" />
-    </item>
-    <item
-        jar="C:\Users\aDirtyCanvas\.gradle\caches\modules-2\files-2.1\com.vividsolutions\jts\1.13\3ccfb9b60f04d71add996a666ceb8902904fd805\jts-1.13.jar"
-        jumboMode="false"
-        revision="21.1.2"
-        sha1="3ccfb9b60f04d71add996a666ceb8902904fd805">
-        <dex dex="C:\Users\aDirtyCanvas\ICEMANv0.5\ICEMAN-client\com.breadcrumbs\build\intermediates\pre-dexed\debug\jts-1.13-bb7c8234fbc04517f7d7b2c20dffddfb619aaa78.jar" />
-    </item>
-    <item
-        jar="C:\Users\aDirtyCanvas\ICEMANv0.5\ICEMAN-client\com.breadcrumbs\build\intermediates\exploded-aar\com.google.android.gms\play-services\6.1.71\classes.jar"
+        jar="C:\Users\jek40\iceman\ICEMANv0.5\ICEMAN-client\com.breadcrumbs\build\intermediates\exploded-aar\com.google.android.gms\play-services\6.1.71\classes.jar"
         jumboMode="false"
         revision="21.1.2"
         sha1="0f6d5c1ef2e982c3b7858408e3df389cf5d202da">
-        <dex dex="C:\Users\aDirtyCanvas\ICEMANv0.5\ICEMAN-client\com.breadcrumbs\build\intermediates\pre-dexed\debug\classes-b00fbd299906fcf3d08169916af2b7fdda4d3ed1.jar" />
+        <dex dex="C:\Users\jek40\iceman\ICEMANv0.5\ICEMAN-client\com.breadcrumbs\build\intermediates\pre-dexed\debug\classes-3241e9d8e4123f925b33a916a7817c4b1213db9d.jar" />
     </item>
     <item
-        jar="C:\Users\aDirtyCanvas\ICEMANv0.5\ICEMAN-client\com.breadcrumbs\build\intermediates\exploded-aar\com.sothree.slidinguppanel\library\3.0.0\classes.jar"
+        jar="C:\Users\jek40\iceman\ICEMANv0.5\ICEMAN-client\com.breadcrumbs\build\intermediates\exploded-aar\com.pkmmte.view\circularimageview\1.1\classes.jar"
         jumboMode="false"
         revision="21.1.2"
-        sha1="c1200ab3b93b8f42c0878b00eb79a84c1f112cf7">
-        <dex dex="C:\Users\aDirtyCanvas\ICEMANv0.5\ICEMAN-client\com.breadcrumbs\build\intermediates\pre-dexed\debug\classes-6179b46e27c1c6022c48a75c655e82d37f1bded0.jar" />
+        sha1="c341a7ad32bc2eef9dcfab239262b77ac60788cc">
+        <dex dex="C:\Users\jek40\iceman\ICEMANv0.5\ICEMAN-client\com.breadcrumbs\build\intermediates\pre-dexed\debug\classes-f9ad896047a75acbc247ff48a49404168e2e45d6.jar" />
     </item>
     <item
-        jar="C:\Users\aDirtyCanvas\.gradle\caches\modules-2\files-2.1\com.squareup.okhttp\okhttp\2.3.0\2e7bc7033dc2c8423e661224171b3133fb155b28\okhttp-2.3.0.jar"
+        jar="C:\Users\jek40\.gradle\caches\modules-2\files-2.1\com.nineoldandroids\library\2.4.0\e9b63380f3a242dbdbf103a2355ad7e43bad17cb\library-2.4.0.jar"
         jumboMode="false"
         revision="21.1.2"
-        sha1="2e7bc7033dc2c8423e661224171b3133fb155b28">
-        <dex dex="C:\Users\aDirtyCanvas\ICEMANv0.5\ICEMAN-client\com.breadcrumbs\build\intermediates\pre-dexed\debug\okhttp-2.3.0-f1683f96360e36648d2c68fde2a88c8a683f57bd.jar" />
+        sha1="e9b63380f3a242dbdbf103a2355ad7e43bad17cb">
+        <dex dex="C:\Users\jek40\iceman\ICEMANv0.5\ICEMAN-client\com.breadcrumbs\build\intermediates\pre-dexed\debug\library-2.4.0-1b2b9f7794d3e41d23f9fd035b94a15fc190b5c3.jar" />
     </item>
     <item
-        jar="C:\Users\aDirtyCanvas\ICEMANv0.5\ICEMAN-client\com.breadcrumbs\build\intermediates\exploded-aar\com.android.support\support-v13\21.0.3\libs\internal_impl-21.0.3.jar"
+        jar="C:\Users\jek40\.gradle\caches\modules-2\files-2.1\com.squareup.okhttp\okhttp-urlconnection\2.3.0\4f12ec1e1455909e1f0b8530c719c90b2d01745\okhttp-urlconnection-2.3.0.jar"
+        jumboMode="false"
+        revision="21.1.2"
+        sha1="04f12ec1e1455909e1f0b8530c719c90b2d01745">
+        <dex dex="C:\Users\jek40\iceman\ICEMANv0.5\ICEMAN-client\com.breadcrumbs\build\intermediates\pre-dexed\debug\okhttp-urlconnection-2.3.0-3ab0bb31c4239fd7ac17e7debb755af908f4a49c.jar" />
+    </item>
+    <item
+        jar="C:\Users\jek40\iceman\ICEMANv0.5\ICEMAN-client\com.breadcrumbs\build\intermediates\exploded-aar\com.android.support\support-v13\21.0.3\libs\internal_impl-21.0.3.jar"
         jumboMode="false"
         revision="21.1.2"
         sha1="0dcc55e70f7ebf7238fe2ec53f662eb378ab2668">
-        <dex dex="C:\Users\aDirtyCanvas\ICEMANv0.5\ICEMAN-client\com.breadcrumbs\build\intermediates\pre-dexed\debug\internal_impl-21.0.3-0e88f451ba1f6986637f161ae20e4d2a3e451dd3.jar" />
+        <dex dex="C:\Users\jek40\iceman\ICEMANv0.5\ICEMAN-client\com.breadcrumbs\build\intermediates\pre-dexed\debug\internal_impl-21.0.3-2cf66299cfac99f1282596524fede29d75b2e6f1.jar" />
     </item>
     <item
-        jar="C:\Users\aDirtyCanvas\ICEMANv0.5\ICEMAN-client\com.breadcrumbs\build\intermediates\exploded-aar\com.android.support\design\22.2.0\classes.jar"
+        jar="C:\Users\jek40\iceman\ICEMANv0.5\ICEMAN-client\com.breadcrumbs\build\intermediates\exploded-aar\com.sothree.slidinguppanel\library\3.0.0\classes.jar"
         jumboMode="false"
         revision="21.1.2"
-        sha1="fc63b820d54c8a27a3a614bdd93920e0076581c2">
-        <dex dex="C:\Users\aDirtyCanvas\ICEMANv0.5\ICEMAN-client\com.breadcrumbs\build\intermediates\pre-dexed\debug\classes-c16af87c2afed99540bfe2d72574bfe597fc1749.jar" />
+        sha1="c1200ab3b93b8f42c0878b00eb79a84c1f112cf7">
+        <dex dex="C:\Users\jek40\iceman\ICEMANv0.5\ICEMAN-client\com.breadcrumbs\build\intermediates\pre-dexed\debug\classes-ce89b3b096a8f9ee022910f23e7223dd18e9da86.jar" />
     </item>
     <item
-        jar="C:\Users\aDirtyCanvas\.gradle\caches\modules-2\files-2.1\org.apache.httpcomponents\httpcore\4.2.2\b76bee23cd3f3ee9b98bc7c2c14670e821ddbbfd\httpcore-4.2.2.jar"
-        jumboMode="false"
-        revision="21.1.2"
-        sha1="b76bee23cd3f3ee9b98bc7c2c14670e821ddbbfd">
-        <dex dex="C:\Users\aDirtyCanvas\ICEMANv0.5\ICEMAN-client\com.breadcrumbs\build\intermediates\pre-dexed\debug\httpcore-4.2.2-08e22f85c90d9da3d5020df2a74e905653a5a7fc.jar" />
-    </item>
-    <item
-        jar="C:\Users\aDirtyCanvas\.gradle\caches\modules-2\files-2.1\com.squareup.okio\okio\1.3.0\1b355f73402020c5a0dcca58affc3ec3dfeabac1\okio-1.3.0.jar"
+        jar="C:\Users\jek40\.gradle\caches\modules-2\files-2.1\com.squareup.okio\okio\1.3.0\1b355f73402020c5a0dcca58affc3ec3dfeabac1\okio-1.3.0.jar"
         jumboMode="false"
         revision="21.1.2"
         sha1="1b355f73402020c5a0dcca58affc3ec3dfeabac1">
-        <dex dex="C:\Users\aDirtyCanvas\ICEMANv0.5\ICEMAN-client\com.breadcrumbs\build\intermediates\pre-dexed\debug\okio-1.3.0-a06479fb6bca16c4f0917cee187b7933fab2825d.jar" />
+        <dex dex="C:\Users\jek40\iceman\ICEMANv0.5\ICEMAN-client\com.breadcrumbs\build\intermediates\pre-dexed\debug\okio-1.3.0-0088657e3f3a282b7aecd1ed5ce72d89bfb29d38.jar" />
     </item>
     <item
-        jar="C:\Users\aDirtyCanvas\ICEMANv0.5\ICEMAN-client\com.breadcrumbs\build\intermediates\exploded-aar\com.android.support\support-v4\22.2.0\libs\internal_impl-22.2.0.jar"
+        jar="C:\Users\jek40\iceman\ICEMANv0.5\ICEMAN-client\com.breadcrumbs\build\intermediates\exploded-aar\com.android.support\support-v4\22.2.0\classes.jar"
+        jumboMode="false"
+        revision="21.1.2"
+        sha1="1ee588ff2c4daf7b97c1cbf922a6c7f027285c2f">
+        <dex dex="C:\Users\jek40\iceman\ICEMANv0.5\ICEMAN-client\com.breadcrumbs\build\intermediates\pre-dexed\debug\classes-3f7e6ec7205e94c4a0770388f5f6db9c167a28ec.jar" />
+    </item>
+    <item
+        jar="C:\Users\jek40\.gradle\caches\modules-2\files-2.1\com.squareup.okhttp\okhttp\2.3.0\2e7bc7033dc2c8423e661224171b3133fb155b28\okhttp-2.3.0.jar"
+        jumboMode="false"
+        revision="21.1.2"
+        sha1="2e7bc7033dc2c8423e661224171b3133fb155b28">
+        <dex dex="C:\Users\jek40\iceman\ICEMANv0.5\ICEMAN-client\com.breadcrumbs\build\intermediates\pre-dexed\debug\okhttp-2.3.0-4177daeb3ec1c58fd7e6ff9a011a5f08cb85a8a7.jar" />
+    </item>
+    <item
+        jar="C:\Users\jek40\iceman\ICEMANv0.5\ICEMAN-client\com.breadcrumbs\build\intermediates\exploded-aar\com.android.support\cardview-v7\22.2.0\classes.jar"
+        jumboMode="false"
+        revision="21.1.2"
+        sha1="97f7e239e86ef994de894818fdd8a71d2e89d6aa">
+        <dex dex="C:\Users\jek40\iceman\ICEMANv0.5\ICEMAN-client\com.breadcrumbs\build\intermediates\pre-dexed\debug\classes-6548376a9bc312b9c1e6e33f6650fb10e6e26d81.jar" />
+    </item>
+    <item
+        jar="C:\Users\jek40\iceman\ICEMANv0.5\ICEMAN-client\com.breadcrumbs\build\intermediates\exploded-aar\com.google.maps.android\android-maps-utils\0.3.4\classes.jar"
+        jumboMode="false"
+        revision="21.1.2"
+        sha1="cf251baf39f5c5138224b67b4106eb6331abbd13">
+        <dex dex="C:\Users\jek40\iceman\ICEMANv0.5\ICEMAN-client\com.breadcrumbs\build\intermediates\pre-dexed\debug\classes-7b7c12fbd6711684d90b58232821a1c3a1ce35fc.jar" />
+    </item>
+    <item
+        jar="C:\Users\jek40\iceman\ICEMANv0.5\ICEMAN-client\com.breadcrumbs\build\intermediates\exploded-aar\com.mapbox.mapboxsdk\mapbox-android-sdk\0.7.3\classes.jar"
+        jumboMode="false"
+        revision="21.1.2"
+        sha1="134f426b603b434542bc7cdedd3b3e3a199a8e98">
+        <dex dex="C:\Users\jek40\iceman\ICEMANv0.5\ICEMAN-client\com.breadcrumbs\build\intermediates\pre-dexed\debug\classes-1d34095f0b898de3c8965cefdd15310557acb6ed.jar" />
+    </item>
+    <item
+        jar="C:\Users\jek40\iceman\ICEMANv0.5\ICEMAN-client\com.breadcrumbs\build\intermediates\exploded-aar\com.android.support\support-v13\21.0.3\classes.jar"
+        jumboMode="false"
+        revision="21.1.2"
+        sha1="2c2071dcaf7a008c3b01a6381a33be55396bab09">
+        <dex dex="C:\Users\jek40\iceman\ICEMANv0.5\ICEMAN-client\com.breadcrumbs\build\intermediates\pre-dexed\debug\classes-7c17325286f86b08c458b105f8824ba2d755e79c.jar" />
+    </item>
+    <item
+        jar="C:\Users\jek40\.gradle\caches\modules-2\files-2.1\com.vividsolutions\jts\1.13\3ccfb9b60f04d71add996a666ceb8902904fd805\jts-1.13.jar"
+        jumboMode="false"
+        revision="21.1.2"
+        sha1="3ccfb9b60f04d71add996a666ceb8902904fd805">
+        <dex dex="C:\Users\jek40\iceman\ICEMANv0.5\ICEMAN-client\com.breadcrumbs\build\intermediates\pre-dexed\debug\jts-1.13-179733ebb94d154d8454b34117b3ec17d9c70ee3.jar" />
+    </item>
+    <item
+        jar="C:\Users\jek40\iceman\ICEMANv0.5\ICEMAN-client\com.breadcrumbs\build\intermediates\exploded-aar\com.android.support\support-v4\22.2.0\libs\internal_impl-22.2.0.jar"
         jumboMode="false"
         revision="21.1.2"
         sha1="57f2ab85c164ff1676ec64dee787981c046fab79">
-        <dex dex="C:\Users\aDirtyCanvas\ICEMANv0.5\ICEMAN-client\com.breadcrumbs\build\intermediates\pre-dexed\debug\internal_impl-22.2.0-25b9a2c8248e6091fb5b537f606d74bd1ec2b2f4.jar" />
+        <dex dex="C:\Users\jek40\iceman\ICEMANv0.5\ICEMAN-client\com.breadcrumbs\build\intermediates\pre-dexed\debug\internal_impl-22.2.0-409ac97e7abd8b255290efe592df01fcb90eea84.jar" />
     </item>
     <item
-        jar="C:\Users\aDirtyCanvas\.gradle\caches\modules-2\files-2.1\com.jakewharton\disklrucache\2.0.2\93b399470e72c0bc8cb52379943b63c9aa586cd8\disklrucache-2.0.2.jar"
+        jar="C:\Users\jek40\.gradle\caches\modules-2\files-2.1\org.apache.httpcomponents\httpcore\4.2.2\b76bee23cd3f3ee9b98bc7c2c14670e821ddbbfd\httpcore-4.2.2.jar"
+        jumboMode="false"
+        revision="21.1.2"
+        sha1="b76bee23cd3f3ee9b98bc7c2c14670e821ddbbfd">
+        <dex dex="C:\Users\jek40\iceman\ICEMANv0.5\ICEMAN-client\com.breadcrumbs\build\intermediates\pre-dexed\debug\httpcore-4.2.2-e9e0bb3b1d3bcd201f32874368d6e1b211cd904f.jar" />
+    </item>
+    <item
+        jar="C:\Users\jek40\iceman\ICEMANv0.5\ICEMAN-client\com.breadcrumbs\build\intermediates\exploded-aar\com.android.support\recyclerview-v7\22.2.0\classes.jar"
+        jumboMode="false"
+        revision="21.1.2"
+        sha1="5b37cf49773f7f17aca9830efd3053b0cac56728">
+        <dex dex="C:\Users\jek40\iceman\ICEMANv0.5\ICEMAN-client\com.breadcrumbs\build\intermediates\pre-dexed\debug\classes-b7a6e7d1630dacf2b32b33d1c61917733119dd89.jar" />
+    </item>
+    <item
+        jar="C:\Users\jek40\AppData\Local\Android\sdk\extras\android\m2repository\com\android\support\support-annotations\22.2.0\support-annotations-22.2.0.jar"
+        jumboMode="false"
+        revision="21.1.2"
+        sha1="66b42a1f3eb7676070b7ef7f14b603483aecbee1">
+        <dex dex="C:\Users\jek40\iceman\ICEMANv0.5\ICEMAN-client\com.breadcrumbs\build\intermediates\pre-dexed\debug\support-annotations-22.2.0-530a50a883b9ab1270dd01c9622ac685d254ecfa.jar" />
+    </item>
+    <item
+        jar="C:\Users\jek40\.gradle\caches\modules-2\files-2.1\org.apache.httpcomponents\httpmime\4.2.3\118ae1bc7f3aeeddfe564f0edfd79c11d09d17d1\httpmime-4.2.3.jar"
+        jumboMode="false"
+        revision="21.1.2"
+        sha1="118ae1bc7f3aeeddfe564f0edfd79c11d09d17d1">
+        <dex dex="C:\Users\jek40\iceman\ICEMANv0.5\ICEMAN-client\com.breadcrumbs\build\intermediates\pre-dexed\debug\httpmime-4.2.3-49538d62d50ee2628d82987d069ad59ca46e6f95.jar" />
+    </item>
+    <item
+        jar="C:\Users\jek40\.gradle\caches\modules-2\files-2.1\com.jakewharton\disklrucache\2.0.2\93b399470e72c0bc8cb52379943b63c9aa586cd8\disklrucache-2.0.2.jar"
         jumboMode="false"
         revision="21.1.2"
         sha1="93b399470e72c0bc8cb52379943b63c9aa586cd8">
-        <dex dex="C:\Users\aDirtyCanvas\ICEMANv0.5\ICEMAN-client\com.breadcrumbs\build\intermediates\pre-dexed\debug\disklrucache-2.0.2-c2bfc015831b7a86ea1351f8c2fc23cd092556cf.jar" />
+        <dex dex="C:\Users\jek40\iceman\ICEMANv0.5\ICEMAN-client\com.breadcrumbs\build\intermediates\pre-dexed\debug\disklrucache-2.0.2-96e07c2f9fe8699b64678f2f61ab0fc0bbe5e6e1.jar" />
+    </item>
+    <item
+        jar="C:\Users\jek40\iceman\ICEMANv0.5\ICEMAN-client\com.breadcrumbs\build\intermediates\exploded-aar\com.android.support\design\22.2.0\classes.jar"
+        jumboMode="false"
+        revision="21.1.2"
+        sha1="fc63b820d54c8a27a3a614bdd93920e0076581c2">
+        <dex dex="C:\Users\jek40\iceman\ICEMANv0.5\ICEMAN-client\com.breadcrumbs\build\intermediates\pre-dexed\debug\classes-5250a980c216ca25f23180900f20d0ef3b7312d8.jar" />
+    </item>
+    <item
+        jar="C:\Users\jek40\iceman\ICEMANv0.5\ICEMAN-client\com.breadcrumbs\build\intermediates\exploded-aar\com.getbase\floatingactionbutton\1.9.0\classes.jar"
+        jumboMode="false"
+        revision="21.1.2"
+        sha1="f2b8a750df2a5d485d0c40b379b44371c5e6d98d">
+        <dex dex="C:\Users\jek40\iceman\ICEMANv0.5\ICEMAN-client\com.breadcrumbs\build\intermediates\pre-dexed\debug\classes-b182cece4cae58edf79f16a6edbca890a706ba74.jar" />
+    </item>
+    <item
+        jar="C:\Users\jek40\iceman\ICEMANv0.5\ICEMAN-client\com.breadcrumbs\build\intermediates\exploded-aar\com.android.support\appcompat-v7\22.2.0\classes.jar"
+        jumboMode="false"
+        revision="21.1.2"
+        sha1="73753982da6bde518f3a4c6b372749981d14d1a0">
+        <dex dex="C:\Users\jek40\iceman\ICEMANv0.5\ICEMAN-client\com.breadcrumbs\build\intermediates\pre-dexed\debug\classes-3c0516cdba82924c03ef3c8a28cb6c58e03cb07e.jar" />
     </item>
 
 </items>

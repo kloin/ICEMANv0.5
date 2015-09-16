@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:ns1="urn:oasis:names:tc:xliff:document:1.2">
-    <!-- From: file:/C:/Users/aDirtyCanvas/ICEMANv0.5/ICEMAN-client/com.breadcrumbs/build/intermediates/exploded-aar/com.android.support/appcompat-v7/22.2.0/res/values-si-rLK/values-si-rLK.xml -->
+    <!-- From: file:/C:/Users/jek40/iceman/ICEMANv0.5/ICEMAN-client/com.breadcrumbs/build/intermediates/exploded-aar/com.android.support/appcompat-v7/22.2.0/res/values-si-rLK/values-si-rLK.xml -->
     <eat-comment/>
     <string msgid="4600421777120114993" name="abc_action_bar_home_description">"ගෙදරට සංචාලනය කරන්න"</string>
     <string msgid="1594238315039666878" name="abc_action_bar_up_description">"ඉහලට සංචාලනය කරන්න"</string>
@@ -15,7 +15,7 @@
     <string msgid="893419373245838918" name="abc_searchview_description_voice">"හඬ සෙවීම"</string>
     <string msgid="3421042268587513524" name="abc_shareactionprovider_share_with">"සමඟ බෙදාගන්න"</string>
     <string msgid="7165123711973476752" name="abc_shareactionprovider_share_with_application">"%s සමඟ බෙදාගන්න"</string>
-    <!-- From: file:/C:/Users/aDirtyCanvas/ICEMANv0.5/ICEMAN-client/com.breadcrumbs/build/intermediates/exploded-aar/com.google.android.gms/play-services/6.1.71/res/values-si-rLK/common_strings.xml -->
+    <!-- From: file:/C:/Users/jek40/iceman/ICEMANv0.5/ICEMAN-client/com.breadcrumbs/build/intermediates/exploded-aar/com.google.android.gms/play-services/6.1.71/res/values-si-rLK/common_strings.xml -->
     <eat-comment/>
     <string msgid="473679118463211576" name="common_android_wear_notification_needs_update_text">"Android Wear යෙදුම යාවත්කාලීන කිරීමට යෙදුමක් අවශ්‍යය."</string>
     <string msgid="3046420540094071256" name="common_android_wear_update_text">"Android Wear යෙදුම ඔබ යාවත්කාලීන කළේ නැති නම් මෙම යෙදුම ධාවනය කළ නොහැක."</string>

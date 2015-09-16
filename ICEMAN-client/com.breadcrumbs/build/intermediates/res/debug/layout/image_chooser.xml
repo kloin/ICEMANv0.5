@@ -10,4 +10,4 @@
     android:stretchMode="columnWidth"
     android:padding="15dp"
     android:gravity="center"
-    android:background="@color/white"/><!-- From: file:/C:/Users/aDirtyCanvas/ICEMANv0.5/ICEMAN-client/com.breadcrumbs/res/layout/image_chooser.xml -->
+    android:background="@color/white"/><!-- From: file:/C:/Users/jek40/iceman/ICEMANv0.5/ICEMAN-client/com.breadcrumbs/res/layout/image_chooser.xml -->

@@ -82,10 +82,10 @@ public class Crumb {
         byte[] imageByte;
         try {
         	String serverAddress = "/usr/share/tomcat7/webapps/images/";
-        	String localAddress = "C:/Users/aDirtyCanvas/workspace/.metadata/.plugins/org.eclipse.wst.server.core/tmp0/wtpwebapps/BreadCrumbs/images/";//"C:/Users/aDirtyCanvas/workspace/BreadCrumbs/WebContent/images/";
+        	String localAddress = "C:/Users/jek40/iceman/ICEMANv0.5/ICEMAN-server/Server workspace/.metadata/.plugins/org.eclipse.wst.server.core/tmp1/wtpwebapps/BreadCrumbs/images/";//"C:/Users/aDirtyCanvas/workspace/BreadCrumbs/WebContent/images/";
             imageByte =  Base64.decodeBase64(uploadImageString);          
             FileOutputStream imageOutFile = new FileOutputStream(
-            		serverAddress+crumbId+".jpg");
+            		localAddress+crumbId+".jpg");
             imageOutFile.write(imageByte);
             	
             imageOutFile.close();

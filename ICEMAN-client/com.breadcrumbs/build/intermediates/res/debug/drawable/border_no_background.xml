@@ -3,4 +3,4 @@
 <shape xmlns:android="http://schemas.android.com/apk/res/android" android:shape="oval" >
 <gradient android:startColor="#33B5E5" android:endColor="#33B5E5"
     android:angle="270"/>
-</shape><!-- From: file:/C:/Users/aDirtyCanvas/ICEMANv0.5/ICEMAN-client/com.breadcrumbs/res/drawable/border_no_background.xml -->
+</shape><!-- From: file:/C:/Users/jek40/iceman/ICEMANv0.5/ICEMAN-client/com.breadcrumbs/res/drawable/border_no_background.xml -->
