@@ -1,60 +1,45 @@
 package com.breadcrumbs.client;
 
-import android.app.ActionBar;
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
-import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.CollapsingToolbarLayout;
-import android.support.v7.app.ActionBarActivity;
+import android.support.v4.util.LruCache;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
-import android.view.Window;
-import android.widget.Button;
-import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.PopupWindow;
 import android.widget.ProgressBar;
-import android.widget.TextView;
-import android.widget.Toast;
 import android.widget.VideoView;
 
 import com.breadcrumbs.Framework.JsonHandler;
 import com.breadcrumbs.Network.LoadBalancer;
+import com.breadcrumbs.R;
 import com.breadcrumbs.ServiceProxy.AsyncDataRetrieval;
 import com.breadcrumbs.ServiceProxy.AsyncRetrieveImage;
 import com.breadcrumbs.caching.GlobalContainer;
 import com.breadcrumbs.client.Cards.CrumbCardAdapter;
-import com.breadcrumbs.client.Cards.HomeCardAdapter;
 import com.breadcrumbs.client.Maps.DisplayCrumb;
-import com.breadcrumbs.client.R;
 import com.google.maps.android.clustering.Cluster;
 
-import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.text.MessageFormat;
 import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.Random;
 
 /**
  * Created by aDirtyCanvas on 6/11/2015.
  */
 public class SelectedEventViewerBase extends AppCompatActivity {
 
+    private LruCache<String, Bitmap> bitmapMemoryCache;
     private ImageView photo;
     private AsyncDataRetrieval clientRequestProxy;
     private JSONObject JSONcomments;
@@ -95,11 +80,9 @@ public class SelectedEventViewerBase extends AppCompatActivity {
         CollapsingToolbarLayout collapsingToolbarLayout = (CollapsingToolbarLayout) findViewById(R.id.collapsable_toolbar_holder);
         setBackButtonListener();
         setToolbarTitle(collapsingToolbarLayout, trailId);
-        collapsingToolbarLayout.setExpandedTitleTextAppearance(R.style.CodeFont);
+        collapsingToolbarLayout.setExpandedTitleTextAppearance(R.style.CodeFontWhite);
+        collapsingToolbarLayout.setCollapsedTitleTextAppearance(R.style.HeaderFont);
         //BeginLoad();
-/*
-        CrumbCardAdapter mAdapter = new CrumbCardAdapter(idArray, context);
-        mRecyclerView.setAdapter(mAdapter);*/
     }
 
     private void setBackButtonListener() {
@@ -152,7 +135,6 @@ public class SelectedEventViewerBase extends AppCompatActivity {
         } else {
             LoadVideo(crumbId);
         }
-
     }
 
         // Our method for sending the save comment http request.
@@ -190,7 +172,6 @@ public class SelectedEventViewerBase extends AppCompatActivity {
                     LoadVideo(trailId);
                 }
             }
-
     }
 
     private void LoadVideo(final String trailId) {
@@ -226,7 +207,7 @@ public class SelectedEventViewerBase extends AppCompatActivity {
             public void onClick(View v) {
                 // Load comments intent
                 Intent intent = new Intent();
-                intent.setClassName("com.breadcrumbs.client", "com.breadcrumbs.client.CrumbViewer.CommentViewer");
+                intent.setClassName("com.breadcrumbs", "com.breadcrumbs.client.CrumbViewer.CommentViewer");
                 intent.putExtra("CrumbId", trailId);
                 startActivity(intent);
 

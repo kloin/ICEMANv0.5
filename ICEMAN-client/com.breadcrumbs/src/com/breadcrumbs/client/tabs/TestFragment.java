@@ -14,7 +14,7 @@ import android.widget.ImageButton;
 import com.breadcrumbs.ServiceProxy.MasterProxy;
 import com.breadcrumbs.Trails.MyCurrentTrailManager;
 import com.breadcrumbs.caching.GlobalContainer;
-import com.breadcrumbs.client.R;
+import com.breadcrumbs.R;
 
 /**
  * Created by aDirtyCanvas on 6/2/2015.

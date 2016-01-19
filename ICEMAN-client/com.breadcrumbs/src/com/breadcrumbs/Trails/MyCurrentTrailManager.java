@@ -4,11 +4,20 @@ import android.app.Activity;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.Canvas;
 import android.graphics.Color;
+import android.graphics.Paint;
+import android.graphics.PorterDuff;
+import android.graphics.PorterDuffXfermode;
+import android.graphics.Rect;
+import android.graphics.RectF;
 import android.location.Location;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.util.Log;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.breadcrumbs.Location.LocationService;
@@ -20,13 +29,12 @@ import com.breadcrumbs.caching.GlobalContainer;
 import com.breadcrumbs.client.Maps.DisplayCrumb;
 import com.breadcrumbs.client.Maps.MapDisplayManager;
 import com.breadcrumbs.client.Maps.TrailDrawer;
-import com.breadcrumbs.client.R;
+import com.breadcrumbs.R;
 import com.breadcrumbs.client.tabs.SubscriptionManagerTab;
 import com.breadcrumbs.database.DatabaseController;
 import com.google.android.gms.common.ConnectionResult;
-import com.google.android.gms.common.GooglePlayServicesClient;
 import com.google.android.gms.common.GooglePlayServicesUtil;
-import com.google.android.gms.location.LocationClient;
+import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationListener;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.maps.CameraUpdate;
@@ -63,7 +71,7 @@ public class MyCurrentTrailManager extends Activity {
     private Activity context;
     // Location shit.
     private Location lastCheckedLocation;
-    private LocationClient locationclient;
+    private GoogleApiClient locationclient;
     private LocationRequest locationrequest;
     private Intent mIntentService;
     private PendingIntent mPendingIntent;
@@ -153,39 +161,49 @@ public class MyCurrentTrailManager extends Activity {
         try {
             // Construct our jsonObject for saving
             trailJSON = new JSONObject(trailsJSONString);
+            int length = trailJSON.length();
             Iterator<String> nodeKeys = trailJSON.keys();
             // The first two values
+            int backindex = 0;
+            int frontindex = 1;
             String backNode = "0";
             String frontNode = "1";
             while (nodeKeys.hasNext()) {
+                String key = nodeKeys.next();
                 // Get node
-                JSONObject pointNodeBase = trailJSON.getJSONObject("Node"+backNode);
+                JSONObject pointNodeBase = trailJSON.getJSONObject(key);
+                // Get the next point in the trail.
+                String next = "Node"+pointNodeBase.getString("next");
                 // Draw base point on the map
                 // Get the node we are drawing to
-                JSONObject pointNodeHead = new JSONObject(trailJSON.getString("Node"+frontNode));
+                JSONObject pointNodeHead = new JSONObject(trailJSON.getString(next));
+
                 // Get the variable for base
                 Double baseLatitude = pointNodeBase.getDouble("latitude");
                 Double baseLongitude =  pointNodeBase.getDouble("longitude");
+
                 // Get the variables for the head.
                 Double headLatitude = pointNodeHead.getDouble("latitude");
                 Double headLongitude = pointNodeHead.getDouble("longitude");
-                LatLng latLng = new LatLng(headLatitude, headLongitude);
-                TrailDrawer trailDrawer = new TrailDrawer(map, context);
-                trailDrawer.DrawPointOnMap(latLng);
+
                 // Draw line from base to head
-                map.addCircle(new CircleOptions()
-                        .center(new LatLng(headLatitude, headLongitude))
-                        .radius(20)
-                        .strokeColor(Color.parseColor("#9C27B0"))
-                        .fillColor(Color.parseColor("#9C27B0"))).setZIndex(2);
+                Bitmap bm = BitmapFactory.decodeResource(context.getResources(),
+                        R.drawable.pinksquare);
+
+                bm = getCircleBitmap(bm);
+                map.addMarker(new MarkerOptions()
+                        .position(new LatLng(headLatitude, headLongitude))
+                        .icon(BitmapDescriptorFactory.fromBitmap(bm)));
 
                 map.addPolyline(new PolylineOptions().add(new LatLng(baseLatitude, baseLongitude),
-                        new LatLng(headLatitude, headLongitude)).width(10).color(Color.parseColor("#33B5E5"))).setZIndex(1);
+                        new LatLng(headLatitude, headLongitude)).width(10).color(Color.parseColor("#808080"))).setZIndex(1);
 
                 // move to next pointers. This will throw an exception on the last one but it will be
                 // caught. Not too much we can do.
-                backNode = pointNodeHead.getString("pointId");
-                frontNode = pointNodeHead.getString("next");
+                backindex += 1;
+                frontindex += 1;
+                backNode = frontNode;
+                //frontNode = pointNodeHead.getString("next");
             }
 
         } catch (JSONException e) {
@@ -198,6 +216,7 @@ public class MyCurrentTrailManager extends Activity {
     public void DisplayTrailAndCrumbs(String trailId) {
         // Draw the actual trail.
         GetAndDisplayTrailOnMap(trailId);
+
         String url = MessageFormat.format("{0}/rest/login/getAllCrumbsForATrail/{1}",
                 LoadBalancer.RequestServerAddress(),
                 trailId);
@@ -227,7 +246,7 @@ public class MyCurrentTrailManager extends Activity {
                     CameraUpdate center=
                             CameraUpdateFactory.newLatLng(new LatLng(Latitude,
                                     Longitude));
-                    CameraUpdate zoom=CameraUpdateFactory.zoomTo(10);
+                    CameraUpdate zoom=CameraUpdateFactory.zoomTo(12);
                     // Move/animate camera to location
 
                     map.moveCamera(center);
@@ -284,7 +303,7 @@ public class MyCurrentTrailManager extends Activity {
             return true;
         }
         if (locationclient.isConnected()) {
-            locationclient.removeLocationUpdates(mPendingIntent);
+            //locationclient.removeLocationUpdates(mPendingIntent);
             locationclient.disconnect();
         }
         //No fetch data and send it to server.
@@ -314,5 +333,37 @@ public class MyCurrentTrailManager extends Activity {
 
             post.execute();
         }
+    }
+
+    /*
+    // create bitmap from resource
+ Bitmap bm = BitmapFactory.decodeResource(getResources(),
+  R.drawable.simple_image);
+
+ // set circle bitmap
+ ImageView mImage = (ImageView) findViewById(R.id.image);
+ mImage.setImageBitmap(getCircleBitmap(bm));
+     */
+    private Bitmap getCircleBitmap(Bitmap bitmap) {
+        final Bitmap output = Bitmap.createBitmap(bitmap.getWidth(),
+                bitmap.getHeight(), Bitmap.Config.ARGB_8888);
+        final Canvas canvas = new Canvas(output);
+
+        final int color = Color.RED;
+        final Paint paint = new Paint();
+        final Rect rect = new Rect(0, 0, bitmap.getWidth(), bitmap.getHeight());
+        final RectF rectF = new RectF(rect);
+
+        paint.setAntiAlias(true);
+        canvas.drawARGB(0, 0, 0, 0);
+        paint.setColor(color);
+        canvas.drawOval(rectF, paint);
+
+        paint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.SRC_IN));
+        canvas.drawBitmap(bitmap, rect, rect, paint);
+
+        bitmap.recycle();
+
+        return output;
     }
 }

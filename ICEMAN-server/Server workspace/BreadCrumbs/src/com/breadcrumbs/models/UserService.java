@@ -103,8 +103,7 @@ public class UserService {
 	public void SetUserAbout(String userId, String description) {
 		DBMaster dbMaster = DBMaster.GetAnInstanceOfDBMaster();
 		Node user = dbMaster.RetrieveNode(Integer.parseInt(userId));
-		dbMaster.updateNode(user, "Description", description);
-		
+		//dbMaster.updateNode(user, "Description", description);
 		//dbMaster.CreateRelationship(user, newContact, myRelationships.Friends_With);	
 		
 	}
@@ -113,6 +112,19 @@ public class UserService {
 		DBMaster dbMaster = DBMaster.GetAnInstanceOfDBMaster();
 		Node user = dbMaster.RetrieveNode(Integer.parseInt(userId));
 		return dbMaster.GetStringPropertyFromNode(Integer.toString((int) user.getId()), "description");
+	}
+
+	public String GetNumberOfTrailsAUserOwns(String userId) {
+		dbMaster = DBMaster.GetAnInstanceOfDBMaster();
+		String cypherQuery = "start n =node("+userId+") match (trail:Trail)--(n) Return count(*)";
+		return dbMaster.ExecuteCypherQueryReturnCount(cypherQuery);
+		
+	}
+
+	// Save an a clients GCMInstanceID to its database
+	public String SetGCMClientInstanceID(String userId, String gcmInstanceID) {
+		
+		return null;
 	}
 
 }

@@ -1,5 +1,0 @@
-127.0.0.1 - - [14/Jun/2015:19:39:51 +1200] "GET / HTTP/1.1" 404 951
-0:0:0:0:0:0:0:1 - - [14/Jun/2015:19:50:25 +1200] "GET /BreadCrumbs/rest/login/LoadCommentsForEvent/3 HTTP/1.1" 200 85
-0:0:0:0:0:0:0:1 - - [14/Jun/2015:19:50:36 +1200] "GET /BreadCrumbs/rest/login/SaveComment/3/6/maaaad%20balls HTTP/1.1" 200 12
-0:0:0:0:0:0:0:1 - - [14/Jun/2015:19:50:38 +1200] "GET /BreadCrumbs/rest/login/SaveComment/3/6/maaaad%20balls HTTP/1.1" 200 12
-0:0:0:0:0:0:0:1 - - [14/Jun/2015:19:50:39 +1200] "GET /BreadCrumbs/rest/login/SaveComment/3/6/maaaad%20balls HTTP/1.1" 200 12

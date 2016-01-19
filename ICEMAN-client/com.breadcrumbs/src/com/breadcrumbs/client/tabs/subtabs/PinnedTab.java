@@ -9,7 +9,7 @@ import android.view.ViewGroup;
 import android.widget.Toast;
 
 import com.breadcrumbs.client.BaseViewModel;
-import com.breadcrumbs.client.R;
+import com.breadcrumbs.R;
 
 /**
  * Created by aDirtyCanvas on 4/30/2015.

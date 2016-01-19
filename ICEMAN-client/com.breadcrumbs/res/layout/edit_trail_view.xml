@@ -49,16 +49,16 @@
                     android:text="324"/>
             </RelativeLayout>
 
-            <ProgressBar
+           <!-- <ProgressBar
                 android:id="@+id/mainProgressBar"
                 style="?android:attr/progressBarStyleLarge"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center" />
+                android:layout_gravity="center" /> -->
             <ImageView
                 android:id="@+id/main_photo"
                 android:adjustViewBounds="true"
-                android:visibility="gone"
+                android:visibility="visible"
                 android:layout_width="match_parent"
                 android:layout_height="260dp"
                 android:scaleType="centerCrop"/>

@@ -22,6 +22,8 @@ import java.util.ArrayList;
 /*
  * THE BLACK BOX NETWORK CLASS. This was a big brutal beast which is being replaced by
  * smaller chunks that will use my new RESTful API.
+ *
+ * NO LONGER USED. BIG UGLY PIECE OF SHIT
  */
 public class MasterProxy {
 	private static MasterProxy mProxy = null;

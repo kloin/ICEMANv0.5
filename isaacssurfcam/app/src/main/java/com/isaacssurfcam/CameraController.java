@@ -82,6 +82,7 @@ public class CameraController extends SurfaceView implements SurfaceHolder.Callb
         this.context = (Activity) context;
 
     }
+
     public CameraController(Context context, AttributeSet attributeSet) {
         super(context, attributeSet);
         getHolder().addCallback(this);
@@ -100,12 +101,17 @@ public class CameraController extends SurfaceView implements SurfaceHolder.Callb
         mHolder = holder;
         mCamera = Camera.open(0); // Open rear facing by default
         StaticShitCodeStuff.GetInstance().setCameraInstance(this);
+
         // SetFrontCamera();
         // Get our display to test if it is going to be pushed sideways
         Display display = ((WindowManager)context.getSystemService(context.WINDOW_SERVICE)).getDefaultDisplay();
         int raot = display.getRotation();
         mCamera.setDisplayOrientation(90);
         Camera.Parameters parameters = mCamera.getParameters();
+        Camera.Size size = parameters.getSupportedPictureSizes().get(0);
+
+        parameters.setPictureSize(size.width, size.height);
+        mCamera.setParameters(parameters);
 
         CheckOrientationIsNotAllFuckingRetarded(parameters, display);
         try {
@@ -116,6 +122,8 @@ public class CameraController extends SurfaceView implements SurfaceHolder.Callb
         } catch (IOException e) {
             e.printStackTrace();
         }
+
+        //StaticShitCodeStuff.GetInstance().getMainActivity().startRepeatingTask();
 
 
 
@@ -147,6 +155,10 @@ public class CameraController extends SurfaceView implements SurfaceHolder.Callb
             try {
                 Display display = ((WindowManager)context.getSystemService(context.WINDOW_SERVICE)).getDefaultDisplay();
                 Camera.Parameters parameters = mCamera.getParameters();
+                Camera.Size size = parameters.getSupportedPictureSizes().get(0);
+
+                parameters.setPictureSize(size.width, size.height);
+                mCamera.setParameters(parameters);
                 mCamera.setPreviewDisplay(holder);
                 CheckOrientationIsNotAllFuckingRetarded(parameters, display);
             } catch (IOException e) {
@@ -221,7 +233,7 @@ public class CameraController extends SurfaceView implements SurfaceHolder.Callb
         recorder.setVideoEncodingBitRate(3000000);
         recorder.setOutputFormat(MediaRecorder.OutputFormat.DEFAULT);
         recorder.setVideoFrameRate(16); //might be auto-determined due to lighting
-        recorder.setVideoSize(supportedSizes.get(1).width, supportedSizes.get(1).height);
+        recorder.setVideoSize(supportedSizes.get(0).width, supportedSizes.get(0).height);
         recorder.setAudioEncoder(MediaRecorder.AudioEncoder.AMR_NB);
         recorder.setVideoEncoder(MediaRecorder.VideoEncoder.MPEG_4_SP);
 

@@ -28,4 +28,14 @@ public class UserDetail {
 		userService.SetUserAbout(userId, description);
 		return "Success";
 	}
+	
+	@GET
+	@Path("StoreGCMClientInstanceID/{UserId}/{GCMInstanceID}")
+	public String SaveGCMClientID(@PathParam("UserId") String userId, @PathParam("GCMInstaceID") String gcmInstanceID) {
+		String result = "";
+		
+		UserService userService = new UserService();
+		//result = userService.SetGCMClientInstanceID(userId, gcmInstanceID);
+		return result;
+	}
 }

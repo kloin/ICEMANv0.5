@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.provider.MediaStore;
 import android.widget.ImageView;
 
+import com.breadcrumbs.R;
 import com.breadcrumbs.ServiceProxy.AsyncImageFetch;
 import com.breadcrumbs.caching.GlobalContainer;
 

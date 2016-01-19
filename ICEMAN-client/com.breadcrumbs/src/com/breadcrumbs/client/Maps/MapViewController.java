@@ -3,7 +3,7 @@ package com.breadcrumbs.client.Maps;
 import android.os.Bundle;
 
 import com.breadcrumbs.client.FragmentMaster;
-import com.breadcrumbs.client.R;
+import com.breadcrumbs.R;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.GoogleMap.OnMapClickListener;

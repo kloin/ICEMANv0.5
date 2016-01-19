@@ -9,7 +9,7 @@ import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.breadcrumbs.client.R;
+import com.breadcrumbs.R;
 
 /**
  * Created by aDirtyCanvas on 7/15/2015.

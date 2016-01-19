@@ -137,7 +137,7 @@ public class NodeController implements INodeController {
 			Collection valuesCollection = nodeItemMap.values();
 			Node tempNode = (Node) valuesCollection.toArray()[0];
 			JSONObject tempJson = nodeConverter.ConvertSingleNodeToJSON(tempNode);
-			json.put("Node"+ tempJson.getString("pointId"), tempJson);
+			json.put("Node"+ tempJson.getString("index"), tempJson);
 			index+= 1;			
 		}
 		
@@ -216,6 +216,46 @@ public class NodeController implements INodeController {
 	public void UpdateNode(int id) {
 		// TODO Auto-generated method stub
 		
+	}
+	
+	public String GetAllRelatedNodesIds(String baseNodeId, myLabels label, String property, String nodeHeader) {
+		nodeConverter = new NodeConverter();
+		dbMaster = DBMaster.GetAnInstanceOfDBMaster();
+    	if (dbMaster == null) {
+    		System.out.print("There was an issue getting a valid instance of the database");
+    	}
+    	
+    	//Get our trail
+    	//Get all the crumbs for our trail
+    	//Then format it like : {Trail : {crumb1: {chat : this, talk : this}, crumb2: {you : getit?}}
+    	JSONObject trailJsonObject = new JSONObject();
+    	
+    	// Get all the crumbs
+    	Transaction tx = dbMaster.GetDatabaseInstance().beginTx();
+    	JSONObject jsonResponse = new JSONObject();
+    	ResourceIterable<Node> node = dbMaster.GetDatabaseInstance().findNodesByLabelAndProperty(label, property, baseNodeId);
+		Iterator nodeSearcher = node.iterator();
+
+		try {
+			int numberOfNodes = 0;
+			while (nodeSearcher.hasNext()) {
+				//Get the node once, as each time we use "Next()" we move forward on the list
+				Node trail = (Node) nodeSearcher.next();
+				System.out.println(trail.getId());
+				//Construct a jsonString using the node converter for the node.
+				//Add the string to the trail object under the crumbs id (? or name?)
+				trailJsonObject.put(Integer.toString(numberOfNodes), trail.getId());
+				numberOfNodes += 1;
+				}
+			} catch(JSONException ex) {
+				System.out.println("THIS JUST CRASHED FUUUUUUCKKKKK");
+				ex.printStackTrace();		
+		}
+		finally {
+			tx.finish();
+		}
+		System.out.println("Here is the jsonOBject : "+ trailJsonObject.toString());
+		return trailJsonObject.toString();
 	}
 	
 	public String GetAllRelatedNodes(String baseNodeId,  myLabels label, String property, String nodeHeader) {

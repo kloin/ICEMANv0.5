@@ -1,247 +1,418 @@
 -- Merging decision tree log ---
 manifest
-ADDED from AndroidManifest.xml:2:1
+ADDED from C:\Users\jek40\iceman\ICEMANv0.5\ICEMAN-client\com.breadcrumbs\AndroidManifest.xml:2:1-149:12
 	package
-		ADDED from AndroidManifest.xml:3:5
+		ADDED from C:\Users\jek40\iceman\ICEMANv0.5\ICEMAN-client\com.breadcrumbs\AndroidManifest.xml:3:5-30
 	android:versionName
-		ADDED from AndroidManifest.xml:5:5
+		ADDED from C:\Users\jek40\iceman\ICEMANv0.5\ICEMAN-client\com.breadcrumbs\AndroidManifest.xml:5:5-30
+		INJECTED from C:\Users\jek40\iceman\ICEMANv0.5\ICEMAN-client\com.breadcrumbs\AndroidManifest.xml
+		INJECTED from C:\Users\jek40\iceman\ICEMANv0.5\ICEMAN-client\com.breadcrumbs\AndroidManifest.xml
 	android:versionCode
-		ADDED from AndroidManifest.xml:4:5
-		INJECTED from AndroidManifest.xml:0:0
-		INJECTED from AndroidManifest.xml:0:0
+		ADDED from C:\Users\jek40\iceman\ICEMANv0.5\ICEMAN-client\com.breadcrumbs\AndroidManifest.xml:4:5-28
+		INJECTED from C:\Users\jek40\iceman\ICEMANv0.5\ICEMAN-client\com.breadcrumbs\AndroidManifest.xml
+		INJECTED from C:\Users\jek40\iceman\ICEMANv0.5\ICEMAN-client\com.breadcrumbs\AndroidManifest.xml
 	xmlns:android
-		ADDED from AndroidManifest.xml:2:11
+		ADDED from C:\Users\jek40\iceman\ICEMANv0.5\ICEMAN-client\com.breadcrumbs\AndroidManifest.xml:2:11-69
+permission#com.breadcrumbs.permission.C2D_MESSAGE
+ADDED from C:\Users\jek40\iceman\ICEMANv0.5\ICEMAN-client\com.breadcrumbs\AndroidManifest.xml:7:5-8:47
+	android:protectionLevel
+		ADDED from C:\Users\jek40\iceman\ICEMANv0.5\ICEMAN-client\com.breadcrumbs\AndroidManifest.xml:8:9-44
+	android:name
+		ADDED from C:\Users\jek40\iceman\ICEMANv0.5\ICEMAN-client\com.breadcrumbs\AndroidManifest.xml:7:17-70
 uses-permission#android.permission.INTERNET
-ADDED from AndroidManifest.xml:7:2
+ADDED from C:\Users\jek40\iceman\ICEMANv0.5\ICEMAN-client\com.breadcrumbs\AndroidManifest.xml:10:2-63
+MERGED from [com.google.android.gms:play-services-measurement:8.3.0] C:\Users\jek40\iceman\ICEMANv0.5\ICEMAN-client\com.breadcrumbs\build\intermediates\exploded-aar\com.google.android.gms\play-services-measurement\8.3.0\AndroidManifest.xml:21:5-67
+MERGED from [com.google.android.gms:play-services-gcm:8.3.0] C:\Users\jek40\iceman\ICEMANv0.5\ICEMAN-client\com.breadcrumbs\build\intermediates\exploded-aar\com.google.android.gms\play-services-gcm\8.3.0\AndroidManifest.xml:22:5-67
+MERGED from [com.google.android.gms:play-services-measurement:8.3.0] C:\Users\jek40\iceman\ICEMANv0.5\ICEMAN-client\com.breadcrumbs\build\intermediates\exploded-aar\com.google.android.gms\play-services-measurement\8.3.0\AndroidManifest.xml:21:5-67
+MERGED from [com.google.android.gms:play-services-maps:8.3.0] C:\Users\jek40\iceman\ICEMANv0.5\ICEMAN-client\com.breadcrumbs\build\intermediates\exploded-aar\com.google.android.gms\play-services-maps\8.3.0\AndroidManifest.xml:21:5-66
+MERGED from [com.google.android.gms:play-services-maps:8.3.0] C:\Users\jek40\iceman\ICEMANv0.5\ICEMAN-client\com.breadcrumbs\build\intermediates\exploded-aar\com.google.android.gms\play-services-maps\8.3.0\AndroidManifest.xml:21:5-66
 	android:name
-		ADDED from AndroidManifest.xml:7:19
+		ADDED from C:\Users\jek40\iceman\ICEMANv0.5\ICEMAN-client\com.breadcrumbs\AndroidManifest.xml:10:19-61
+uses-permission#android.permission.WAKE_LOCK
+ADDED from C:\Users\jek40\iceman\ICEMANv0.5\ICEMAN-client\com.breadcrumbs\AndroidManifest.xml:11:5-67
+MERGED from [com.google.android.gms:play-services-measurement:8.3.0] C:\Users\jek40\iceman\ICEMANv0.5\ICEMAN-client\com.breadcrumbs\build\intermediates\exploded-aar\com.google.android.gms\play-services-measurement\8.3.0\AndroidManifest.xml:24:5-67
+MERGED from [com.google.android.gms:play-services-measurement:8.3.0] C:\Users\jek40\iceman\ICEMANv0.5\ICEMAN-client\com.breadcrumbs\build\intermediates\exploded-aar\com.google.android.gms\play-services-measurement\8.3.0\AndroidManifest.xml:24:5-67
+	android:name
+		ADDED from C:\Users\jek40\iceman\ICEMANv0.5\ICEMAN-client\com.breadcrumbs\AndroidManifest.xml:11:22-65
 uses-permission#android.permission.ACCESS_NETWORK_STATE
-ADDED from AndroidManifest.xml:8:2
+ADDED from C:\Users\jek40\iceman\ICEMANv0.5\ICEMAN-client\com.breadcrumbs\AndroidManifest.xml:12:2-75
+MERGED from [com.google.android.gms:play-services-measurement:8.3.0] C:\Users\jek40\iceman\ICEMANv0.5\ICEMAN-client\com.breadcrumbs\build\intermediates\exploded-aar\com.google.android.gms\play-services-measurement\8.3.0\AndroidManifest.xml:22:5-79
+MERGED from [com.google.android.gms:play-services-measurement:8.3.0] C:\Users\jek40\iceman\ICEMANv0.5\ICEMAN-client\com.breadcrumbs\build\intermediates\exploded-aar\com.google.android.gms\play-services-measurement\8.3.0\AndroidManifest.xml:22:5-79
+MERGED from [com.google.android.gms:play-services-maps:8.3.0] C:\Users\jek40\iceman\ICEMANv0.5\ICEMAN-client\com.breadcrumbs\build\intermediates\exploded-aar\com.google.android.gms\play-services-maps\8.3.0\AndroidManifest.xml:20:5-78
+MERGED from [com.google.android.gms:play-services-maps:8.3.0] C:\Users\jek40\iceman\ICEMANv0.5\ICEMAN-client\com.breadcrumbs\build\intermediates\exploded-aar\com.google.android.gms\play-services-maps\8.3.0\AndroidManifest.xml:20:5-78
 	android:name
-		ADDED from AndroidManifest.xml:8:19
+		ADDED from C:\Users\jek40\iceman\ICEMANv0.5\ICEMAN-client\com.breadcrumbs\AndroidManifest.xml:12:19-73
 uses-permission#android.permission.WRITE_EXTERNAL_STORAGE
-ADDED from AndroidManifest.xml:9:2
+ADDED from C:\Users\jek40\iceman\ICEMANv0.5\ICEMAN-client\com.breadcrumbs\AndroidManifest.xml:13:2-77
 	android:name
-		ADDED from AndroidManifest.xml:9:19
+		ADDED from C:\Users\jek40\iceman\ICEMANv0.5\ICEMAN-client\com.breadcrumbs\AndroidManifest.xml:13:19-75
 uses-permission#com.google.android.providers.gsf.permission.READ_GSERVICES
-ADDED from AndroidManifest.xml:10:2
+ADDED from C:\Users\jek40\iceman\ICEMANv0.5\ICEMAN-client\com.breadcrumbs\AndroidManifest.xml:14:2-94
 	android:name
-		ADDED from AndroidManifest.xml:10:19
+		ADDED from C:\Users\jek40\iceman\ICEMANv0.5\ICEMAN-client\com.breadcrumbs\AndroidManifest.xml:14:19-92
+uses-permission#com.breadcrumbs.permission.C2D_MESSAGE
+ADDED from C:\Users\jek40\iceman\ICEMANv0.5\ICEMAN-client\com.breadcrumbs\AndroidManifest.xml:15:5-77
+	android:name
+		ADDED from C:\Users\jek40\iceman\ICEMANv0.5\ICEMAN-client\com.breadcrumbs\AndroidManifest.xml:15:22-75
 uses-permission#android.permission.ACCESS_COARSE_LOCATION
-ADDED from AndroidManifest.xml:13:2
+ADDED from C:\Users\jek40\iceman\ICEMANv0.5\ICEMAN-client\com.breadcrumbs\AndroidManifest.xml:16:2-77
 	android:name
-		ADDED from AndroidManifest.xml:13:19
+		ADDED from C:\Users\jek40\iceman\ICEMANv0.5\ICEMAN-client\com.breadcrumbs\AndroidManifest.xml:16:19-75
 uses-permission#android.permission.ACCESS_FINE_LOCATION
-ADDED from AndroidManifest.xml:14:2
+ADDED from C:\Users\jek40\iceman\ICEMANv0.5\ICEMAN-client\com.breadcrumbs\AndroidManifest.xml:17:2-75
 	android:name
-		ADDED from AndroidManifest.xml:14:19
+		ADDED from C:\Users\jek40\iceman\ICEMANv0.5\ICEMAN-client\com.breadcrumbs\AndroidManifest.xml:17:19-73
 uses-permission#android.permission.CAMERA
-ADDED from AndroidManifest.xml:17:2
+ADDED from C:\Users\jek40\iceman\ICEMANv0.5\ICEMAN-client\com.breadcrumbs\AndroidManifest.xml:18:2-61
 	android:name
-		ADDED from AndroidManifest.xml:17:19
+		ADDED from C:\Users\jek40\iceman\ICEMANv0.5\ICEMAN-client\com.breadcrumbs\AndroidManifest.xml:18:19-59
 uses-permission#android.permission.RECORD_AUDIO
-ADDED from AndroidManifest.xml:18:5
+ADDED from C:\Users\jek40\iceman\ICEMANv0.5\ICEMAN-client\com.breadcrumbs\AndroidManifest.xml:19:5-71
 	android:name
-		ADDED from AndroidManifest.xml:18:22
+		ADDED from C:\Users\jek40\iceman\ICEMANv0.5\ICEMAN-client\com.breadcrumbs\AndroidManifest.xml:19:22-68
+uses-permission#com.google.android.c2dm.permission.SEND
+ADDED from C:\Users\jek40\iceman\ICEMANv0.5\ICEMAN-client\com.breadcrumbs\AndroidManifest.xml:20:5-78
+	android:name
+		ADDED from C:\Users\jek40\iceman\ICEMANv0.5\ICEMAN-client\com.breadcrumbs\AndroidManifest.xml:20:22-76
+uses-permission#com.google.android.c2dm.permission.RECEIVE
+ADDED from C:\Users\jek40\iceman\ICEMANv0.5\ICEMAN-client\com.breadcrumbs\AndroidManifest.xml:21:5-82
+MERGED from [com.google.android.gms:play-services-gcm:8.3.0] C:\Users\jek40\iceman\ICEMANv0.5\ICEMAN-client\com.breadcrumbs\build\intermediates\exploded-aar\com.google.android.gms\play-services-gcm\8.3.0\AndroidManifest.xml:21:5-82
+	android:name
+		ADDED from C:\Users\jek40\iceman\ICEMANv0.5\ICEMAN-client\com.breadcrumbs\AndroidManifest.xml:21:22-79
 uses-feature#android.hardware.camera
-ADDED from AndroidManifest.xml:19:2
+ADDED from C:\Users\jek40\iceman\ICEMANv0.5\ICEMAN-client\com.breadcrumbs\AndroidManifest.xml:23:5-60
 	android:name
-		ADDED from AndroidManifest.xml:19:16
+		ADDED from C:\Users\jek40\iceman\ICEMANv0.5\ICEMAN-client\com.breadcrumbs\AndroidManifest.xml:23:19-57
 uses-feature#0x00020000
-ADDED from AndroidManifest.xml:25:2
+ADDED from C:\Users\jek40\iceman\ICEMANv0.5\ICEMAN-client\com.breadcrumbs\AndroidManifest.xml:26:2-28:34
+MERGED from [com.google.android.gms:play-services-maps:8.3.0] C:\Users\jek40\iceman\ICEMANv0.5\ICEMAN-client\com.breadcrumbs\build\intermediates\exploded-aar\com.google.android.gms\play-services-maps\8.3.0\AndroidManifest.xml:22:5-24:33
+MERGED from [com.google.android.gms:play-services-maps:8.3.0] C:\Users\jek40\iceman\ICEMANv0.5\ICEMAN-client\com.breadcrumbs\build\intermediates\exploded-aar\com.google.android.gms\play-services-maps\8.3.0\AndroidManifest.xml:22:5-24:33
 	android:glEsVersion
-		ADDED from AndroidManifest.xml:26:9
+		ADDED from C:\Users\jek40\iceman\ICEMANv0.5\ICEMAN-client\com.breadcrumbs\AndroidManifest.xml:27:9-41
 	android:required
-		ADDED from AndroidManifest.xml:27:9
+		ADDED from C:\Users\jek40\iceman\ICEMANv0.5\ICEMAN-client\com.breadcrumbs\AndroidManifest.xml:28:9-32
 uses-sdk
-ADDED from AndroidManifest.xml:29:5
-MERGED from com.android.support:support-v13:21.0.3:15:5
-MERGED from com.android.support:support-v4:22.2.0:20:5
-MERGED from com.google.android.gms:play-services:6.1.71:15:5
-MERGED from com.android.support:support-v4:22.2.0:20:5
-MERGED from com.sothree.slidinguppanel:library:3.0.0:7:5
-MERGED from com.android.support:support-v4:22.2.0:20:5
-MERGED from com.pkmmte.view:circularimageview:1.1:7:5
-MERGED from com.mapbox.mapboxsdk:mapbox-android-sdk:0.7.3:5:5
-MERGED from com.android.support:support-v4:22.2.0:20:5
-MERGED from com.google.maps.android:android-maps-utils:0.3.4:5:5
-MERGED from com.getbase:floatingactionbutton:1.9.0:8:5
-MERGED from com.android.support:design:22.2.0:20:5
-MERGED from com.android.support:appcompat-v7:22.2.0:20:5
-MERGED from com.android.support:support-v4:22.2.0:20:5
-MERGED from com.android.support:support-v4:22.2.0:20:5
-MERGED from com.android.support:appcompat-v7:22.2.0:20:5
-MERGED from com.android.support:support-v4:22.2.0:20:5
-MERGED from com.android.support:recyclerview-v7:22.2.0:20:5
-MERGED from com.android.support:support-v4:22.2.0:20:5
-MERGED from com.android.support:cardview-v7:22.2.0:20:5
+ADDED from C:\Users\jek40\iceman\ICEMANv0.5\ICEMAN-client\com.breadcrumbs\AndroidManifest.xml:30:5-31:38
+MERGED from [com.android.support:multidex:1.0.1] C:\Users\jek40\iceman\ICEMANv0.5\ICEMAN-client\com.breadcrumbs\build\intermediates\exploded-aar\com.android.support\multidex\1.0.1\AndroidManifest.xml:18:5-42
+MERGED from [com.google.android.gms:play-services-measurement:8.3.0] C:\Users\jek40\iceman\ICEMANv0.5\ICEMAN-client\com.breadcrumbs\build\intermediates\exploded-aar\com.google.android.gms\play-services-measurement\8.3.0\AndroidManifest.xml:18:5-42
+MERGED from [com.google.android.gms:play-services-basement:8.3.0] C:\Users\jek40\iceman\ICEMANv0.5\ICEMAN-client\com.breadcrumbs\build\intermediates\exploded-aar\com.google.android.gms\play-services-basement\8.3.0\AndroidManifest.xml:18:5-42
+MERGED from [com.android.support:support-v4:22.2.0] C:\Users\jek40\iceman\ICEMANv0.5\ICEMAN-client\com.breadcrumbs\build\intermediates\exploded-aar\com.android.support\support-v4\22.2.0\AndroidManifest.xml:20:5-43
+MERGED from [com.android.support:support-v13:21.0.3] C:\Users\jek40\iceman\ICEMANv0.5\ICEMAN-client\com.breadcrumbs\build\intermediates\exploded-aar\com.android.support\support-v13\21.0.3\AndroidManifest.xml:15:5-43
+MERGED from [com.android.support:support-v4:22.2.0] C:\Users\jek40\iceman\ICEMANv0.5\ICEMAN-client\com.breadcrumbs\build\intermediates\exploded-aar\com.android.support\support-v4\22.2.0\AndroidManifest.xml:20:5-43
+MERGED from [com.google.android.gms:play-services-gcm:8.3.0] C:\Users\jek40\iceman\ICEMANv0.5\ICEMAN-client\com.breadcrumbs\build\intermediates\exploded-aar\com.google.android.gms\play-services-gcm\8.3.0\AndroidManifest.xml:18:5-42
+MERGED from [com.google.android.gms:play-services-base:8.3.0] C:\Users\jek40\iceman\ICEMANv0.5\ICEMAN-client\com.breadcrumbs\build\intermediates\exploded-aar\com.google.android.gms\play-services-base\8.3.0\AndroidManifest.xml:18:5-42
+MERGED from [com.google.android.gms:play-services-basement:8.3.0] C:\Users\jek40\iceman\ICEMANv0.5\ICEMAN-client\com.breadcrumbs\build\intermediates\exploded-aar\com.google.android.gms\play-services-basement\8.3.0\AndroidManifest.xml:18:5-42
+MERGED from [com.android.support:support-v4:22.2.0] C:\Users\jek40\iceman\ICEMANv0.5\ICEMAN-client\com.breadcrumbs\build\intermediates\exploded-aar\com.android.support\support-v4\22.2.0\AndroidManifest.xml:20:5-43
+MERGED from [com.google.android.gms:play-services-measurement:8.3.0] C:\Users\jek40\iceman\ICEMANv0.5\ICEMAN-client\com.breadcrumbs\build\intermediates\exploded-aar\com.google.android.gms\play-services-measurement\8.3.0\AndroidManifest.xml:18:5-42
+MERGED from [com.google.android.gms:play-services-basement:8.3.0] C:\Users\jek40\iceman\ICEMANv0.5\ICEMAN-client\com.breadcrumbs\build\intermediates\exploded-aar\com.google.android.gms\play-services-basement\8.3.0\AndroidManifest.xml:18:5-42
+MERGED from [com.android.support:support-v4:22.2.0] C:\Users\jek40\iceman\ICEMANv0.5\ICEMAN-client\com.breadcrumbs\build\intermediates\exploded-aar\com.android.support\support-v4\22.2.0\AndroidManifest.xml:20:5-43
+MERGED from [com.google.android.gms:play-services-identity:8.3.0] C:\Users\jek40\iceman\ICEMANv0.5\ICEMAN-client\com.breadcrumbs\build\intermediates\exploded-aar\com.google.android.gms\play-services-identity\8.3.0\AndroidManifest.xml:18:5-42
+MERGED from [com.google.android.gms:play-services-base:8.3.0] C:\Users\jek40\iceman\ICEMANv0.5\ICEMAN-client\com.breadcrumbs\build\intermediates\exploded-aar\com.google.android.gms\play-services-base\8.3.0\AndroidManifest.xml:18:5-42
+MERGED from [com.google.android.gms:play-services-basement:8.3.0] C:\Users\jek40\iceman\ICEMANv0.5\ICEMAN-client\com.breadcrumbs\build\intermediates\exploded-aar\com.google.android.gms\play-services-basement\8.3.0\AndroidManifest.xml:18:5-42
+MERGED from [com.android.support:support-v4:22.2.0] C:\Users\jek40\iceman\ICEMANv0.5\ICEMAN-client\com.breadcrumbs\build\intermediates\exploded-aar\com.android.support\support-v4\22.2.0\AndroidManifest.xml:20:5-43
+MERGED from [com.google.android.gms:play-services-location:8.3.0] C:\Users\jek40\iceman\ICEMANv0.5\ICEMAN-client\com.breadcrumbs\build\intermediates\exploded-aar\com.google.android.gms\play-services-location\8.3.0\AndroidManifest.xml:18:5-42
+MERGED from [com.google.android.gms:play-services-base:8.3.0] C:\Users\jek40\iceman\ICEMANv0.5\ICEMAN-client\com.breadcrumbs\build\intermediates\exploded-aar\com.google.android.gms\play-services-base\8.3.0\AndroidManifest.xml:18:5-42
+MERGED from [com.google.android.gms:play-services-basement:8.3.0] C:\Users\jek40\iceman\ICEMANv0.5\ICEMAN-client\com.breadcrumbs\build\intermediates\exploded-aar\com.google.android.gms\play-services-basement\8.3.0\AndroidManifest.xml:18:5-42
+MERGED from [com.android.support:support-v4:22.2.0] C:\Users\jek40\iceman\ICEMANv0.5\ICEMAN-client\com.breadcrumbs\build\intermediates\exploded-aar\com.android.support\support-v4\22.2.0\AndroidManifest.xml:20:5-43
+MERGED from [com.google.android.gms:play-services-maps:8.3.0] C:\Users\jek40\iceman\ICEMANv0.5\ICEMAN-client\com.breadcrumbs\build\intermediates\exploded-aar\com.google.android.gms\play-services-maps\8.3.0\AndroidManifest.xml:26:5-42
+MERGED from [com.google.android.gms:play-services-base:8.3.0] C:\Users\jek40\iceman\ICEMANv0.5\ICEMAN-client\com.breadcrumbs\build\intermediates\exploded-aar\com.google.android.gms\play-services-base\8.3.0\AndroidManifest.xml:18:5-42
+MERGED from [com.google.android.gms:play-services-basement:8.3.0] C:\Users\jek40\iceman\ICEMANv0.5\ICEMAN-client\com.breadcrumbs\build\intermediates\exploded-aar\com.google.android.gms\play-services-basement\8.3.0\AndroidManifest.xml:18:5-42
+MERGED from [com.android.support:support-v4:22.2.0] C:\Users\jek40\iceman\ICEMANv0.5\ICEMAN-client\com.breadcrumbs\build\intermediates\exploded-aar\com.android.support\support-v4\22.2.0\AndroidManifest.xml:20:5-43
+MERGED from [com.google.android.gms:play-services-maps:8.3.0] C:\Users\jek40\iceman\ICEMANv0.5\ICEMAN-client\com.breadcrumbs\build\intermediates\exploded-aar\com.google.android.gms\play-services-maps\8.3.0\AndroidManifest.xml:26:5-42
+MERGED from [com.google.android.gms:play-services-base:8.3.0] C:\Users\jek40\iceman\ICEMANv0.5\ICEMAN-client\com.breadcrumbs\build\intermediates\exploded-aar\com.google.android.gms\play-services-base\8.3.0\AndroidManifest.xml:18:5-42
+MERGED from [com.google.android.gms:play-services-basement:8.3.0] C:\Users\jek40\iceman\ICEMANv0.5\ICEMAN-client\com.breadcrumbs\build\intermediates\exploded-aar\com.google.android.gms\play-services-basement\8.3.0\AndroidManifest.xml:18:5-42
+MERGED from [com.android.support:support-v4:22.2.0] C:\Users\jek40\iceman\ICEMANv0.5\ICEMAN-client\com.breadcrumbs\build\intermediates\exploded-aar\com.android.support\support-v4\22.2.0\AndroidManifest.xml:20:5-43
+MERGED from [com.sothree.slidinguppanel:library:3.0.0] C:\Users\jek40\iceman\ICEMANv0.5\ICEMAN-client\com.breadcrumbs\build\intermediates\exploded-aar\com.sothree.slidinguppanel\library\3.0.0\AndroidManifest.xml:7:5-43
+MERGED from [com.android.support:support-v4:22.2.0] C:\Users\jek40\iceman\ICEMANv0.5\ICEMAN-client\com.breadcrumbs\build\intermediates\exploded-aar\com.android.support\support-v4\22.2.0\AndroidManifest.xml:20:5-43
+MERGED from [com.pkmmte.view:circularimageview:1.1] C:\Users\jek40\iceman\ICEMANv0.5\ICEMAN-client\com.breadcrumbs\build\intermediates\exploded-aar\com.pkmmte.view\circularimageview\1.1\AndroidManifest.xml:7:5-9:41
+MERGED from [com.mapbox.mapboxsdk:mapbox-android-sdk:0.7.3] C:\Users\jek40\iceman\ICEMANv0.5\ICEMAN-client\com.breadcrumbs\build\intermediates\exploded-aar\com.mapbox.mapboxsdk\mapbox-android-sdk\0.7.3\AndroidManifest.xml:5:5-7:41
+MERGED from [com.android.support:support-v4:22.2.0] C:\Users\jek40\iceman\ICEMANv0.5\ICEMAN-client\com.breadcrumbs\build\intermediates\exploded-aar\com.android.support\support-v4\22.2.0\AndroidManifest.xml:20:5-43
+MERGED from [com.google.maps.android:android-maps-utils:0.3.4] C:\Users\jek40\iceman\ICEMANv0.5\ICEMAN-client\com.breadcrumbs\build\intermediates\exploded-aar\com.google.maps.android\android-maps-utils\0.3.4\AndroidManifest.xml:5:5-43
+MERGED from [com.getbase:floatingactionbutton:1.9.0] C:\Users\jek40\iceman\ICEMANv0.5\ICEMAN-client\com.breadcrumbs\build\intermediates\exploded-aar\com.getbase\floatingactionbutton\1.9.0\AndroidManifest.xml:8:5-10:41
+MERGED from [com.android.support:design:22.2.0] C:\Users\jek40\iceman\ICEMANv0.5\ICEMAN-client\com.breadcrumbs\build\intermediates\exploded-aar\com.android.support\design\22.2.0\AndroidManifest.xml:20:5-43
+MERGED from [com.android.support:appcompat-v7:22.2.0] C:\Users\jek40\iceman\ICEMANv0.5\ICEMAN-client\com.breadcrumbs\build\intermediates\exploded-aar\com.android.support\appcompat-v7\22.2.0\AndroidManifest.xml:20:5-43
+MERGED from [com.android.support:support-v4:22.2.0] C:\Users\jek40\iceman\ICEMANv0.5\ICEMAN-client\com.breadcrumbs\build\intermediates\exploded-aar\com.android.support\support-v4\22.2.0\AndroidManifest.xml:20:5-43
+MERGED from [com.android.support:support-v4:22.2.0] C:\Users\jek40\iceman\ICEMANv0.5\ICEMAN-client\com.breadcrumbs\build\intermediates\exploded-aar\com.android.support\support-v4\22.2.0\AndroidManifest.xml:20:5-43
+MERGED from [com.android.support:appcompat-v7:22.2.0] C:\Users\jek40\iceman\ICEMANv0.5\ICEMAN-client\com.breadcrumbs\build\intermediates\exploded-aar\com.android.support\appcompat-v7\22.2.0\AndroidManifest.xml:20:5-43
+MERGED from [com.android.support:support-v4:22.2.0] C:\Users\jek40\iceman\ICEMANv0.5\ICEMAN-client\com.breadcrumbs\build\intermediates\exploded-aar\com.android.support\support-v4\22.2.0\AndroidManifest.xml:20:5-43
+MERGED from [com.android.support:recyclerview-v7:22.2.0] C:\Users\jek40\iceman\ICEMANv0.5\ICEMAN-client\com.breadcrumbs\build\intermediates\exploded-aar\com.android.support\recyclerview-v7\22.2.0\AndroidManifest.xml:20:5-43
+MERGED from [com.android.support:support-v4:22.2.0] C:\Users\jek40\iceman\ICEMANv0.5\ICEMAN-client\com.breadcrumbs\build\intermediates\exploded-aar\com.android.support\support-v4\22.2.0\AndroidManifest.xml:20:5-43
+MERGED from [com.android.support:cardview-v7:22.2.0] C:\Users\jek40\iceman\ICEMANv0.5\ICEMAN-client\com.breadcrumbs\build\intermediates\exploded-aar\com.android.support\cardview-v7\22.2.0\AndroidManifest.xml:20:5-43
+MERGED from [com.android.support:support-v4:22.2.0] C:\Users\jek40\iceman\ICEMANv0.5\ICEMAN-client\com.breadcrumbs\build\intermediates\exploded-aar\com.android.support\support-v4\22.2.0\AndroidManifest.xml:20:5-43
 	android:targetSdkVersion
-		INJECTED from AndroidManifest.xml:0:0
-		INJECTED from AndroidManifest.xml:0:0
+		INJECTED from C:\Users\jek40\iceman\ICEMANv0.5\ICEMAN-client\com.breadcrumbs\AndroidManifest.xml
+		INJECTED from C:\Users\jek40\iceman\ICEMANv0.5\ICEMAN-client\com.breadcrumbs\AndroidManifest.xml
 	android:minSdkVersion
-		ADDED from AndroidManifest.xml:30:9
+		ADDED from C:\Users\jek40\iceman\ICEMANv0.5\ICEMAN-client\com.breadcrumbs\AndroidManifest.xml:31:9-35
 application
-ADDED from AndroidManifest.xml:32:5
-MERGED from com.android.support:support-v13:21.0.3:16:5
-MERGED from com.android.support:support-v4:22.2.0:22:5
-MERGED from com.google.android.gms:play-services:6.1.71:16:5
-MERGED from com.android.support:support-v4:22.2.0:22:5
-MERGED from com.sothree.slidinguppanel:library:3.0.0:9:5
-MERGED from com.android.support:support-v4:22.2.0:22:5
-MERGED from com.pkmmte.view:circularimageview:1.1:11:5
-MERGED from com.mapbox.mapboxsdk:mapbox-android-sdk:0.7.3:9:5
-MERGED from com.android.support:support-v4:22.2.0:22:5
-MERGED from com.google.maps.android:android-maps-utils:0.3.4:7:5
-MERGED from com.getbase:floatingactionbutton:1.9.0:12:5
-MERGED from com.android.support:design:22.2.0:22:5
-MERGED from com.android.support:appcompat-v7:22.2.0:22:5
-MERGED from com.android.support:support-v4:22.2.0:22:5
-MERGED from com.android.support:support-v4:22.2.0:22:5
-MERGED from com.android.support:appcompat-v7:22.2.0:22:5
-MERGED from com.android.support:support-v4:22.2.0:22:5
-MERGED from com.android.support:support-v4:22.2.0:22:5
-MERGED from com.android.support:cardview-v7:22.2.0:22:5
+ADDED from C:\Users\jek40\iceman\ICEMANv0.5\ICEMAN-client\com.breadcrumbs\AndroidManifest.xml:33:5-147:19
+MERGED from [com.google.android.gms:play-services-measurement:8.3.0] C:\Users\jek40\iceman\ICEMANv0.5\ICEMAN-client\com.breadcrumbs\build\intermediates\exploded-aar\com.google.android.gms\play-services-measurement\8.3.0\AndroidManifest.xml:26:5-46:19
+MERGED from [com.google.android.gms:play-services-basement:8.3.0] C:\Users\jek40\iceman\ICEMANv0.5\ICEMAN-client\com.breadcrumbs\build\intermediates\exploded-aar\com.google.android.gms\play-services-basement\8.3.0\AndroidManifest.xml:20:5-24:19
+MERGED from [com.android.support:support-v4:22.2.0] C:\Users\jek40\iceman\ICEMANv0.5\ICEMAN-client\com.breadcrumbs\build\intermediates\exploded-aar\com.android.support\support-v4\22.2.0\AndroidManifest.xml:22:5-20
+MERGED from [com.android.support:support-v13:21.0.3] C:\Users\jek40\iceman\ICEMANv0.5\ICEMAN-client\com.breadcrumbs\build\intermediates\exploded-aar\com.android.support\support-v13\21.0.3\AndroidManifest.xml:16:5-19
+MERGED from [com.android.support:support-v4:22.2.0] C:\Users\jek40\iceman\ICEMANv0.5\ICEMAN-client\com.breadcrumbs\build\intermediates\exploded-aar\com.android.support\support-v4\22.2.0\AndroidManifest.xml:22:5-20
+MERGED from [com.google.android.gms:play-services-gcm:8.3.0] C:\Users\jek40\iceman\ICEMANv0.5\ICEMAN-client\com.breadcrumbs\build\intermediates\exploded-aar\com.google.android.gms\play-services-gcm\8.3.0\AndroidManifest.xml:24:5-20
+MERGED from [com.google.android.gms:play-services-basement:8.3.0] C:\Users\jek40\iceman\ICEMANv0.5\ICEMAN-client\com.breadcrumbs\build\intermediates\exploded-aar\com.google.android.gms\play-services-basement\8.3.0\AndroidManifest.xml:20:5-24:19
+MERGED from [com.android.support:support-v4:22.2.0] C:\Users\jek40\iceman\ICEMANv0.5\ICEMAN-client\com.breadcrumbs\build\intermediates\exploded-aar\com.android.support\support-v4\22.2.0\AndroidManifest.xml:22:5-20
+MERGED from [com.google.android.gms:play-services-measurement:8.3.0] C:\Users\jek40\iceman\ICEMANv0.5\ICEMAN-client\com.breadcrumbs\build\intermediates\exploded-aar\com.google.android.gms\play-services-measurement\8.3.0\AndroidManifest.xml:26:5-46:19
+MERGED from [com.google.android.gms:play-services-basement:8.3.0] C:\Users\jek40\iceman\ICEMANv0.5\ICEMAN-client\com.breadcrumbs\build\intermediates\exploded-aar\com.google.android.gms\play-services-basement\8.3.0\AndroidManifest.xml:20:5-24:19
+MERGED from [com.android.support:support-v4:22.2.0] C:\Users\jek40\iceman\ICEMANv0.5\ICEMAN-client\com.breadcrumbs\build\intermediates\exploded-aar\com.android.support\support-v4\22.2.0\AndroidManifest.xml:22:5-20
+MERGED from [com.google.android.gms:play-services-identity:8.3.0] C:\Users\jek40\iceman\ICEMANv0.5\ICEMAN-client\com.breadcrumbs\build\intermediates\exploded-aar\com.google.android.gms\play-services-identity\8.3.0\AndroidManifest.xml:19:5-20
+MERGED from [com.google.android.gms:play-services-basement:8.3.0] C:\Users\jek40\iceman\ICEMANv0.5\ICEMAN-client\com.breadcrumbs\build\intermediates\exploded-aar\com.google.android.gms\play-services-basement\8.3.0\AndroidManifest.xml:20:5-24:19
+MERGED from [com.android.support:support-v4:22.2.0] C:\Users\jek40\iceman\ICEMANv0.5\ICEMAN-client\com.breadcrumbs\build\intermediates\exploded-aar\com.android.support\support-v4\22.2.0\AndroidManifest.xml:22:5-20
+MERGED from [com.google.android.gms:play-services-location:8.3.0] C:\Users\jek40\iceman\ICEMANv0.5\ICEMAN-client\com.breadcrumbs\build\intermediates\exploded-aar\com.google.android.gms\play-services-location\8.3.0\AndroidManifest.xml:19:5-20
+MERGED from [com.google.android.gms:play-services-basement:8.3.0] C:\Users\jek40\iceman\ICEMANv0.5\ICEMAN-client\com.breadcrumbs\build\intermediates\exploded-aar\com.google.android.gms\play-services-basement\8.3.0\AndroidManifest.xml:20:5-24:19
+MERGED from [com.android.support:support-v4:22.2.0] C:\Users\jek40\iceman\ICEMANv0.5\ICEMAN-client\com.breadcrumbs\build\intermediates\exploded-aar\com.android.support\support-v4\22.2.0\AndroidManifest.xml:22:5-20
+MERGED from [com.google.android.gms:play-services-maps:8.3.0] C:\Users\jek40\iceman\ICEMANv0.5\ICEMAN-client\com.breadcrumbs\build\intermediates\exploded-aar\com.google.android.gms\play-services-maps\8.3.0\AndroidManifest.xml:27:5-20
+MERGED from [com.google.android.gms:play-services-basement:8.3.0] C:\Users\jek40\iceman\ICEMANv0.5\ICEMAN-client\com.breadcrumbs\build\intermediates\exploded-aar\com.google.android.gms\play-services-basement\8.3.0\AndroidManifest.xml:20:5-24:19
+MERGED from [com.android.support:support-v4:22.2.0] C:\Users\jek40\iceman\ICEMANv0.5\ICEMAN-client\com.breadcrumbs\build\intermediates\exploded-aar\com.android.support\support-v4\22.2.0\AndroidManifest.xml:22:5-20
+MERGED from [com.google.android.gms:play-services-maps:8.3.0] C:\Users\jek40\iceman\ICEMANv0.5\ICEMAN-client\com.breadcrumbs\build\intermediates\exploded-aar\com.google.android.gms\play-services-maps\8.3.0\AndroidManifest.xml:27:5-20
+MERGED from [com.google.android.gms:play-services-basement:8.3.0] C:\Users\jek40\iceman\ICEMANv0.5\ICEMAN-client\com.breadcrumbs\build\intermediates\exploded-aar\com.google.android.gms\play-services-basement\8.3.0\AndroidManifest.xml:20:5-24:19
+MERGED from [com.android.support:support-v4:22.2.0] C:\Users\jek40\iceman\ICEMANv0.5\ICEMAN-client\com.breadcrumbs\build\intermediates\exploded-aar\com.android.support\support-v4\22.2.0\AndroidManifest.xml:22:5-20
+MERGED from [com.sothree.slidinguppanel:library:3.0.0] C:\Users\jek40\iceman\ICEMANv0.5\ICEMAN-client\com.breadcrumbs\build\intermediates\exploded-aar\com.sothree.slidinguppanel\library\3.0.0\AndroidManifest.xml:9:5-20
+MERGED from [com.android.support:support-v4:22.2.0] C:\Users\jek40\iceman\ICEMANv0.5\ICEMAN-client\com.breadcrumbs\build\intermediates\exploded-aar\com.android.support\support-v4\22.2.0\AndroidManifest.xml:22:5-20
+MERGED from [com.pkmmte.view:circularimageview:1.1] C:\Users\jek40\iceman\ICEMANv0.5\ICEMAN-client\com.breadcrumbs\build\intermediates\exploded-aar\com.pkmmte.view\circularimageview\1.1\AndroidManifest.xml:11:5-20
+MERGED from [com.mapbox.mapboxsdk:mapbox-android-sdk:0.7.3] C:\Users\jek40\iceman\ICEMANv0.5\ICEMAN-client\com.breadcrumbs\build\intermediates\exploded-aar\com.mapbox.mapboxsdk\mapbox-android-sdk\0.7.3\AndroidManifest.xml:9:5-47
+MERGED from [com.android.support:support-v4:22.2.0] C:\Users\jek40\iceman\ICEMANv0.5\ICEMAN-client\com.breadcrumbs\build\intermediates\exploded-aar\com.android.support\support-v4\22.2.0\AndroidManifest.xml:22:5-20
+MERGED from [com.google.maps.android:android-maps-utils:0.3.4] C:\Users\jek40\iceman\ICEMANv0.5\ICEMAN-client\com.breadcrumbs\build\intermediates\exploded-aar\com.google.maps.android\android-maps-utils\0.3.4\AndroidManifest.xml:7:5-20
+MERGED from [com.getbase:floatingactionbutton:1.9.0] C:\Users\jek40\iceman\ICEMANv0.5\ICEMAN-client\com.breadcrumbs\build\intermediates\exploded-aar\com.getbase\floatingactionbutton\1.9.0\AndroidManifest.xml:12:5-20
+MERGED from [com.android.support:design:22.2.0] C:\Users\jek40\iceman\ICEMANv0.5\ICEMAN-client\com.breadcrumbs\build\intermediates\exploded-aar\com.android.support\design\22.2.0\AndroidManifest.xml:22:5-20
+MERGED from [com.android.support:appcompat-v7:22.2.0] C:\Users\jek40\iceman\ICEMANv0.5\ICEMAN-client\com.breadcrumbs\build\intermediates\exploded-aar\com.android.support\appcompat-v7\22.2.0\AndroidManifest.xml:22:5-20
+MERGED from [com.android.support:support-v4:22.2.0] C:\Users\jek40\iceman\ICEMANv0.5\ICEMAN-client\com.breadcrumbs\build\intermediates\exploded-aar\com.android.support\support-v4\22.2.0\AndroidManifest.xml:22:5-20
+MERGED from [com.android.support:support-v4:22.2.0] C:\Users\jek40\iceman\ICEMANv0.5\ICEMAN-client\com.breadcrumbs\build\intermediates\exploded-aar\com.android.support\support-v4\22.2.0\AndroidManifest.xml:22:5-20
+MERGED from [com.android.support:appcompat-v7:22.2.0] C:\Users\jek40\iceman\ICEMANv0.5\ICEMAN-client\com.breadcrumbs\build\intermediates\exploded-aar\com.android.support\appcompat-v7\22.2.0\AndroidManifest.xml:22:5-20
+MERGED from [com.android.support:support-v4:22.2.0] C:\Users\jek40\iceman\ICEMANv0.5\ICEMAN-client\com.breadcrumbs\build\intermediates\exploded-aar\com.android.support\support-v4\22.2.0\AndroidManifest.xml:22:5-20
+MERGED from [com.android.support:support-v4:22.2.0] C:\Users\jek40\iceman\ICEMANv0.5\ICEMAN-client\com.breadcrumbs\build\intermediates\exploded-aar\com.android.support\support-v4\22.2.0\AndroidManifest.xml:22:5-20
+MERGED from [com.android.support:cardview-v7:22.2.0] C:\Users\jek40\iceman\ICEMANv0.5\ICEMAN-client\com.breadcrumbs\build\intermediates\exploded-aar\com.android.support\cardview-v7\22.2.0\AndroidManifest.xml:22:5-20
+MERGED from [com.android.support:support-v4:22.2.0] C:\Users\jek40\iceman\ICEMANv0.5\ICEMAN-client\com.breadcrumbs\build\intermediates\exploded-aar\com.android.support\support-v4\22.2.0\AndroidManifest.xml:22:5-20
 	android:label
-		ADDED from AndroidManifest.xml:35:9
+		ADDED from C:\Users\jek40\iceman\ICEMANv0.5\ICEMAN-client\com.breadcrumbs\AndroidManifest.xml:36:9-41
 	android:allowBackup
-		ADDED from AndroidManifest.xml:33:9
+		ADDED from C:\Users\jek40\iceman\ICEMANv0.5\ICEMAN-client\com.breadcrumbs\AndroidManifest.xml:34:9-35
 	android:icon
-		ADDED from AndroidManifest.xml:34:9
+		ADDED from C:\Users\jek40\iceman\ICEMANv0.5\ICEMAN-client\com.breadcrumbs\AndroidManifest.xml:35:9-38
 	android:theme
-		ADDED from AndroidManifest.xml:36:9
+		ADDED from C:\Users\jek40\iceman\ICEMANv0.5\ICEMAN-client\com.breadcrumbs\AndroidManifest.xml:37:9-40
 activity#com.breadcrumbs.client.Main
-ADDED from AndroidManifest.xml:37:9
+ADDED from C:\Users\jek40\iceman\ICEMANv0.5\ICEMAN-client\com.breadcrumbs\AndroidManifest.xml:38:9-47:20
 	android:screenOrientation
-		ADDED from AndroidManifest.xml:40:13
+		ADDED from C:\Users\jek40\iceman\ICEMANv0.5\ICEMAN-client\com.breadcrumbs\AndroidManifest.xml:42:13-49
 	android:label
-		ADDED from AndroidManifest.xml:39:13
+		ADDED from C:\Users\jek40\iceman\ICEMANv0.5\ICEMAN-client\com.breadcrumbs\AndroidManifest.xml:40:13-45
+	android:exported
+		ADDED from C:\Users\jek40\iceman\ICEMANv0.5\ICEMAN-client\com.breadcrumbs\AndroidManifest.xml:41:13-36
 	android:name
-		ADDED from AndroidManifest.xml:38:13
+		ADDED from C:\Users\jek40\iceman\ICEMANv0.5\ICEMAN-client\com.breadcrumbs\AndroidManifest.xml:39:13-40
 intent-filter#android.intent.action.MAIN+android.intent.category.LAUNCHER
-ADDED from AndroidManifest.xml:41:13
+ADDED from C:\Users\jek40\iceman\ICEMANv0.5\ICEMAN-client\com.breadcrumbs\AndroidManifest.xml:43:13-46:29
 action#android.intent.action.MAIN
-ADDED from AndroidManifest.xml:42:17
+ADDED from C:\Users\jek40\iceman\ICEMANv0.5\ICEMAN-client\com.breadcrumbs\AndroidManifest.xml:44:17-69
 	android:name
-		ADDED from AndroidManifest.xml:42:25
+		ADDED from C:\Users\jek40\iceman\ICEMANv0.5\ICEMAN-client\com.breadcrumbs\AndroidManifest.xml:44:25-66
 category#android.intent.category.LAUNCHER
-ADDED from AndroidManifest.xml:43:17
+ADDED from C:\Users\jek40\iceman\ICEMANv0.5\ICEMAN-client\com.breadcrumbs\AndroidManifest.xml:45:17-77
 	android:name
-		ADDED from AndroidManifest.xml:43:27
+		ADDED from C:\Users\jek40\iceman\ICEMANv0.5\ICEMAN-client\com.breadcrumbs\AndroidManifest.xml:45:27-74
+receiver#com.google.android.gms.gcm.GcmReceiver
+ADDED from C:\Users\jek40\iceman\ICEMANv0.5\ICEMAN-client\com.breadcrumbs\AndroidManifest.xml:50:9-58:20
+	android:exported
+		ADDED from C:\Users\jek40\iceman\ICEMANv0.5\ICEMAN-client\com.breadcrumbs\AndroidManifest.xml:52:13-36
+	android:permission
+		ADDED from C:\Users\jek40\iceman\ICEMANv0.5\ICEMAN-client\com.breadcrumbs\AndroidManifest.xml:53:13-73
+	android:name
+		ADDED from C:\Users\jek40\iceman\ICEMANv0.5\ICEMAN-client\com.breadcrumbs\AndroidManifest.xml:51:13-66
+intent-filter#com.breadcrumbs.GCM+com.google.android.c2dm.intent.RECEIVE
+ADDED from C:\Users\jek40\iceman\ICEMANv0.5\ICEMAN-client\com.breadcrumbs\AndroidManifest.xml:54:13-57:29
+action#com.google.android.c2dm.intent.RECEIVE
+ADDED from C:\Users\jek40\iceman\ICEMANv0.5\ICEMAN-client\com.breadcrumbs\AndroidManifest.xml:55:17-81
+	android:name
+		ADDED from C:\Users\jek40\iceman\ICEMANv0.5\ICEMAN-client\com.breadcrumbs\AndroidManifest.xml:55:25-78
+category#com.breadcrumbs.GCM
+ADDED from C:\Users\jek40\iceman\ICEMANv0.5\ICEMAN-client\com.breadcrumbs\AndroidManifest.xml:56:17-64
+	android:name
+		ADDED from C:\Users\jek40\iceman\ICEMANv0.5\ICEMAN-client\com.breadcrumbs\AndroidManifest.xml:56:27-61
+service#com.breadcrumbs.GCM.BreadcrumbsGcmReceiver
+ADDED from C:\Users\jek40\iceman\ICEMANv0.5\ICEMAN-client\com.breadcrumbs\AndroidManifest.xml:62:9-68:19
+	android:exported
+		ADDED from C:\Users\jek40\iceman\ICEMANv0.5\ICEMAN-client\com.breadcrumbs\AndroidManifest.xml:64:13-37
+	android:name
+		ADDED from C:\Users\jek40\iceman\ICEMANv0.5\ICEMAN-client\com.breadcrumbs\AndroidManifest.xml:63:13-70
+intent-filter#com.google.android.c2dm.intent.RECEIVE
+ADDED from C:\Users\jek40\iceman\ICEMANv0.5\ICEMAN-client\com.breadcrumbs\AndroidManifest.xml:65:13-67:29
+service#com.breadcrumbs.GCM.BreadcrumbsInstanceIdListenerService
+ADDED from C:\Users\jek40\iceman\ICEMANv0.5\ICEMAN-client\com.breadcrumbs\AndroidManifest.xml:72:9-78:19
+	android:exported
+		ADDED from C:\Users\jek40\iceman\ICEMANv0.5\ICEMAN-client\com.breadcrumbs\AndroidManifest.xml:74:13-37
+	android:name
+		ADDED from C:\Users\jek40\iceman\ICEMANv0.5\ICEMAN-client\com.breadcrumbs\AndroidManifest.xml:73:13-84
+intent-filter#com.google.android.gms.iid.InstanceID
+ADDED from C:\Users\jek40\iceman\ICEMANv0.5\ICEMAN-client\com.breadcrumbs\AndroidManifest.xml:75:13-77:29
+action#com.google.android.gms.iid.InstanceID
+ADDED from C:\Users\jek40\iceman\ICEMANv0.5\ICEMAN-client\com.breadcrumbs\AndroidManifest.xml:76:17-79
+	android:name
+		ADDED from C:\Users\jek40\iceman\ICEMANv0.5\ICEMAN-client\com.breadcrumbs\AndroidManifest.xml:76:25-77
+service#com.breadcrumbs.GCM.RegistrationIntentService
+ADDED from C:\Users\jek40\iceman\ICEMANv0.5\ICEMAN-client\com.breadcrumbs\AndroidManifest.xml:80:9-83:19
+	android:exported
+		ADDED from C:\Users\jek40\iceman\ICEMANv0.5\ICEMAN-client\com.breadcrumbs\AndroidManifest.xml:82:13-37
+	android:name
+		ADDED from C:\Users\jek40\iceman\ICEMANv0.5\ICEMAN-client\com.breadcrumbs\AndroidManifest.xml:81:13-73
 activity#com.breadcrumbs.client.TrailManager
-ADDED from AndroidManifest.xml:46:9
+ADDED from C:\Users\jek40\iceman\ICEMANv0.5\ICEMAN-client\com.breadcrumbs\AndroidManifest.xml:85:9-87:20
 	android:screenOrientation
-		ADDED from AndroidManifest.xml:47:13
+		ADDED from C:\Users\jek40\iceman\ICEMANv0.5\ICEMAN-client\com.breadcrumbs\AndroidManifest.xml:86:13-49
 	android:name
-		ADDED from AndroidManifest.xml:46:19
+		ADDED from C:\Users\jek40\iceman\ICEMANv0.5\ICEMAN-client\com.breadcrumbs\AndroidManifest.xml:85:19-54
 activity#com.breadcrumbs.client.BaseViewModel
-ADDED from AndroidManifest.xml:49:9
+ADDED from C:\Users\jek40\iceman\ICEMANv0.5\ICEMAN-client\com.breadcrumbs\AndroidManifest.xml:88:9-91:14
 	android:screenOrientation
-		ADDED from AndroidManifest.xml:51:13
+		ADDED from C:\Users\jek40\iceman\ICEMANv0.5\ICEMAN-client\com.breadcrumbs\AndroidManifest.xml:90:13-49
 	android:name
-		ADDED from AndroidManifest.xml:50:13
+		ADDED from C:\Users\jek40\iceman\ICEMANv0.5\ICEMAN-client\com.breadcrumbs\AndroidManifest.xml:89:13-49
 activity#com.breadcrumbs.client.CrumbViewer.CommentViewer
-ADDED from AndroidManifest.xml:53:9
+ADDED from C:\Users\jek40\iceman\ICEMANv0.5\ICEMAN-client\com.breadcrumbs\AndroidManifest.xml:92:9-94:20
 	android:screenOrientation
-		ADDED from AndroidManifest.xml:54:19
+		ADDED from C:\Users\jek40\iceman\ICEMANv0.5\ICEMAN-client\com.breadcrumbs\AndroidManifest.xml:93:19-55
 	android:name
-		ADDED from AndroidManifest.xml:53:19
+		ADDED from C:\Users\jek40\iceman\ICEMANv0.5\ICEMAN-client\com.breadcrumbs\AndroidManifest.xml:92:19-67
 activity#com.breadcrumbs.client.EditTrail
-ADDED from AndroidManifest.xml:56:9
+ADDED from C:\Users\jek40\iceman\ICEMANv0.5\ICEMAN-client\com.breadcrumbs\AndroidManifest.xml:95:9-97:20
 	android:screenOrientation
-		ADDED from AndroidManifest.xml:57:19
+		ADDED from C:\Users\jek40\iceman\ICEMANv0.5\ICEMAN-client\com.breadcrumbs\AndroidManifest.xml:96:19-55
 	android:name
-		ADDED from AndroidManifest.xml:56:19
+		ADDED from C:\Users\jek40\iceman\ICEMANv0.5\ICEMAN-client\com.breadcrumbs\AndroidManifest.xml:95:19-51
+activity#com.breadcrumbs.client.ImageChooser.GridImageSelector
+ADDED from C:\Users\jek40\iceman\ICEMANv0.5\ICEMAN-client\com.breadcrumbs\AndroidManifest.xml:98:9-84
+	android:name
+		ADDED from C:\Users\jek40\iceman\ICEMANv0.5\ICEMAN-client\com.breadcrumbs\AndroidManifest.xml:98:19-72
 activity#com.breadcrumbs.client.TrailActivity
-ADDED from AndroidManifest.xml:59:9
+ADDED from C:\Users\jek40\iceman\ICEMANv0.5\ICEMAN-client\com.breadcrumbs\AndroidManifest.xml:99:9-102:20
 	android:screenOrientation
-		ADDED from AndroidManifest.xml:61:13
+		ADDED from C:\Users\jek40\iceman\ICEMANv0.5\ICEMAN-client\com.breadcrumbs\AndroidManifest.xml:101:13-49
 	android:name
-		ADDED from AndroidManifest.xml:60:13
+		ADDED from C:\Users\jek40\iceman\ICEMANv0.5\ICEMAN-client\com.breadcrumbs\AndroidManifest.xml:100:13-49
 activity#com.breadcrumbs.client.ProfilePageViewer
-ADDED from AndroidManifest.xml:63:9
+ADDED from C:\Users\jek40\iceman\ICEMANv0.5\ICEMAN-client\com.breadcrumbs\AndroidManifest.xml:103:9-71
 	android:name
-		ADDED from AndroidManifest.xml:63:19
+		ADDED from C:\Users\jek40\iceman\ICEMANv0.5\ICEMAN-client\com.breadcrumbs\AndroidManifest.xml:103:19-59
 activity#com.breadcrumbs.client.SelectedEventViewerBase
-ADDED from AndroidManifest.xml:64:9
+ADDED from C:\Users\jek40\iceman\ICEMANv0.5\ICEMAN-client\com.breadcrumbs\AndroidManifest.xml:104:9-107:20
 	android:screenOrientation
-		ADDED from AndroidManifest.xml:66:13
+		ADDED from C:\Users\jek40\iceman\ICEMANv0.5\ICEMAN-client\com.breadcrumbs\AndroidManifest.xml:106:13-49
 	android:name
-		ADDED from AndroidManifest.xml:65:13
+		ADDED from C:\Users\jek40\iceman\ICEMANv0.5\ICEMAN-client\com.breadcrumbs\AndroidManifest.xml:105:13-59
 activity#com.breadcrumbs.client.ImageViewer
-ADDED from AndroidManifest.xml:68:10
+ADDED from C:\Users\jek40\iceman\ICEMANv0.5\ICEMAN-client\com.breadcrumbs\AndroidManifest.xml:108:10-111:21
 	android:screenOrientation
-		ADDED from AndroidManifest.xml:69:13
+		ADDED from C:\Users\jek40\iceman\ICEMANv0.5\ICEMAN-client\com.breadcrumbs\AndroidManifest.xml:109:13-49
 	android:windowSoftInputMode
-		ADDED from AndroidManifest.xml:70:14
+		ADDED from C:\Users\jek40\iceman\ICEMANv0.5\ICEMAN-client\com.breadcrumbs\AndroidManifest.xml:110:14-55
 	android:name
-		ADDED from AndroidManifest.xml:68:20
+		ADDED from C:\Users\jek40\iceman\ICEMANv0.5\ICEMAN-client\com.breadcrumbs\AndroidManifest.xml:108:20-69
 activity#com.breadcrumbs.client.Camera.CameraCapture
-ADDED from AndroidManifest.xml:72:9
+ADDED from C:\Users\jek40\iceman\ICEMANv0.5\ICEMAN-client\com.breadcrumbs\AndroidManifest.xml:112:9-113:20
 	android:name
-		ADDED from AndroidManifest.xml:72:19
+		ADDED from C:\Users\jek40\iceman\ICEMANv0.5\ICEMAN-client\com.breadcrumbs\AndroidManifest.xml:112:19-62
 activity#com.breadcrumbs.client.BreadCrumbsImageSelector
-ADDED from AndroidManifest.xml:74:9
+ADDED from C:\Users\jek40\iceman\ICEMANv0.5\ICEMAN-client\com.breadcrumbs\AndroidManifest.xml:114:9-115:61
 	android:screenOrientation
-		ADDED from AndroidManifest.xml:75:13
+		ADDED from C:\Users\jek40\iceman\ICEMANv0.5\ICEMAN-client\com.breadcrumbs\AndroidManifest.xml:115:13-49
 	android:name
-		ADDED from AndroidManifest.xml:74:19
+		ADDED from C:\Users\jek40\iceman\ICEMANv0.5\ICEMAN-client\com.breadcrumbs\AndroidManifest.xml:114:19-66
 activity#com.breadcrumbs.client.CrumbViewer.CrumbsHolder
-ADDED from AndroidManifest.xml:76:9
+ADDED from C:\Users\jek40\iceman\ICEMANv0.5\ICEMAN-client\com.breadcrumbs\AndroidManifest.xml:116:9-78
 	android:name
-		ADDED from AndroidManifest.xml:76:19
+		ADDED from C:\Users\jek40\iceman\ICEMANv0.5\ICEMAN-client\com.breadcrumbs\AndroidManifest.xml:116:19-66
 activity#com.breadcrumbs.client.tabs.SaveEventFragment
-ADDED from AndroidManifest.xml:77:9
+ADDED from C:\Users\jek40\iceman\ICEMANv0.5\ICEMAN-client\com.breadcrumbs\AndroidManifest.xml:117:9-119:20
 	android:screenOrientation
-		ADDED from AndroidManifest.xml:78:17
+		ADDED from C:\Users\jek40\iceman\ICEMANv0.5\ICEMAN-client\com.breadcrumbs\AndroidManifest.xml:118:17-53
 	android:name
-		ADDED from AndroidManifest.xml:77:19
+		ADDED from C:\Users\jek40\iceman\ICEMANv0.5\ICEMAN-client\com.breadcrumbs\AndroidManifest.xml:117:19-79
 activity#com.breadcrumbs.client.Maps.MapViewer
-ADDED from AndroidManifest.xml:80:13
+ADDED from C:\Users\jek40\iceman\ICEMANv0.5\ICEMAN-client\com.breadcrumbs\AndroidManifest.xml:120:13-122:20
 	android:screenOrientation
-		ADDED from AndroidManifest.xml:81:17
+		ADDED from C:\Users\jek40\iceman\ICEMANv0.5\ICEMAN-client\com.breadcrumbs\AndroidManifest.xml:121:17-53
 	android:name
-		ADDED from AndroidManifest.xml:80:23
+		ADDED from C:\Users\jek40\iceman\ICEMANv0.5\ICEMAN-client\com.breadcrumbs\AndroidManifest.xml:120:23-60
 activity#com.breadcrumbs.client.tabs.SaveVideoActivity
-ADDED from AndroidManifest.xml:83:9
+ADDED from C:\Users\jek40\iceman\ICEMANv0.5\ICEMAN-client\com.breadcrumbs\AndroidManifest.xml:123:13-124:20
 	android:name
-		ADDED from AndroidManifest.xml:83:19
+		ADDED from C:\Users\jek40\iceman\ICEMANv0.5\ICEMAN-client\com.breadcrumbs\AndroidManifest.xml:123:23-68
 activity#com.breadcrumbs.client.Maps.MapViewController
-ADDED from AndroidManifest.xml:85:9
+ADDED from C:\Users\jek40\iceman\ICEMANv0.5\ICEMAN-client\com.breadcrumbs\AndroidManifest.xml:125:9-127:20
 	android:screenOrientation
-		ADDED from AndroidManifest.xml:86:17
+		ADDED from C:\Users\jek40\iceman\ICEMANv0.5\ICEMAN-client\com.breadcrumbs\AndroidManifest.xml:126:17-53
 	android:name
-		ADDED from AndroidManifest.xml:85:19
+		ADDED from C:\Users\jek40\iceman\ICEMANv0.5\ICEMAN-client\com.breadcrumbs\AndroidManifest.xml:125:19-64
 activity#com.breadcrumbs.client.ProfilePicChooser
-ADDED from AndroidManifest.xml:88:9
+ADDED from C:\Users\jek40\iceman\ICEMANv0.5\ICEMAN-client\com.breadcrumbs\AndroidManifest.xml:128:9-130:20
 	android:screenOrientation
-		ADDED from AndroidManifest.xml:89:13
+		ADDED from C:\Users\jek40\iceman\ICEMANv0.5\ICEMAN-client\com.breadcrumbs\AndroidManifest.xml:129:13-49
 	android:name
-		ADDED from AndroidManifest.xml:88:19
+		ADDED from C:\Users\jek40\iceman\ICEMANv0.5\ICEMAN-client\com.breadcrumbs\AndroidManifest.xml:128:19-59
 activity#com.breadcrumbs.client.OverflowNavigationDrawer
-ADDED from AndroidManifest.xml:91:9
+ADDED from C:\Users\jek40\iceman\ICEMANv0.5\ICEMAN-client\com.breadcrumbs\AndroidManifest.xml:131:9-133:20
 	android:screenOrientation
-		ADDED from AndroidManifest.xml:92:13
+		ADDED from C:\Users\jek40\iceman\ICEMANv0.5\ICEMAN-client\com.breadcrumbs\AndroidManifest.xml:132:13-49
 	android:name
-		ADDED from AndroidManifest.xml:91:19
+		ADDED from C:\Users\jek40\iceman\ICEMANv0.5\ICEMAN-client\com.breadcrumbs\AndroidManifest.xml:131:19-81
 activity#com.breadcrumbs.client.EditExistingTrail
-ADDED from AndroidManifest.xml:94:9
+ADDED from C:\Users\jek40\iceman\ICEMANv0.5\ICEMAN-client\com.breadcrumbs\AndroidManifest.xml:134:9-136:20
 	android:screenOrientation
-		ADDED from AndroidManifest.xml:95:13
+		ADDED from C:\Users\jek40\iceman\ICEMANv0.5\ICEMAN-client\com.breadcrumbs\AndroidManifest.xml:135:13-49
 	android:name
-		ADDED from AndroidManifest.xml:94:19
+		ADDED from C:\Users\jek40\iceman\ICEMANv0.5\ICEMAN-client\com.breadcrumbs\AndroidManifest.xml:134:19-59
 service#com.breadcrumbs.Location.LocationService
-ADDED from AndroidManifest.xml:98:5
+ADDED from C:\Users\jek40\iceman\ICEMANv0.5\ICEMAN-client\com.breadcrumbs\AndroidManifest.xml:138:5-80
 	android:name
-		ADDED from AndroidManifest.xml:98:14
-meta-data#com.google.android.maps.v2.API_KEY
-ADDED from AndroidManifest.xml:101:2
+		ADDED from C:\Users\jek40\iceman\ICEMANv0.5\ICEMAN-client\com.breadcrumbs\AndroidManifest.xml:138:14-69
+meta-data#com.google.android.geo.API_KEY
+ADDED from C:\Users\jek40\iceman\ICEMANv0.5\ICEMAN-client\com.breadcrumbs\AndroidManifest.xml:143:9-145:70
 	android:value
-		ADDED from AndroidManifest.xml:103:9
+		ADDED from C:\Users\jek40\iceman\ICEMANv0.5\ICEMAN-client\com.breadcrumbs\AndroidManifest.xml:145:13-68
 	android:name
-		ADDED from AndroidManifest.xml:102:9
+		ADDED from C:\Users\jek40\iceman\ICEMANv0.5\ICEMAN-client\com.breadcrumbs\AndroidManifest.xml:144:13-58
+provider#com.google.android.gms.measurement.AppMeasurementContentProvider
+ADDED from [com.google.android.gms:play-services-measurement:8.3.0] C:\Users\jek40\iceman\ICEMANv0.5\ICEMAN-client\com.breadcrumbs\build\intermediates\exploded-aar\com.google.android.gms\play-services-measurement\8.3.0\AndroidManifest.xml:28:7-31:37
+MERGED from [com.google.android.gms:play-services-measurement:8.3.0] C:\Users\jek40\iceman\ICEMANv0.5\ICEMAN-client\com.breadcrumbs\build\intermediates\exploded-aar\com.google.android.gms\play-services-measurement\8.3.0\AndroidManifest.xml:28:7-31:37
+	android:authorities
+		ADDED from [com.google.android.gms:play-services-measurement:8.3.0] C:\Users\jek40\iceman\ICEMANv0.5\ICEMAN-client\com.breadcrumbs\build\intermediates\exploded-aar\com.google.android.gms\play-services-measurement\8.3.0\AndroidManifest.xml:29:11-76
+	android:exported
+		ADDED from [com.google.android.gms:play-services-measurement:8.3.0] C:\Users\jek40\iceman\ICEMANv0.5\ICEMAN-client\com.breadcrumbs\build\intermediates\exploded-aar\com.google.android.gms\play-services-measurement\8.3.0\AndroidManifest.xml:31:11-35
+	android:name
+		ADDED from [com.google.android.gms:play-services-measurement:8.3.0] C:\Users\jek40\iceman\ICEMANv0.5\ICEMAN-client\com.breadcrumbs\build\intermediates\exploded-aar\com.google.android.gms\play-services-measurement\8.3.0\AndroidManifest.xml:30:11-90
+receiver#com.google.android.gms.measurement.AppMeasurementReceiver
+ADDED from [com.google.android.gms:play-services-measurement:8.3.0] C:\Users\jek40\iceman\ICEMANv0.5\ICEMAN-client\com.breadcrumbs\build\intermediates\exploded-aar\com.google.android.gms\play-services-measurement\8.3.0\AndroidManifest.xml:33:7-39:18
+MERGED from [com.google.android.gms:play-services-measurement:8.3.0] C:\Users\jek40\iceman\ICEMANv0.5\ICEMAN-client\com.breadcrumbs\build\intermediates\exploded-aar\com.google.android.gms\play-services-measurement\8.3.0\AndroidManifest.xml:33:7-39:18
+	android:enabled
+		ADDED from [com.google.android.gms:play-services-measurement:8.3.0] C:\Users\jek40\iceman\ICEMANv0.5\ICEMAN-client\com.breadcrumbs\build\intermediates\exploded-aar\com.google.android.gms\play-services-measurement\8.3.0\AndroidManifest.xml:35:11-33
+	android:name
+		ADDED from [com.google.android.gms:play-services-measurement:8.3.0] C:\Users\jek40\iceman\ICEMANv0.5\ICEMAN-client\com.breadcrumbs\build\intermediates\exploded-aar\com.google.android.gms\play-services-measurement\8.3.0\AndroidManifest.xml:34:11-83
+intent-filter#com.google.android.gms.measurement.UPLOAD
+ADDED from [com.google.android.gms:play-services-measurement:8.3.0] C:\Users\jek40\iceman\ICEMANv0.5\ICEMAN-client\com.breadcrumbs\build\intermediates\exploded-aar\com.google.android.gms\play-services-measurement\8.3.0\AndroidManifest.xml:36:9-38:25
+action#com.google.android.gms.measurement.UPLOAD
+ADDED from [com.google.android.gms:play-services-measurement:8.3.0] C:\Users\jek40\iceman\ICEMANv0.5\ICEMAN-client\com.breadcrumbs\build\intermediates\exploded-aar\com.google.android.gms\play-services-measurement\8.3.0\AndroidManifest.xml:37:11-77
+	android:name
+		ADDED from [com.google.android.gms:play-services-measurement:8.3.0] C:\Users\jek40\iceman\ICEMANv0.5\ICEMAN-client\com.breadcrumbs\build\intermediates\exploded-aar\com.google.android.gms\play-services-measurement\8.3.0\AndroidManifest.xml:37:19-75
+service#com.google.android.gms.measurement.AppMeasurementService
+ADDED from [com.google.android.gms:play-services-measurement:8.3.0] C:\Users\jek40\iceman\ICEMANv0.5\ICEMAN-client\com.breadcrumbs\build\intermediates\exploded-aar\com.google.android.gms\play-services-measurement\8.3.0\AndroidManifest.xml:41:7-44:37
+MERGED from [com.google.android.gms:play-services-measurement:8.3.0] C:\Users\jek40\iceman\ICEMANv0.5\ICEMAN-client\com.breadcrumbs\build\intermediates\exploded-aar\com.google.android.gms\play-services-measurement\8.3.0\AndroidManifest.xml:41:7-44:37
+	android:enabled
+		ADDED from [com.google.android.gms:play-services-measurement:8.3.0] C:\Users\jek40\iceman\ICEMANv0.5\ICEMAN-client\com.breadcrumbs\build\intermediates\exploded-aar\com.google.android.gms\play-services-measurement\8.3.0\AndroidManifest.xml:43:11-33
+	android:exported
+		ADDED from [com.google.android.gms:play-services-measurement:8.3.0] C:\Users\jek40\iceman\ICEMANv0.5\ICEMAN-client\com.breadcrumbs\build\intermediates\exploded-aar\com.google.android.gms\play-services-measurement\8.3.0\AndroidManifest.xml:44:11-35
+	android:name
+		ADDED from [com.google.android.gms:play-services-measurement:8.3.0] C:\Users\jek40\iceman\ICEMANv0.5\ICEMAN-client\com.breadcrumbs\build\intermediates\exploded-aar\com.google.android.gms\play-services-measurement\8.3.0\AndroidManifest.xml:42:11-82
 meta-data#com.google.android.gms.version
-ADDED from AndroidManifest.xml:104:9
+ADDED from [com.google.android.gms:play-services-basement:8.3.0] C:\Users\jek40\iceman\ICEMANv0.5\ICEMAN-client\com.breadcrumbs\build\intermediates\exploded-aar\com.google.android.gms\play-services-basement\8.3.0\AndroidManifest.xml:21:9-23:69
+MERGED from [com.google.android.gms:play-services-basement:8.3.0] C:\Users\jek40\iceman\ICEMANv0.5\ICEMAN-client\com.breadcrumbs\build\intermediates\exploded-aar\com.google.android.gms\play-services-basement\8.3.0\AndroidManifest.xml:21:9-23:69
+MERGED from [com.google.android.gms:play-services-basement:8.3.0] C:\Users\jek40\iceman\ICEMANv0.5\ICEMAN-client\com.breadcrumbs\build\intermediates\exploded-aar\com.google.android.gms\play-services-basement\8.3.0\AndroidManifest.xml:21:9-23:69
+MERGED from [com.google.android.gms:play-services-basement:8.3.0] C:\Users\jek40\iceman\ICEMANv0.5\ICEMAN-client\com.breadcrumbs\build\intermediates\exploded-aar\com.google.android.gms\play-services-basement\8.3.0\AndroidManifest.xml:21:9-23:69
+MERGED from [com.google.android.gms:play-services-basement:8.3.0] C:\Users\jek40\iceman\ICEMANv0.5\ICEMAN-client\com.breadcrumbs\build\intermediates\exploded-aar\com.google.android.gms\play-services-basement\8.3.0\AndroidManifest.xml:21:9-23:69
+MERGED from [com.google.android.gms:play-services-basement:8.3.0] C:\Users\jek40\iceman\ICEMANv0.5\ICEMAN-client\com.breadcrumbs\build\intermediates\exploded-aar\com.google.android.gms\play-services-basement\8.3.0\AndroidManifest.xml:21:9-23:69
+MERGED from [com.google.android.gms:play-services-basement:8.3.0] C:\Users\jek40\iceman\ICEMANv0.5\ICEMAN-client\com.breadcrumbs\build\intermediates\exploded-aar\com.google.android.gms\play-services-basement\8.3.0\AndroidManifest.xml:21:9-23:69
 	android:value
-		ADDED from AndroidManifest.xml:106:13
+		ADDED from [com.google.android.gms:play-services-basement:8.3.0] C:\Users\jek40\iceman\ICEMANv0.5\ICEMAN-client\com.breadcrumbs\build\intermediates\exploded-aar\com.google.android.gms\play-services-basement\8.3.0\AndroidManifest.xml:23:13-66
 	android:name
-		ADDED from AndroidManifest.xml:105:13
+		ADDED from [com.google.android.gms:play-services-basement:8.3.0] C:\Users\jek40\iceman\ICEMANv0.5\ICEMAN-client\com.breadcrumbs\build\intermediates\exploded-aar\com.google.android.gms\play-services-basement\8.3.0\AndroidManifest.xml:22:13-58

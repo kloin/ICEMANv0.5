@@ -1,109 +1,149 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.breadcrumbs.client"
+    package="com.breadcrumbs"
     android:versionCode="1"
     android:versionName="1.0" >
-	    
+
+    <permission android:name="com.breadcrumbs.permission.C2D_MESSAGE"
+        android:protectionLevel="signature" />
+
 	<uses-permission android:name="android.permission.INTERNET"/>
+    <uses-permission android:name="android.permission.WAKE_LOCK"/>
 	<uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
 	<uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
 	<uses-permission android:name="com.google.android.providers.gsf.permission.READ_GSERVICES"/>
-	<!-- The following two permissions are not required to use
-	     Google Maps Android API v2, but are recommended. -->
+    <uses-permission android:name="com.breadcrumbs.permission.C2D_MESSAGE"/>
 	<uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
 	<uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
-	
-	<!-- Access the camera -->
 	<uses-permission android:name="android.permission.CAMERA"/>
     <uses-permission android:name="android.permission.RECORD_AUDIO" />
-	<uses-feature android:name="android.hardware.camera" />
-	 
-	<!-- Access storage capabilities -->
+    <uses-permission android:name="com.google.android.c2dm.permission.SEND"/>
+    <uses-permission android:name="com.google.android.c2dm.permission.RECEIVE" />
 	<uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
-	
+    <uses-feature android:name="android.hardware.camera" />
+
 	<!-- Ensure that the map renders -->
 	<uses-feature
         android:glEsVersion="0x00020000"
         android:required="true"/>
 	
     <uses-sdk
-        android:minSdkVersion="14" />
+        android:minSdkVersion="16" />
 
     <application
         android:allowBackup="true"
-        android:icon="@drawable/ic_launcher"
+        android:icon="@drawable/test"
         android:label="@string/app_name"
         android:theme="@style/AppTheme">
         <activity
-            android:name="com.breadcrumbs.client.Main"
+            android:name=".client.Main"
             android:label="@string/app_name"
+            android:exported="true"
             android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>         
         </activity>
-        <activity android:name=".TrailManager"
+
+        <!-- [START gcm_receiver] -->
+        <receiver
+            android:name="com.google.android.gms.gcm.GcmReceiver"
+            android:exported="true"
+            android:permission="com.google.android.c2dm.permission.SEND" >
+            <intent-filter>
+                <action android:name="com.google.android.c2dm.intent.RECEIVE" />
+                <category android:name="com.breadcrumbs.GCM" />
+            </intent-filter>
+        </receiver>
+        <!-- [END gcm_receiver] -->
+
+        <!-- [START gcm_listener] -->
+        <service
+            android:name="com.breadcrumbs.GCM.BreadcrumbsGcmReceiver"
+            android:exported="false" >
+            <intent-filter>
+                <action android:name="com.google.android.c2dm.intent.RECEIVE" />
+            </intent-filter>
+        </service>
+        <!-- [END gcm_listener] -->
+
+        <!-- [START instanceId_listener] -->
+        <service
+            android:name="com.breadcrumbs.GCM.BreadcrumbsInstanceIdListenerService"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="com.google.android.gms.iid.InstanceID"/>
+            </intent-filter>
+        </service>
+        <!-- [END instanceId_listener] -->
+        <service
+            android:name="com.breadcrumbs.GCM.RegistrationIntentService"
+            android:exported="false">
+        </service>
+
+        <activity android:name=".client.TrailManager"
             android:screenOrientation="portrait">
         </activity>
         <activity
-            android:name=".BaseViewModel"
+            android:name=".client.BaseViewModel"
             android:screenOrientation="portrait">
 		</activity>
-        <activity android:name=".CrumbViewer.CommentViewer"
+        <activity android:name=".client.CrumbViewer.CommentViewer"
                   android:screenOrientation="portrait">
         </activity>
-        <activity android:name=".EditTrail"
+        <activity android:name=".client.EditTrail"
                   android:screenOrientation="portrait">
         </activity>
+        <activity android:name=".client.ImageChooser.GridImageSelector"></activity>
         <activity 
-            android:name=".TrailActivity"
+            android:name=".client.TrailActivity"
             android:screenOrientation="portrait">
         </activity>
-        <activity android:name=".ProfilePageViewer"></activity>
+        <activity android:name=".client.ProfilePageViewer"></activity>
         <activity
-            android:name=".SelectedEventViewerBase"
+            android:name=".client.SelectedEventViewerBase"
             android:screenOrientation="portrait">
         </activity>
          <activity android:name="com.breadcrumbs.client.ImageViewer"
             android:screenOrientation="portrait"
              android:windowSoftInputMode="stateHidden"> <!-- hide keyboard by default -->
          </activity>
-        <activity android:name=".Camera.CameraCapture">
+        <activity android:name=".client.Camera.CameraCapture">
         </activity>
-        <activity android:name=".BreadCrumbsImageSelector"
+        <activity android:name=".client.BreadCrumbsImageSelector"
             android:screenOrientation="portrait"></activity>
-        <activity android:name=".CrumbViewer.CrumbsHolder"></activity>
+        <activity android:name=".client.CrumbViewer.CrumbsHolder"></activity>
         <activity android:name="com.breadcrumbs.client.tabs.SaveEventFragment"
                 android:screenOrientation="portrait">         
         </activity>
-            <activity android:name=".Maps.MapViewer"
+            <activity android:name=".client.Maps.MapViewer"
                 android:screenOrientation="portrait">
         </activity>
-        <activity android:name=".tabs.SaveVideoActivity">
+            <activity android:name=".client.tabs.SaveVideoActivity">
         </activity>
-        <activity android:name=".Maps.MapViewController"
+        <activity android:name=".client.Maps.MapViewController"
                 android:screenOrientation="portrait">
         </activity>
-        <activity android:name=".ProfilePicChooser"
+        <activity android:name=".client.ProfilePicChooser"
             android:screenOrientation="portrait">
         </activity>
         <activity android:name="com.breadcrumbs.client.OverflowNavigationDrawer"
             android:screenOrientation="portrait">
         </activity>
-        <activity android:name=".EditExistingTrail"
+        <activity android:name=".client.EditExistingTrail"
             android:screenOrientation="portrait">
         </activity>
 
     <service android:name="com.breadcrumbs.Location.LocationService"></service>
 
 
-	<meta-data
-        android:name="com.google.android.maps.v2.API_KEY"
-        android:value="AIzaSyBmkUW1b2c3cXhz-Sw7cfWtK41Qz-0aaww"/>
+
+      <!--  AIzaSyBmkUW1b2c3cXhz-Sw7cfWtK41Qz-0aaww -->
         <meta-data
-            android:name="com.google.android.gms.version"
-            android:value="@integer/google_play_services_version" />
+            android:name="com.google.android.geo.API_KEY"
+            android:value="AIzaSyCy82ucudMrzKRtUsF0S3v_DSVyNL5m9n8"/>
+
     </application>
 
 </manifest>

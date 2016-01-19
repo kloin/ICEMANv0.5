@@ -1,5 +1,10 @@
 package com.breadcrumbs.Location;
 
+/*
+    DEPRECIATED - USE BreadcrumbsFusedLocationProvider
+ */
+
+
 import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Context;
@@ -20,19 +25,19 @@ import com.breadcrumbs.client.Maps.MapDisplayManager;
 import com.breadcrumbs.client.RunOnUiThreads;
 import com.breadcrumbs.database.DatabaseController;
 import com.google.android.gms.common.ConnectionResult;
-import com.google.android.gms.common.GooglePlayServicesClient;
 import com.google.android.gms.common.GooglePlayServicesUtil;
-import com.google.android.gms.location.LocationClient;
+import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationRequest;
+import com.google.android.gms.location.LocationServices;
 
 import org.json.JSONObject;
 
-public class CanvasLocationManager implements GooglePlayServicesClient.ConnectionCallbacks,GooglePlayServicesClient.OnConnectionFailedListener, com.google.android.gms.location.LocationListener {
+public class CanvasLocationManager implements GoogleApiClient.ConnectionCallbacks,GoogleApiClient.OnConnectionFailedListener, com.google.android.gms.location.LocationListener {
 
     private Context context;
     private MapDisplayManager mapDisplayManager;
     private static Location lastCheckedLocation;
-    private LocationClient locationclient;
+    private GoogleApiClient googleApiClient;
     private LocationRequest locationrequest;
     private Intent mIntentService;
     private PendingIntent mPendingIntent;
@@ -46,24 +51,30 @@ public class CanvasLocationManager implements GooglePlayServicesClient.Connectio
         mIntentService = new Intent(context, LocationService.class);
         mPendingIntent = PendingIntent.getService(context, 1, mIntentService, 0);
         int resp = GooglePlayServicesUtil.isGooglePlayServicesAvailable(context);
-        if(resp == ConnectionResult.SUCCESS){
-            locationclient = new LocationClient(context,this,this);
-            locationclient.connect();
+        if(resp == ConnectionResult.SUCCESS && googleApiClient == null){
+            googleApiClient =  new GoogleApiClient.Builder(context)
+                    .addConnectionCallbacks(this)
+                    .addOnConnectionFailedListener(this)
+                    .addApi(LocationServices.API)
+                    .build();
+            googleApiClient.connect();
         } else {
             Toast.makeText(context, "Google Play Service Error " + resp, Toast.LENGTH_LONG).show();
         }
     }
 
     public void RemoveLocationListener() {
-        if (locationclient != null) {
-            locationclient.removeLocationUpdates(mPendingIntent);
+        if (googleApiClient != null) {
+            //locationclient.removeLocationUpdates(mPendingIntent);
+            googleApiClient.disconnect();
         }
     }
 
     public void AddLocationListenerService() {
         if (connected) {
             locationrequest.setInterval(10000);
-            locationclient.requestLocationUpdates(locationrequest, mPendingIntent);
+            LocationServices.FusedLocationApi.requestLocationUpdates(googleApiClient, locationrequest, mPendingIntent);
+            //locationclient.requestLocationUpdates(locationrequest, mPendingIntent);
         }
         else {
             // We need to let the user know why we cannot connect.
@@ -109,15 +120,15 @@ public class CanvasLocationManager implements GooglePlayServicesClient.Connectio
 
     @Override
     public void onConnected(Bundle bundle) {
-        lastCheckedLocation = locationclient.getLastLocation();
+        //lastCheckedLocation = ();
         locationrequest = LocationRequest.create();
         connected = true;
 
     }
 
     @Override
-    public void onDisconnected() {
-        // Close?
+    public void onConnectionSuspended(int i) {
+
     }
 
     @Override

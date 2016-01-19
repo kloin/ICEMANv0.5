@@ -1,9 +1,10 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="?android:attr/activatedBackgroundIndicator"
-    android:minHeight="?android:attr/listPreferredItemHeightSmall"
     android:padding="10dp" >
+ <!--   android:background="?android:attr/activatedBackgroundIndicator"
+    android:minHeight="?android:attr/listPreferredItemHeightSmall"-->
+
 
     <ImageView
         android:id="@+id/imageViewIcon"
@@ -11,6 +12,7 @@
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
         android:layout_alignParentTop="true"
+        android:alpha="0.5"
         android:paddingRight="10dp" />
 
     <TextView
@@ -20,7 +22,6 @@
         android:layout_centerVertical="true"
         android:layout_toRightOf="@+id/imageViewIcon"
         android:paddingRight="10dp"
-        android:text="This is my folder ."
         android:textAppearance="?android:attr/textAppearanceListItemSmall"
         android:textColor="#67000000" />
 

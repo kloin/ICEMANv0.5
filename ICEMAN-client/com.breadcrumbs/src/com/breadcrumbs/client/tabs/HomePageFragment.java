@@ -18,7 +18,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.breadcrumbs.Trails.MyCurrentTrailManager;
-import com.breadcrumbs.client.R;
+import com.breadcrumbs.R;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapFragment;
 
@@ -28,7 +28,7 @@ public class HomePageFragment extends android.support.v4.app.Fragment {
     private Activity activityContext;
     private MyCurrentTrailManager trailManager;
     public void onAttach(Activity activity) {
-        activityContext=(Activity) activity;
+        activityContext= activity;
         super.onAttach(activity);
     }
 
@@ -95,7 +95,6 @@ public class HomePageFragment extends android.support.v4.app.Fragment {
                         }
                     });
                     dialog.show();
-
                 } else {
                     baseView.setTag("0");
                     trailManager.StopTracking();

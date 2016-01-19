@@ -34,6 +34,7 @@
             android:id="@+id/toolbar"
             android:layout_height="?attr/actionBarSize"
             android:layout_width="match_parent"
+
             android:background="@color/ColorPrimary"/>
         <android.support.design.widget.FloatingActionButton
                 android:id="@+id/new_content"
@@ -44,6 +45,7 @@
                 android:src="@drawable/ic_action_camera"
                 android:layout_gravity="bottom|end"
                 app:elevation="6dp"
+                app:borderWidth="0dp"
                 app:pressedTranslationZ="12dp"/>
 
             <!--  <com.getbase.floatingactionbutton.FloatingActionButton
@@ -107,49 +109,69 @@
             android:dividerHeight="0dp">
 
             <RelativeLayout
+                android:id="@+id/profile_header_nav_menu"
                 android:layout_width="match_parent"
                 android:layout_height="160dp"
-                android:background="@drawable/ltease_small">
-                <com.pkmmte.view.CircularImageView
-                    android:id="@+id/profilePicture"
-                    android:layout_width="50dp"
-                    android:layout_height="50dp"
-                    android:layout_margin="10dp"
-                    android:layout_alignParentBottom="true"
-                    android:src="@drawable/profileblank"/>
-
+                android:background="@color/ColorPrimary">
+                <ImageView
+                    android:id="@+id/drawer_background"
+                    android:layout_width="match_parent"
+                    android:scaleType="centerCrop"
+                    android:layout_height="match_parent"/>
                 <TextView
                     android:id="@+id/belongs_to"
                     android:tag="1234445"
                     android:textSize="32sp"
-                    android:layout_margin="10dp"
-                    android:layout_toRightOf="@+id/profilePicture"
+                    android:layout_marginLeft="10dp"
                     android:layout_alignParentBottom="true"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:textColor="@color/white"
-                    android:text="kloin"/>
+                    android:text=""/>
             </RelativeLayout>
             <ListView
                 android:id="@+id/left_drawer"
                 android:layout_height="wrap_content"
                 android:layout_width="match_parent"/>
             <LinearLayout
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:padding="8dp">
+                android:orientation="vertical">
+                <View
+                    android:layout_width="match_parent"
+                    android:background="@color/my_divider"
+                    android:alpha="0.45"
+                    android:layout_height="1sp">
+                </View>
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:padding="10dp">
+                    <ImageView
+                        android:id="@+id/imageViewIcon"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentLeft="true"
+                        android:layout_alignParentTop="true"
+                        android:paddingRight="8dp"
+                        android:src="@drawable/ic_location_on_black_24dp"
+                        android:alpha="0.5" />
 
-            <Button
-                android:id="@+id/tracking_toggle"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:background="@color/accent"
-                android:shadowRadius="2"
-                android:elevation="4dp"
-                android:text="START TRACKING"
-                android:padding="8dp"
-                android:layout_marginLeft="10dp"/>
+                    <android.support.v7.widget.SwitchCompat
+                        android:id="@+id/tracking_toggle"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:shadowRadius="2"
+                        style="@style/CodeFontDevider"
+                        android:layout_centerVertical="true"
+                        android:layout_toRightOf="@+id/imageViewIcon"
+                        android:paddingRight="10dp"
+                        android:textAppearance="?android:attr/textAppearanceListItemSmall"
+                        android:textColor="#67000000"
+                        android:text="Enable Tracking" />
+
+                </RelativeLayout>
+
             </LinearLayout>
         </LinearLayout>
 

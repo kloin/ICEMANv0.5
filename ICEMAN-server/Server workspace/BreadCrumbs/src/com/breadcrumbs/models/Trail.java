@@ -17,6 +17,7 @@ import org.neo4j.graphdb.Transaction;
 import com.breadcrumbs.database.DBMaster;
 import com.breadcrumbs.database.DBMaster.myLabels;
 import com.breadcrumbs.database.NodeController;
+import com.breadcrumbs.gcm.GcmMessages;
 import com.breadcrumbs.database.DBMaster.myRelationships;
 
 public class Trail {
@@ -41,7 +42,14 @@ public class Trail {
 		return String.valueOf(trailId);		
 	}
 	
-	public void SavePointFromJSON(JSONObject json, String trailId, String pointId) {
+	/* 
+	 * The code around the saving and loading of trail points is really shit.
+	 * This code here resaves the entire trail EVERYTIME which is dangerous if
+	 * we somehow lose the data on the client side, or different phones etc. 
+	 * 
+	 * This needs to be changed at somepont in the near fiuture.
+	 */
+	public void SavePointFromJSON(JSONObject json, String trailId) {
 		dbMaster = DBMaster.GetAnInstanceOfDBMaster();
 		Iterator<String> it = json.keys();
 		Hashtable<String, Object> keysAndItems = new Hashtable<String, Object>();
@@ -52,7 +60,6 @@ public class Trail {
 			Object nextObj = json.get(nextVar);
 			keysAndItems.put(nextVar, nextObj);
 		}
-		keysAndItems.put("pointId", pointId);
 		Node trail = dbMaster.RetrieveNode(Integer.parseInt(trailId));
 		// Our node already has all the info on it set by the client, so we just need to save it.
 		dbMaster = DBMaster.GetAnInstanceOfDBMaster();
@@ -95,6 +102,10 @@ public class Trail {
 		// Get Master instance and save a new node using the hashtable.
 		dbMaster = DBMaster.GetAnInstanceOfDBMaster();
 		Node entityNode = dbMaster.RetrieveNode(Integer.parseInt(EntityId));
+		GcmMessages gcmMessages = new GcmMessages();
+		
+		// Notify the user whose crumb we are commenting on
+		gcmMessages.SendUserNotificationOfComment(EntityId, CommentText, UserId);
 		
 		//This method should possible just return the node? How expensive is this?
 		int commentNodeId = dbMaster.SaveNode(keysAndItems, com.breadcrumbs.database.DBMaster.myLabels.Comment);
@@ -181,7 +192,7 @@ public class Trail {
 	}
 	
 	public String GetAllTrailsForAUser(int id) {
-		nodeConverter = new NodeConverter();
+	/*	nodeConverter = new NodeConverter();
 		dbMaster = DBMaster.GetAnInstanceOfDBMaster();
 		
     	if (dbMaster == null) {
@@ -195,7 +206,7 @@ public class Trail {
     	//Get all the crumbs
     	Transaction tx = dbMaster.GetDatabaseInstance().beginTx();
     	JSONObject jsonResponse = new JSONObject();
-    	ResourceIterable<Node> node = dbMaster.GetDatabaseInstance().findNodesByLabelAndProperty(myLabels.Crumb, "user", 0);
+    	ResourceIterable<Node> node = dbMaster.GetDatabaseInstance().findNodesByLabelAndProperty(myLabels.Trail, "userId", id);
 		Iterator nodeSearcher = node.iterator();
 		System.out.println("Getting all Trails for a user");
 		try {
@@ -208,7 +219,7 @@ public class Trail {
 				//Construct a jsonString using the node converter for the node.
 				//Add the string to the trail object under the crumbs id (? or name?)
 				JSONObject crumbString = nodeConverter.ConvertSingleNodeToJSON(trail);
-				trailJsonObject.append(crumbString.getString("Title"), crumbString.toString());	
+				trailJsonObject.append(crumbString.getString("TrailName"), crumbString.toString());	
 				}
 			} catch(JSONException ex) {
 				System.out.println("THIS JUST CRASHED FUUUUUUCKKKKK");
@@ -217,8 +228,11 @@ public class Trail {
 		finally {
 			tx.finish();
 		}
-		System.out.println("Here is the jsonOBject");
-		return trailJsonObject.toString();
+		System.out.println("Here is the jsonOBject");*/
+		DBMaster dbMaster = DBMaster.GetAnInstanceOfDBMaster();
+		String cypherQuery = "start n = node("+id+") match n-[rel:Controls]->(trail) return trail";	
+		return dbMaster.ExecuteCypherQueryJSONStringReturn(cypherQuery);
+		//return trailJsonObject.toString();
 	}
 	
 	public String FindAllPinnedTrailsForAUser(String userId) {
@@ -251,30 +265,27 @@ public class Trail {
 	 *  Parse all the json into points, and save them indivdually
 	 */
 	public String SaveJSONOfTrailPoints(JSONObject trailPointsJSON) {		
-		String nextPoint = "0";
+		int nextPoint = 0;
 		String trailId = null;
+		Iterator<String> it = trailPointsJSON.keys();
 		// Get the first one, then loop through as long as "next" != null
-		while (nextPoint != null) {
-			//Get the next point, send it to the saver to be saved, then get the next and continue.
-			JSONObject tempNode = trailPointsJSON.getJSONObject("Index:"+nextPoint); // This is our first point
-			if (trailId == null) {
-				trailId = tempNode.getString("trailId");
-			}
+		while (it.hasNext()) {
 			
-			SavePointFromJSON(tempNode, trailId, nextPoint);
-			Object nextObj = null;
+			Object nextObj = null;		
 			try {
+				JSONObject tempNode = trailPointsJSON.getJSONObject(it.next()); // This is our first point
+				if (trailId == null) {
+					trailId = tempNode.getString("trailId");
+				}				
+				SavePointFromJSON(tempNode, trailId);
+						
+				int x = tempNode.getInt("next");
 				nextObj = tempNode.get("next");
 			} catch (JSONException ex) {
 				// Not really alot to do here. Will happen every time at the end, but thats not really a big deal i dont think... if it is we can set a -1 by default client side
-				nextObj = null;
+				System.out.println("failed to save JSONPoints");
 			}
 			
-			if (nextObj != null) {
-				nextPoint = Integer.toString((int)nextObj);
-			} else {
-				nextPoint = null;
-			}
 			
 		}
 		
@@ -297,6 +308,14 @@ public class Trail {
 		DBMaster dbMaster = DBMaster.GetAnInstanceOfDBMaster();
 		String cypherQuery = "start n = node("+trailId+") match n-[rel:Point_In]->(Point) return Point";	
 		return dbMaster.ExecuteCypherQueryReturnPoint(cypherQuery);
+	}
+	
+	public String DeleteNodeAndRelationship(String trailId) {
+		//MATCH (n{ name:'name2' }) OPTIONAL MATCH (n)-[r]-() DELETE n,r
+		DBMaster dbMaster = DBMaster.GetAnInstanceOfDBMaster();
+		String deleteQuery = "start n = node("+trailId+") OPTIONAL MATCH (n)-[r]-() DELETE n,r";
+		dbMaster.ExecuteCypherQueryNoReturn(deleteQuery);
+		return "ok";
 	}
 
 	public String GetAllTrails() {
@@ -374,7 +393,7 @@ public class Trail {
 
 	public String GetSimpleDetailsForATrail(String trailId) {
 		DBMaster dbMaster = DBMaster.GetAnInstanceOfDBMaster();
-		String cypherQuery = "start trail = node("+trailId+") return trail.UserId, trail.TrailName, trail.Description, trail.Views, trail.CoverId";		
+		String cypherQuery = "start trail = node("+trailId+") return trail.UserId, trail.TrailName, trail.Description, trail.Views, trail.CoverPhotoId";		
 		return dbMaster.ExecuteCypherQueryReturnTrailDetails(cypherQuery);
 	}
 

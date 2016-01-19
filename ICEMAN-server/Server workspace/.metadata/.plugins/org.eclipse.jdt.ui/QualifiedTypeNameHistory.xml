@@ -14,7 +14,6 @@
 <fullyQualifiedTypeName name="com.breadcrumbs.models.NodeConverter"/>
 <fullyQualifiedTypeName name="org.junit.Test"/>
 <fullyQualifiedTypeName name="java.util.Collection"/>
-<fullyQualifiedTypeName name="org.json.JSONObject"/>
 <fullyQualifiedTypeName name="com.breadcrumbs.search.Search"/>
 <fullyQualifiedTypeName name="javax.ws.rs.PathParam"/>
 <fullyQualifiedTypeName name="javax.ws.rs.GET"/>
@@ -23,4 +22,5 @@
 <fullyQualifiedTypeName name="com.breadcrumbs.models.Trail"/>
 <fullyQualifiedTypeName name="org.neo4j.graphdb.NotFoundException"/>
 <fullyQualifiedTypeName name="com.breadcrumbs.models.UserService"/>
+<fullyQualifiedTypeName name="org.json.JSONObject"/>
 </qualifiedTypeNameHistroy>

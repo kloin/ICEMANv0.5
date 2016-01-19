@@ -1,5 +1,6 @@
 package com.breadcrumbs.client;
 
+import android.app.Dialog;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.graphics.Color;
@@ -15,25 +16,38 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.SwitchCompat;
 import android.support.v7.widget.Toolbar;
+import android.util.DisplayMetrics;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
+import android.view.Window;
 import android.widget.AdapterView;
 import android.widget.Button;
+import android.widget.EditText;
+import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.breadcrumbs.Location.BreadCrumbsFusedLocationProvider;
 import com.breadcrumbs.Network.LoadBalancer;
+import com.breadcrumbs.R;
 import com.breadcrumbs.ServiceProxy.AsyncDataRetrieval;
+import com.breadcrumbs.ServiceProxy.HomelessNetworkTools;
 import com.breadcrumbs.ServiceProxy.UpdateViewElementWithProperty;
 import com.breadcrumbs.caching.GlobalContainer;
 import com.breadcrumbs.client.Cards.HomeCardAdapter;
 import com.breadcrumbs.client.NavigationDrawer.DrawerItemCustomAdapter;
 import com.breadcrumbs.client.NavigationDrawer.ObjectDrawerItem;
+import com.bumptech.glide.Glide;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -69,16 +83,26 @@ public class BaseViewModel extends AppCompatActivity {
     private LinearLayout mDrawerView;
     private int backPressedCounter = 0;
     private boolean drawerIsOpen = false;
+    private String name;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-
         super.onCreate(savedInstanceState);
         setContentView(R.layout.viewpager_container);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        toolbar.setTitleTextAppearance(this, R.style.HeaderFont);
         setSupportActionBar(toolbar);
         context = this;
+        Intent intent = getIntent();
+        Bundle extras = getIntent().getExtras();
+        name = PreferenceManager.getDefaultSharedPreferences(this).getString("USERNAME", "");
 
+        // This is going to happen after clearing the cache. Need to work out solution for multiple situations like this.
+        if (name == null || name.isEmpty()) {
+            // need to fetch name here and add it back to the shared preferences
+            HomelessNetworkTools networkTools = new HomelessNetworkTools();
+           // networkTools.FetchStringAndSaveToPreferences("USERNAME", );
+        }
         globalContainer = GlobalContainer.GetContainerInstance();
         setUpTrackingButtons();
 
@@ -119,15 +143,22 @@ public class BaseViewModel extends AppCompatActivity {
 
         ObjectDrawerItem[] drawerItem = new ObjectDrawerItem[4];
 
-        drawerItem[0] = new ObjectDrawerItem(R.drawable.ic_action_person_dark, "Profile");
-        drawerItem[1] = new ObjectDrawerItem(R.drawable.ic_action_new_dark, "Create Trail");
-        drawerItem[2] = new ObjectDrawerItem(R.drawable.ic_action_settings_dark, "My Trails");
-        drawerItem[3] = new ObjectDrawerItem(R.drawable.ic_action_camera_big, "Capture");
+        drawerItem[0] = new ObjectDrawerItem(R.drawable.ic_perm_identity_black_24dp, "Profile");
+        drawerItem[1] = new ObjectDrawerItem(R.drawable.ic_add_black_24dp, "Create Trail");
+        drawerItem[2] = new ObjectDrawerItem(R.drawable.ic_settings_black_24dp, "My Trails");
+        drawerItem[3] = new ObjectDrawerItem(R.drawable.ic_camera_alt_black_24dp, "Capture");
         DrawerItemCustomAdapter adapter = new DrawerItemCustomAdapter(this, R.layout.nav_drawer_item, drawerItem);
         mDrawerList.setAdapter(adapter);
         // Loads trailIds and triggers card creation when done
         loadTrails();
-        setUserName();
+        RelativeLayout profileHolder = (RelativeLayout) findViewById(R.id.profile_header_nav_menu);
+        ViewGroup.LayoutParams layoutParams = profileHolder.getLayoutParams();
+        DisplayMetrics displaymetrics = new DisplayMetrics();
+        getWindowManager().getDefaultDisplay().getMetrics(displaymetrics);
+        Double width = displaymetrics.widthPixels * 0.8;
+        layoutParams.height = width.intValue();
+        profileHolder.setLayoutParams(layoutParams);
+        setUserNameAndPhotos(name);
     }
 
     private void setUpRefreshLayout() {
@@ -137,7 +168,6 @@ public class BaseViewModel extends AppCompatActivity {
             public void onRefresh() {
                 // Refresh items
                 refresh();
-
             }
             public void refresh() {
                 // Load all trails here
@@ -158,6 +188,8 @@ public class BaseViewModel extends AppCompatActivity {
         if (drawerIsOpen) {
             mDrawerLayout.closeDrawer(mDrawerView);
         }
+        updateCoverPhoto();
+
         backPressedCounter = 0;
     }
 
@@ -204,7 +236,17 @@ public class BaseViewModel extends AppCompatActivity {
     // Set up tracking button
     private void setUpTrackingButtons() {
 
-        final Button trackingButton = (Button) findViewById(R.id.tracking_toggle);
+        final SwitchCompat trackingButton = (SwitchCompat) findViewById(R.id.tracking_toggle);
+
+        // If we do not yet have a trail, we need to set this as ivisible.
+        if (PreferenceManager.getDefaultSharedPreferences(this).getString("TRAILID", "0").equals("0")) {
+            trackingButton.setVisibility(View.GONE);
+            return;
+        } else {
+            // Set visibility true and continue on.
+            trackingButton.setVisibility(View.VISIBLE);
+        }
+
 
         // Grab a fused location provider from our user class so we can track.
         final BreadCrumbsFusedLocationProvider breadCrumbsFusedLocationProvider = new BreadCrumbsFusedLocationProvider(this);
@@ -212,41 +254,65 @@ public class BaseViewModel extends AppCompatActivity {
         // Check if we were already tracking.
         isTracking = PreferenceManager.getDefaultSharedPreferences(this).getBoolean("TRACKING", false);
 
-        // If we are already tracking at start of app, we want to set button text as stop.
-        if (isTracking) {
-            trackingButton.setText("STOP TRACKING");
-        }
-
         // Our listner for this button. Toggles tracking using fused service, and updates flag.
         trackingButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 // Stop tracking
+
                 if (isTracking) {
                     // Stop and save here.
-                    trackingButton.setText("START TRACKING");
                     PreferenceManager.getDefaultSharedPreferences(context).edit().putBoolean("TRACKING", false).commit();
+                    breadCrumbsFusedLocationProvider.StopBackgroundGPSSerivce();
                     isTracking = false;
             }
-
                 // Start tracking
                 else {
-                    PreferenceManager.getDefaultSharedPreferences(context).edit().putBoolean("TRACKING", true).commit();
-                    breadCrumbsFusedLocationProvider.StartBackgroundGPSService();
-                    trackingButton.setText("STOP TRACKING");
-                    isTracking = true;
+                    String trailId = PreferenceManager.getDefaultSharedPreferences(context).getString("TRAILID", "-1");
+                    if (!trailId.equals("-1")) {
+                        PreferenceManager.getDefaultSharedPreferences(context).edit().putBoolean("TRACKING", true).commit();
+                        breadCrumbsFusedLocationProvider.StartBackgroundGPSService();
+                        isTracking = true;
+                    } else {
+                        // Show dialog - cant start tracking
+                        showNewTrailDialog();
+                    }
                 }
             }
         });
     }
 
     // Set our users name in the drawer. This has some bugs I think
-    private void setUserName() {
-
-        String userId = PreferenceManager.getDefaultSharedPreferences(this).getString("USERID", globalContainer.GetUserId());
+    private void setUserNameAndPhotos(String name) {
         TextView belongsTo = (TextView) findViewById(R.id.belongs_to);
-        UpdateViewElementWithProperty updateViewElementWithProperty = new UpdateViewElementWithProperty();
-        updateViewElementWithProperty.UpdateTextViewElement(belongsTo, userId, "Username");
+        String userId = PreferenceManager.getDefaultSharedPreferences(this).getString("USERID", globalContainer.GetUserId());
+        if (name == null) {
+            UpdateViewElementWithProperty updateViewElementWithProperty = new UpdateViewElementWithProperty();
+            updateViewElementWithProperty.UpdateTextViewElement(belongsTo, userId, "Username");
+        } else {
+            belongsTo.setText(name);
+        }
+        updateCoverPhoto();
+
+
+    }
+
+    private void updateCoverPhoto () {
+        final ImageView background = (ImageView) findViewById(R.id.drawer_background);
+        String coverPhotoId = PreferenceManager.getDefaultSharedPreferences(context).getString("COVERPHOTOID", "-1");
+        String userId = PreferenceManager.getDefaultSharedPreferences(this).getString("USERID", globalContainer.GetUserId());
+        if (coverPhotoId.equals("-1")) {
+            String imageIdUrl = LoadBalancer.RequestServerAddress() + "/rest/login/GetPropertyFromNode/"+userId+"/CoverPhotoId";
+            AsyncDataRetrieval asyncDataRetrieval = new AsyncDataRetrieval(imageIdUrl, new AsyncDataRetrieval.RequestListener() {
+                @Override
+                public void onFinished(String result) {
+                    Glide.with(context).load(LoadBalancer.RequestCurrentDataAddress() + "/images/"+result + ".jpg").centerCrop().crossFade().into(background);
+                }
+            });
+            asyncDataRetrieval.execute();
+        } else {
+            Glide.with(context).load(LoadBalancer.RequestCurrentDataAddress() + "/images/"+coverPhotoId + ".jpg").centerCrop().crossFade().into(background);
+        }
     }
 
     // This is the setup for the  add button on the homepage. If the user has no trails we need
@@ -258,24 +324,15 @@ public class BaseViewModel extends AppCompatActivity {
 
         if (trailId.equals("-1")) {
             // Set image to be a + to indicate creating a new trail.
-            addCrumb.setImageResource(R.drawable.ic_action_new);
-            // Set the click handler to create a new trail. Update the image also.
-            addCrumb.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    // Create new trail
-                    Intent newIntent = new Intent();
-                    newIntent.setClassName("com.breadcrumbs.client", "com.breadcrumbs.client.EditTrail");
-                    startActivity(newIntent);
-                }
-            });
+            addCrumb.setVisibility(View.GONE);
         } else {
             addCrumb.setImageResource(R.drawable.ic_action_camera);
+            addCrumb.setVisibility(View.VISIBLE);
             addCrumb.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     Intent cameraIntent = new Intent();
-                    cameraIntent.setClassName("com.breadcrumbs.client", "com.breadcrumbs.client.Camera.CameraCapture");
+                    cameraIntent.setClassName("com.breadcrumbs", "com.breadcrumbs.client.Camera.CameraCapture");
                     startActivity(cameraIntent);
                 }
             });
@@ -399,10 +456,12 @@ public class BaseViewModel extends AppCompatActivity {
     @Override
     public boolean onPrepareOptionsMenu(Menu menu) {
         // If the nav drawer is open, hide action items related to the content view
-        //mDrawerLayout.closeDrawer(mDrawerView);
-        //menu.findItem(R.id.action_websearch).setVisible(!drawerOpen);
+        super.onPrepareOptionsMenu(menu);
+        mDrawerLayout.closeDrawer(Gravity.LEFT);
         decideIfCameraOrNewTrailButton(menu);
-        return super.onPrepareOptionsMenu(menu);
+        menu.getItem(1).setVisible(false);
+        menu.getItem(0).setVisible(false);
+        return true;
     }
 
     @Override
@@ -412,6 +471,7 @@ public class BaseViewModel extends AppCompatActivity {
         if (mDrawerToggle.onOptionsItemSelected(item)) {
             return true;
         }
+
         // Handle action buttons
         switch(item.getItemId()) {
 
@@ -430,7 +490,6 @@ public class BaseViewModel extends AppCompatActivity {
      * When using the ActionBarDrawerToggle, you must call it during
      * onPostCreate() and onConfigurationChanged()...
      */
-
     @Override
     protected void onPostCreate(Bundle savedInstanceState) {
         super.onPostCreate(savedInstanceState);
@@ -446,19 +505,20 @@ public class BaseViewModel extends AppCompatActivity {
     }
 
     private void decideIfCameraOrNewTrailButton(final Menu menu) {
-        String userId = PreferenceManager.getDefaultSharedPreferences(this).getString("USERID", "-1");
-        String url = MessageFormat.format("{0}/rest/User/GetAllEditibleTrailsForAUser/{1}",
-                LoadBalancer.RequestServerAddress(),
-                userId);
+        String trailid = PreferenceManager.getDefaultSharedPreferences(this).getString("TRAILID", "-1");
+        if (trailid.equals("-1")) {
+            //Hide it.
+        }
         final CoordinatorLayout coordinatorLayout = (CoordinatorLayout) findViewById(R.id
                 .main_content);
-
     }
 
     private class DrawerItemClickListener implements ListView.OnItemClickListener {
 
         @Override
         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+            mDrawerLayout.closeDrawer(Gravity.LEFT);
+            drawerIsOpen = false;
             selectItem(position);
         }
     }
@@ -469,28 +529,62 @@ public class BaseViewModel extends AppCompatActivity {
         //Load the correct page.
         switch (position) {
             case 0:
-                newIntent.setClassName("com.breadcrumbs.client", "com.breadcrumbs.client.ProfilePageViewer");
+                newIntent.setClassName("com.breadcrumbs", "com.breadcrumbs.client.ProfilePageViewer");
                 newIntent.putExtra("userId", globalContainer.GetUserId());
-                newIntent.putExtra("name", "kloin");
+                newIntent.putExtra("name", name);
                 startActivity(newIntent);
                 break;
             case 1:
-                newIntent.setClassName("com.breadcrumbs.client", "com.breadcrumbs.client.EditTrail");
+                newIntent.setClassName("com.breadcrumbs", "com.breadcrumbs.client.EditTrail");
                 startActivity(newIntent);
                 break;
 
             case 2:
-                newIntent.setClassName("com.breadcrumbs.client", "com.breadcrumbs.client.TrailManager");
+                newIntent.setClassName("com.breadcrumbs", "com.breadcrumbs.client.TrailManager");
                 startActivity(newIntent);
                 break;
             case 3:
-                newIntent.setClassName("com.breadcrumbs.client", "com.breadcrumbs.client.Camera.CameraCapture");
-                startActivity(newIntent);
+                // Check if we have a trail created. If not we need to tell the user why we cannot take any photos
+                String trailId = PreferenceManager.getDefaultSharedPreferences(context).getString("TRAILID", "-1");
+                if (!trailId.equals("-1")) {
+                    newIntent.setClassName("com.breadcrumbs", "com.breadcrumbs.client.Camera.CameraCapture");
+                    startActivity(newIntent);
+                } else {
+                    // We need to show the user a dialog, and give them the option of creating a new trail
+                    showNewTrailDialog();
+                }
                 break;
         }
 
         mDrawerList.setItemChecked(position, true);
         mDrawerList.setSelection(position);
+    }
+
+    private void showNewTrailDialog() {
+        final Dialog dialog = new Dialog(context);
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        dialog.setContentView(R.layout.no_user_trail_dialog);
+
+       /* TextView createTrailButton = (TextView) dialog.findViewById(R.id.no_trail_dialog_create_trail_button);
+        createTrailButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+                Intent newIntent = new Intent();
+                newIntent.setClassName("com.breadcrumbs", "com.breadcrumbs.client.EditTrail");
+                startActivity(newIntent);
+
+            }
+        });*/
+        TextView dialogButton = (TextView) dialog.findViewById(R.id.dismiss_dialog);
+        // if button is clicked, close the custom dialog
+        dialogButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+            }
+        });
+        dialog.show();
     }
 
 }

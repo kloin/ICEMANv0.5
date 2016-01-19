@@ -31,11 +31,13 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.Toast;
 
+import com.breadcrumbs.Location.BreadCrumbsFusedLocationProvider;
 import com.breadcrumbs.ServiceProxy.MasterProxy;
 import com.breadcrumbs.caching.GlobalContainer;
-import com.breadcrumbs.client.R;
+import com.breadcrumbs.R;
 
 import java.io.File;
 import java.io.IOException;
@@ -48,22 +50,39 @@ public class CameraCapture extends ActionBarActivity {
     private GlobalContainer globalContainer;
 	private Camera mCamera;
 	private Context context;
+	BreadCrumbsFusedLocationProvider breadCrumbsFusedLocationProvider;
 	private LruCache<String, Bitmap> mMemoryCache;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.add_activity);
         ActionBar actionBar = getActionBar();
-		//setButtonListeners();
-//        actionBar.hide();
+
         globalContainer = GlobalContainer.GetContainerInstance();
         ImageButton cameraButton = (ImageButton) findViewById(R.id.captureButton);
         globalContainer.SetCaptureButton(cameraButton);
-        // Construction purposes.
 
+		// ********** POTENTIAL BATTERY ISSUE *******************************
+		// I start the foreground service but I never manually stop it. Does it get destroyed with the intent?
+		breadCrumbsFusedLocationProvider = new BreadCrumbsFusedLocationProvider(this);
+		breadCrumbsFusedLocationProvider.StartForegroundGPSService();
+
+        // Construction purposes.
+		setBackButtonListener();
         clientProxyService = MasterProxy.GetProxyInstance();
 	}
 
+
+	private void setBackButtonListener() {
+		ImageView backButton = (ImageView) findViewById(R.id.backButtonCapture);
+		backButton.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				// Close this activity, which will exit the screen
+				finish();
+			}
+		});
+	}
 
 	public static Camera getCameraInstance(){
 	    Camera c = null;
@@ -78,10 +97,12 @@ public class CameraCapture extends ActionBarActivity {
 	    return c; // returns null if camera is unavailable
 	}
 
+	@Override
+	protected void onDestroy() {
+		super.onDestroy();
+	}
 
-
-
-    //The single click to take a photo. Video not currently supported
+	//The single click to take a photo. Video not currently supported
 	public void TakePhotoWithCamera() {
 		//Our button via tag
         final Camera camera = getCameraInstance();

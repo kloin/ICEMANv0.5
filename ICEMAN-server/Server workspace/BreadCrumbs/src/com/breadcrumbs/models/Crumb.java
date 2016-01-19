@@ -1,6 +1,8 @@
 package com.breadcrumbs.models;
 
 
+import java.awt.Image;
+import java.awt.image.BufferedImage;
 import java.awt.image.RenderedImage;
 import java.io.ByteArrayInputStream;
 import java.io.File;
@@ -27,7 +29,7 @@ import com.sun.jersey.multipart.BodyPartEntity;
 public class Crumb {
 	
 	private DBMaster dbm;
-	public String AddCrumb(String chat, String userId, String trailId, String latitude, String longitude, String icon, String extension) {
+	public String AddCrumb(String chat, String userId, String trailId, String latitude, String longitude, String icon, String extension, String placeId, String suburb, String city, String country, String timeStamp) {
 		Trail trailManager = new Trail();
 		//create node using node controller
 		Hashtable<String, Object> keysAndItems = new Hashtable<String, Object>();
@@ -38,16 +40,21 @@ public class Crumb {
 		keysAndItems.put("Longitude", longitude);
 		keysAndItems.put("Icon", icon);
 		keysAndItems.put("Extension", extension);
+		keysAndItems.put("PlaceId", placeId);
+		keysAndItems.put("Suburb", suburb);
+		keysAndItems.put("City", city);
+		keysAndItems.put("Country", country);
+		keysAndItems.put("TimeStamp", timeStamp);
 
 		dbm = DBMaster.GetAnInstanceOfDBMaster();
 		int crumbId = dbm.SaveNode(keysAndItems, com.breadcrumbs.database.DBMaster.myLabels.Crumb);	
 		Node crumb = dbm.RetrieveNode(crumbId);
 		Node trail = dbm.RetrieveNode(Integer.parseInt(trailId));
-		// Not doing this yet.
-		/*
+
+		// Set the cover photo.
 		if (Integer.parseInt(trailManager.GetNumberOfCrumbsForATrail(trailId)) <=1) {
-			trailManager.setCoverPhotoId(trail, crumbId);
-		}*/
+			trailManager.SetCoverPhoto(trailId, Integer.toString(crumbId));
+		}
 		
 		
 		dbm.CreateRelationship(crumb, trail, myRelationships.Part_Of);	
@@ -81,17 +88,29 @@ public class Crumb {
 		RenderedImage image = null;
         byte[] imageByte;
         try {
-        	String serverAddress = "/usr/share/tomcat7/webapps/images/";
-        	String localAddress = "C:/Users/jek40/iceman/ICEMANv0.5/ICEMAN-server/Server workspace/.metadata/.plugins/org.eclipse.wst.server.core/tmp1/wtpwebapps/BreadCrumbs/images/";//"C:/Users/aDirtyCanvas/workspace/BreadCrumbs/WebContent/images/";
+        	String serverAddress = "/var/lib/tomcat7/webapps/images/";
+        	String localAddress = "C:/Users/jek40/iceman/ICEMANv0.5/ICEMAN-server/Server workspace/.metadata/.plugins/org.eclipse.wst.server.core/tmp0/wtpwebapps/BreadCrumbs/images/";//"C:/Users/aDirtyCanvas/workspace/BreadCrumbs/WebContent/images/";
             imageByte =  Base64.decodeBase64(uploadImageString);          
             FileOutputStream imageOutFile = new FileOutputStream(
-            		localAddress+crumbId+".jpg");
+            		serverAddress+crumbId+".jpg");
+            
             imageOutFile.write(imageByte);
             	
             imageOutFile.close();
             
+            // Now we need to create the thumbnail
+            InputStream in = new ByteArrayInputStream(imageByte);
+			BufferedImage img = ImageIO.read(in);
+			Image scaledImg = img.getScaledInstance(100, 100, Image.SCALE_SMOOTH);
+			BufferedImage thumbnail = new BufferedImage(100, 100, BufferedImage.TYPE_INT_RGB);
+			thumbnail.createGraphics().drawImage(scaledImg,0,0,null);
+			ImageIO.write(thumbnail, "jpg", new File(serverAddress + crumbId+"T.jpg"));
+
+			
+			
+            Trail trail = new Trail();
             // Now test if we need to save a cover photo for a trail
-            
+            //trail.Set
             
             //It's common courtesy to shut the door on the way out...
 		} catch (IOException e) {
@@ -99,8 +118,7 @@ public class Crumb {
 			e.printStackTrace();
 		}
             //- this badboy with the crumbId so we can find it again
-           
-
+    
 	}
 
 	public String GetLatitudeAndLongitude(String crumbId) {

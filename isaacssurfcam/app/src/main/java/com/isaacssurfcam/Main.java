@@ -15,6 +15,7 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.ParcelFileDescriptor;
+import android.os.PowerManager;
 import android.preference.PreferenceManager;
 import android.provider.MediaStore;
 import android.provider.MediaStore.Images;
@@ -50,6 +51,7 @@ import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
 import java.util.Date;
+import java.util.concurrent.TimeUnit;
 
 /**
  * Written by Josiah Kendall. \
@@ -92,7 +94,6 @@ public class Main  extends Activity implements GoogleApiClient.ConnectionCallbac
      */
     protected static final int NEXT_AVAILABLE_REQUEST_CODE = 2;
 
-
     private Bitmap bm;
     private GoogleApiClient mGoogleApiClient;
     @Override
@@ -100,11 +101,12 @@ public class Main  extends Activity implements GoogleApiClient.ConnectionCallbac
         super.onCreate(savedInstanceState);
         mHandler = new Handler();
         setContentView(R.layout.main);
-context=this;
+        context=this;
         String resourceId = PreferenceManager.getDefaultSharedPreferences(context).getString("ID", null);
         if (resourceId != null) {
             Toast.makeText(context, "Resource is not Null: " + resourceId, Toast.LENGTH_SHORT).show();
         }
+        StaticShitCodeStuff.GetInstance().setMainActivity(this);
         FloatingActionButton captureButton = (FloatingActionButton) findViewById(R.id.startstopbutton);
         captureButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -115,10 +117,17 @@ context=this;
             }
 
         });
+        PowerManager powerManager = (PowerManager) getSystemService(POWER_SERVICE);
+        PowerManager.WakeLock wakeLock = powerManager.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK,
+                "MyWakelockTag");
+        wakeLock.acquire();
+        startCamera();
+
         SetUpSeekBarListeners();
+
     }
 
-    private void startRepeatingTask() {
+    public void startRepeatingTask() {
         mStatusChecker.run();
     }
 
@@ -169,7 +178,7 @@ context=this;
 
             @Override
             public void onStopTrackingTouch(SeekBar seekBar) {
-                qualityDisplay.setText("Quality :" + progress+"%");
+                qualityDisplay.setText("Quality :" + progress + "%");
             }
         });
         frequency.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
@@ -189,6 +198,7 @@ context=this;
             }
         });
     }
+
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode,
@@ -254,16 +264,22 @@ context=this;
         return mGoogleApiClient;
     }
 
-
-
     private void startCamera() {
         // We need to start up the camera and capture every x amount of seconds.
         // Need to run this in an asyc thread.
-        //Camera mCamera = Camera.open();
-        //mCamera.setDisplayOrientation(90);
-        Camera mCamera = StaticShitCodeStuff.GetInstance().getCameraController().mCamera;
-        mCamera.takePicture(null, rawCallback, jpegCallback);
+
+        final Handler handler = new Handler();
+        handler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                Camera mCamera = StaticShitCodeStuff.GetInstance().getCameraController().mCamera;
+                mCamera.takePicture(null, rawCallback, jpegCallback);
+                //Do something after 100ms
+            }
+        }, 10000);
     }
+
+
 
     Camera.PictureCallback rawCallback = new Camera.PictureCallback() {
         public void onPictureTaken(byte[] data, Camera camera) {
@@ -321,7 +337,6 @@ context=this;
                                     @Override
                                     public void onResult(DriveApi.DriveContentsResult result) {
 
-
                                         if (!result.getStatus().isSuccess()) {
                                             // Handle error
                                             return;
@@ -339,7 +354,7 @@ context=this;
                                         // Here I need to write the image to the outputStream
 
                                         ByteArrayOutputStream stream1 = new ByteArrayOutputStream();
-                                        bm.compress(Bitmap.CompressFormat.JPEG, progress, stream1);
+                                        bm.compress(Bitmap.CompressFormat.JPEG, 100, stream1);
 
                                         try {
                                             outputStream2.write(stream1.toByteArray());

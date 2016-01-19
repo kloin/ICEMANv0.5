@@ -6,6 +6,7 @@ import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.breadcrumbs.R;
 import com.breadcrumbs.ServiceProxy.MasterProxy;
 
 import org.json.JSONObject;

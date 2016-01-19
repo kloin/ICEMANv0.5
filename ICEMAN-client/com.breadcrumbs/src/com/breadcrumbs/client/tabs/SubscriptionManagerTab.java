@@ -33,7 +33,7 @@ import com.breadcrumbs.ServiceProxy.AsyncRetrieveImage;
 import com.breadcrumbs.ServiceProxy.HTTPRequestHandler;
 import com.breadcrumbs.Trails.MyCurrentTrailManager;
 import com.breadcrumbs.caching.GlobalContainer;
-import com.breadcrumbs.client.R;
+import com.breadcrumbs.R;
 import com.breadcrumbs.database.DatabaseController;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -295,7 +295,7 @@ public class SubscriptionManagerTab extends android.support.v4.app.Fragment {
                 // Send view to the server to update views.
                 //Launch intent to load that trail
                 Intent TrailViewer = new Intent();
-                TrailViewer.setClassName("com.breadcrumbs.client", "com.breadcrumbs.client.Maps.MapViewer");
+                TrailViewer.setClassName("com.breadcrumbs", "com.breadcrumbs.client.Maps.MapViewer");
                 Bundle extras = new Bundle();
                 extras.putString("TrailId", trailId);
                 TrailViewer.putExtras(extras);

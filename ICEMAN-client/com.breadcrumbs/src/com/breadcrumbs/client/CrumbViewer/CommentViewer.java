@@ -18,7 +18,7 @@ import com.breadcrumbs.Network.LoadBalancer;
 import com.breadcrumbs.ServiceProxy.AsyncDataRetrieval;
 import com.breadcrumbs.ServiceProxy.AsyncRetrieveImage;
 import com.breadcrumbs.caching.GlobalContainer;
-import com.breadcrumbs.client.R;
+import com.breadcrumbs.R;
 
 import org.json.JSONException;
 import org.json.JSONObject;

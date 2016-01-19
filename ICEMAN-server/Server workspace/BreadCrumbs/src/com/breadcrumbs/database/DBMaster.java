@@ -41,7 +41,7 @@ public class DBMaster {
 	 */
 	private DBMaster() {
 		//The current address is localhost - needs to be changed at a later date
-		_db = new GraphDatabaseFactory().newEmbeddedDatabase("C:\\Users\\jek40\\Documents\\Neo4j\\default.graphdb");
+		_db = new GraphDatabaseFactory().newEmbeddedDatabase("\\etc\\neo4j\\default.graphdb");
 		registerShutdownHook();
 	}
 	
@@ -189,12 +189,13 @@ public class DBMaster {
 		Transaction tx = _db.beginTx();
 		int Id;
 		Node node;
+		
 		try {
 			node = _db.createNode(label);
 			Id = (int) node.getId();
-			Iterator keyIterator = keysAndItems.keySet().iterator();
+			Iterator<String> keyIterator = keysAndItems.keySet().iterator();
 			while (keyIterator.hasNext()) {
-				String key = keyIterator.next().toString();
+				String key = keyIterator.next();
 				node.setProperty(key, keysAndItems.get(key).toString());
 			}
 			System.out.println("Saved with Id: "+ Id);
@@ -309,16 +310,18 @@ public class DBMaster {
 		return id;
 	}
 	
-	public void updateNode(Node node, String propertyName, Object propertyValue) {
+	public void updateNode(String nodeId, String propertyName, String propertyValue) {
+		Node node = RetrieveNode(Integer.parseInt(nodeId));
 		Transaction tx = _db.beginTx();
-		
 		try {
 			node.setProperty(propertyName, propertyValue);
+			System.out.println("Saved "+propertyName + ": "+propertyValue);
+			tx.success();
 		} catch(Exception ex) {
 			System.out.println("error occured updating a node: " + ex.toString());
 			tx.failure();
 		} finally {
-			tx.finish();
+			tx.close();
 		}
 	}
 	
@@ -442,7 +445,7 @@ public class DBMaster {
 		Node trail = this.RetrieveNode(Integer.parseInt(trailId));
 		Transaction tx = _db.beginTx();
 		try {
-			trail.setProperty("CoverId", imageId);
+			trail.setProperty("CoverPhotoId", imageId);
 			tx.success();			
 		}
 		catch(NotFoundException ex) {
@@ -476,7 +479,7 @@ public class DBMaster {
 		    String views = map.get("trail.Views").toString();
 		    String userId = map.get("trail.UserId").toString();
 		    String trailName = map.get("trail.TrailName").toString();
-		    //String coverId = map.get("trail.CoverId").toString();	  
+		    String coverId = map.get("trail.CoverPhotoId").toString();	  
 		    
 		    // Put objects
 		    JSONObject tempNode = new JSONObject();	
@@ -485,7 +488,7 @@ public class DBMaster {
 		    tempNode.put("userId", userId);
 		    tempNode.put("userName", userService.FetchUserName(userId));
 		    tempNode.put("trailName", trailName);
-		    //tempNode.put("coverId", coverId);			    
+		    tempNode.put("coverPhotoId", coverId);			    
 		    nodeString = tempNode.toString();
 		    tx.success();
 		} catch (Exception ex) {
@@ -513,7 +516,7 @@ public class DBMaster {
 		} finally {
 			tx.close();
 		}
-		return "0";
+		return "error";
 		
 	}	
 }

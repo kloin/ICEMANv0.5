@@ -1,25 +1,37 @@
 package com.breadcrumbs.client;
 
+import android.content.BroadcastReceiver;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v4.app.FragmentActivity;
+import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.Menu;
 import android.view.View;
 import android.view.Window;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.ProgressBar;
+import android.widget.TextView;
 import android.widget.Toast;
 
+import com.breadcrumbs.GCM.RegistrationIntentService;
 import com.breadcrumbs.Network.LoadBalancer;
+import com.breadcrumbs.Preferences.Preferences;
+import com.breadcrumbs.R;
 import com.breadcrumbs.ServiceProxy.AsyncDataRetrieval;
 import com.breadcrumbs.caching.GlobalContainer;
 import com.breadcrumbs.database.DatabaseController;
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.GoogleApiAvailability;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
@@ -38,17 +50,23 @@ public class Main extends AppCompatActivity {
 	private String userName;
 	private String lname;
 	private String pin;
+	private String TAG = "MAIN";
+	private static final int PLAY_SERVICES_RESOLUTION_REQUEST = 9000;
+
+	private BroadcastReceiver registrationBroadcastReceiver;
+
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 	    super.onCreate(savedInstanceState);
-
-	    // Just call the constructor. The contoller has an oncreate method that should create a 
+	    // Just call the constructor. The contoller has an oncreate method that should create a
 	    // userDb com.breadcrumbs.database if there is none there (first time install etc..).
 		setContentView(R.layout.new_user_page);
-	    context =  this;
+
+		context =  this;
         dbc = new DatabaseController(context);
         gc = GlobalContainer.GetContainerInstance();
         startLogin();
+
 	}
 
 	/*
@@ -63,9 +81,8 @@ public class Main extends AppCompatActivity {
 
     	    if(autoLogin) {
     			Intent myIntent = new Intent();
-    			myIntent.setClassName("com.breadcrumbs.client", "com.breadcrumbs.client.BaseViewModel");
+    			myIntent.setClassName("com.breadcrumbs", "com.breadcrumbs.client.BaseViewModel");
     			startActivity(myIntent);
-
     		}
 
             handleLogin();
@@ -73,8 +90,8 @@ public class Main extends AppCompatActivity {
 
         } else {       	
         	// Show the new user page, and set up the listeners to handle to process
-
-    	    handleSignUp();
+			setUpGCM();
+			handleSignUp();
         }
 	}
 	
@@ -110,6 +127,65 @@ public class Main extends AppCompatActivity {
 			}
 		});
 	}
+
+
+	/**
+	 * Check the device to make sure it has the Google Play Services APK. If
+	 * it doesn't, display a dialog that allows users to download the APK from
+	 * the Google Play Store or enable it in the device's system settings.
+	 */
+	private boolean checkPlayServices() {
+		GoogleApiAvailability apiAvailability = GoogleApiAvailability.getInstance();
+		int resultCode = apiAvailability.isGooglePlayServicesAvailable(this);
+		if (resultCode != ConnectionResult.SUCCESS) {
+			if (apiAvailability.isUserResolvableError(resultCode)) {
+				apiAvailability.getErrorDialog(this, resultCode, PLAY_SERVICES_RESOLUTION_REQUEST)
+						.show();
+			} else {
+				Log.i(TAG, "This device is not supported.");
+				finish();
+			}
+			return false;
+		}
+		return true;
+	}
+
+	@Override
+	protected void onResume() {
+		super.onResume();
+		LocalBroadcastManager.getInstance(this).registerReceiver(registrationBroadcastReceiver,
+				new IntentFilter(Preferences.REGISTRATION_COMPLETE));
+	}
+
+	@Override
+	protected void onPause() {
+		LocalBroadcastManager.getInstance(this).unregisterReceiver(registrationBroadcastReceiver);
+		super.onPause();
+	}
+
+	private void setUpGCM() {
+
+		registrationBroadcastReceiver = new BroadcastReceiver() {
+			@Override
+			public void onReceive(Context context, Intent intent) {
+				SharedPreferences sharedPreferences =
+						PreferenceManager.getDefaultSharedPreferences(context);
+				boolean sentToken = sharedPreferences
+						.getBoolean(Preferences.SENT_TOKEN_TO_SERVER, false);
+				if (sentToken) {
+					Log.d(TAG, "Successfully sent token");
+				} else {
+					Log.d(TAG, "Failed to send token");
+				}
+			}
+		};
+
+		if (checkPlayServices()) {
+			// Start IntentService to register this application with GCM.
+			Intent intent = new Intent(this, RegistrationIntentService.class);
+			startService(intent);
+		}
+	}
 	
 	/*
 	 * Process a users sign up form completion.
@@ -120,16 +196,17 @@ public class Main extends AppCompatActivity {
 		EditText fnameInput = (EditText) findViewById(R.id.firstNameInput);
 		userName = fnameInput.getText().toString();
 		
-		EditText pinInput = (EditText) findViewById(R.id.passCode);
-		pin = pinInput.getText().toString();
-		
+		//EditText pinInput = (EditText) findViewById(R.id.passCode);
+		pin = "0000";//pinInput.getText().toString();
+		String token =  PreferenceManager.getDefaultSharedPreferences(this).getString("TOKEN", "-1");
 		//Construct our url
-		String url = MessageFormat.format("{0}/rest/login/CreateNewUser/{1}/{2}/{3}/{4}",
+		String url = MessageFormat.format("{0}/rest/login/CreateNewUser/{1}/{2}/{3}/{4}/{5}",
 				LoadBalancer.RequestServerAddress(),
 				userName,
 				pin,
 				"0",
-				"M");
+				"M",
+				token);
 
         url = url.replaceAll(" ", "%20");
         serviceProxy  = new AsyncDataRetrieval(url, new AsyncDataRetrieval.RequestListener() {
@@ -147,13 +224,14 @@ public class Main extends AppCompatActivity {
 		serviceProxy.execute();
 
         Intent myIntent = new Intent();
-        myIntent.setClassName("com.breadcrumbs.client", "com.breadcrumbs.client.BaseViewModel");
+		myIntent.putExtra("UserName", userName);
+		PreferenceManager.getDefaultSharedPreferences(context).edit().putString("USERNAME", userName).commit();
+        myIntent.setClassName("com.breadcrumbs", "com.breadcrumbs.client.BaseViewModel");
         startActivity(myIntent);
 	}
 	
 	//Handler for when login is clicked.
 	private void handleLogin() {
-
 		ImageButton loginButton = (ImageButton) findViewById(R.id.authButton);
 		loginButton.setOnClickListener( new View.OnClickListener() {
 		    @Override
@@ -162,7 +240,8 @@ public class Main extends AppCompatActivity {
 		     if (pword.getText().toString().equals(getUserPassword())) {
 		    	 Toast.makeText(context, "Logging in...", Toast.LENGTH_LONG).show();
 		    	 Intent myIntent = new Intent();
-				 myIntent.setClassName("com.breadcrumbs.client", "com.breadcrumbs.client.BaseViewModel");
+				 myIntent.putExtra("UserName", userName);
+				 myIntent.setClassName("com.breadcrumbs", "com.breadcrumbs.client.BaseViewModel");
 				 startActivity(myIntent);
 		     	} else {
 		     		Toast.makeText(context, "Incorrect Password!", Toast.LENGTH_LONG).show();

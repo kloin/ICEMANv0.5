@@ -1,9 +1,0 @@
-192.168.1.69 - - [18/May/2015:11:56:25 +1200] "GET /BreadCrumbs/rest/User/GetAllPinnedTrailsForAUser/52 HTTP/1.1" 200 328
-192.168.1.69 - - [18/May/2015:11:56:26 +1200] "GET /BreadCrumbs/rest/login/getAllCrumbsForATrail/47 HTTP/1.1" 200 12
-192.168.1.69 - - [18/May/2015:11:56:26 +1200] "GET /BreadCrumbs/rest/login/getAllCrumbsForATrail/46 HTTP/1.1" 200 12
-192.168.1.69 - - [18/May/2015:11:56:26 +1200] "GET /BreadCrumbs/rest/login/getAllCrumbsForATrail/45 HTTP/1.1" 200 12
-192.168.1.69 - - [18/May/2015:11:56:27 +1200] "GET /BreadCrumbs/rest/login/getAllCrumbsForATrail/53 HTTP/1.1" 200 12
-192.168.1.69 - - [18/May/2015:11:56:31 +1200] "GET /BreadCrumbs/rest/User/GetAllPinnedTrailsForAUser/52 HTTP/1.1" 200 328
-192.168.1.69 - - [18/May/2015:11:57:02 +1200] "GET /BreadCrumbs/rest/User/GetAllPinnedTrailsForAUser/52 HTTP/1.1" 200 328
-0:0:0:0:0:0:0:1 - - [18/May/2015:16:16:26 +1200] "GET /BreadCrumbs/rest/login HTTP/1.1" 200 35
-127.0.0.1 - - [18/May/2015:16:30:00 +1200] "GET / HTTP/1.1" 404 951

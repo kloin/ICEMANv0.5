@@ -5,7 +5,7 @@ import android.os.Bundle;
 import android.support.v4.view.ViewPager;
 
 import com.breadcrumbs.Framework.NonSwipeableViewPager;
-import com.breadcrumbs.client.R;
+import com.breadcrumbs.R;
 
 /**
  * Created by aDirtyCanvas on 6/3/2015.

@@ -17,11 +17,4 @@
             android:layout_height="?attr/actionBarSize"
             android:layout_width="match_parent"
             android:background="@color/ColorPrimary"/>
-        <android.support.design.widget.FloatingActionButton
-            android:id="@+id/new_content"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_margin="12dp"
-            android:src="@drawable/ic_action_new"
-            android:layout_gravity="bottom|end" />
 </android.support.design.widget.CoordinatorLayout>

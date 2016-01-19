@@ -8,69 +8,59 @@
     <LinearLayout
         android:orientation="vertical" android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/white"
-        >
+        android:background="@color/white">
         <!-- The image view that we will use as the trail 'profile pic' -->
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            android:background="@color/ColorPrimary">
+
+
+        <ImageButton
+            android:id="@+id/exit_trail_editor"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="5dp"
+            android:background="?attr/selectableItemBackground"
+            android:src="@drawable/ic_action_back"/>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="?attr/actionBarSize"
+            android:text='Trail Editor'
+            style="@style/CodeFont"
+            android:padding="8dp"
+            android:textSize="12pt"
+            android:layout_marginLeft="50dp"
+            android:textColor="@color/white"/>
+            <TextView
+                android:id="@+id/save_trail"
+                android:text="SAVE"
+                android:layout_alignParentEnd="true"
+                android:layout_alignParentRight="true"
+                android:textColor="@color/white"
+                android:textSize="18sp"
+                style="@style/CodeFont"
+                android:layout_gravity="right"
+                android:layout_width="wrap_content"
+                android:gravity="center"
+                android:layout_height="?attr/actionBarSize"
+                android:layout_marginRight="10dp"
+                android:background="?attr/selectableItemBackground" />
+        </FrameLayout>
         <RelativeLayout
             android:id="@+id/headerContainer"
             android:layout_width="match_parent"
-            android:layout_height="200dp">
+            android:layout_height="wrap_content">
 
-        <ImageView
-            android:id="@+id/trail_image"
-            android:visibility="gone"
-            android:layout_width="match_parent"
-            android:layout_height="200dp"/>
 
-            <View
+            <ImageView
+                android:id="@+id/trail_header_image_in_edit_screen"
                 android:layout_width="match_parent"
                 android:layout_height="200dp"
-                android:background="#3F51B5">
-            </View>
-            <ImageButton
-                android:id="@+id/exit_trail_editor"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_margin="5dp"
-                android:background="@null"
-                android:src="@drawable/ic_action_back"/>
-            <TextView
-                android:id="@+id/edit_trail_label"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Trail Editor"
-                android:textSize="10pt"
-                android:layout_toRightOf="@id/exit_trail_editor"
-                android:layout_marginTop="10dp"
-                android:layout_marginLeft="35dp"
-                android:textColor="@color/white"/>
-
-            <ImageButton
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:background="@null"
-                android:src="@drawable/ic_action_overflow"
-                android:layout_alignParentRight="true"/>
-
-
-    <android.support.design.widget.TextInputLayout
-        android:id="@+id/username_text_input_layout"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="30dp"
-        android:layout_marginRight="30dp"
-        android:layout_marginBottom="25dp"
-        android:layout_alignParentBottom="true">
-            <EditText
-                android:id="@+id/trail_title"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:textSize="12pt"
-                android:backgroundTint="@color/accent"
-                android:textColorHint="@color/white"
-                android:textColor="@color/white"
-                android:hint="Enter a title for your trail."/>
-    </android.support.design.widget.TextInputLayout>
+                android:visibility="gone"
+                android:scaleType="centerCrop"
+                android:background="@drawable/tetete">
+            </ImageView>
 
         </RelativeLayout>
 
@@ -78,59 +68,68 @@
             android:layout_below="@+id/headerContainer"
             android:id="@+id/trail_details_container"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:paddingLeft="10dp"
             android:paddingRight="10dp">
-            <ImageView
-                android:layout_below="@+id/about_seperator"
-                android:layout_marginLeft="-5dp"
-                android:padding="8dp"
-                android:layout_marginTop="10dp"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:src="@drawable/ic_action_edit"/>
-            <TextView
-                android:padding="8dp"
-                android:id="@+id/about_label"
-                android:layout_width="120dp"
-                android:textColor="#333333"
-                android:layout_height="wrap_content"
-                android:text="About"
-                android:textStyle="normal"
-                android:layout_marginLeft="50dp"
-                android:textSize="10pt"/>
-            <View
-                android:id="@+id/about_seperator"
-                android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:background="#9E9E9E"
-                android:layout_marginTop="3dp"
-                android:layout_below="@+id/about_label"></View>
+
             <EditText
-                android:padding="8dp"
-                android:id="@+id/trail_description"
-                android:layout_width="match_parent"
-                android:layout_below="@+id/about_seperator"
-                android:layout_marginLeft="40dp"
+                android:id="@+id/title_edit"
+                android:hint="Title"
+                android:textSize="34sp"
+                style="@style/CodeFont"
+                android:layout_marginLeft="20dp"
+                android:inputType="textCapSentences"
+                android:layout_marginRight="20dp"
                 android:layout_marginTop="10dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+            <EditText
+                android:id="@+id/countries_edit"
+                android:textSize="16sp"
+                style="@style/CodeFont"
+                android:inputType="textCapSentences"
+                android:layout_marginRight="20dp"
+                android:hint="Brief Description (optional)"
+                android:layout_below="@+id/title_edit"
+                android:layout_marginTop="20dp"
+                android:layout_marginLeft="20dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+
+            <DatePicker
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:visibility="gone"
+                android:id="@+id/datePicker" />
+
+            <!--
+            <ImageView
+                android:id="@+id/tags_icon"
+                android:layout_below="@+id/countries_icon"
+                android:layout_width="wrap_content"
+                android:layout_marginLeft="30dp"
+                android:layout_marginTop="30dp"
                 android:layout_height="wrap_content"
-                android:gravity="top"
-                android:textColor="#333333"
-                android:hint="About your journey"
-                android:textSize="8pt"/>
+                android:src="@drawable/ic_code_black_24dp"/>
+           <EditText
+                android:id="@+id/tags_edit"
+                android:hint="Express yourself with a few tags!"
+                android:layout_alignBottom="@+id/tags_icon"
+                android:layout_toRightOf="@+id/countries_icon"
+                android:textSize="13sp"
+                android:layout_marginLeft="20dp"
+                android:layout_width="wrap_content"
+                android:minWidth="250dp"
+                android:layout_marginRight="20dp"
+                android:layout_height="wrap_content" /> -->
+
         </RelativeLayout>
 
-
+    <View
+        android:id="@+id/seperator_trail_editor"
+        android:layout_marginTop="30dp"
+        android:layout_width="match_parent"
+        android:background="@color/my_divider"
+        android:layout_height="1dp"></View>
     </LinearLayout>
-
-    <com.getbase.floatingactionbutton.FloatingActionButton
-        android:id="@+id/save_trail"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        fab:fab_colorNormal="@color/accent"
-        android:src="@drawable/ic_action_save"
-        android:layout_marginBottom="16dp"
-        android:layout_marginRight="8dp"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentBottom="true"/>
 </RelativeLayout>

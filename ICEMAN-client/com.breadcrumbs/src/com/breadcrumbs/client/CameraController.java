@@ -15,6 +15,7 @@ import android.os.Environment;
 import android.provider.MediaStore;
 import android.support.v4.app.Fragment;
 import android.util.AttributeSet;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.Display;
 import android.view.Menu;
@@ -25,12 +26,14 @@ import android.view.Surface;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.ViewParent;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.Toast;
 
+import com.breadcrumbs.R;
 import com.breadcrumbs.caching.GlobalContainer;
 
 import java.io.ByteArrayOutputStream;
@@ -59,6 +62,7 @@ public class CameraController extends SurfaceView implements SurfaceHolder.Callb
 
 
     }
+
     public CameraController(Context context, AttributeSet attributeSet) {
         super(context, attributeSet);
         getHolder().addCallback(this);
@@ -74,25 +78,37 @@ public class CameraController extends SurfaceView implements SurfaceHolder.Callb
 
     @Override
     public void surfaceCreated(SurfaceHolder holder) {
+        // Set the height of the camera to be the same as the width so we get a square.
+        CameraController cameraController = (CameraController) findViewById(R.id.camera_preview);
+        ViewGroup.LayoutParams layoutParams = cameraController.getLayoutParams();
+        DisplayMetrics displaymetrics = new DisplayMetrics();
+        context.getWindowManager().getDefaultDisplay().getMetrics(displaymetrics);
+        layoutParams.height = displaymetrics.widthPixels;
+        cameraController.setLayoutParams(layoutParams);
 
-            mHolder = holder;
+        mHolder = holder;
+        if (backCameraOpen) {
             mCamera = Camera.open(0); // Open rear facing by default
-            // SetFrontCamera();
-            // Get our display to test if it is going to be pushed sideways
-            Display display = ((WindowManager)context.getSystemService(context.WINDOW_SERVICE)).getDefaultDisplay();
-            mCamera.setDisplayOrientation(90);
-            Camera.Parameters parameters = mCamera.getParameters();
+        }
+        else {
+            mCamera = Camera.open(1);
+        }
+        // SetFrontCamera();
+        // Get our display to test if it is going to be pushed sideways
+        Display display = ((WindowManager)context.getSystemService(context.WINDOW_SERVICE)).getDefaultDisplay();
+        mCamera.setDisplayOrientation(90);
+        Camera.Parameters parameters = mCamera.getParameters();
 
-            CheckOrientationIsNotAllFuckingRetarded(parameters, display);
-            try {
+        CheckOrientationIsNotAllFuckingRetarded(parameters, display);
+        try {
 
-                mCamera.setPreviewDisplay(holder);
-                // mCamera.setDisplayOrientation(90);
-                SetupCameraButtonListener();
-                setUpSwitchCameraListener();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+            mCamera.setPreviewDisplay(holder);
+            // mCamera.setDisplayOrientation(90);
+            SetupCameraButtonListener();
+            setUpSwitchCameraListener();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 
 
 
@@ -147,7 +163,8 @@ public class CameraController extends SurfaceView implements SurfaceHolder.Callb
                 List<Camera.Size> sizes = parameters.getSupportedPictureSizes();
                 Camera.Size size = sizes.get(sizes.size()-3);
                 //parameters.setJpegQuality(50);
-                 parameters.setPictureSize(size.width, size.height);
+                parameters.setPreviewSize(720, 720);
+                parameters.setPictureSize(720, 720);
               // parameters.setPictureSize(1280, 720);
                 //parameters.setPictureFormat(format);
                 mCamera.setParameters(parameters);
@@ -171,9 +188,12 @@ public class CameraController extends SurfaceView implements SurfaceHolder.Callb
         mCamera.startPreview();
         Camera.Parameters parameters = mCamera.getParameters();
         List<Camera.Size> sizes = parameters.getSupportedPictureSizes();
-        Camera.Size size = sizes.get(sizes.size()-3);
+        Camera.Size size = sizes.get(1);
         //parameters.setJpegQuality(50);
-        parameters.setPictureSize(size.width, size.height);
+        //parameters.setJpegQuality(50);
+        //parameters.setJpegQuality(50);
+        parameters.setPreviewSize(720, 720);
+        parameters.setPictureSize(720, 720);
         // parameters.setPictureSize(1280, 720);
         //parameters.setPictureFormat(format);
         mCamera.setParameters(parameters);
@@ -194,23 +214,24 @@ public class CameraController extends SurfaceView implements SurfaceHolder.Callb
             mCamera.stopPreview();
             isPreviewRunning = false;
         }
+
         mCamera.release();
         mCamera = null;
         mCamera = Camera.open(1);
         mCamera.startPreview();
         Camera.Parameters parameters = mCamera.getParameters();
         List<Camera.Size> sizes = parameters.getSupportedPictureSizes();
-        Camera.Size size = sizes.get(sizes.size()-3);
+        Camera.Size size = sizes.get(1);
         //parameters.setJpegQuality(50);
-        parameters.setPictureSize(size.width, size.height);
-        // parameters.setPictureSize(1280, 720);
-        //parameters.setPictureFormat(format);
+        //parameters.setPictureSize(size.width, size.height);
+        //parameters.setJpegQuality(50);
+        parameters.setPreviewSize(720, 720);
+        parameters.setPictureSize(720, 720);
         mCamera.setParameters(parameters);
         isPreviewRunning = true;
 
         try {
             Display display = ((WindowManager)context.getSystemService(context.WINDOW_SERVICE)).getDefaultDisplay();
-
             CheckOrientationIsNotAllFuckingRetarded(parameters, display);
             mCamera.setPreviewDisplay(mHolder);
 
@@ -242,11 +263,10 @@ public class CameraController extends SurfaceView implements SurfaceHolder.Callb
         recorder.setOutputFormat(MediaRecorder.OutputFormat.DEFAULT);
         recorder.setVideoFrameRate(16); //might be auto-determined due to lighting
         recorder.setVideoSize(supportedSizes.get(1).width, supportedSizes.get(1).height);
+
         recorder.setAudioEncoder(MediaRecorder.AudioEncoder.AMR_NB);
         recorder.setVideoEncoder(MediaRecorder.VideoEncoder.MPEG_4_SP);
 
-       // CamcorderProfile cpHigh = CamcorderProfile.get(CamcorderProfile.QUALITY_HIGH);
-       // recorder.setProfile(cpHigh);
 
         fileName =  Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES).toString();
         fileName += "/test.mp4";
@@ -312,7 +332,7 @@ public class CameraController extends SurfaceView implements SurfaceHolder.Callb
 
                     // Launch video intent to save the video.
                     Intent save = new Intent();
-                    save.setClassName("com.breadcrumbs.client", "com.breadcrumbs.client.tabs.SaveVideoActivity");
+                    save.setClassName("com.breadcrumbs", "com.breadcrumbs.client.tabs.SaveVideoActivity");
                     save.putExtra("videoUrl", fileName); //The uri to our address
                     context.startActivity(save);
                 }
@@ -328,39 +348,6 @@ public class CameraController extends SurfaceView implements SurfaceHolder.Callb
                 context.finish();
             }
         });
-
-
-//       onCreateOptionsMenu(Menu menu) {
-//            MenuInflater inflater = getMenuInflater();
-//            inflater.inflate(R.menu.camera, menu);
-//            return super.onCreateOptionsMenu(menu);
-//        }
-//
-//        @Override
-//        public boolean onOptionsItemSelected(MenuItem item) {
-//            // Handle action buttons
-//            switch(item.getItemId()) {
-//                case R.id.reverse_camera:
-//                    // create intent to perform web search for this planet
-//
-//                    return true;
-//                default:
-//                    return super.onOptionsItemSelected(item);
-//            }
-//        }
-
-        //ImageButton switchCamera = (ImageButton) cameraRootView.findViewById(R.id.switchCameraButton);
-//        switchCamera.setOnClickListener(new OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                if (backCameraOpen) {
-//                    SetFrontCamera();
-//                } else {
-//                    OpenBackCamera();
-//                }
-//            }
-//        });
-
     }
 
     Camera.PictureCallback rawCallback = new Camera.PictureCallback() {
@@ -417,17 +404,17 @@ public class CameraController extends SurfaceView implements SurfaceHolder.Callb
                 }
             }
 
-            //ByteArrayOutputStream os = new ByteArrayOutputStream();
-           // bm.compress(Bitmap.CompressFormat.PNG, 10, os);
-           // byte[] array = os.toByteArray();
-           // bm = BitmapFactory.decodeByteArray(array, 0, array.length);
-             if (bm.getWidth() > 720 && bm.getHeight() > 1100 && backCameraOpen) {
-                 bm = Bitmap.createBitmap(bm, 0, 100, 720, 1000);
-             }
+         //   ByteArrayOutputStream os = new ByteArrayOutputStream();
+           // bm.compress(Bitmap.CompressFormat.PNG, 30, os);
+          //  byte[] array = os.toByteArray();
+         //   bm = BitmapFactory.decodeByteArray(array, 0, array.length);
+         //    if (bm.getWidth() > 720 && bm.getHeight() > 1100 && backCameraOpen) {
+       //          bm = Bitmap.createBitmap(bm, 0, 100, 720, 1000);
+        //     }
             // Cache our photo.
             GlobalContainer.GetContainerInstance().SetBitMap(bm);
             Intent save = new Intent();
-            save.setClassName("com.breadcrumbs.client", "com.breadcrumbs.client.tabs.SaveEventFragment");
+            save.setClassName("com.breadcrumbs", "com.breadcrumbs.client.tabs.SaveEventFragment");
             context.startActivity(save);
         }
     };

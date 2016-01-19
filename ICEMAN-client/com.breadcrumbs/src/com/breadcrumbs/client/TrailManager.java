@@ -1,6 +1,9 @@
 package com.breadcrumbs.client;
 
-import android.app.Activity;
+import android.app.Dialog;
+import android.content.Context;
+import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
@@ -8,12 +11,14 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.View;
+import android.view.Window;
+import android.widget.TextView;
 
 import com.breadcrumbs.Network.LoadBalancer;
+import com.breadcrumbs.R;
 import com.breadcrumbs.ServiceProxy.AsyncDataRetrieval;
-import com.breadcrumbs.caching.GlobalContainer;
 import com.breadcrumbs.client.Cards.EditTrailCardAdapter;
-import com.breadcrumbs.client.Cards.HomeCardAdapter;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -39,9 +44,11 @@ public class TrailManager extends AppCompatActivity {
 
         //Need to set our context for use inside click handlers etc..
         context = this;
-
+        showBreadCrumbsDialog();
         // Set up our toolbar
         Toolbar toolbar = (Toolbar) findViewById(R.id.trail_manager_toolbar);
+        toolbar.setTitleTextAppearance(this, R.style.CodeFont);
+        toolbar.setTitleTextColor(Color.WHITE);
         setSupportActionBar(toolbar);
 
         // Global container for ids etc if stuff isnt working. Be careful with memory here, because I am creating this on almost every page
@@ -53,6 +60,25 @@ public class TrailManager extends AppCompatActivity {
 
         // Load all trails belonging to this user.
         loadTrails();
+    }
+
+    private void showBreadCrumbsDialog() {
+        boolean showDialog = true;
+        if (showDialog) {
+            final Dialog dialog = new Dialog(context);
+            dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+            dialog.setContentView(R.layout.trail_manager_first_time_notifier);
+            TextView dialogButton = (TextView) dialog.findViewById(R.id.dismiss_dialog);
+            // if button is clicked, close the custom dialog
+            dialogButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    PreferenceManager.getDefaultSharedPreferences(context).edit().putBoolean("SHOW_EDITOR_DIALOG", false).commit();
+                    dialog.dismiss();
+                }
+            });
+            dialog.show();
+        }
     }
 
     public void loadTrails() {

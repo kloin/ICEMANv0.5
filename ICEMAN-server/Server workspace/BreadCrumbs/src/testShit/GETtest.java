@@ -22,157 +22,146 @@ import java.nio.charset.Charset;
 import javax.imageio.ImageIO;
 import javax.ws.rs.PathParam;
 
-
-
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import org.neo4j.graphdb.Node;
 import org.apache.commons.codec.binary.*;
 import org.apache.lucene.util.IOUtils;
 
+import com.breadcrumbs.database.DBMaster;
+import com.breadcrumbs.models.Trail;
 import com.breadcrumbs.resource.RetrieveData;
 
 public class GETtest {
 	private RetrieveData retrieve;
+
 	@Before
 	public void setUp() throws Exception {
 		retrieve = new RetrieveData();
+
 	}
 
 	@After
 	public void tearDown() throws Exception {
+		//retrieve.Obliterate(); // Get rid of everything
 	}
 
 	@Test
-	public void TestGetAllCrumbsReturnsData() {
-		
+	public void TestGetAllCrumbIdsReturnsData() {
+
+		String id = retrieve.CreateNewUser("Josiah", "7873", "23", "M", "1");
+		String trailId = retrieve.SaveTrail("OOOHRAA", "just testing yo", id);
+		String crumbId = retrieve.SaveCrumb("testing123", id, trailId, "-36.8", "174.5", "icon", ".jpg", "1", "Greenlane", "Auckland", "New Zealand", "time");
+		assertTrue(Integer.parseInt(crumbId) > Integer.parseInt(trailId));
+		Trail trails = new Trail();
 		try {
-			JSONObject jsonResponse = new JSONObject(retrieve.GetAllCrumbsForATrail("4"));
+			JSONObject jsonResponse = new JSONObject(trails.GetAllTrailsForAUser(Integer.parseInt(id)));
 			assertEquals(jsonResponse.length() > 0, true);
 		} catch (JSONException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
-	/*
-	@Test
-	public void TestFileCanBeCreatedViaURL() {
-		 HttpURLConnection connection = null;  
-		    try {
-		    	FileInputStream fileInputStream=null;
-		    	File file = new File("C:\\Users\\Josiah\\workspace\\.metadata\\.plugins\\org.eclipse.wst.server.core\\tmp4\\wtpwebapps\\BreadCrumbs\\images\\media\\4.png");
-		    	System.out.println(file.exists());
-		    	byte[] bFile = new byte[(int) file.length()];
-		    	 fileInputStream = new FileInputStream(file);
-		 	    fileInputStream.read(bFile);
-		 	    fileInputStream.close();
-		  
-		    	 String imageString = null;
-		    	 //byte[] imageBytes = IOUtils.toByteArray("C:\\Users\\Josiah\\workspace\\.metadata\\.plugins\\org.eclipse.wst.server.core\\tmp4\\wtpwebapps\\BreadCrumbs\\images\\media\\4.png");
-		    	// String base64 = Base64.encodeBase64URLSafeString(bFile);
-		            
-		    //	String urlParameters = URLEncoder.encode(base64, "UTF-8");
-		      //Create connection
-		      URL url = new URL("http://localhost:8080/breadcrumbs/rest/login/savecrumb/21");
-		      connection = (HttpURLConnection)url.openConnection();
-		      connection.setRequestMethod("POST");
-		      connection.setRequestProperty("Content-Type", 
-		           "application/json");
-					
-		      connection.setRequestProperty("Content-Length", "" + 
-		               Integer.toString(urlParameters.getBytes().length));
-		      connection.setRequestProperty("Content-Language", "en-US");  
-					
-		      connection.setUseCaches (false);
-		      connection.setDoInput(true);
-		      connection.setDoOutput(true);
-
-		      //Send request
-		      DataOutputStream wr = new DataOutputStream (
-		                  connection.getOutputStream ());
-		      wr.writeBytes (urlParameters);
-		      wr.flush ();
-		      wr.close ();
-
-		      //Get Response	
-		      InputStream is = connection.getInputStream();
-		      BufferedReader rd = new BufferedReader(new InputStreamReader(is));
-		      String line;
-		      StringBuffer response = new StringBuffer(); 
-		      while((line = rd.readLine()) != null) {
-		        response.append(line);
-		        response.append('\r');
-		      }
-		      rd.close();
-
-		    } catch (Exception e) {
-
-		      e.printStackTrace();
-
-		    } finally {
-
-		      if(connection != null) {
-		        connection.disconnect(); 
-		      }
-		    }
-	}*/
-	@Test
-	public void TestGetAllTrailsReturnsData() {
-		
-		try {
-			JSONObject jsonResponse = new JSONObject(retrieve.GetAllTrailsForAUser("6"));
-			assertEquals(jsonResponse.length() > 0, true);
-		} catch (JSONException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-	}
-	/*
-	@Test
-	public void TestThatUserCanBeCreated() {
-		// Warning - this will create a user in the db as it is not inside a transsaction scope.
-		int userId = retrieve.CreateNewUser("Josiah", "Kendall", "7873", "23", "M");
-		assertTrue(userId > 0);
-		try {
-			assertTrue(retrieve.GetUser(userId).length() > 0);
-		} catch (JSONException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-
-	}*/
 	
-	@Test 
-	public void TestThatWeCanSaveImageToServer() {
-		//Construct imput stream from image
-		//Pass it to server method
-		//Test image exists at location
-		 ByteArrayOutputStream bos = new ByteArrayOutputStream();
-		 InputStream file = null;
-		 try {
-			file = new FileInputStream("C:\\Users\\Josiah\\workspace\\.metadata\\.plugins\\org.eclipse.wst.server.core\\tmp4\\wtpwebapps\\BreadCrumbs\\images\\vine.png");
-		} catch (FileNotFoundException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		// retrieve.uploadFile(file);
-		 
-		 
-		 
-		
+	@Test(expected=org.neo4j.graphdb.NotFoundException.class)
+	public void TestThatDeleteDeletesNodeAndItsRelationship() {
+		String id = retrieve.CreateNewUser("Josiah", "7873", "23", "M", "1");
+		String trailId = retrieve.SaveTrail("OOOHRAA", "just testing yo", id);
+		String crumbId = retrieve.SaveCrumb("testing123", id, trailId, "-36.8", "174.5", "icon", ".jpg", "1", "Greenlane", "Auckland", "New Zealand", "time");
+		assertTrue(Integer.parseInt(crumbId) > Integer.parseInt(trailId));
+		Trail trails = new Trail();
+		trails.DeleteNodeAndRelationship(trailId);
+		DBMaster dbMaster = DBMaster.GetAnInstanceOfDBMaster();
+		int intId = Integer.valueOf(trailId);
+		Node node = dbMaster.RetrieveNode(intId);
 	}
-	
-	@Test
-	public void TestThatTrailCanBeCreated() {
-		retrieve.SaveTrail("OOOHRAA", "just testing yo", "6");
-	}
-	
-/*	@Test
-	public void TestThatCrumbCanBeAddedToTrail() {
-		retrieve.SaveCrumb("testing123", 7, 4, "-36.8", "174.5", "icon");
-				
-	}*/
+
+//	@Test
+//	public void TestGetAllCrumbsReturnsData() {
+//
+//		String id = retrieve.CreateNewUser("Josiah", "7873", "23", "M");
+//		String trailId = retrieve.SaveTrail("OOOHRAA", "just testing yo", id);
+//		String crumbId = retrieve.SaveCrumb("testing123", id, trailId, "-36.8", "174.5", "icon", ".jpg");
+//		assertTrue(Integer.parseInt(crumbId) > Integer.parseInt(trailId));
+//
+//		try {
+//			JSONObject jsonResponse = new JSONObject(retrieve.GetAllCrumbsForATrail(trailId));
+//			assertEquals(jsonResponse.length() > 0, true);
+//		} catch (JSONException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		}
+//	}
+//
+//	@Test
+//	public void TestICanSaveGPSPointsToTheDataBaseMultipleTimes() {
+//		String id = retrieve.CreateNewUser("Josiah", "7873", "23", "M");
+//		String trailId = retrieve.SaveTrail("OOOHRAA", "just testing yo", id);
+//		try {
+//			assertTrue(retrieve.GetAllTrails().length() > 0);
+//		} catch (JSONException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		}
+//
+//		// Build GPS POiNTS
+//	}
+//
+//	//public static JSONObject GPS_POINTS = new JSONObject("{'Index:0':{'latitude':-36.887355,'longitude':174.7893846,'userId':'66','timeStamp':'1112\/2015 19:55:14','trailId':'67','index':20,'next':21},'Index:1':{'latitude':-36.887355,'longitude':174.7893846,'userId':'66','timeStamp':'11\/12\/2015 19:55:34','trailId':'67','index':21,'next':22}'";
+//
+//	//}}')
+//
+//	/*
+//	*/
+//
+//	@Test
+//	public void TestThatUserCanBeCreated() {
+//		// Warning - this will create a user in the db as it is not inside a
+//		// transsaction scope.
+//		int userId = Integer.parseInt(retrieve.CreateNewUser("Josiah", "7873", "23", "M"));
+//		try {
+//			assertTrue(retrieve.GetUser(userId).length() > 0);
+//		} catch (JSONException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		}
+//
+//	}
+//
+//	@Test
+//	public void TestThatTrailCanBeCreated() {
+//		String id = retrieve.CreateNewUser("Josiah", "7873", "23", "M");
+//		String trailId = retrieve.SaveTrail("OOOHRAA", "just testing yo", id);
+//		try {
+//			assertTrue(retrieve.GetAllTrails().length() > 0);
+//		} catch (JSONException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		}
+//	}
+//
+//	@Test
+//	public void TestThatCrumbCanBeAddedToTrail() {
+//		String id = retrieve.CreateNewUser("Josiah", "7873", "23", "M");
+//		String trailId = retrieve.SaveTrail("OOOHRAA", "just testing yo", id);
+//		String crumbId = retrieve.SaveCrumb("testing123", id, trailId, "-36.8", "174.5", "icon", ".jpg");
+//		assertTrue(Integer.parseInt(crumbId) > Integer.parseInt(trailId));
+//	}
+//
+//	@Test
+//	public void TestGetAllTrailsReturnsData() {
+//		String id = retrieve.CreateNewUser("Josiah", "7873", "23", "M");
+//		String trailId = retrieve.SaveTrail("OOOHRAA", "just testing yo", id);
+//		try {
+//			JSONObject jsonResponse = new JSONObject(retrieve.GetAllTrailsForAUser("6"));
+//			assertEquals(jsonResponse.length() > 0, true);
+//		} catch (JSONException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		}
+//	}
 
 }

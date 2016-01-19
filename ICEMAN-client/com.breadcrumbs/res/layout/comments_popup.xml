@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!--    android:foreground="?android:windowContentOverlay" -->
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/popup_element"
-    android:foreground="?android:windowContentOverlay"
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:background="#88bbbbbb"

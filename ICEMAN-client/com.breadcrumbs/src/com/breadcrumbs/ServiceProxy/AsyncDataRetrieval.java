@@ -19,7 +19,6 @@ import java.net.URLConnection;
 
 public class AsyncDataRetrieval extends AsyncTask<String, Integer, String> {
 		private JSONObject json = new JSONObject();
-		private FragmentMaster fragment;
 		private String url;
         // jsonResult was losing a variable some how, so im testing with this to see what happens.
         private String localResponse = null;
@@ -28,6 +27,7 @@ public class AsyncDataRetrieval extends AsyncTask<String, Integer, String> {
 		public interface RequestListener {
 			public void onFinished(String result);
 		}
+
 		// Our callback instance
 		private RequestListener requestListener;
 		
@@ -44,7 +44,9 @@ public class AsyncDataRetrieval extends AsyncTask<String, Integer, String> {
 		
 		@Override
 	    protected void onPostExecute(String jsonResult) {
-			requestListener.onFinished(this.localResponse);
+			if (requestListener != null) {
+				requestListener.onFinished(this.localResponse);
+			}
 	    }
 		
 		/* 
@@ -60,7 +62,6 @@ public class AsyncDataRetrieval extends AsyncTask<String, Integer, String> {
 				 HttpResponse httpResponse = httpClient.execute(httpGet);
 		    	    //No fucking clue what this magic does
 				 HttpEntity httpEntity = httpResponse.getEntity();
-
 		    	  stringResponse = EntityUtils.toString(httpEntity);
 		    	  localResponse = stringResponse;
 		    	    //Turn our JSON string into actual JSON

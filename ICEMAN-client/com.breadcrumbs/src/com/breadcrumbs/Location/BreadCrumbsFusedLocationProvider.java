@@ -10,12 +10,19 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
 
-import com.breadcrumbs.client.R;
+import com.breadcrumbs.R;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.common.api.PendingResult;
+import com.google.android.gms.common.api.Result;
+import com.google.android.gms.common.api.ResultCallback;
 import com.google.android.gms.location.LocationListener;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.location.places.PlaceBuffer;
+import com.google.android.gms.location.places.PlaceLikelihood;
+import com.google.android.gms.location.places.PlaceLikelihoodBuffer;
+import com.google.android.gms.location.places.Places;
 
 import java.text.DateFormat;
 import java.util.Date;
@@ -88,6 +95,7 @@ public class BreadCrumbsFusedLocationProvider implements
         // Kick off the process of building a GoogleApiClient and requesting the LocationServices
         // API.
         buildGoogleApiClient();
+        BuildBackgroundService();
     }
 
     public Location GetLastKnownLocation() {
@@ -109,6 +117,8 @@ public class BreadCrumbsFusedLocationProvider implements
         mGoogleApiClient = new GoogleApiClient.Builder(context)
                 .addConnectionCallbacks(this)
                 .addOnConnectionFailedListener(this)
+                .addApi(Places.GEO_DATA_API)
+                .addApi(Places.PLACE_DETECTION_API)
                 .addApi(LocationServices.API)
                 .build();
         createLocationRequest();
@@ -160,7 +170,7 @@ public class BreadCrumbsFusedLocationProvider implements
         // Sets the fastest rate for active location updates. This interval is exact, and your
         // application will never receive updates faster than this value.
         mLocationRequest.setFastestInterval(FASTEST_UPDATE_INTERVAL_IN_MILLISECONDS);
-        mLocationRequest.setPriority(LocationRequest.PRIORITY_NO_POWER);
+        mLocationRequest.setPriority(LocationRequest.PRIORITY_LOW_POWER);
         mGoogleApiClient.connect();
     }
 
@@ -194,6 +204,18 @@ public class BreadCrumbsFusedLocationProvider implements
         }
     }
 
+    // Fetch the users current location. We have to provide the callback to do what we want with the data.
+    public void GetCurrentPlace(ResultCallback<PlaceLikelihoodBuffer> resultCallback) {
+        PendingResult<PlaceLikelihoodBuffer> result = Places.PlaceDetectionApi
+                .getCurrentPlace(mGoogleApiClient, null);
+        result.setResultCallback(resultCallback);
+    }
+
+    public void GetPlaceNameFromId(String placeId, ResultCallback<PlaceBuffer> resultCallback) {
+        PendingResult<PlaceBuffer> result = Places.GeoDataApi.getPlaceById(mGoogleApiClient, placeId);
+        result.setResultCallback(resultCallback);
+    }
+
     /**
      * Removes location updates from the FusedLocationApi.
      */
@@ -213,7 +235,6 @@ public class BreadCrumbsFusedLocationProvider implements
     @Override
     public void onConnected(Bundle connectionHint) {
         Log.i(TAG, "Connected to GoogleApiClient");
-
         // If the initial location was never previously requested, we use
         // FusedLocationApi.getLastLocation() to get it. If it was previously requested, we store
         // its value in the Bundle and check for it in onCreate(). We

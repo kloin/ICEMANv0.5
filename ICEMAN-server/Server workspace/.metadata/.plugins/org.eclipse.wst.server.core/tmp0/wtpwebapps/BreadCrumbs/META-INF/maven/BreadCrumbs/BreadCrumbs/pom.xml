@@ -2,7 +2,6 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>BreadCrumbs</groupId>
   <artifactId>BreadCrumbs</artifactId>
-  <version>0.0.1-SNAPSHOT</version>
   <packaging>war</packaging>
   <build>
     <sourceDirectory>src</sourceDirectory>
@@ -80,4 +79,5 @@
 		<version>4.12</version>
 	</dependency>	
   </dependencies>
+  <version>1</version>
 </project>

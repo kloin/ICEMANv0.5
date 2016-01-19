@@ -7,7 +7,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.breadcrumbs.client.R;
+import com.breadcrumbs.R;
 
 /**
  * I dont know if we really need a contacts tab. This adding contacts stuff would be better soomwhere else

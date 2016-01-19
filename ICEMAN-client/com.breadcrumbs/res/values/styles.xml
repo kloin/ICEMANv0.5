@@ -5,8 +5,8 @@
 
         <item name="colorPrimary">@color/ColorPrimary</item>
         <item name="colorPrimaryDark">@color/ColorPrimaryDark</item>
-        <item name="android:textColorPrimary">@color/my_primary_text</item>
-        <item name="android:textColorSecondary">@color/my_secondary_text</item>
+        <item name="android:textColorPrimary">#333</item>
+        <item name="android:textColorSecondary">#333</item>
         <!-- Customize your theme here. -->
     </style>
 

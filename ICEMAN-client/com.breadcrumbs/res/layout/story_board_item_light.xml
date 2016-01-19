@@ -34,9 +34,10 @@
                 android:paddingTop="16dp"
                 android:layout_toRightOf="@+id/profilePicture"
                 android:layout_width="wrap_content"
+                style="@style/CodeFont"
                 android:layout_height="wrap_content"
-                android:textColor="@color/black_semi_transparent"
-                android:text="Josiah"/>
+                android:textColor="@color/my_primary_text"
+                android:text=""/>
             <TextView
                 android:id="@+id/trail_views"
                 android:layout_width="wrap_content"
@@ -44,24 +45,25 @@
                 android:layout_below="@id/belongs_to"
                 android:textSize="14sp"
                 android:paddingTop ="4dp"
-                android:textColor="#6A6A6A"
+                android:textColor="@color/my_secondary_text"
                 android:layout_toRightOf="@+id/profilePicture"
-                android:text="324"/>
+                android:text=""/>
             </RelativeLayout>
 
-        <ProgressBar
-            android:id="@+id/mainProgressBar"
-            style="?android:attr/progressBarStyleLarge"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center" />
-        <ImageView
-            android:id="@+id/main_photo"
-            android:adjustViewBounds="true"
-            android:visibility="gone"
-            android:layout_width="match_parent"
-            android:layout_height="260dp"
-            android:scaleType="centerCrop"/>
+            <!-- <ProgressBar
+              android:id="@+id/mainProgressBar"
+              style="?android:attr/progressBarStyleLarge"
+              android:layout_width="wrap_content"
+              android:layout_height="wrap_content"
+              android:layout_gravity="center" /> -->
+            <ImageView
+                android:id="@+id/main_photo"
+                android:adjustViewBounds="true"
+
+                android:visibility="visible"
+                android:background="@color/ColorPrimaryLight"
+                android:layout_width="match_parent"
+                android:layout_height="260dp" />
 
         <RelativeLayout
             android:paddingTop="24dp"
@@ -79,19 +81,21 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="6"
-
-            android:textColor="@color/black_semi_transparent"
+            android:textColor="@color/my_primary_text"
+            style="@style/CodeFont"
             android:layout_gravity="top|left"
             android:textSize="24sp"
-            android:text="Croatia"/>
+            android:text=""/>
 
         <TextView
             android:id="@+id/trail_description"
-            android:visibility="gone"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@+id/Title"
             android:maxHeight="40dp"
+            style="@style/CodeFont"
+            android:textSize="14sp"
+            android:textColor="@color/my_divider"
             android:text=""/>
 
         </RelativeLayout>
@@ -112,9 +116,20 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textSize="8pt"
+                android:background="?attr/selectableItemBackground"
                 android:textColor="@color/ColorPrimary"
-
                 android:text="DETAILS"
+                android:layout_alignParentBottom="true"/>
+            <TextView
+                android:id="@+id/delete_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="8pt"
+                android:background="?attr/selectableItemBackground"
+                android:textColor="@color/accent"
+                android:layout_alignParentRight="true"
+                android:text="DELETE"
+
                 android:layout_alignParentBottom="true"/>
             <!--                android:layout_marginLeft="105dp"-->
         </RelativeLayout>

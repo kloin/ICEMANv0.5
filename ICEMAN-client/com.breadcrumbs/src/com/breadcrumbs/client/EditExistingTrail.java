@@ -1,7 +1,5 @@
 package com.breadcrumbs.client;
 
-import android.app.ActionBar;
-import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.design.widget.CollapsingToolbarLayout;
@@ -10,8 +8,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 
-import com.breadcrumbs.Framework.JsonHandler;
-import com.breadcrumbs.client.Cards.CrumbCardAdapter;
+import com.breadcrumbs.R;
 
 /**
  * Created by aDirtyCanvas on 9/13/2015.

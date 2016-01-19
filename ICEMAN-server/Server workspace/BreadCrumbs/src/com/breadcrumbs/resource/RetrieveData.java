@@ -45,6 +45,7 @@ import com.breadcrumbs.database.*;
 import com.breadcrumbs.database.*;
 import com.breadcrumbs.database.DBMaster.myLabels;
 import com.breadcrumbs.database.DBMaster.myRelationships;
+import com.breadcrumbs.gcm.GcmSender;
 import com.breadcrumbs.models.*;
 import com.breadcrumbs.retrieval.*;
 import com.sun.jersey.multipart.BodyPart;
@@ -85,11 +86,20 @@ public class RetrieveData {
     
     @GET
     @Produces(MediaType.APPLICATION_JSON)
+    @Path("getallCrumbIdsForAUser/{id}")
+    public String GetAllCrumbIdsForAUser(@PathParam("id") String id) {
+    
+    	NodeController nc = new NodeController();
+    	System.out.println("working");
+		return nc.GetAllRelatedNodesIds(id, myLabels.Crumb, "UserId", "Title").toString();	
+    }
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
     @Path("getallCrumbsForAUser/{id}")
     public String GetAllCrumbsForAUser(@PathParam("id") String id) {
     
     	NodeController nc = new NodeController();
-		return nc.GetAllRelatedNodes(id, myLabels.Crumb, "user", "Title").toString();	
+		return nc.GetAllRelatedNodes(id, myLabels.Crumb, "UserId", "Title").toString();	
     }
     
     @GET
@@ -103,16 +113,21 @@ public class RetrieveData {
     }
     
     @GET
-    @Path("/savecrumb/{chat}/{userId}/{trailId}/{latitude}/{longitude}/{icon}/{extension}")
+    @Path("/savecrumb/{chat}/{userId}/{trailId}/{latitude}/{longitude}/{icon}/{extension}/{placeId}/{suburb}/{city}/{country}/{timeStamp}")
     public String SaveCrumb (@PathParam("chat")String chat,
     					   @PathParam("userId")String userId,
     					   @PathParam("trailId")String trailId,
     					   @PathParam("latitude")String latitude,
     					   @PathParam("longitude")String longitude,
     					   @PathParam("icon")String icon,
-    					   @PathParam("extension") String extension) {
+    					   @PathParam("extension") String extension,
+    					   @PathParam("placeId") String placeId,
+    					   @PathParam("suburb") String suburb,
+    					   @PathParam("city") String city,
+    					   @PathParam("country") String country,
+    					   @PathParam("timeStamp") String timeStamp) {
     	Crumb crumb = new Crumb();    	
-    	return crumb.AddCrumb(chat, userId, trailId, latitude, longitude, icon, extension); 
+    	return crumb.AddCrumb(chat, userId, trailId, latitude, longitude, icon, extension, placeId, suburb, city, country, timeStamp); 
     }
         
     @GET
@@ -167,12 +182,13 @@ public class RetrieveData {
     }
     
     @GET
-    @Path("/CreateNewUser/{UserName}/{Pin}/{Age}/{Sex}")
+    @Path("/CreateNewUser/{UserName}/{Pin}/{Age}/{Sex}/{GcmId}")
     @Produces(MediaType.APPLICATION_JSON)
     public String CreateNewUser (@PathParam("UserName") String UserName, 
 									@PathParam("Pin") String Pin,
 									@PathParam("Age") String Age,
-									@PathParam("Sex") String Sex) {
+									@PathParam("Sex") String Sex,
+									@PathParam("GcmId") String GcmId) {
     	// Create a node with these fields
     	DBMaster db = DBMaster.GetAnInstanceOfDBMaster();
     	
@@ -181,20 +197,30 @@ public class RetrieveData {
     	keysAndItems.put("Pin", Pin);
     	keysAndItems.put("Age", Age);
     	keysAndItems.put("Sex", Sex);
-    	keysAndItems.put("About", "User has not saved details"); // Default on creation, has to be updated later/manually.
+    	keysAndItems.put("About", ""); // Default on creation, has to be updated later/manually.
+    	keysAndItems.put("Nationality", "Kiwi");
+    	keysAndItems.put("ProfilePicId", "0");
+    	keysAndItems.put("GcmId", GcmId);
     	System.out.println("Saved New User");
-
+    	GcmSender sender = new GcmSender();
     	return Integer.toString(db.SaveNode(keysAndItems, com.breadcrumbs.database.DBMaster.myLabels.User));
     }
     
-   /* @GET
+    @GET
     @Path("/DeleteAllData")
     public String Obliterate() {
     	// USE THIS WITH CAUTION - probably will not be kept around after testing because this would be dumb
     	Trail trail = new Trail();
     	trail.Obliterate();
     	return "";
-    }*/
+    }
+    
+    @GET
+    @Path("/DeleteNode/{nodeId}")
+    public String DeleteNode(@PathParam("nodeId") String nodeId) {
+    	Trail trail = new Trail();
+    	return trail.DeleteNodeAndRelationship(nodeId);
+    }
     
     @GET
     @Path("/GetUser/{userId}")
@@ -206,7 +232,6 @@ public class RetrieveData {
     /*
      * NOTE THAT THIS IS NOT USED YET BUT PRIOBABL:Y WILL BE IN THE FUTURE
      * Creating  a trail.... 
-     * 
      * This is a bit more complex than normal because we want to invite users when we create the trail.
      * Create trail and then go back to invite users in a new workflow == BAD.
      * SO this means we need to send through a list, or call two different URLS (rest methods) from the
@@ -282,7 +307,6 @@ public class RetrieveData {
    public String GetAllTrails() {
 	   Trail trail = new Trail();
 	   return trail.GetAllTrails();
-	   
    }
    
    @GET
@@ -296,8 +320,7 @@ public class RetrieveData {
    @Path("/SaveStringPropertyToNode/{NodeId}/{Property}/{PropertyValue}")
    public String SaveStringPropertyToNode(@PathParam("NodeId") String nodeId, @PathParam("Property") String property, @PathParam("PropertyValue") String propertyValue) {
 	   DBMaster dbMaster = DBMaster.GetAnInstanceOfDBMaster();
-	   Node node = dbMaster.RetrieveNode(Integer.parseInt(nodeId));
-	   dbMaster.updateNode(node, property, propertyValue);
+	   dbMaster.updateNode(nodeId, property, propertyValue);
 	   return "200 - ok";
    }
     

@@ -5,6 +5,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.PopupWindow;
@@ -13,9 +14,10 @@ import android.widget.TextView;
 import com.breadcrumbs.Network.LoadBalancer;
 import com.breadcrumbs.ServiceProxy.AsyncDataRetrieval;
 import com.breadcrumbs.ServiceProxy.MasterProxy;
+import com.breadcrumbs.ServiceProxy.UpdateViewElementWithProperty;
 import com.breadcrumbs.Trails.MyCurrentTrailManager;
 import com.breadcrumbs.client.FragmentMaster;
-import com.breadcrumbs.client.R;
+import com.breadcrumbs.R;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.GoogleMap.OnMapClickListener;
@@ -26,6 +28,7 @@ import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.sothree.slidinguppanel.SlidingUpPanelLayout;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -53,8 +56,6 @@ public class MapViewer extends Activity implements
         mMap = ((MapFragment) getFragmentManager().findFragmentById(R.id.map))
                 .getMap();
         myCurrentTrailManager = new MyCurrentTrailManager(mMap, this);
-		// Start getting the data at the very start.
-		//imageFetcher =new AsyncDataRetrieval();
         String trailId = this.getIntent().getStringExtra("TrailId");
         clientRequestProxy  = new AsyncDataRetrieval(LoadBalancer.RequestServerAddress() +"/rest/TrailManager/AddTrailView/"+trailId, new AsyncDataRetrieval.RequestListener() {
             @Override
@@ -68,6 +69,26 @@ public class MapViewer extends Activity implements
 		// Get our data
 		myCurrentTrailManager.DisplayTrailAndCrumbs(trailId);
 
+		setBackButtonListener();
+		setTrailHeader(trailId);
+	}
+
+	private void setTrailHeader(String trailId) {
+		TextView trailTitle = (TextView) findViewById(R.id.map_trail_header);
+		UpdateViewElementWithProperty updateViewElementWithProperty = new UpdateViewElementWithProperty();
+		updateViewElementWithProperty.UpdateTextViewElement(trailTitle, trailId, "TrailName");
+	}
+
+
+	private void setBackButtonListener() {
+		ImageView backButton = (ImageView) findViewById(R.id.backButtonCapture);
+		backButton.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				// Close this activity, which will exit the screen
+				finish();
+			}
+		});
 	}
     @Override
     public void onBackPressed() {
@@ -81,8 +102,6 @@ public class MapViewer extends Activity implements
 		setContentView(R.layout.crumb_activity);
 
 		requestingImage = true;
-		//imageFetcher =  new AsyncDataRetrieval();
-		//imageFetcher.GetRequestForData("192.168.1.7:8080/breadcrumbs/images/media/34816.png", this);
 		return true;
 	}
 
@@ -90,7 +109,8 @@ public class MapViewer extends Activity implements
 	@Override
 	public void onMapClick(LatLng point) {
 		// TODO Auto-generated method stub
-
+		SlidingUpPanelLayout slidingUpPanelLayout = (SlidingUpPanelLayout) findViewById(R.id.sliding_layout);
+		slidingUpPanelLayout.setPanelState(SlidingUpPanelLayout.PanelState.COLLAPSED);
 	}
 
 	@Override

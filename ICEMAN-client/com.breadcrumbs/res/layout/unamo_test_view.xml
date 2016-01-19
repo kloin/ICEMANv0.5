@@ -17,7 +17,7 @@
             android:layout_height="match_parent"
             android:visibility="gone"
             android:layout_centerInParent="true"
-            android:backgroundTint="#000000"/>
+            android:background="#00000000"/>
 
         <!-- Our image view - if we load an image we show this, otherwise we hide it -->
         <ImageView

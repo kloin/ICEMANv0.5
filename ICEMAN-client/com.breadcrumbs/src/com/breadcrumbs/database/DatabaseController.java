@@ -1,12 +1,19 @@
 package com.breadcrumbs.database;
 
+import android.app.DownloadManager;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.location.Location;
+import android.preference.PreferenceManager;
 import android.util.Log;
+import android.widget.Toast;
+
+import com.breadcrumbs.Network.LoadBalancer;
+import com.breadcrumbs.ServiceProxy.AsyncPost;
+import com.breadcrumbs.ServiceProxy.HTTPRequestHandler;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -21,6 +28,7 @@ import java.util.Date;
  */
 public class DatabaseController extends SQLiteOpenHelper {
 	private static final String DATABASE_NAME="userDb";
+    private static final String TRAIL_POINTS_INDEX = "trailIndexDb";
 	static final String USERID="userid";
 	static final String USERNAME="username";
 	static final String AGE="age";
@@ -34,9 +42,7 @@ public class DatabaseController extends SQLiteOpenHelper {
 	//private SQLiteDatabase db;
 	public DatabaseController(Context context) {
 		super(context, "users", null, 1);
-        mContext = context;
-		//SQLiteCursor cursor = new SQLiteCursor(db, driver, editTable, query)
-	
+        this.mContext = context;
 	}
 	
 	@Override
@@ -57,6 +63,7 @@ public class DatabaseController extends SQLiteOpenHelper {
 				//null);
 		//cursor.getColumnNames();
 	}
+
     /*
     a method made to delete all the saved trail points for a trail
      */
@@ -64,6 +71,36 @@ public class DatabaseController extends SQLiteOpenHelper {
         db = getWritableDatabase();
         db.rawQuery("DELETE from trailPoints", null);
     }
+
+    private void setTrailPointIndex(String trailId, int trailIndex) {
+        // Store it in our shared preferences.
+        PreferenceManager.getDefaultSharedPreferences(mContext).edit().putInt("TrailIndex", trailIndex).commit();
+
+        // We also want it in the DB.
+        db = getWritableDatabase();
+        db.rawQuery("UPDATE "+ TRAIL_POINTS_INDEX +
+                    " SET trailIndex="+trailIndex +
+                    " WHERE trailid="+trailId, null);
+    }
+
+    // Method to get the number of points we have currently saved, so we know the where the point needs to go in the trail.
+    private int getTrailPointIndex(String trailId) {
+        int trailPointIndex = PreferenceManager.getDefaultSharedPreferences(mContext).getInt("TrailIndex", 0);
+        if (trailPointIndex == 0) {
+            // This is incase we fail to get it out the shared preferences for whatever reason (cleared cache etc)
+            db = getWritableDatabase();
+            Cursor cursor = db.rawQuery("Select * from "+TRAIL_POINTS_INDEX+" where trailid="+trailId, null);
+            if (cursor.getCount() > 0) {
+                trailPointIndex = cursor.getInt(cursor.getColumnIndex("trailIndex"));
+            } else {
+                db.rawQuery("INSERT INTO "+ TRAIL_POINTS_INDEX + " (trailid, trailIndex)" +
+                        " VALUES ("+trailId + ","+trailPointIndex+");", null);
+            }
+        }
+
+        return trailPointIndex;
+    }
+
     /*
     This is used to save and store data for a trail. This is because we only save trails when:
         - User is online (i.e using the app)
@@ -74,33 +111,110 @@ public class DatabaseController extends SQLiteOpenHelper {
         Double longitude = location.getLongitude();
         String seconds = DateFormat.getDateTimeInstance().format(new Date());
 
-        //Values to save
+        // Get our needed variables
+        int trailPointIndex = getTrailPointIndex(trailId);
+
+        Double lastLatitude = new Double(PreferenceManager.getDefaultSharedPreferences(mContext).getInt("LastLat", -1));
+        Double lastLongitude =  new Double(PreferenceManager.getDefaultSharedPreferences(mContext).getInt("LastLong", -1));
+
+        // Here we check if the point is a satasfactory distance from the previously saved point, so that
+        // we do not save shitty repeated points whilst we are at one location for a long period of time.
+        // This should be done by the Fused GPS but it does not seem to be consistently working.
+        //if (lastLatitude > 0 && lastLongitude > 0) {
+            Location oldLocation = new Location("Old Location");
+            oldLocation.setLatitude(lastLatitude);
+            oldLocation.setLongitude(lastLongitude);
+
+            float[] distances = new float[1];
+            Location.distanceBetween(lastLatitude,
+                    lastLongitude, location.getLatitude(),
+                    location.getLongitude(), distances);
+
+            // Check distances, if less than X meters moved, we dont want to be saving the point
+            for (float distance : distances) {
+                if (distance < 60) {
+                    //return;
+                }
+            }
+
+
+        //}
+
+        // Build up the object that we are going to save
         ContentValues cv = new ContentValues();
         cv.put("latitude", latitude);
         cv.put("longitude", longitude);
         cv.put("timeStamp", seconds);
         cv.put("trailId", trailId);
         cv.put("userId", userId);
+        cv.put("trailIndex", trailPointIndex);
 
         // Write our shit to the database.
         SQLiteDatabase localDb = getWritableDatabase();
         localDb.insert("trailPoints", null, cv);
         localDb.close();
+
+        // Increment an index
+        trailPointIndex += 1;
+
+        // Update our index now that we have ssaved the point to the db.
+        setTrailPointIndex(trailId, trailPointIndex);
+        // Check whether we should save the points to the server.
+        updateServer(2);
+
+        // Save the last point.
+        PreferenceManager.getDefaultSharedPreferences(mContext).edit().putInt("LastLat", (int) location.getLatitude()).commit();
+        PreferenceManager.getDefaultSharedPreferences(mContext).edit().putInt("LastLong", (int) location.getLongitude()).commit();
+
     }
+
+    // Method that checks whether more than "pointCount" points have been saved to the db, and if so
+    // we need to update the server to have
+    private void updateServer(int pointCount) {
+        final String trailId = PreferenceManager.getDefaultSharedPreferences(mContext).getString("TRAILID", "-1");
+
+        db = getWritableDatabase();
+        Cursor cursor = db.rawQuery("SELECT * from trailPoints where trailId="+trailId, null);
+        cursor.moveToFirst();
+
+        // This makes us only update when we have X amount of points.
+        if (cursor.getCount() < pointCount ) {
+            return;
+        }
+
+
+        // Dont want to be saving a non existent trail - I will do other shit with it first
+        if (!trailId.equals("-1")) {
+            JSONObject jsonObject = getAllSavedTrailPoints(trailId);
+
+            // Save our trails.
+            String url = LoadBalancer.RequestServerAddress() + "/rest/TrailManager/SaveTrailPoints/";
+            AsyncPost post = new AsyncPost(url, new AsyncPost.RequestListener() {
+                @Override
+                public void onFinished(String result) {
+                   DeleteAllSavedTrailPoints(trailId);
+                }
+            }, jsonObject);
+
+            post.execute();
+        }
+    }
+
+
     /*
     Method to remove all trailPoints from the db. We want to do this after saving them.
      */
     public void DeleteAllSavedTrailPoints(String trailId) {
-        db = getWritableDatabase();
-        Cursor constantsCursor=db.rawQuery("DELETE FROM trailPoints Where trailId =" +trailId,
-                null);
+        getWritableDatabase().delete("trailPoints","trailId="+trailId, null);
     }
+
     public JSONObject getAllSavedTrailPoints(String trailId) {
         JSONObject allTrailPoints = new JSONObject();
         Cursor constantsCursor=getReadableDatabase().rawQuery("SELECT * FROM trailPoints WHERE trailId ="+trailId+" ORDER BY timeStamp",
                 null);
         int numberOfPointsIndex = 0;
         JSONObject lastNode = null;
+
         while (constantsCursor.moveToNext()) {
             JSONObject pointJsonNode = new JSONObject();
             //Get all columns
@@ -108,6 +222,7 @@ public class DatabaseController extends SQLiteOpenHelper {
             Double longitude = constantsCursor.getDouble(constantsCursor.getColumnIndex("longitude"));
             String userId = constantsCursor.getString(constantsCursor.getColumnIndex("userId"));
             String timeStamp = constantsCursor.getString(constantsCursor.getColumnIndex("timeStamp"));
+            int index = constantsCursor.getInt(constantsCursor.getColumnIndex("trailIndex"));
             // Save our single point as a single node, and add it to the overall object that is
             // going to be sent to the server.
             try {
@@ -116,18 +231,16 @@ public class DatabaseController extends SQLiteOpenHelper {
                 pointJsonNode.put("userId", userId);
                 pointJsonNode.put("timeStamp", timeStamp);
                 pointJsonNode.put("trailId", trailId);
+                pointJsonNode.put("index", index);
+                pointJsonNode.put("next", index+1);
                 allTrailPoints.put("Index:"+numberOfPointsIndex, pointJsonNode);
-                if (lastNode != null) {
-                    // set next node.
-                    lastNode.put("next", numberOfPointsIndex);
-                }
-                lastNode = pointJsonNode;
                 // Also need to set last node and next node. So :
                 numberOfPointsIndex += 1;
             } catch (JSONException e) {
                 e.printStackTrace();
             }
         }
+        numberOfPointsIndex += 1;
         Log.i("BC.DatabaseController", "Found Trail Points: " + allTrailPoints.toString());
         return allTrailPoints;
     }
@@ -143,6 +256,11 @@ public class DatabaseController extends SQLiteOpenHelper {
 		// TODO Auto-generated method stub
         this.db = db;
 
+        Toast.makeText(mContext, "Constructing Databases", Toast.LENGTH_SHORT).show();
+
+        /*
+            Here we build up all our databases.
+         */
         db.execSQL("CREATE TABLE users (_id INTEGER PRIMARY KEY AUTOINCREMENT, userid TEXT," +
                 "username TEXT, " +
                 "age TEXT," +
@@ -151,22 +269,21 @@ public class DatabaseController extends SQLiteOpenHelper {
         //Create our linkedTrails table.
         db.execSQL("CREATE TABLE linkedTrails (_id INTEGER PRIMARY KEY AUTOINCREMENT, trailId TEXT);");
 
+        // Table to hold all our indexs for all our users trails
         db.execSQL("CREATE TABLE trailPoints (_id INTEGER PRIMARY KEY AUTOINCREMENT, " +
                 "trailId TEXT," +
                 "userId TEXT," +
                 "latitude REAL," +
                 "longitude REAL," +
+                "trailIndex INTEGER,"+
                 "timeStamp TEXT);");
+
+        db.execSQL("CREATE TABLE "+ TRAIL_POINTS_INDEX+ " (_id INTEGER PRIMARY KEY AUTOINCREMENT, trailid TEXT, trailIndex INTEGER);");
 	}
 	
 	public SQLiteDatabase GetDBInstance() {
 		return this.db;
 	}
-	
-	public void LoadDataFromDatabaseTest() {
-		Cursor constantsCursor=db.rawQuery("SELECT _ID, title, value "+
-				"FROM users ORDER BY title",
-				null);
-	}
+
 	
 }

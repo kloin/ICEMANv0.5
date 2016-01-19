@@ -24,7 +24,7 @@ import com.breadcrumbs.ServiceProxy.AsyncDataRetrieval;
 import com.breadcrumbs.ServiceProxy.AsyncUploadVideo;
 import com.breadcrumbs.Trails.MyCurrentTrailManager;
 import com.breadcrumbs.caching.GlobalContainer;
-import com.breadcrumbs.client.R;
+import com.breadcrumbs.R;
 
 import org.json.JSONException;
 import org.json.JSONObject;

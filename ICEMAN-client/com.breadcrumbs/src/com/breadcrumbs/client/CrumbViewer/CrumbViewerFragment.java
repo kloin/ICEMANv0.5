@@ -24,7 +24,7 @@ import com.breadcrumbs.ServiceProxy.AsyncDataRetrieval;
 import com.breadcrumbs.ServiceProxy.AsyncRetrieveImage;
 import com.breadcrumbs.ServiceProxy.MasterProxy;
 import com.breadcrumbs.caching.GlobalContainer;
-import com.breadcrumbs.client.R;
+import com.breadcrumbs.R;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -58,7 +58,7 @@ public class CrumbViewerFragment extends Fragment {
     }
 
     private void SetUpClickHandlers() {
-        final Button commentButton = (Button) rootView.findViewById(R.id.comment_button);
+        final TextView commentButton = (TextView) rootView.findViewById(R.id.comment_button);
         commentButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

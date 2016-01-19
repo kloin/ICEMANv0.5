@@ -4,12 +4,10 @@ package com.breadcrumbs.client.Cards;
  * Created by aDirtyCanvas on 7/9/2015.
  */
 
-import android.content.Context;
-import android.content.Intent;
+import android.app.Activity;
 import android.graphics.Bitmap;
 import android.location.Address;
 import android.location.Geocoder;
-import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -25,15 +23,14 @@ import android.widget.TextView;
 import com.breadcrumbs.Framework.JsonHandler;
 import com.breadcrumbs.Network.LoadBalancer;
 import com.breadcrumbs.ServiceProxy.AsyncDataRetrieval;
-import com.breadcrumbs.ServiceProxy.AsyncRetrieveImage;
 import com.breadcrumbs.ServiceProxy.UpdateViewElementWithProperty;
 import com.breadcrumbs.caching.GlobalContainer;
-import com.breadcrumbs.client.Maps.DisplayCrumb;
-import com.breadcrumbs.client.R;
+import com.breadcrumbs.R;
+import com.breadcrumbs.caching.TextCachingInterface;
+import com.bumptech.glide.Glide;
 
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.w3c.dom.Text;
 
 import java.io.IOException;
 import java.text.MessageFormat;
@@ -45,31 +42,31 @@ import java.util.Locale;
 /**
  * Created by aDirtyCanvas on 7/7/2015.
  */
-public class CrumbCardAdapter extends RecyclerView.Adapter<CrumbCardAdapter.ViewHolder> {
+    public class CrumbCardAdapter extends RecyclerView.Adapter<CrumbCardAdapter.ViewHolder> {
     private ArrayList<String> mDataset;
-    private Context mContext;
+    private Activity mContext;
     private String userId;
     private boolean commentsOpen = false;
     private boolean commentsLoaded = false;
     private GlobalContainer globalContainer;
+    private String jsonResult;
     // Provide a reference to the views for each data item
     // Complex data items may need more than one view per item, and
     // you provide access to all the views for a data item in a view holder
     public static class ViewHolder extends RecyclerView.ViewHolder {
         // each data item is just a string in this case
         public LinearLayout CardInner;
-        public ViewHolder(View v) {
-            super(v);
-            CardInner = (LinearLayout)v;
+        public ViewHolder(View view) {
+            super(view);
+            CardInner = (LinearLayout)view;
         }
     }
 
-    // Provide a suitable constructor (depends on the kind of dataset)
-    public CrumbCardAdapter(ArrayList<String> myDataset, Context context) {
+
+    public CrumbCardAdapter(ArrayList<String> myDataset, Activity context) {
         // This is our JSONObject of trailData (id, name etc).
         mDataset = myDataset;
         mContext = context;
-
     }
 
     // Create new views (invoked by the layout manager)
@@ -79,8 +76,8 @@ public class CrumbCardAdapter extends RecyclerView.Adapter<CrumbCardAdapter.View
         // create a new view
         View v = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.crumb_card, parent, false);
-        // Set the name, user, views etc for a trail and go about loading its image
 
+        // Set the name, user, views etc for a trail and go about loading its image
         ViewHolder vh = new ViewHolder(v);
         return vh;
     }
@@ -91,57 +88,88 @@ public class CrumbCardAdapter extends RecyclerView.Adapter<CrumbCardAdapter.View
 
         // Here we need to get the trailId from the array.
         String crumbId = mDataset.get(position);
-
-        FetchAndBindObject(holder.CardInner, crumbId);
+        FetchAndBindObject(holder.CardInner, crumbId, position);
         SetCommentClickHandlers(holder.CardInner, crumbId);
     }
 
-    private void FetchAndBindObject(final LinearLayout card, final String crumbId) {
-        AsyncRetrieveImage asyncFetch = new AsyncRetrieveImage(crumbId, new AsyncRetrieveImage.RequestListener() {
-            @Override
-            public void onFinished(Bitmap result) {
-                ImageView imageView = (ImageView) card.findViewById(R.id.crumb_image);
-                imageView.setImageBitmap(result);
-                card.findViewById(R.id.crumb_progress_bar).setVisibility(View.GONE);
-                card.findViewById(R.id.crumb_image).setVisibility(View.VISIBLE);
-            }
-        });
-        String url = LoadBalancer.RequestServerAddress() +"/rest/Crumb/GetLatitudeAndLogitudeForCrumb/"+crumbId;
-        AsyncDataRetrieval fetchCardDetails = new AsyncDataRetrieval(url, new AsyncDataRetrieval.RequestListener() {
-            @Override
-            public void onFinished(String result) {
-                // Result is our card details. We need to go though and fetch these
+    @Override
+    public void onViewRecycled(ViewHolder holder) {
+        ImageView imageView = (ImageView) holder.CardInner.findViewById(R.id.crumb_image);
+        imageView.setImageDrawable(null);
+    }
+
+    private void FetchAndBindObject(final LinearLayout card, final String crumbId, int position) {
+        final ImageView imageView = (ImageView) card.findViewById(R.id.crumb_image);
+        final TextCachingInterface textCachingInterface = new TextCachingInterface(mContext);
+        final String latLongKey = "GetLatitudeAndLogitudeForCrumb"+crumbId;
+        String cachedLatLon =  textCachingInterface.FetchDataInStringFormat(latLongKey);
+        if (cachedLatLon == null) {
+            String url = LoadBalancer.RequestServerAddress() +"/rest/Crumb/GetLatitudeAndLogitudeForCrumb/"+crumbId;
+            AsyncDataRetrieval fetchCardDetails = new AsyncDataRetrieval(url, new AsyncDataRetrieval.RequestListener() {
+                @Override
+                public void onFinished(String result) {
+                    BindCard(result, card);
+                    textCachingInterface.CacheText(latLongKey, result);
+                }
+            });
+            fetchCardDetails.execute();
+
+        } else {
+            BindCard(cachedLatLon, card);
+        }
+
+        // Need to make a base class for loadBitmap, non cards wont work with this.
+        Glide.with(mContext).load(LoadBalancer.RequestCurrentDataAddress() + "/images/"+crumbId+".jpg").centerCrop().placeholder(R.drawable.background3).crossFade().into(imageView);
+
+        final String descriptionKey = "chat"+crumbId;
+        String description =  textCachingInterface.FetchDataInStringFormat(descriptionKey);
+        if (description == null) {
+            String crumbDescriptionUrl = LoadBalancer.RequestServerAddress() +"/rest/login/GetPropertyFromNode/"+crumbId+"/Chat/";
+            AsyncDataRetrieval fetchCrumbDescription = new AsyncDataRetrieval(crumbDescriptionUrl, new AsyncDataRetrieval.RequestListener() {
+                @Override
+                public void onFinished(String result) {
+                    TextView crumbDescription = (TextView) card.findViewById(R.id.crumb_description);
+                    crumbDescription.setText(result);
+                    textCachingInterface.CacheText(descriptionKey, result);
+                }
+            });
+            fetchCrumbDescription.execute();
+        } else {
+            TextView crumbDescription = (TextView) card.findViewById(R.id.crumb_description);
+            crumbDescription.setText(description);
+        }
+    }
+
+
+    private void BindCard(String data, final LinearLayout card) {
+        jsonResult = data;
+        // Result is our card details. We need to go though and fetch these
+        new Thread(new Runnable() {
+            public void run() {
                 try {
-                    // Fetch our data, then
-                    JSONObject resultJSON = new JSONObject(result);
+                    // Fetch our data
+                    JSONObject resultJSON = new JSONObject(jsonResult);
                     Double Latitude = resultJSON.getDouble("Latitude");
                     Double Longitude = resultJSON.getDouble("Longitude");
-                    TextView locality = (TextView) card.findViewById(R.id.location);
                     Geocoder gcd = new Geocoder(mContext, Locale.getDefault());
-                    List<Address> addresses = gcd.getFromLocation(Latitude, Longitude, 1);
+                    final List<Address> addresses = gcd.getFromLocation(Latitude, Longitude, 1);
                     if (addresses.size() > 0)
-                        locality.setText(addresses.get(0).getLocality());
+                        // Need to get back on the UI thread to update.
+                        mContext.runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                TextView locality = (TextView) card.findViewById(R.id.location);
+                                locality.setText(addresses.get(0).getLocality());
+                            }
+                        });
                 } catch (JSONException e) {
                     e.printStackTrace();
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
             }
-        });
 
-        String crumbDescriptionUrl = LoadBalancer.RequestServerAddress() +"/rest/login/GetPropertyFromNode/"+crumbId+"/Chat/";
-        AsyncDataRetrieval fetchCrumbDescription = new AsyncDataRetrieval(crumbDescriptionUrl, new AsyncDataRetrieval.RequestListener() {
-            @Override
-            public void onFinished(String result) {
-                TextView crumbDescription = (TextView) card.findViewById(R.id.crumb_description);
-                crumbDescription.setText(result);
-            }
-        });
-
-        fetchCrumbDescription.execute();
-        fetchCardDetails.execute();
-        asyncFetch.execute();
-
+        }).start();
     }
 
     private void SetCommentClickHandlers(final LinearLayout card, final String crumbId) {
@@ -173,12 +201,11 @@ public class CrumbCardAdapter extends RecyclerView.Adapter<CrumbCardAdapter.View
                 // Get our variables to save.
                 EditText commentTextField = (EditText) card.findViewById(R.id.user_comment);
                 String CommentText = commentTextField.getText().toString();
-                //commentTextField.setText("");
+                commentTextField.setText("");
 
                 // This removes the focus. There are other was but this hack is just so simple.
                 commentTextField.setEnabled(false);
                 commentTextField.setEnabled(true);
-
 
                 // Save this beast
                 globalContainer = GlobalContainer.GetContainerInstance();
@@ -278,6 +305,7 @@ public class CrumbCardAdapter extends RecyclerView.Adapter<CrumbCardAdapter.View
 
         TextView commentText = (TextView) comment.findViewById(R.id.comment_text);
         commentText.setText(CommentText);
+
         TextView commenter = (TextView) comment.findViewById(R.id.user_name);
         viewUpdater.UpdateTextViewElement(commenter, UserId, "Username");
         LinearLayout commentHolder = (LinearLayout) card.findViewById(R.id.comments_holder);

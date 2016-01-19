@@ -12,6 +12,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.AdapterView;
 import com.breadcrumbs.Network.LoadBalancer;
+import com.breadcrumbs.R;
 import com.breadcrumbs.ServiceProxy.AsyncDataRetrieval;
 import com.breadcrumbs.ServiceProxy.AsyncRetrieveImage;
 import com.breadcrumbs.ServiceProxy.HTTPRequestHandler;

@@ -26,6 +26,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.breadcrumbs.R;
 import com.breadcrumbs.client.tabs.HomePageFragment;
 import com.breadcrumbs.client.tabs.SubscriptionManagerTab;
 import com.breadcrumbs.client.tabs.subtabs.PinnedTab;

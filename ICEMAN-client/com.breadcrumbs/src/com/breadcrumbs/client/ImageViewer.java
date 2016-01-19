@@ -19,6 +19,7 @@ import android.widget.VideoView;
 
 import com.breadcrumbs.Framework.JsonHandler;
 import com.breadcrumbs.Network.LoadBalancer;
+import com.breadcrumbs.R;
 import com.breadcrumbs.ServiceProxy.AsyncDataRetrieval;
 import com.breadcrumbs.ServiceProxy.AsyncRetrieveImage;
 import com.breadcrumbs.caching.GlobalContainer;
@@ -63,7 +64,7 @@ public class ImageViewer extends FragmentActivity{
     }
 
     private void SetUpClickHandlers() {
-        final Button commentButton = (Button) findViewById(R.id.comment_button);
+        final TextView commentButton = (TextView) findViewById(R.id.comment_button);
         commentButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

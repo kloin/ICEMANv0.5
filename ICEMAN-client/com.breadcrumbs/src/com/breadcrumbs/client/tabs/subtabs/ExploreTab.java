@@ -6,7 +6,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.breadcrumbs.client.R;
+import com.breadcrumbs.R;
 
 /**
  * Created by aDirtyCanvas on 4/30/2015.

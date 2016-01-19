@@ -30,6 +30,13 @@ public class RESTTrailManager {
 	}
 	
 	@GET
+	@Path("/GetAllTrailsForAUser/{UserId}")
+	public String GetAllTrailsForAUser(@PathParam("UserId") String UserId) {
+		Trail trail = new Trail();
+		return trail.GetAllTrailsForAUser(Integer.parseInt(UserId));
+	}
+	
+	@GET
 	@Path("/GetAllTrailPoints/{TrailId}")
 	public String GetAllTrailPoints(@PathParam("TrailId") String TrailId) {
 		Trail trail = new Trail();
@@ -71,7 +78,6 @@ public class RESTTrailManager {
 		return trail.GetNumberOfViewsForATrail(TrailId);
 	}
 	
-	
 	@GET
 	@Path("/UserLikesTrail/{UserId}/{TrailId}") 
 	public String UserLikesTrail(@PathParam("UserId") String UserId,
@@ -94,6 +100,13 @@ public class RESTTrailManager {
 	public String GetNumberOfCrumbsForATrail(@PathParam("TrailId") String TrailId) {
 		Trail trail = new Trail();
 		return trail.GetNumberOfCrumbsForATrail(TrailId);
+	}
+	
+	@GET
+	@Path("/GetNumberOfTrailsAUserOwns/{UserId}") 
+	public String GetNumberOfTrailsAUserOwns(@PathParam("UserId") String UserId) {
+		UserService user = new UserService();
+		return user.GetNumberOfTrailsAUserOwns(UserId);
 	}
 	
 	@GET
@@ -120,6 +133,12 @@ public class RESTTrailManager {
 		// Fetch each individual detail for the trail
 		Trail trail = new Trail();
 		return trail.GetSimpleDetailsForATrail(TrailId);
+	}
+	
+	@GET
+	@Path("DeleteAllTrails") 
+	public void DeleteAllTrails() {
+		//USE WITH CAUTION _ THIS SHOULD BE REMOVED BEFORE A PROPER RELEASE
 	}
 		
 	

@@ -6,16 +6,23 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
+import android.location.Address;
+import android.location.Geocoder;
 import android.location.Location;
 import android.net.Uri;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.provider.MediaStore;
 import android.support.v4.app.FragmentActivity;
+import android.support.v4.util.TimeUtils;
 import android.support.v4.view.ViewPager;
+import android.support.v7.widget.CardView;
+import android.util.DisplayMetrics;
+import android.util.Log;
 import android.util.LruCache;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.RotateAnimation;
 import android.widget.ArrayAdapter;
@@ -37,9 +44,13 @@ import com.breadcrumbs.Trails.MyCurrentTrailManager;
 import com.breadcrumbs.caching.GlobalContainer;
 import com.breadcrumbs.client.BaseViewModel;
 import com.breadcrumbs.client.BreadCrumbsImageSelector;
-import com.breadcrumbs.client.R;
+import com.breadcrumbs.R;
 import com.breadcrumbs.client.SelectedEventViewerBase;
 import com.getbase.floatingactionbutton.FloatingActionButton;
+import com.google.android.gms.common.api.ResultCallback;
+import com.google.android.gms.location.places.Place;
+import com.google.android.gms.location.places.PlaceLikelihood;
+import com.google.android.gms.location.places.PlaceLikelihoodBuffer;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -52,9 +63,12 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.text.MessageFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 
@@ -79,6 +93,7 @@ public class SaveEventFragment extends Activity {
     private JSONObject editableTrails;
 	private HashMap<String, String> trailAndIdMap;
     private AsyncDataRetrieval asyncDataRetrieval;
+	BreadCrumbsFusedLocationProvider locationProvider;
 	/*
 	 * Do as LITTLE as possible in the constructors. If possible, load at run-time
 	 */
@@ -95,6 +110,27 @@ public class SaveEventFragment extends Activity {
         SetMedia();
         // use with care.
         currentTrailManager = MyCurrentTrailManager.GetCurrentTrailManagerInstance();
+		// Set the height of the camera to be the same as the width so we get a square.
+		CardView cardView = (CardView) findViewById(R.id.card_view);
+		ViewGroup.LayoutParams layoutParams = cardView.getLayoutParams();
+		DisplayMetrics displaymetrics = new DisplayMetrics();
+		getWindowManager().getDefaultDisplay().getMetrics(displaymetrics);
+		layoutParams.height = displaymetrics.widthPixels;
+		cardView.setLayoutParams(layoutParams);
+		setBackButtonListener();
+		locationProvider = new BreadCrumbsFusedLocationProvider(this);
+	}
+
+
+	private void setBackButtonListener() {
+		ImageView backButton = (ImageView) findViewById(R.id.backButtonCapture);
+		backButton.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				// Close this activity, which will exit the screen
+				finish();
+			}
+		});
 	}
 
 	public static void SetCrumbMedia(String crumbMedias) {
@@ -130,8 +166,7 @@ public class SaveEventFragment extends Activity {
 				@Override
 				public void onClick(View view) {
 					createNewEvent();
-					Toast.makeText(context, "Crumb Created", Toast.LENGTH_SHORT).show();
-				    finish();
+					finish();
 				/*	Intent viewCrumbsIntent = new Intent(context, BreadCrumbsImageSelector.class);
 					String trailId = PreferenceManager.getDefaultSharedPreferences(context).getString("TRAILID", null);
 					if (trailId != null) {
@@ -209,19 +244,72 @@ public class SaveEventFragment extends Activity {
 	private void createNewEvent() {
 		//Currently we will only be creating a crumb. In the future we will be able to create both.
         EditText chatTextView = (EditText) findViewById(R.id.new_crumb_title);
-		String TrailId = PreferenceManager.getDefaultSharedPreferences(this.getApplicationContext()).getString("TRAILID", "-1");
+		final String TrailId = PreferenceManager.getDefaultSharedPreferences(this.getApplicationContext()).getString("TRAILID", "-1");
         if (TrailId.equals("-1")) {
+			Toast.makeText(this, "No current active trail. Create a trail from the main menu.", Toast.LENGTH_LONG).show();
             return;
         }
-        Location location = BreadCrumbsFusedLocationProvider.GetCurrentLocation();
+
+        Location location = locationProvider.GetLastKnownLocation();
+		if (location == null) {
+			// Need to display and error to the user
+			Toast.makeText(this, "Failed to find location. Please ensure you have location services enabled", Toast.LENGTH_SHORT).show();
+			return;
+		}
+
 		double lat = location.getLatitude();
 		double longit = location.getLongitude();
-		String latitude = String.valueOf(lat);
-		String longitude = String.valueOf(longit);
-		String Chat = chatTextView.getText().toString();
+		String suburb = "";
+		String city = "";
+		String country = "";
+		Geocoder gcd = new Geocoder(context, Locale.getDefault());
+		try {
+			final List<Address> addresses = gcd.getFromLocation(lat, longit, 1);
+			addresses.get(0);
+			if (addresses.size() > 0) {
+				Address address = addresses.get(0);
+				suburb = address.getSubLocality();
+				city = address.getLocality();
+				country = address.getCountryName();
+			}
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		final String latitude = String.valueOf(lat);
+		final String longitude = String.valueOf(longit);
+		final String Chat = chatTextView.getText().toString();
 		String Icon = "Shitty styff";
-		String UserId = globalContainer.GetUserId();
-		createNewCrumb(Chat, UserId, TrailId, latitude, longitude,  "icon", ".jpg");
+		final String UserId = globalContainer.GetUserId();
+
+		Calendar calendar = Calendar.getInstance();
+		final String timeStamp = calendar.getTime().toString();
+		final String finalSuburb = suburb;
+		final String finalCity = city;
+		final String finalCountry = country;
+		// Just think of this shitty code as a javascript promise
+		locationProvider.GetCurrentPlace(new ResultCallback<PlaceLikelihoodBuffer>() {
+			@Override
+			public void onResult(PlaceLikelihoodBuffer likelyPlaces) {
+				String placeId = "";
+				PlaceLikelihood placeLikelihood = likelyPlaces.get(0);
+				if (placeLikelihood != null ) {
+					Place place = placeLikelihood.getPlace();
+					if (place!=null) {
+						placeId = place.getId();
+					}
+				}
+		/*		for (PlaceLikelihood placeLikelihood : likelyPlaces) {
+					Log.i("TEST", String.format("Place '%s' has likelihood: %g",
+							placeLikelihood.getPlace().getName(),
+							placeLikelihood.getLikelihood()));
+							id = placeLikelihood.getPlace().getId();
+
+				}*/
+				likelyPlaces.release();
+				// We need to wait
+				createNewCrumb(Chat, UserId, TrailId, latitude, longitude,  "icon", ".jpg", placeId, finalSuburb, finalCity, finalCountry, timeStamp);
+			}
+		});
 	}
 	
 	private void saveImage() {
@@ -237,8 +325,6 @@ public class SaveEventFragment extends Activity {
 		});
 		imagesave.execute();	
 	}
-	
-	
 
 	public void SetMedia() {
         //Unpack extras
@@ -258,8 +344,8 @@ public class SaveEventFragment extends Activity {
 //		});
 //	}
 	
-	private void createNewCrumb(String Chat, String UserId,	String TrailId,	String Latitude, String Longitude, String Icon, String Extension){
-        String url = MessageFormat.format("{0}/rest/login/savecrumb/{1}/{2}/{3}/{4}/{5}/{6}/{7}",
+	private void createNewCrumb(String Chat, String UserId,	String TrailId,	String Latitude, String Longitude, String Icon, String Extension, String placeId, String suburb, String city, String country, String timeStamp){
+        String url = MessageFormat.format("{0}/rest/login/savecrumb/{1}/{2}/{3}/{4}/{5}/{6}/{7}/{8}/{9}/{10}/{11}/{12}",
                 LoadBalancer.RequestServerAddress(),
                 Chat,
                 UserId,
@@ -267,7 +353,12 @@ public class SaveEventFragment extends Activity {
                 Latitude,
                 Longitude,
                 Icon,
-                Extension);
+                Extension,
+				placeId,
+				suburb,
+				city,
+				country,
+				timeStamp);
 
         url = url.replaceAll(" ", "%20");
 
