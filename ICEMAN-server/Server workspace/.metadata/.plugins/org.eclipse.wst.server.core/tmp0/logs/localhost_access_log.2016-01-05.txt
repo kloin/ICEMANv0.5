@@ -1,0 +1,11 @@
+127.0.0.1 - - [05/Jan/2016:12:15:15 +1300] "GET / HTTP/1.1" 404 951
+0:0:0:0:0:0:0:1 - - [05/Jan/2016:12:19:31 +1300] "GET /BreadCrumbs/rest/TrailManager/GetAllTrailsForAUser/0 HTTP/1.1" 200 12
+0:0:0:0:0:0:0:1 - - [05/Jan/2016:12:19:31 +1300] "GET /favicon.ico HTTP/1.1" 404 973
+0:0:0:0:0:0:0:1 - - [05/Jan/2016:12:19:35 +1300] "GET /BreadCrumbs/rest/TrailManager/GetAllTrailsForAUser/1 HTTP/1.1" 200 12
+127.0.0.1 - - [05/Jan/2016:12:19:51 +1300] "GET / HTTP/1.1" 404 951
+0:0:0:0:0:0:0:1 - - [05/Jan/2016:12:33:58 +1300] "GET /BreadCrumbs/rest/TrailManager/GetAllTrailsForAUser/1 HTTP/1.1" 200 12
+127.0.0.1 - - [05/Jan/2016:12:39:49 +1300] "GET / HTTP/1.1" 404 951
+127.0.0.1 - - [05/Jan/2016:12:42:59 +1300] "GET / HTTP/1.1" 404 951
+0:0:0:0:0:0:0:1 - - [05/Jan/2016:12:43:25 +1300] "GET /BreadCrumbs/rest/TrailManager/GetAllTrailsForAUser/1 HTTP/1.1" 200 12
+0:0:0:0:0:0:0:1 - - [05/Jan/2016:12:43:45 +1300] "GET /BreadCrumbs/rest/TrailManager/GetAllTrailsForAUser/64 HTTP/1.1" 200 12
+127.0.0.1 - - [05/Jan/2016:13:04:01 +1300] "GET / HTTP/1.1" 404 951

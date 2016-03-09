@@ -16,8 +16,6 @@ import android.hardware.Camera.PictureCallback;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
-import android.support.design.widget.FloatingActionButton;
-import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.util.LruCache;
 import android.view.LayoutInflater;
@@ -69,7 +67,7 @@ public class CameraController extends SurfaceView implements SurfaceHolder.Callb
     private Activity context;
     private boolean backCameraOpen = true;
     private boolean video = false; // by default
-    private MediaRecorder recorder;
+    public MediaRecorder recorder;
     private boolean currentlyFilming = false;
     private String fileName;
 
@@ -80,7 +78,6 @@ public class CameraController extends SurfaceView implements SurfaceHolder.Callb
         super(context);
         getHolder().addCallback(this);
         this.context = (Activity) context;
-
     }
 
     public CameraController(Context context, AttributeSet attributeSet) {
@@ -108,8 +105,8 @@ public class CameraController extends SurfaceView implements SurfaceHolder.Callb
         int raot = display.getRotation();
         mCamera.setDisplayOrientation(90);
         Camera.Parameters parameters = mCamera.getParameters();
-        Camera.Size size = parameters.getSupportedPictureSizes().get(0);
 
+        Camera.Size size = getOptimalPreviewSize(parameters.getSupportedPictureSizes());
         parameters.setPictureSize(size.width, size.height);
         mCamera.setParameters(parameters);
 
@@ -148,6 +145,7 @@ public class CameraController extends SurfaceView implements SurfaceHolder.Callb
         mCamera.release();
         mCamera = null; // This could cause issues.
     }
+
     @Override
     public void surfaceChanged(SurfaceHolder holder, int format, int w, int h) {
         if (!isPreviewRunning) {
@@ -155,8 +153,8 @@ public class CameraController extends SurfaceView implements SurfaceHolder.Callb
             try {
                 Display display = ((WindowManager)context.getSystemService(context.WINDOW_SERVICE)).getDefaultDisplay();
                 Camera.Parameters parameters = mCamera.getParameters();
-                Camera.Size size = parameters.getSupportedPictureSizes().get(0);
 
+                Camera.Size size = getOptimalPreviewSize(parameters.getSupportedPictureSizes());
                 parameters.setPictureSize(size.width, size.height);
                 mCamera.setParameters(parameters);
                 mCamera.setPreviewDisplay(holder);
@@ -166,6 +164,7 @@ public class CameraController extends SurfaceView implements SurfaceHolder.Callb
             }
         }
     }
+
     public void OpenBackCamera() {
         if (isPreviewRunning) {
             mCamera.stopPreview();
@@ -176,7 +175,6 @@ public class CameraController extends SurfaceView implements SurfaceHolder.Callb
         mCamera = Camera.open(0);
         mCamera.startPreview();
         isPreviewRunning = true;
-
         try {
             Display display = ((WindowManager)context.getSystemService(context.WINDOW_SERVICE)).getDefaultDisplay();
             Camera.Parameters parameters = mCamera.getParameters();
@@ -186,6 +184,34 @@ public class CameraController extends SurfaceView implements SurfaceHolder.Callb
             e.printStackTrace();
         }
         backCameraOpen = true;
+    }
+
+    private Camera.Size getOptimalPreviewSize(List<Camera.Size> sizes) {
+        // Source: http://stackoverflow.com/questions/7942378/android-camera-will-not-work-startpreview-fails
+        Camera.Size optimalSize = null;
+
+        // final double ASPECT_TOLERANCE = 0.1;
+        // double targetRatio = (double) height / width;
+
+        // Try to find a size match which suits the whole screen minus the menu on the left.
+        for (Camera.Size size : sizes){
+            Log.d("CAM", "Checking size: width = " + size.width + ", Height = "+size.height);
+            if (size.height <1000 && size.height >= 720) {
+                return size;
+            }
+            //if (size.height != width) continue;
+            //double ratio = (double) size.width / size.height;
+            // if (ratio <= targetRatio + ASPECT_TOLERANCE && ratio >= targetRatio - ASPECT_TOLERANCE){
+            //     optimalSize = size;
+            // }
+        }
+
+        // If we cannot find the one that matches the aspect ratio, ignore the requirement.
+        if (optimalSize == null) {
+            // TODO : Backup in case we don't get a size.
+        }
+
+        return optimalSize;
     }
 
     public void SetFrontCamera() {
@@ -205,7 +231,6 @@ public class CameraController extends SurfaceView implements SurfaceHolder.Callb
 
             CheckOrientationIsNotAllFuckingRetarded(parameters, display);
             mCamera.setPreviewDisplay(mHolder);
-
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -220,8 +245,12 @@ public class CameraController extends SurfaceView implements SurfaceHolder.Callb
         }
     }
     // Set up the camera to record video
-    private boolean setUpVideoCamera() {
-        List<Camera.Size> supportedSizes = mCamera.getParameters().getSupportedVideoSizes();
+    public boolean setUpVideoCamera() {
+        Camera.Parameters parameters = mCamera.getParameters();
+
+        Camera.Size size = getOptimalPreviewSize(parameters.getSupportedPictureSizes());
+        parameters.setPictureSize(size.width, size.height);
+        mCamera.setParameters(parameters);
         recorder = new MediaRecorder();
         mCamera.unlock();
         recorder.setCamera(mCamera);
@@ -233,7 +262,7 @@ public class CameraController extends SurfaceView implements SurfaceHolder.Callb
         recorder.setVideoEncodingBitRate(3000000);
         recorder.setOutputFormat(MediaRecorder.OutputFormat.DEFAULT);
         recorder.setVideoFrameRate(16); //might be auto-determined due to lighting
-        recorder.setVideoSize(supportedSizes.get(0).width, supportedSizes.get(0).height);
+        recorder.setVideoSize(size.width, size.height);
         recorder.setAudioEncoder(MediaRecorder.AudioEncoder.AMR_NB);
         recorder.setVideoEncoder(MediaRecorder.VideoEncoder.MPEG_4_SP);
 
@@ -254,10 +283,11 @@ public class CameraController extends SurfaceView implements SurfaceHolder.Callb
             return false;
         }
         video = true;
+        recorder.start();
         return video;
     }
 
-    private boolean disableVideoCamera() {
+    public boolean disableVideoCamera() {
         //
         recorder.reset();
         recorder.release();
@@ -271,80 +301,6 @@ public class CameraController extends SurfaceView implements SurfaceHolder.Callb
         Listener for when the user takes a photo.
      */
     public void SetupCameraButtonListener() {
-
-     /*   FloatingActionButton cameraButton = (FloatingActionButton) context.findViewById(R.id.startstopbutton);
-        cameraButton.setOnLongClickListener(new OnLongClickListener() {
-
-            @Override
-            public boolean onLongClick(View v) {
-                currentlyFilming = true;
-                // Set up our video camera. This is different from taking a photo
-                setUpVideoCamera();
-                recorder.start();
-                return true;
-            }
-        });
-
-        cameraButton.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                // Take a photo
-                StaticShitCodeStuff.GetInstance().getMainActivity().startCamera();
-                mCamera.takePicture(null, rawCallback, jpegCallback);
-            }
-
-        });
-
-        cameraButton.setOnTouchListener(new OnTouchListener() {
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                if (event.getAction() == MotionEvent.ACTION_UP && currentlyFilming) {
-                    recorder.stop();
-                    disableVideoCamera();
-                    currentlyFilming = false;
-
-                    // Launch video intent to save the video.
-                    Intent save = new Intent();
-                    save.setClassName("com.breadcrumbs.client", "com.breadcrumbs.client.tabs.SaveVideoActivity");
-                    save.putExtra("videoUrl", fileName); //The uri to our address
-                    context.startActivity(save);
-                }
-                // return false so that we are not consuming the event and our onclick still works
-                return false;
-            }
-        });*/
-
-
-//       onCreateOptionsMenu(Menu menu) {
-//            MenuInflater inflater = getMenuInflater();
-//            inflater.inflate(R.menu.camera, menu);
-//            return super.onCreateOptionsMenu(menu);
-//        }
-//
-//        @Override
-//        public boolean onOptionsItemSelected(MenuItem item) {
-//            // Handle action buttons
-//            switch(item.getItemId()) {
-//                case R.id.reverse_camera:
-//                    // create intent to perform web search for this planet
-//
-//                    return true;
-//                default:
-//                    return super.onOptionsItemSelected(item);
-//            }
-//        }
-
-        //ImageButton switchCamera = (ImageButton) cameraRootView.findViewById(R.id.switchCameraButton);
-//        switchCamera.setOnClickListener(new OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                if (backCameraOpen) {
-//                    SetFrontCamera();
-//                } else {
-//                    OpenBackCamera();
-//                }
-//            }
-//        });
 
     }
 

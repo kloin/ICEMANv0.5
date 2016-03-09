@@ -56,14 +56,13 @@ public class Crumb {
 			trailManager.SetCoverPhoto(trailId, Integer.toString(crumbId));
 		}
 		
-		
 		dbm.CreateRelationship(crumb, trail, myRelationships.Part_Of);	
 		return String.valueOf(crumbId);
 	}
 	
 	public void ConvertAndSaveVideo(InputStream stream, String crumbId) {
 		// get first body part (index 0)                
-        File targetFile = new File("/usr/share/tomcat7/webapps/images/"+crumbId+".mp4");
+        File targetFile = new File("/var/lib/tomcat7/webapps/images/"+crumbId+".mp4");
         byte[] buffer = new byte[1024];
         OutputStream outputStream;
 		try {
@@ -95,7 +94,7 @@ public class Crumb {
             		serverAddress+crumbId+".jpg");
             
             imageOutFile.write(imageByte);
-            	
+          
             imageOutFile.close();
             
             // Now we need to create the thumbnail
@@ -105,20 +104,16 @@ public class Crumb {
 			BufferedImage thumbnail = new BufferedImage(100, 100, BufferedImage.TYPE_INT_RGB);
 			thumbnail.createGraphics().drawImage(scaledImg,0,0,null);
 			ImageIO.write(thumbnail, "jpg", new File(serverAddress + crumbId+"T.jpg"));
-
-			
 			
             Trail trail = new Trail();
             // Now test if we need to save a cover photo for a trail
             //trail.Set
-            
-            //It's common courtesy to shut the door on the way out...
+
 		} catch (IOException e) {
  
 			e.printStackTrace();
 		}
             //- this badboy with the crumbId so we can find it again
-    
 	}
 
 	public String GetLatitudeAndLongitude(String crumbId) {
@@ -129,6 +124,32 @@ public class Crumb {
 		jsonResponse.put("Latitude", latitude);
 		jsonResponse.put("Longitude", longitude);
 		return jsonResponse.toString();
+	}
+	
+	public void UserLikesCrumb(String userId, String crumbId) {
+		dbm = DBMaster.GetAnInstanceOfDBMaster();	
+		try {
+			Node userNode = dbm.RetrieveNode(Integer.parseInt(userId));
+			Node crumbNode = dbm.RetrieveNode(Integer.parseInt(crumbId));
+			//MATCH (a),(b)
+			//WHERE a.name = 'Peter' AND b.name = 'World' and (a)-[:TEST2]->(b) // Test for if relationship exists
+			//		RETURN a, b
+			dbm.CreateRelationship(userNode, crumbNode, myRelationships.Likes);	
+		} catch(NullPointerException nullPointerException) {
+			nullPointerException.printStackTrace();
+		}
+	}
+
+	public String GetNumberOfLikesForACrumb(String crumbId) {
+		Trail trail = new Trail();
+		return trail.GetNumberOfLikesForAnEntity(crumbId);		 
+	}
+	
+	/* removes a users like on a crumb */
+	public void RemoveLike(String userId, String crumbId) {
+		String cypherDelete = "START user=node(*) MATCH user-[rel:LIKES]->crumb WHERE id(user)="+userId+" AND id(crumb)= "+crumbId+" DELETE rel";
+		dbm = DBMaster.GetAnInstanceOfDBMaster();
+		dbm.ExecuteCypherQueryNoReturn(cypherDelete);
 	}
 	
 }

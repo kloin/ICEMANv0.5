@@ -1,0 +1,262 @@
+
+/* This is the css file that holds all the simple, generic styles like fonts, elevation etc of all the basic components*/
+
+.intro-card {
+	font-weight: 300;
+    font-family: roboto;
+}
+
+.header.paper-card .title-text.paper-card {
+	font-weight: 300;
+    font-family: roboto;
+    padding: 25px;
+}
+
+/* To ensure that a div stays below another div, we put this in between them.*/
+.clearer {
+    clear:both;
+}
+/* Mostly for reference?*/
+.theme {
+	primary-dark : #0288D1;
+	primary: #03A9F4;
+	primary-light : #B3E5FC;
+	header-light-text : #FFFFFF;
+	accent : #FF4081;
+	primary-text : #212121;
+	secondary-text : #727272;
+	devider-color : #B6B6B6;
+}
+
+/* Font and weight for our standard section headers.*/
+.headers {
+	font-weight: 300;
+    font-family: roboto;
+}
+/*Set up the paragraph for the pricing header card */
+p.pricing-tab {
+    font-size: 24px;
+    font-family: roboto;
+    font-weight: 300;
+    padding : 16px;
+    color: #727272;
+}
+
+/* Sets the margin down the left side.*/
+.align-left-side {
+	margin-left:6%;
+}
+
+/* Style for the home card */
+#home-card {
+	color : #5c5c5c;
+	font-family : roboto;
+	font-weight:300;
+}
+
+#features-header {
+	margin-bottom : 80px;
+}
+
+/* Card styles for the our main paper card header */
+#home-card .header.paper-card .title-text.paper-card {
+	font-size : 30px;
+	color : #5c5c5c;
+}
+
+.home-tabs {
+	right: 90px;
+    position: absolute;
+    margin-top: -15px;
+    font-family: roboto;
+    font-size: 12pt;
+}
+
+.paper-tabs-0 #selectionBar.paper-tabs {
+	background : #FF4081;
+	height: 4px;
+}
+
+.paper-tabs-test {
+	right:0;
+	position:absolute;
+	margin-top : -16px;
+	font-family : roboto;
+}
+
+#homepage {
+	height: 40%;
+	background: #03A9F4;
+}
+/* This currently sets the toolbar to be fixed and always display at the top */
+#toolbar {
+	position: fixed;
+    left: 0;
+    right: 0;
+    z-index: 999;
+}
+
+#pricing-header-card {
+    padding: 30px;
+}
+
+.column1 {
+    margin-top: -30px;
+    margin-left: 30px;
+}
+.pricing-card {
+	margin-bottom : 2px;
+}
+
+ #parent {
+  	background: #E5E5E5;
+	width: 100%;
+	text-align: center;
+}
+
+.header-price-sub-card {
+	width: 100%;
+}
+
+.child {
+	margin-left:3%;
+	margin-right:3%;
+	width:25%;
+	display: inline-block;
+	vertical-align: top;
+}
+
+.header-child {
+	margin-left:5%;
+	margin-right:3%;
+	display: inline-block;
+	vertical-align: top;
+}
+
+.pricing-card-header {
+		font-family : roboto;
+		font-weight : 300;
+}
+
+#price-tag {
+	position:absolute;
+	right:0;
+	font-size : 18px;
+}
+
+.pricing-card-row {
+    -webkit-column-count: 2;
+}
+
+#pricing-classification-section {
+	height: 250px;
+}
+
+p.pricing-tab {
+	font-size : 16px;
+}
+
+#pricing-main-splitter {
+	transform: translate(0px,-150px);
+}
+ 
+#main-pricing-header-detail {
+	font-size : 24px;
+}
+
+.content {
+	background: #E5E5E5;
+}
+
+.checkmark-right {
+	position: absolute;
+    left: 50%;
+    display:inline-block;
+    width: 22px;
+    height:22px;
+    -ms-transform: rotate(45deg); /* IE 9 */
+    -webkit-transform: rotate(45deg); /* Chrome, Safari, Opera */
+    transform: rotate(45deg);
+}
+
+.checkmark {
+	position: absolute;
+    left: 10px;
+    display:inline-block;
+    width: 22px;
+    height:22px;
+    -ms-transform: rotate(45deg); /* IE 9 */
+    -webkit-transform: rotate(45deg); /* Chrome, Safari, Opera */
+    transform: rotate(45deg);
+}
+
+.checkmark_stem {
+    position: absolute;
+    width: 6px;
+    height: 18px;
+    background-color: #ccc;
+    left: 22px;
+    top: 12px;
+}
+
+.checkmark_kick {
+    position: absolute;
+    width: 6px;
+    height: 6px;
+    background-color: #ccc;
+    left: 16px;
+    top: 24px;
+}
+
+#service-main {
+	
+}
+
+.half-row-column {
+	box-sizing: border-box;
+    width: 60%;
+    float: left;
+	max-height: 300px;
+}
+
+#service-main-gears {
+	    margin-right: 10%;
+	    width:30%;
+	    opacity : 0.6;
+}
+
+#services-tab-main-header {
+	margin-left: 30%;
+    font-family: roboto;
+    font-weight: 300;
+    font-size: 80px;
+    color: #FF4081;
+}
+
+#pricing-header {
+	height: 300px;
+}
+
+#services-header-underline {
+	margin : 100px;
+	margin-top : 0px;
+}
+
+#service-main-description {
+	font-family: roboto;
+    font-weight: 300;
+    font-size: 28px;
+    color : #5c5c5c;
+}
+
+#services-header-wrapper {
+	padding-top : 150px;
+	background : #03A9F4;
+}
+
+.canvas-underline {
+	height: 2px;
+	width : 120px;
+	margin-left : 20%;
+	background : white;
+}

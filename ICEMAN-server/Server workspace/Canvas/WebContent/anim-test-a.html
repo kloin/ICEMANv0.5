@@ -1,0 +1,92 @@
+<link rel="import" href="bower_components/polymer/polymer.html">
+<link rel="import" href="bower_components/iron-flex-layout/iron-flex-layout.html">
+
+<link rel="import" href="bower_components/neon-animation/neon-shared-element-animatable-behavior.html">
+<link rel="import" href="bower_components/neon-animation/animations/hero-animation.html">
+<link rel="import" href="bower_components/neon-animation/animations/fade-out-animation.html">
+<link rel="import" href="bower_components/neon-animation/animations/scale-up-animation.html">
+<link rel="import" href="bower_components/paper-tabs/paper-tabs.html">
+<link rel="import" href="bower_components/paper-tabs/paper-tab.html">
+
+<dom-module id="anim-test-a">
+<style>
+  #parent {
+  	background: #E5E5E5;
+	width: 100%;
+	text-align: center;
+}
+
+.child {
+
+margin-left:3%;
+margin-right:3%;
+	width:25%;
+	display: inline-block;
+	vertical-align: middle;
+}
+</style>
+
+<template>
+   	<div id="parent">
+ 		<paper-card heading="Modern, Stylish Designs at a fraction of the cost." elevation=1 class="child">				
+				<img style ="width : 100%"src = "media/background-MD-banner.jpg"/> <!-- Needs to be shrunk. Perhaps an SVG? -->	
+				<div class="card-actions">
+	   				<paper-button style="color:#008094" onclick="onButtonClick()">Cost & Pricing Options</paper-button>
+	 			</div>
+			</paper-card>
+			<paper-card heading="What We've Made." elevation=1 class="child">
+				<div> 
+					<img style ="width : 100%"src = "media/blue-material-platforms.png"/>
+				</div>
+				<div class="card-actions">
+	   				<paper-button style="color:#008094">View our Portfolio</paper-button>
+	 			</div>
+			</paper-card>
+			<paper-card heading="SEO, Adwords, & More" elevation=1 class="child">
+				<div> 
+					<img style ="width : 100%"src = "media/adwords-plus-more.png"/>
+				</div>
+				<div class="card-actions">
+	   				<paper-button style="color:#008094">Features</paper-button>
+	 			</div>
+			</paper-card>
+			
+	</div>
+  </template>
+
+</dom-module>
+
+<script>
+
+  Polymer({
+    is: 'anim-test-a',
+    behaviors: [Polymer.NeonSharedElementAnimatableBehavior],
+    properties: {
+      animationConfig: {
+        value: function() {
+          return {
+            'entry': {
+              name: 'scale-up-animation',
+              node: this
+            },
+            'exit': [{
+              name: 'hero-animation',
+              id: 'hero',
+              fromPage: this
+            }, {
+              name: 'fade-out-animation',
+              node: this
+            }]
+          }
+        }
+      },
+      sharedElements: {
+        value: function() {
+          return {
+            'hero': this.$.parent
+          }
+        }
+      }
+    }
+  });
+</script>

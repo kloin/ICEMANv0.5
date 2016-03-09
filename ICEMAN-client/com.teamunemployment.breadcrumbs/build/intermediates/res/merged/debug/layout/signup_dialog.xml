@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="370dp">
+    <TextView
+        android:id="@+id/create_an_account_header"
+        android:text="Create Account"
+        android:gravity="center"
+        android:layout_marginTop="20dp"
+        android:textSize="32sp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+    <EditText
+        android:id="@+id/user_name"
+        android:hint="Username"
+        android:layout_below="@id/create_an_account_header"
+        android:layout_width="match_parent"
+        android:gravity="center"
+        android:layout_marginTop="20dp"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp"
+        android:layout_height="wrap_content" />
+    <EditText
+        android:id="@+id/password"
+        android:hint="Four Digit Pin"
+        android:layout_below="@id/user_name"
+        android:layout_width="match_parent"
+        android:gravity="center"
+        android:layout_marginTop="20dp"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp"
+        android:layout_height="wrap_content"
+        android:inputType="numberPassword"/>
+    <EditText
+        android:id="@+id/email"
+        android:hint="Email Address"
+        android:layout_below="@id/password"
+        android:layout_width="match_parent"
+        android:gravity="center"
+        android:layout_marginTop="20dp"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp"
+        android:layout_height="wrap_content"
+        android:inputType="textEmailAddress"/>
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/email"
+        android:layout_alignLeft="@id/email"
+        android:layout_alignRight="@id/email"
+        android:textSize="10sp"
+        android:text="*We will only email in exceptional circumstances (e.g forgotten details, account compromised)"
+        />
+    <TextView
+        android:id="@+id/signUp_dialog_button"
+        android:layout_alignParentBottom="true"
+        android:text="Create Account"
+        android:textSize="24sp"
+        android:gravity="center"
+        android:padding="10dp"
+        android:background="@color/ColorPrimary"
+        android:textColor="@color/white"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+</RelativeLayout>

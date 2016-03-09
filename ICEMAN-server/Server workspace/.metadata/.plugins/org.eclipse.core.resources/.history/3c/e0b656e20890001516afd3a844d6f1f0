@@ -1,0 +1,67 @@
+
+/* This is the css file that holds all the simple, generic styles like fonts, elevation etc of all the basic components*/
+
+.intro-card {
+	font-weight: 300;
+    font-family: roboto;
+}
+
+.header.paper-card .title-text.paper-card {
+	font-weight: 300;
+    font-family: roboto;
+    padding: 25px;
+}
+
+/* To ensure that a div stays below another div, we put this in between them.*/
+.clearer {
+    clear:both;
+}
+/* Mostly for reference?*/
+.theme {
+	primary-dark : #0288D1;
+	primary: #03A9F4;
+	primary-light : #B3E5FC;
+	header-light-text : #FFFFFF;
+	accent : #FF4081;
+	primary-text : #212121;
+	secondary-text : #727272;
+	devider-color : #B6B6B6;
+}
+
+/* Font and weight for our standard section headers.*/
+.headers {
+	font-weight: 300;
+    font-family: roboto;
+}
+
+/* Sets the margin down the left side.*/
+.align-left-side {
+	margin-left:6%;
+}
+
+/* Style for the home card */
+#home-card {
+	color : #5c5c5c;
+	font-family : roboto;
+	font-weight:300;
+}
+
+#features-header {
+	margin-bottom : 80px;
+}
+
+/* Card styles for the our main paper card header */
+#home-card .header.paper-card .title-text.paper-card {
+	font-size : 30px;
+	color : #5c5c5c;
+}
+
+.home-tabs {
+	right: 90px;
+    position: absolute;
+    margin-top: -15px;
+    font-family: roboto;
+    font-size: 12pt;
+}
+
+

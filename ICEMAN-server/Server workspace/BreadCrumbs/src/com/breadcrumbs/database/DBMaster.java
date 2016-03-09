@@ -1,5 +1,6 @@
 package com.breadcrumbs.database;
 
+import java.util.Collection;
 import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.Map;
@@ -19,6 +20,7 @@ import org.neo4j.graphdb.RelationshipType;
 import org.neo4j.graphdb.Transaction;
 import org.neo4j.graphdb.factory.GraphDatabaseFactory;
 
+import com.breadcrumbs.models.NodeConverter;
 import com.breadcrumbs.models.UserService;
 
 /*
@@ -394,7 +396,7 @@ public class DBMaster {
 		return nodeString;
 	}
 	/*
-	 * Made to return a single result - such as a count - from and ExecutionResult
+	 * Made to return a single result - such as a count - from an ExecutionResult
 	 */
 	public String ExecuteCypherQueryReturnCount(String cypherQuery) {
 		String nodeString = "";
@@ -440,6 +442,30 @@ public class DBMaster {
 		
 		return nodeString;
 	}
+        
+          // Method to get all the details needed for all the home cards.
+    public String ExecuteCypherQueryJSONStringReturnCrumbCardDetails(String cypherQuery) {
+        String nodeString = "";
+        NodeController nc = new NodeController();
+        ExecutionEngine engine = new ExecutionEngine( _db );
+        ExecutionResult result = null;
+        Transaction tx = _db.beginTx();
+        try {
+            result = engine.execute(cypherQuery);
+            JSONObject tempNode = new JSONObject(nc.convertIteratorToJSONOfHomeCardDetails(result));	
+            nodeString = tempNode.toString();
+            tx.success();
+        } catch (Exception ex) {
+                ex.printStackTrace();
+                System.out.print("issues with fetching node and its relations");
+                tx.failure();
+                //return "failed";
+        } finally {
+                tx.close();
+        }
+
+        return nodeString;
+    }
 
 	public void SetCoverPhoto(String trailId, String imageId) {
 		Node trail = this.RetrieveNode(Integer.parseInt(trailId));
@@ -461,6 +487,30 @@ public class DBMaster {
 		}
 		
 	}
+	/*
+	 * @depreciated
+	 */
+	public void DeleteNode(long NodeId) {
+		Node node = this.RetrieveNode(NodeId);
+		Transaction tx = _db.beginTx();
+		try {
+			node.delete();
+			
+			tx.success();			
+		}
+		catch(NotFoundException ex) {
+			// Set the property to be 0. This will happen on first count with old trails
+			//trail.setProperty("Views", views);
+			tx.success();
+		}	
+		catch (Exception ex){
+			tx.failure();
+		}
+		finally {
+			tx.finish();
+		}
+
+	}
 
 	public String ExecuteCypherQueryReturnTrailDetails(String cypherQuery) {
 		// TODO Auto-generated method stub		
@@ -475,11 +525,39 @@ public class DBMaster {
 		    Iterator<Map<String, Object>> it = result.iterator();
 		    Map map = it.next();	    
 		    // Get objects
-		    String description = map.get("trail.Description").toString();
-		    String views = map.get("trail.Views").toString();
-		    String userId = map.get("trail.UserId").toString();
-		    String trailName = map.get("trail.TrailName").toString();
-		    String coverId = map.get("trail.CoverPhotoId").toString();	  
+		    Object descriptionObject = map.get("trail.Description");
+		    Object viewsObject = map.get("trail.Views");
+		    Object userIdObject = map.get("trail.UserId");
+		    Object trailNameObject = map.get("trail.TrailName");
+		    Object coverIdObject = map.get("trail.CoverPhotoId");	
+		    
+		    String description = "";
+		    String views = "";
+		    String userId = "";
+		    String userName = "";
+		    String trailName = "";
+		    String coverPhotoId = "";
+		    
+		    if (descriptionObject != null) {
+		    	description = descriptionObject.toString();
+		    }
+		    if (viewsObject != null) {
+		    	views = viewsObject.toString();
+		    }
+		    
+		    if (userIdObject != null) {
+		    	userId = userIdObject.toString();
+		    }
+		    
+		    if (trailNameObject != null) {
+		    	trailName = trailNameObject.toString();
+		    }
+		    
+		    if (coverIdObject != null) {
+		    	coverPhotoId = coverIdObject.toString();
+		    }
+		    
+		    
 		    
 		    // Put objects
 		    JSONObject tempNode = new JSONObject();	
@@ -488,7 +566,7 @@ public class DBMaster {
 		    tempNode.put("userId", userId);
 		    tempNode.put("userName", userService.FetchUserName(userId));
 		    tempNode.put("trailName", trailName);
-		    tempNode.put("coverPhotoId", coverId);			    
+		    tempNode.put("coverPhotoId", coverPhotoId);			    
 		    nodeString = tempNode.toString();
 		    tx.success();
 		} catch (Exception ex) {
@@ -497,26 +575,52 @@ public class DBMaster {
 			tx.failure();
 		} finally {
 			tx.close();
-		}
-		
+		}		
 		return nodeString;
 	}
 
 	public String GetStringPropertyFromNode(String crumbId, String property) {
 		Node crumb = this.RetrieveNode(Integer.parseInt(crumbId));
+		String propertyValue = "";
 		// Get Views property if it exists, else return 0.
 		Transaction tx = _db.beginTx();
 		try {
-			String propteryValue = crumb.getProperty(property).toString();	
+			Object stringObject = crumb.getProperty(property);
+			if (stringObject!=null){
+				propertyValue = stringObject.toString();
+			}
 			tx.success();
-			return propteryValue;
+			return propertyValue;
 		} catch (NotFoundException ex) {
 			System.out.println("An Error Occured trying to get a String property from a node. Could not find the property: " + property);
 			tx.failure();
 		} finally {
 			tx.close();
 		}
-		return "error";
-		
+		return "";
+	}
+
+	// Find a node using a cypher query. This is usually done where we do not know the id. Should be very sparse using this because it could 
+	// be very expensive.
+	public Node ExecuteCypherQueryReturnNode(String query) {
+		// TODO Auto-generated method stub  
+		ExecutionEngine engine = new ExecutionEngine( _db );
+		ExecutionResult result = null;
+		Transaction tx = _db.beginTx();
+		try {
+		    result = engine.execute(query);
+		    Iterator<Map<String, Object>> it = result.iterator();
+			Map nodeItemMap = it.next();
+			Collection valuesCollection = nodeItemMap.values();
+			Node tempNode = (Node) valuesCollection.toArray()[0];
+			tx.success();
+            return tempNode;
+		} catch (Exception ex) {
+			// Need to do some logging here.
+			tx.failure();
+		} finally {
+			tx.finish();
+		}
+		return null;
 	}	
 }

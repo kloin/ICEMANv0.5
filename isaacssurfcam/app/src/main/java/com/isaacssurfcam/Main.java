@@ -13,6 +13,7 @@ import android.graphics.Matrix;
 import android.hardware.Camera;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Environment;
 import android.os.Handler;
 import android.os.ParcelFileDescriptor;
 import android.os.PowerManager;
@@ -45,8 +46,10 @@ import com.google.android.gms.drive.query.SearchableField;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
@@ -113,14 +116,10 @@ public class Main  extends Activity implements GoogleApiClient.ConnectionCallbac
             public void onClick(View v) {
                 // When  clicked we want to toggle
 
-                startRepeatingTask();
+                //startRepeatingTask();
             }
 
         });
-        PowerManager powerManager = (PowerManager) getSystemService(POWER_SERVICE);
-        PowerManager.WakeLock wakeLock = powerManager.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK,
-                "MyWakelockTag");
-        wakeLock.acquire();
         startCamera();
 
         SetUpSeekBarListeners();
@@ -268,18 +267,36 @@ public class Main  extends Activity implements GoogleApiClient.ConnectionCallbac
         // We need to start up the camera and capture every x amount of seconds.
         // Need to run this in an asyc thread.
 
-        final Handler handler = new Handler();
+        // Wait 15 seconds, then stop and upload to google drive.
+       final Handler handler = new Handler();
         handler.postDelayed(new Runnable() {
             @Override
             public void run() {
+                // Stop the recorder and save it to google drive.
                 Camera mCamera = StaticShitCodeStuff.GetInstance().getCameraController().mCamera;
-                mCamera.takePicture(null, rawCallback, jpegCallback);
-                //Do something after 100ms
+                final CameraController controller = StaticShitCodeStuff.GetInstance().getCameraController();
+                //mCamera.takePicture(null, rawCallback, jpegCallback);
+                controller.setUpVideoCamera(); // Dont need to have a start - this does that automatically
+                final Handler handleJunior = new Handler();
+                handleJunior.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        // Stop the recorder and save it to google drive.
+                        Camera mCamera = StaticShitCodeStuff.GetInstance().getCameraController().mCamera;
+                        final CameraController controller = StaticShitCodeStuff.GetInstance().getCameraController();
+                        //mCamera.takePicture(null, rawCallback, jpegCallback);
+                        controller.recorder.stop();
+                        controller.disableVideoCamera();
+                        handler.removeCallbacksAndMessages(null);
+                        Toast.makeText(context, "Finsihed Recording", Toast.LENGTH_LONG).show();
+                        beginVideoUpload();
+                    }
+                }, 10000);
+                Toast.makeText(context, "Started Recording", Toast.LENGTH_LONG).show();
             }
-        }, 10000);
+        }, 5000);
+
     }
-
-
 
     Camera.PictureCallback rawCallback = new Camera.PictureCallback() {
         public void onPictureTaken(byte[] data, Camera camera) {
@@ -311,8 +328,12 @@ public class Main  extends Activity implements GoogleApiClient.ConnectionCallbac
         }
     };
 
+    // Do this after we take a video to upload it to google drive.
+    private void beginVideoUpload() {
+        Drive.DriveApi.newDriveContents(getGoogleApiClient()).setResultCallback(driveContentsCallbackVideo);
+    }
+
     private void saveToInternalSorage(Bitmap bitmapImage){
-        bm = bitmapImage;
         Drive.DriveApi.newDriveContents(getGoogleApiClient())
                 .setResultCallback(driveContentsCallback);
     }
@@ -399,6 +420,100 @@ public class Main  extends Activity implements GoogleApiClient.ConnectionCallbac
                 }
             };
 
+    final private ResultCallback<DriveApi.DriveContentsResult> driveContentsCallbackVideo = new
+            ResultCallback<DriveApi.DriveContentsResult>() {
+                @Override
+                public void onResult(final DriveApi.DriveContentsResult result) {
+                    if (!result.getStatus().isSuccess()) {
+                        return;
+                    }
+                    new Thread() {
+                        @Override
+                        public void run() {
+                            String resourceId = PreferenceManager.getDefaultSharedPreferences(context).getString("VIDEO_ID", null);
+
+                            if (resourceId != null) {
+                                driveId = DriveId.decodeFromString(resourceId);
+                                DriveFile file = Drive.DriveApi.getFile(getGoogleApiClient(),driveId);
+
+                                file.open(mGoogleApiClient, DriveFile.MODE_WRITE_ONLY, null).setResultCallback(new ResultCallback<DriveApi.DriveContentsResult>() {
+                                    @Override
+                                    public void onResult(DriveApi.DriveContentsResult result) {
+
+                                        if (!result.getStatus().isSuccess()) {
+                                            // Handle error
+                                            return;
+                                        }
+
+                                        // get the contents of the drive we want to update.
+                                        driveContents = result.getDriveContents();
+                                        final OutputStream outputStream =  driveContents.getOutputStream();
+                                        ParcelFileDescriptor parcelFileDescriptor = driveContents.getParcelFileDescriptor();
+                                        // Use the parcel description to get the input
+                                        FileInputStream fileInputStream = new FileInputStream(parcelFileDescriptor.getFileDescriptor());
+                                        // Read to the end of the file.
+                                        // Append to the file.
+                                        String fileName =  Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES).toString();
+                                        fileName += "/test.mp4";
+                                        // Here I need to write the image to the outputStream
+                                        FileInputStream fis = null;
+                                        try {
+                                            fis = new FileInputStream(new File(fileName));
+                                            ByteArrayOutputStream bos = new ByteArrayOutputStream();
+                                            byte[] b = new byte[1024];
+                                            int n;
+                                            while ((n = fis.read(b)) != -1) {
+                                                bos.write(b, 0, n);
+                                            }
+
+                                            outputStream.write(bos.toByteArray());
+                                            bos.flush();
+
+                                            outputStream.close();
+                                            fis.close();
+                                        }  catch (FileNotFoundException e) {
+                                            e.printStackTrace();
+                                        } catch (IOException e) {
+                                            e.printStackTrace();
+                                        }
+
+                                        try {
+                                            fileInputStream.read(new byte[fileInputStream.available()]);
+                                        } catch (IOException e) {
+                                            e.printStackTrace();
+                                        }
+
+                                        MetadataChangeSet changeSet = new MetadataChangeSet.Builder()
+                                                .setTitle("surfcamvid")
+                                                .setMimeType("video/mp4")
+                                                .setStarred(true)
+                                                .setLastViewedByMeDate(new Date()).build();
+
+                                        driveContents.commit(mGoogleApiClient, changeSet).setResultCallback(new ResultCallback<Status>() {
+                                            @Override
+                                            public void onResult(Status result) {
+                                                // Handle the response status
+                                            }
+                                        });
+                                    }
+                                });
+                            } else {
+                                MetadataChangeSet changeSet = new MetadataChangeSet.Builder()
+                                        .setTitle("surfcamvid")
+                                        .setMimeType("video/mp4")
+                                        .setStarred(true)
+                                        .setLastViewedByMeDate(new Date()).build();
+
+                                Drive.DriveApi.getRootFolder(getGoogleApiClient())
+                                        .createFile(getGoogleApiClient(), changeSet, null).setResultCallback(videoFileCallback);
+                                // Create new file
+                            }
+
+                        }
+                    }.start();
+                }
+            };
+
     final private ResultCallback<DriveFolder.DriveFileResult> fileCallback = new
             ResultCallback<DriveFolder.DriveFileResult>() {
                 @Override
@@ -408,6 +523,18 @@ public class Main  extends Activity implements GoogleApiClient.ConnectionCallbac
                     }
                     driveId = result.getDriveFile().getDriveId();
                     PreferenceManager.getDefaultSharedPreferences(context).edit().putString("ID", driveId.encodeToString()).commit();
+                }
+            };
+
+    final private ResultCallback<DriveFolder.DriveFileResult> videoFileCallback = new
+            ResultCallback<DriveFolder.DriveFileResult>() {
+                @Override
+                public void onResult(DriveFolder.DriveFileResult result) {
+                    if (!result.getStatus().isSuccess()) {;
+                        return;
+                    }
+                    driveId = result.getDriveFile().getDriveId();
+                    PreferenceManager.getDefaultSharedPreferences(context).edit().putString("VIDEO_ID", driveId.encodeToString()).commit();
                 }
             };
 }

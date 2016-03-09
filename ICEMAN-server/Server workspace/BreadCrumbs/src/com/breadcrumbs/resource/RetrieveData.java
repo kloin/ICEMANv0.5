@@ -156,6 +156,24 @@ public class RetrieveData {
     	NodeController nodeController = new NodeController();
     	return nodeController.FetchNodeJson(id).toString();
     }    
+    
+    /*
+     * This is just a method to use for the moment. When we get more trails 
+       we will need to start limiting it to 20 or so.
+     */
+    @GET
+    @Path("/GetAllHomeCardDetails")
+    public String GetAllHomeCardDetails() {
+    	Trail trail = new Trail();
+    	return trail.GetAllHomeCardDetails();
+    }
+    
+    @GET
+    @Path("GetAllCrumbCardDetailsForATrail/{TrailId}")
+    public String GetAllCrumbCardDetailsForATrail(@PathParam("TrailId")String TrailId) {
+        Trail trail = new Trail();
+        return trail.GetAllCrumbCardDetailsForATrail(TrailId);
+    }
    
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
@@ -177,18 +195,25 @@ public class RetrieveData {
         // Save our crumb
         Crumb crumb = new Crumb();
         crumb.ConvertAndSaveVideo(stream, crumbId);        
-           
         return "200";
     }
     
     @GET
-    @Path("/CreateNewUser/{UserName}/{Pin}/{Age}/{Sex}/{GcmId}")
+    @Path("/AttemptToLogInUser/{UserName}/{Pin}")
+    public String AttemptToLogInUser(@PathParam("UserName") String UserName, @PathParam("Pin") String pin) {
+    	UserService userService = new UserService();
+    	return userService.AttemptToLogInUser(UserName, pin);
+    }
+    @GET
+    @Path("/CreateNewUser/{UserName}/{Pin}/{Age}/{Sex}/{GcmId}/{Email}/{FacebookLoginId}")
     @Produces(MediaType.APPLICATION_JSON)
     public String CreateNewUser (@PathParam("UserName") String UserName, 
 									@PathParam("Pin") String Pin,
 									@PathParam("Age") String Age,
 									@PathParam("Sex") String Sex,
-									@PathParam("GcmId") String GcmId) {
+									@PathParam("GcmId") String GcmId,
+									@PathParam("Email") String Email,
+									@PathParam("FacebookLoginId") String FacebookLoginId) {
     	// Create a node with these fields
     	DBMaster db = DBMaster.GetAnInstanceOfDBMaster();
     	
@@ -201,8 +226,10 @@ public class RetrieveData {
     	keysAndItems.put("Nationality", "Kiwi");
     	keysAndItems.put("ProfilePicId", "0");
     	keysAndItems.put("GcmId", GcmId);
+    	keysAndItems.put("Email", Email);
+    	keysAndItems.put("FacebookLoginId", FacebookLoginId);
+    	keysAndItems.put("ActiveTrail", "0");
     	System.out.println("Saved New User");
-    	GcmSender sender = new GcmSender();
     	return Integer.toString(db.SaveNode(keysAndItems, com.breadcrumbs.database.DBMaster.myLabels.User));
     }
     
@@ -230,7 +257,7 @@ public class RetrieveData {
     }
     
     /*
-     * NOTE THAT THIS IS NOT USED YET BUT PRIOBABL:Y WILL BE IN THE FUTURE
+     * NOTE THAT THIS IS NOT USED YET BUT PRIOBABLLY WILL BE IN THE FUTURE
      * Creating  a trail.... 
      * This is a bit more complex than normal because we want to invite users when we create the trail.
      * Create trail and then go back to invite users in a new workflow == BAD.
@@ -254,7 +281,6 @@ public class RetrieveData {
 	public String SaveCommentForAnEntity(@PathParam("UserId") String UserId,
 										 @PathParam("EntityId") String EntityId,
 										 @PathParam("CommentText") String CommentText) {
-		
 		Trail trail = new Trail();
 		return trail.SaveCommentForAnEntity(UserId, EntityId, CommentText);		
 	}

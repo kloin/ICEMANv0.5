@@ -1,0 +1,36 @@
+<link rel="import" href="../../bower_components/polymer/polymer.html">
+<link rel="import" href="../../bower_components/iron-flex-layout/iron-flex-layout.html">
+
+<link rel="import" href="../../bower_components/neon-animation/neon-shared-element-animatable-behavior.html">
+<link rel="import" href="../../bower_components/neon-animation/animations/hero-animation.html">
+<link rel="import" href="../../bower_components/neon-animation/animations/fade-out-animation.html">
+<link rel="import" href="../../bower_components/neon-animation/animations/fade-in-animation.html">
+<link rel="import" href="../../bower_components/neon-animation/animations/scale-up-animation.html">
+<link rel="import" href="../../bower_components/paper-card/paper-card.html">
+
+<dom-module id="services-tab">
+  <template>
+  <div id = 'services-header-wrapper'>
+    <h1 id = 'services-tab-main-header'>Services</h1>
+    <div class = "canvas-underline"></div>
+   </div>
+     <paper-card class = "services-header" id="pricing-header-card" style="display: block; margin: 0 auto; height: 360px; left:0; right:0; margin-bottom: 60px; width:60%; z-index:1;" heading="" elevation=1>
+			<div id='service-main' class = 'two-column-row'>
+    		<img id = 'service-main-gears' src = '/Canvas/media/ic_settings_black_24px.svg' class = 'half-row-column'/>
+    		<p id = 'service-main-description' class = 'half-row-column'> 
+		    	Canvas provides a whole array of services to help your business gain the 
+		    	edge on your competition. Whether it be storing dynamic user content, popping up on page one of 
+		    	google searches, or giving you complete control of your web app, Canvas can give you what you need.
+    		</p>
+    	</div>
+	</paper-card>	
+  </template>
+
+  <script>
+    Polymer({
+      is: 'services-tab',
+      behaviors: [Polymer.NeonSharedElementAnimatableBehavior]
+    });
+  </script>
+
+</dom-module>

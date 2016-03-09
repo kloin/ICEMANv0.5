@@ -1,0 +1,349 @@
+[
+    {
+        "outputFile": "C:\\Users\\jek40\\iceman\\ICEMANv0.5\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\res\\merged\\debug\\values-pa\\values-pa.xml",
+        "map": [
+            {
+                "to": {
+                    "startLine": 2,
+                    "startColumn": 4,
+                    "startOffset": 55,
+                    "endColumn": 135,
+                    "endOffset": 186
+                },
+                "from": {
+                    "file": "C:\\Users\\jek40\\iceman\\ICEMANv0.5\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\exploded-aar\\com.facebook.android\\facebook-android-sdk\\4.10.0\\res\\values-pa\\values-pa.xml",
+                    "position": {
+                        "startLine": 4,
+                        "startColumn": 4,
+                        "startOffset": 170,
+                        "endColumn": 135,
+                        "endOffset": 301
+                    }
+                }
+            },
+            {
+                "to": {
+                    "startLine": 3,
+                    "startColumn": 4,
+                    "startOffset": 191,
+                    "endColumn": 121,
+                    "endOffset": 308
+                },
+                "from": {
+                    "file": "C:\\Users\\jek40\\iceman\\ICEMANv0.5\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\exploded-aar\\com.facebook.android\\facebook-android-sdk\\4.10.0\\res\\values-pa\\values-pa.xml",
+                    "position": {
+                        "startLine": 5,
+                        "startColumn": 4,
+                        "startOffset": 306,
+                        "endColumn": 121,
+                        "endOffset": 423
+                    }
+                }
+            },
+            {
+                "to": {
+                    "startLine": 4,
+                    "startColumn": 4,
+                    "startOffset": 313,
+                    "endColumn": 122,
+                    "endOffset": 431
+                },
+                "from": {
+                    "file": "C:\\Users\\jek40\\iceman\\ICEMANv0.5\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\exploded-aar\\com.facebook.android\\facebook-android-sdk\\4.10.0\\res\\values-pa\\values-pa.xml",
+                    "position": {
+                        "startLine": 6,
+                        "startColumn": 4,
+                        "startOffset": 428,
+                        "endColumn": 122,
+                        "endOffset": 546
+                    }
+                }
+            },
+            {
+                "to": {
+                    "startLine": 5,
+                    "startColumn": 4,
+                    "startOffset": 436,
+                    "endColumn": 95,
+                    "endOffset": 527
+                },
+                "from": {
+                    "file": "C:\\Users\\jek40\\iceman\\ICEMANv0.5\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\exploded-aar\\com.facebook.android\\facebook-android-sdk\\4.10.0\\res\\values-pa\\values-pa.xml",
+                    "position": {
+                        "startLine": 7,
+                        "startColumn": 4,
+                        "startOffset": 551,
+                        "endColumn": 95,
+                        "endOffset": 642
+                    }
+                }
+            },
+            {
+                "to": {
+                    "startLine": 6,
+                    "startColumn": 4,
+                    "startOffset": 532,
+                    "endColumn": 72,
+                    "endOffset": 600
+                },
+                "from": {
+                    "file": "C:\\Users\\jek40\\iceman\\ICEMANv0.5\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\exploded-aar\\com.facebook.android\\facebook-android-sdk\\4.10.0\\res\\values-pa\\values-pa.xml",
+                    "position": {
+                        "startLine": 8,
+                        "startColumn": 4,
+                        "startOffset": 647,
+                        "endColumn": 72,
+                        "endOffset": 715
+                    }
+                }
+            },
+            {
+                "to": {
+                    "startLine": 7,
+                    "startColumn": 4,
+                    "startOffset": 605,
+                    "endColumn": 71,
+                    "endOffset": 672
+                },
+                "from": {
+                    "file": "C:\\Users\\jek40\\iceman\\ICEMANv0.5\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\exploded-aar\\com.facebook.android\\facebook-android-sdk\\4.10.0\\res\\values-pa\\values-pa.xml",
+                    "position": {
+                        "startLine": 9,
+                        "startColumn": 4,
+                        "startOffset": 720,
+                        "endColumn": 71,
+                        "endOffset": 787
+                    }
+                }
+            },
+            {
+                "to": {
+                    "startLine": 8,
+                    "startColumn": 4,
+                    "startOffset": 677,
+                    "endColumn": 66,
+                    "endOffset": 739
+                },
+                "from": {
+                    "file": "C:\\Users\\jek40\\iceman\\ICEMANv0.5\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\exploded-aar\\com.facebook.android\\facebook-android-sdk\\4.10.0\\res\\values-pa\\values-pa.xml",
+                    "position": {
+                        "startLine": 10,
+                        "startColumn": 4,
+                        "startOffset": 792,
+                        "endColumn": 66,
+                        "endOffset": 854
+                    }
+                }
+            },
+            {
+                "to": {
+                    "startLine": 9,
+                    "startColumn": 4,
+                    "startOffset": 744,
+                    "endColumn": 72,
+                    "endOffset": 812
+                },
+                "from": {
+                    "file": "C:\\Users\\jek40\\iceman\\ICEMANv0.5\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\exploded-aar\\com.facebook.android\\facebook-android-sdk\\4.10.0\\res\\values-pa\\values-pa.xml",
+                    "position": {
+                        "startLine": 11,
+                        "startColumn": 4,
+                        "startOffset": 859,
+                        "endColumn": 72,
+                        "endOffset": 927
+                    }
+                }
+            },
+            {
+                "to": {
+                    "startLine": 10,
+                    "startColumn": 4,
+                    "startOffset": 817,
+                    "endColumn": 75,
+                    "endOffset": 888
+                },
+                "from": {
+                    "file": "C:\\Users\\jek40\\iceman\\ICEMANv0.5\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\exploded-aar\\com.facebook.android\\facebook-android-sdk\\4.10.0\\res\\values-pa\\values-pa.xml",
+                    "position": {
+                        "startLine": 12,
+                        "startColumn": 4,
+                        "startOffset": 932,
+                        "endColumn": 75,
+                        "endOffset": 1003
+                    }
+                }
+            },
+            {
+                "to": {
+                    "startLine": 11,
+                    "startColumn": 4,
+                    "startOffset": 893,
+                    "endColumn": 96,
+                    "endOffset": 985
+                },
+                "from": {
+                    "file": "C:\\Users\\jek40\\iceman\\ICEMANv0.5\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\exploded-aar\\com.facebook.android\\facebook-android-sdk\\4.10.0\\res\\values-pa\\values-pa.xml",
+                    "position": {
+                        "startLine": 13,
+                        "startColumn": 4,
+                        "startOffset": 1008,
+                        "endColumn": 96,
+                        "endOffset": 1100
+                    }
+                }
+            },
+            {
+                "to": {
+                    "startLine": 12,
+                    "startColumn": 4,
+                    "startOffset": 990,
+                    "endColumn": 77,
+                    "endOffset": 1063
+                },
+                "from": {
+                    "file": "C:\\Users\\jek40\\iceman\\ICEMANv0.5\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\exploded-aar\\com.facebook.android\\facebook-android-sdk\\4.10.0\\res\\values-pa\\values-pa.xml",
+                    "position": {
+                        "startLine": 14,
+                        "startColumn": 4,
+                        "startOffset": 1105,
+                        "endColumn": 77,
+                        "endOffset": 1178
+                    }
+                }
+            },
+            {
+                "to": {
+                    "startLine": 13,
+                    "startColumn": 4,
+                    "startOffset": 1068,
+                    "endColumn": 77,
+                    "endOffset": 1141
+                },
+                "from": {
+                    "file": "C:\\Users\\jek40\\iceman\\ICEMANv0.5\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\exploded-aar\\com.facebook.android\\facebook-android-sdk\\4.10.0\\res\\values-pa\\values-pa.xml",
+                    "position": {
+                        "startLine": 15,
+                        "startColumn": 4,
+                        "startOffset": 1183,
+                        "endColumn": 77,
+                        "endOffset": 1256
+                    }
+                }
+            },
+            {
+                "to": {
+                    "startLine": 14,
+                    "startColumn": 4,
+                    "startOffset": 1146,
+                    "endColumn": 94,
+                    "endOffset": 1236
+                },
+                "from": {
+                    "file": "C:\\Users\\jek40\\iceman\\ICEMANv0.5\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\exploded-aar\\com.facebook.android\\facebook-android-sdk\\4.10.0\\res\\values-pa\\values-pa.xml",
+                    "position": {
+                        "startLine": 16,
+                        "startColumn": 4,
+                        "startOffset": 1261,
+                        "endColumn": 94,
+                        "endOffset": 1351
+                    }
+                }
+            },
+            {
+                "to": {
+                    "startLine": 15,
+                    "startColumn": 4,
+                    "startOffset": 1241,
+                    "endColumn": 114,
+                    "endOffset": 1351
+                },
+                "from": {
+                    "file": "C:\\Users\\jek40\\iceman\\ICEMANv0.5\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\exploded-aar\\com.facebook.android\\facebook-android-sdk\\4.10.0\\res\\values-pa\\values-pa.xml",
+                    "position": {
+                        "startLine": 17,
+                        "startColumn": 4,
+                        "startOffset": 1356,
+                        "endColumn": 114,
+                        "endOffset": 1466
+                    }
+                }
+            },
+            {
+                "to": {
+                    "startLine": 16,
+                    "startColumn": 4,
+                    "startOffset": 1356,
+                    "endColumn": 62,
+                    "endOffset": 1414
+                },
+                "from": {
+                    "file": "C:\\Users\\jek40\\iceman\\ICEMANv0.5\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\exploded-aar\\com.facebook.android\\facebook-android-sdk\\4.10.0\\res\\values-pa\\values-pa.xml",
+                    "position": {
+                        "startLine": 18,
+                        "startColumn": 4,
+                        "startOffset": 1471,
+                        "endColumn": 62,
+                        "endOffset": 1529
+                    }
+                }
+            },
+            {
+                "to": {
+                    "startLine": 17,
+                    "startColumn": 4,
+                    "startOffset": 1419,
+                    "endColumn": 68,
+                    "endOffset": 1483
+                },
+                "from": {
+                    "file": "C:\\Users\\jek40\\iceman\\ICEMANv0.5\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\exploded-aar\\com.facebook.android\\facebook-android-sdk\\4.10.0\\res\\values-pa\\values-pa.xml",
+                    "position": {
+                        "startLine": 19,
+                        "startColumn": 4,
+                        "startOffset": 1534,
+                        "endColumn": 68,
+                        "endOffset": 1598
+                    }
+                }
+            },
+            {
+                "to": {
+                    "startLine": 18,
+                    "startColumn": 4,
+                    "startOffset": 1488,
+                    "endColumn": 146,
+                    "endOffset": 1630
+                },
+                "from": {
+                    "file": "C:\\Users\\jek40\\iceman\\ICEMANv0.5\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\exploded-aar\\com.facebook.android\\facebook-android-sdk\\4.10.0\\res\\values-pa\\values-pa.xml",
+                    "position": {
+                        "startLine": 20,
+                        "startColumn": 4,
+                        "startOffset": 1603,
+                        "endColumn": 146,
+                        "endOffset": 1745
+                    }
+                }
+            },
+            {
+                "to": {
+                    "startLine": 19,
+                    "startColumn": 4,
+                    "startOffset": 1635,
+                    "endColumn": 59,
+                    "endOffset": 1690
+                },
+                "from": {
+                    "file": "C:\\Users\\jek40\\iceman\\ICEMANv0.5\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\exploded-aar\\com.facebook.android\\facebook-android-sdk\\4.10.0\\res\\values-pa\\values-pa.xml",
+                    "position": {
+                        "startLine": 23,
+                        "startColumn": 4,
+                        "startOffset": 1882,
+                        "endColumn": 59,
+                        "endOffset": 1937
+                    }
+                }
+            }
+        ]
+    }
+]

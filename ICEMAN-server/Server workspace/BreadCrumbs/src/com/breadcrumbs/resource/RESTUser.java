@@ -4,6 +4,8 @@ import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 
+import org.json.JSONObject;
+
 import com.breadcrumbs.models.Trail;
 import com.breadcrumbs.models.UserService;
 
@@ -27,6 +29,34 @@ public class RESTUser {
 	}
 	
 	@GET
+	@Path("FindUserByFacebookId/{FacebookUserId}")
+	public String FindUserByFacebookId(@PathParam("FacebookUserId") String FacebookUserId) {
+		UserService userService = new UserService();
+		return userService.CheckForUserExistenceUsingFacebookId(FacebookUserId);
+	}
+	
+	@GET
+	@Path("FetchUserDetails/{Email}")
+	public String FetchUserDetails(@PathParam("Email") String Email) {
+		UserService userService = new UserService();
+		return userService.CheckForDetailsUsingEmailAddress(Email);
+	}
+	@GET
+	@Path("GetAllPinnedUsersForAUser/{UserId}") 
+	public String GetAllPinnedUsersForAUser(@PathParam("UserId") String UserId) {
+
+		UserService userService = new UserService();
+		return userService.GetAllPinnedUsers(UserId);
+	}
+	
+	@GET
+	@Path("GetAllHomePageTrailIdsForAUser/{UserId}")
+	public String GetAllHomePageTrailIdsForAUser(@PathParam("UserId") String UserId) {
+		UserService userService = new UserService();
+		return userService.GetAllOurPinnedShit(UserId).toString();
+	}
+	
+	@GET
 	@Path("UnpintrailForUser/{UserId}/{TrailId}")
 	public String UnpintrailForUser(@PathParam("UserId") String UserId,
 									@PathParam("TrailId") String TrailId) {
@@ -36,13 +66,12 @@ public class RESTUser {
 	}
 	
 	@GET
-	@Path("PinUserForUser/{UserIdA}/{UserIdB}")
-	public String PinUserForUser(@PathParam("UserIdA") String UserIdA,
-			@PathParam("UserIdB") String UserIdB) {
+	@Path("PinUserForUser/{FollowingUser}/{FollowedUser}")
+	public String PinUserForUser(@PathParam("FollowingUser") String UserIdA,
+			@PathParam("FollowedUser") String UserIdB) {
 		UserService user = new UserService();
 		user.PinUserForUser(UserIdA, UserIdB);
-		return "Success";
-		
+		return "200";
 	}
 	
 	

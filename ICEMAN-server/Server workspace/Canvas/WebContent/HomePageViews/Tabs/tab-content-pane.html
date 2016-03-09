@@ -1,0 +1,40 @@
+<!--
+	@Author Josiah Kendall 2015
+	The content pane for the tabs. Holds the content for ALL of the tabs, so this name is a bit shit.
+-->
+<link rel="import" href="home-tab.html">
+<link rel="import" href="pricing-tab.html">
+<link rel="import" href="services-tab.html">
+<link rel="import" href="../../bower_components/paper-tabs/paper-tabs.html">
+<link rel="import" href="../../bower_components/paper-tabs/paper-tab.html">
+<link rel="import" href="../../bower_components/iron-pages/iron-pages.html">
+
+<dom-module is="tab-content-pane">
+  <template>
+    <!-- Individual tabs are each defined at the top level inside the iron pages here. -->
+    <iron-pages selected="{{selected}}">
+      <div>
+    		<home-tab></home-tab>
+      	</div>
+      <div>
+      	<pricing-tab></pricing-tab>
+      </div>
+      <div>Portfolio Tab</div>
+      <div>
+      	<services-tab></services-tab>
+      </div>
+    </iron-pages>
+    
+  </template>
+  <script>
+    Polymer({
+      is: 'tab-content-pane',
+      properties: {
+        selected: {
+          type: Number,
+          value: 0
+        }
+      }
+    });
+  </script>
+</dom-module>>

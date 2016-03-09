@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html>
+  <head>
+  
+  	<!-- The pages we use. -->
+ 	<link rel="import" href="anim-test-b.html">
+	<link rel="import" href="HomePageViews/front-page.html">
+  	 
+  	 
+  	<!-- Load in our CSS. -->
+  	<link rel="stylesheet" href="/Canvas/steez/main.css" type="text/css">
+  	
+    <!-- 1. Load webcomponents-lite.min.js for polyfill support. -->
+    <script src="bower_components/webcomponentsjs/webcomponents-lite.min.js">
+    </script>
+
+	<!-- 2. Load the roboto font that we will use.  -->
+	<link rel="import" href="bower_components/font-roboto/roboto.html">
+	
+    <!-- 3. Use an HTML Import to bring in some elements. -->   
+    <link rel="import" href="bower_components/paper-button/paper-button.html">
+    <link rel="import" href="bower_components/paper-input/paper-input.html">
+    <link rel="import" href="bower_components/paper-header-panel/paper-header-panel.html">
+  	<link rel="import" href="bower_components/paper-toolbar/paper-toolbar.html">
+  	<link rel="import" href="bower_components/iron-flex-layout/iron-flex-layout.html">
+  	<link rel="import" href="bower_components/paper-card/paper-card.html">
+  	<link rel="import" href="bower_components/neon-animation/neon-animated-pages.html">
+  </head>
+  
+ <body class="fullbleed vertical layout">
+ <template is="dom-bind" id="app">
+
+    <neon-animated-pages id="pages" selected="0" style="height:100%">    
+ 		<front-page style = 'background: #E5E5E5'></front-page>	
+       	<anim-test-b></anim-test-b>	
+    </neon-animated-pages>
+
+    	</template>
+    <script>
+    
+	
+    var scope = document.querySelector('#app');
+    app.selected = 0;
+    function onButtonClick() {
+    	var pages = document.querySelector('#pages');
+    	pages.selected = 1;
+    }
+    /*scope._onButtonClick = function(event) {
+		alert("working");
+    	app.selected = 1;
+    };*/
+    scope._onFullsizeClick = function(event) {
+      this.$.pages.selected = 0;
+    };
+
+    </script>
+	</div>
+</template>
+</body>
+</html>
+
+<!--  <script>
+      // To ensure that elements are ready on polyfilled browsers, 
+      // wait for WebComponentsReady. 
+      document.addEventListener('WebComponentsReady', function() {
+        var input = document.querySelector('paper-input');
+        var button = document.querySelector('paper-button');
+        var greeting = document.getElementById("greeting");
+        button.addEventListener('click', function() {
+          greeting.textContent = 'Hello, ' + input.value;
+        });
+      });
+    </script> -->

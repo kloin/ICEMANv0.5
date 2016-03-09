@@ -164,6 +164,26 @@ public class NodeController implements INodeController {
 		
 		return json.toString();
 	}
+        
+        public String convertIteratorToJSONOfHomeCardDetails(ExecutionResult result) {
+		Iterator<Map<String, Object>> it = result.iterator();
+		NodeConverter nodeConverter = new NodeConverter();
+		JSONObject json = new JSONObject();
+		//DOnt know if this index shit is neccessary
+		int index = 0;
+		while (it.hasNext()) {
+			Map nodeItemMap = it.next();
+			Collection valuesCollection = nodeItemMap.values();
+			Node tempNode = (Node) valuesCollection.toArray()[0];
+                        JSONObject details = new JSONObject();
+                        details.put ("Id", tempNode.getId());
+                        details.put ("DataType", tempNode.getProperty("Extension"));
+			json.put("Node"+ tempNode.getId(), details);
+			index+= 1;			
+		}
+		
+		return json.toString();
+	}
 
 	@Override
 	public void DeleteNode(int id) {

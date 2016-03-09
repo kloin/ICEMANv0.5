@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="500px"
+        android:background="@color/ColorPrimary">
+        <ImageView
+            android:layout_width="150px"
+            android:layout_height="150px"
+            android:layout_centerInParent="true"
+            android:src="@drawable/ic_error_outline_white_24dp"/>
+    </RelativeLayout>
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Woah!"
+        style="@style/CodeFont"
+        android:layout_marginTop="16dp"
+        android:textColor="@color/my_primary_text"
+        android:layout_gravity="center"
+        android:textSize="32sp"/>
+    <TextView
+        android:layout_marginTop="10dp"
+        android:layout_marginRight="25dp"
+        android:layout_marginLeft="25dp"
+        style="@style/CodeFont"
+        android:textSize="16sp"
+        android:gravity="center"
+        android:textColor="@color/my_divider"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Are you sure you want to delete this trail? This will delete all content (crumbs, comments, media) associated with this trail."
+        android:layout_gravity="center"/>
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <TextView
+            android:id="@+id/cancel_dialog_button"
+            android:layout_width="wrap_content"
+            android:layout_height="100px"
+            android:text="CANCEL"
+            android:layout_toLeftOf="@+id/delete_dialog_button"
+            android:layout_margin="24dp"
+           />
+        <TextView
+            android:id="@+id/delete_dialog_button"
+            android:layout_width="wrap_content"
+            android:layout_height="100px"
+            android:text="DELETE"
+            android:layout_margin="24dp"
+            android:textColor="@color/accent"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true" />
+
+    </RelativeLayout>
+</LinearLayout>

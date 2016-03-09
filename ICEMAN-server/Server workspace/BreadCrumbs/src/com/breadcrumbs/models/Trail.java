@@ -1,6 +1,9 @@
 package com.breadcrumbs.models;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.Hashtable;
 import java.util.Iterator;
 
@@ -18,6 +21,7 @@ import com.breadcrumbs.database.DBMaster;
 import com.breadcrumbs.database.DBMaster.myLabels;
 import com.breadcrumbs.database.NodeController;
 import com.breadcrumbs.gcm.GcmMessages;
+import com.breadcrumbs.gcm.GcmSender;
 import com.breadcrumbs.database.DBMaster.myRelationships;
 
 public class Trail {
@@ -32,7 +36,13 @@ public class Trail {
 		keysAndItems.put("UserId", userId);
 		keysAndItems.put("Description", description);
 		keysAndItems.put("Views", views);
+		keysAndItems.put("CoverPhotoId", "0");
+		keysAndItems.put("Distance", "0");
 		
+		Date date = new Date();
+		SimpleDateFormat dt1 = new SimpleDateFormat("yyyy-MM-dd");
+		
+		keysAndItems.put("StartDate", dt1.format(date));
 		dbMaster = DBMaster.GetAnInstanceOfDBMaster();
 		int trailId = dbMaster.SaveNode(keysAndItems, com.breadcrumbs.database.DBMaster.myLabels.Trail);	
 		Node trail = dbMaster.RetrieveNode(trailId);
@@ -41,9 +51,10 @@ public class Trail {
 		dbMaster.CreateRelationship(User, trail, myRelationships.Controls);
 		return String.valueOf(trailId);		
 	}
+
 	
 	/* 
-	 * The code around the saving and loading of trail points is really shit.
+	 * The code around the saving and loading of trail pointssi is really shit.
 	 * This code here resaves the entire trail EVERYTIME which is dangerous if
 	 * we somehow lose the data on the client side, or different phones etc. 
 	 * 
@@ -100,13 +111,14 @@ public class Trail {
 		keysAndItems.put("CommentText", CommentText);
 		
 		// Get Master instance and save a new node using the hashtable.
+		GcmSender gcm = new GcmSender();
 		dbMaster = DBMaster.GetAnInstanceOfDBMaster();
 		Node entityNode = dbMaster.RetrieveNode(Integer.parseInt(EntityId));
+		
 		GcmMessages gcmMessages = new GcmMessages();
 		
 		// Notify the user whose crumb we are commenting on
 		gcmMessages.SendUserNotificationOfComment(EntityId, CommentText, UserId);
-		
 		//This method should possible just return the node? How expensive is this?
 		int commentNodeId = dbMaster.SaveNode(keysAndItems, com.breadcrumbs.database.DBMaster.myLabels.Comment);
 		Node commentNode = dbMaster.RetrieveNode(commentNodeId);
@@ -237,8 +249,8 @@ public class Trail {
 	
 	public String FindAllPinnedTrailsForAUser(String userId) {
 		DBMaster dbMaster = DBMaster.GetAnInstanceOfDBMaster();
-		String cypherQuery = "start n = node("+userId+") match n-[:Has_Pinned]->(Trail) return Trail";	
-		return dbMaster.ExecuteCypherQueryJSONStringReturn(cypherQuery);		
+		String cypherQuery = "start n = node("+userId+") match n-[:Has_Pinned]->(trail:Trail) return trail";	
+		return dbMaster.ExecuteCypherQueryJSONStringReturnJustIds(cypherQuery);		
 	}
 	
 	public void PinTrailForUser(String UserId, String TrailId) {
@@ -247,6 +259,8 @@ public class Trail {
 		Node User = dbMaster.RetrieveNode(Integer.parseInt(UserId));
 		dbMaster.CreateRelationship(User, trail, myRelationships.Has_Pinned);
 	}
+	
+	
 	
 	/*
 	 * A user no longer wants to follow a trail - this is called unpinning - here we remove the association.
@@ -267,16 +281,24 @@ public class Trail {
 	public String SaveJSONOfTrailPoints(JSONObject trailPointsJSON) {		
 		int nextPoint = 0;
 		String trailId = null;
+		JSONObject tempNode = null;
+		JSONObject previousNode = null;
 		Iterator<String> it = trailPointsJSON.keys();
 		// Get the first one, then loop through as long as "next" != null
 		while (it.hasNext()) {
-			
+
 			Object nextObj = null;		
 			try {
-				JSONObject tempNode = trailPointsJSON.getJSONObject(it.next()); // This is our first point
+				//previousNode = tempNode;
+				tempNode = trailPointsJSON.getJSONObject(it.next()); // This is our first point
+				
 				if (trailId == null) {
 					trailId = tempNode.getString("trailId");
-				}				
+				}	
+				/*if (previousNode != null) {
+					updateDistance(trailId, previousNode.getString("latitude"), previousNode.getString("longitude"), tempNode.getString("latitude"), tempNode.getString("longitude"));
+				}*/
+				
 				SavePointFromJSON(tempNode, trailId);
 						
 				int x = tempNode.getInt("next");
@@ -285,14 +307,68 @@ public class Trail {
 				// Not really alot to do here. Will happen every time at the end, but thats not really a big deal i dont think... if it is we can set a -1 by default client side
 				System.out.println("failed to save JSONPoints");
 			}
-			
-			
 		}
-		
 		
 		// Return the last trail so when we carry on it works all good. we wil store this in shared preferences
 		return "200";
 	}
+	
+	private double calculateDistance(double lat1, double lat2, double lon1,
+	        double lon2, double el1, double el2) {
+
+	    final int R = 6371; // Radius of the earth
+
+	    Double latDistance = Math.toRadians(lat2 - lat1);
+	    Double lonDistance = Math.toRadians(lon2 - lon1);
+	    Double a = Math.sin(latDistance / 2) * Math.sin(latDistance / 2)
+	            + Math.cos(Math.toRadians(lat1)) * Math.cos(Math.toRadians(lat2))
+	            * Math.sin(lonDistance / 2) * Math.sin(lonDistance / 2);
+	    Double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+	    double distance = R * c * 1000; // convert to meters
+
+	    double height = el1 - el2;
+
+	    distance = Math.pow(distance, 2) + Math.pow(height, 2);
+
+	    return Math.sqrt(distance);
+	}
+	
+	public void updateDistance(String trailId, String latHeadString, String lonHeadString, String latBaseString, String lonBaseString) {
+		// Update the total distance covered by the trail.
+		double latBase = Double.parseDouble(latBaseString);
+		double lonBase = Double.parseDouble(lonBaseString);
+		double latHead = Double.parseDouble(latHeadString);
+		double lonHead = Double.parseDouble(lonHeadString);
+		
+		// calculate
+		double distance = calculateDistance(latBase, latHead, lonBase, lonHead, 0, 0);
+		
+		//Now we need to append this distance to the current distance on the trail.
+		addDistance(trailId, distance);
+		
+	}
+	
+	/*
+	 * Function to update the total distance a trail has been
+	 */
+	private void addDistance(String trailId, double additionalDistance) {
+		
+		dbMaster = DBMaster.GetAnInstanceOfDBMaster();
+		// Get trailNode
+		Node trail = dbMaster.RetrieveNode(Long.getLong(trailId));
+		
+		// Get the distance property
+		String distance = trail.getProperty("Distance").toString();
+		
+		// Update property
+		double baseDistance = Double.parseDouble(distance);
+		baseDistance += additionalDistance;
+		
+		// re set the property
+		trail.setProperty("Distance", distance);
+	}
+	
+
 
 	// This converts and saves the point, returning the points id.
 	private String convertAndSavePoint(JSONObject tempNode, String lastPointId) {
@@ -369,7 +445,7 @@ public class Trail {
 	public String GetNumberOfLikesForAnEntity(String entityId) {
 		dbMaster = DBMaster.GetAnInstanceOfDBMaster();
 		String numberOfLikes = "0";
-		String cypherQuery = "start n = node(22) match ()-[rel:Likes]->n return count(*)";	
+		String cypherQuery = "start n = node("+entityId+") match ()-[rel:Likes]->n return count(*)";	
 		numberOfLikes = dbMaster.ExecuteCypherQueryReturnCount(cypherQuery);
 		return numberOfLikes;		
 	}
@@ -390,6 +466,7 @@ public class Trail {
 		String cypherQuery = "MATCH (crumb:Crumb) WHERE crumb.TrailId = '"+trailId+"' RETURN crumb";	
 		return dbMaster.ExecuteCypherQueryJSONStringReturnJustIds(cypherQuery);
 	}
+       
 
 	public String GetSimpleDetailsForATrail(String trailId) {
 		DBMaster dbMaster = DBMaster.GetAnInstanceOfDBMaster();
@@ -402,5 +479,42 @@ public class Trail {
 		String cypherQuery = "MATCH (n:Trail) RETURN n LIMIT 100";	
 		return dbMaster.ExecuteCypherQueryJSONStringReturnJustIds(cypherQuery);
 	}
-	
+
+        /*
+        Add a follower for a trail
+        */
+        public void AddFollowerForTrail(String trailId, String userId) {
+            dbMaster = DBMaster.GetAnInstanceOfDBMaster();
+			Node trail = dbMaster.RetrieveNode(Integer.parseInt(trailId));
+			Node User = dbMaster.RetrieveNode(Integer.parseInt(userId));
+			dbMaster.CreateRelationship(User, trail, myRelationships.Has_Pinned);
+        }
+        
+        /*
+            Method to get the number of followers that a trail has.
+        */
+        public String GetNumberOfFollowersForATrail(String trailId) {
+            dbMaster = DBMaster.GetAnInstanceOfDBMaster();
+            String numberOfFollowers = "0";
+            String cypherQuery = "start n = node("+trailId+") match ()-[rel:Has_Pinned]->n return count(*)";	
+            numberOfFollowers = dbMaster.ExecuteCypherQueryReturnCount(cypherQuery);
+            return numberOfFollowers;	
+        }
+
+        public String GetAllHomeCardDetails() {
+                // TODO Auto-generated method stub
+                DBMaster dbMaster = DBMaster.GetAnInstanceOfDBMaster();
+		String cypherQuery = "MATCH (n:Trail) RETURN n LIMIT 100";	
+		return dbMaster.ExecuteCypherQueryJSONStringReturnCrumbCardDetails(cypherQuery);
+        }
+
+    public String GetAllCrumbCardDetailsForATrail(String trailId) {
+        DBMaster dbMaster = DBMaster.GetAnInstanceOfDBMaster();
+        String cypherQuery = "MATCH (crumb:Crumb) WHERE crumb.TrailId = '"+trailId+"' RETURN crumb";	
+        return dbMaster.ExecuteCypherQueryJSONStringReturnCrumbCardDetails(cypherQuery);    
+    }
+        
+        
+        
+        
 }

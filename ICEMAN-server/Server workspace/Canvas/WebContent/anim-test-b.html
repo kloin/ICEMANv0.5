@@ -1,0 +1,87 @@
+<link rel="import" href="bower_components/polymer/polymer.html">
+<link rel="import" href="bower_components/iron-flex-layout/iron-flex-layout.html">
+
+<link rel="import" href="bower_components/neon-animation/neon-shared-element-animatable-behavior.html">
+<link rel="import" href="bower_components/neon-animation/animations/hero-animation.html">
+<link rel="import" href="bower_components/neon-animation/animations/fade-out-animation.html">
+<link rel="import" href="bower_components/neon-animation/animations/fade-in-animation.html">
+<link rel="import" href="bower_components/neon-animation/animations/scale-up-animation.html">
+
+<dom-module id="anim-test-b">
+
+  <style>
+    :host {
+      display: block;
+      overflow: scroll;
+    }
+    #header {
+      height: 900px;
+      background-image: url("media/background-MD-banner.jpg");
+    }
+    .container {
+      background: white;
+    }
+    .content {
+      padding: 56px;
+      max-width: 700px;
+      margin: 0 auto;
+    }
+    h1 {
+      font-size: 48px;
+    }
+    p {
+      font-size: 20px;
+    }
+    .row {
+      margin: 56px 0;
+    }
+  </style>
+
+  <template>
+    <div>
+      <div id="header"></div>
+      <div class="container">
+        <div class="content">
+          <h1>Oh hai!</h1>
+          
+        </div>
+      </div>
+    </div>
+
+  </template>
+
+  <script>
+    Polymer({
+      is: 'anim-test-b',
+      behaviors: [Polymer.NeonSharedElementAnimatableBehavior],
+      properties: {
+        animationConfig: {
+          value: function() {
+            return {
+              'entry': [{
+                name: 'hero-animation',
+                id: 'hero',
+                toPage: this
+              }, {
+                name: 'fade-in-animation',
+                node: this
+              }],
+              'exit': {
+                name: 'fade-out-animation',
+                node: this
+              }
+            }
+          }
+        },
+        sharedElements: {
+          value: function() {
+            return {
+              'hero': this.$.header
+            }
+          }
+        }
+      }
+    });
+  </script>
+
+</dom-module>

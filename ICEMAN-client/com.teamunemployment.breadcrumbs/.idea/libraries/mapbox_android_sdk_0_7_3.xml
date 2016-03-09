@@ -1,0 +1,12 @@
+<component name="libraryTable">
+  <library name="mapbox-android-sdk-0.7.3">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/build/intermediates/exploded-aar/com.mapbox.mapboxsdk/mapbox-android-sdk/0.7.3/jars/classes.jar!/" />
+      <root url="file://$PROJECT_DIR$/build/intermediates/exploded-aar/com.mapbox.mapboxsdk/mapbox-android-sdk/0.7.3/res" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.mapbox.mapboxsdk/mapbox-android-sdk/0.7.3/3492ca4ade5e3ce603df1ef5ce559dd17424e44d/mapbox-android-sdk-0.7.3-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>

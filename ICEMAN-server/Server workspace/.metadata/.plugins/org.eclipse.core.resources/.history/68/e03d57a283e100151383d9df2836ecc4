@@ -1,0 +1,23 @@
+package tools;
+
+import java.util.Iterator;
+
+import org.json.JSONObject;
+
+public class JSONSpecialist {
+
+	/*
+	 * Simple helper class to append 2 json objects of the SAME TYPE together. 
+	 * Generally should be only used when they are both <String, String>
+	 */
+	public JSONObject JoinTwoJsonObjects(JSONObject json1, JSONObject json2) {
+		Iterator<String> keys = json2.keys();
+		while (keys.hasNext()) {
+			String next = keys.next();
+			JSONObject json = new JSONBObject(json2.get(next));
+			json1.append(next, );
+		}
+		
+		return json1;
+	}
+}

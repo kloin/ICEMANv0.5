@@ -1,5 +1,9 @@
 package com.breadcrumbs.resource;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
@@ -7,8 +11,11 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.core.MediaType;
 
+import org.joda.time.Days;
+import org.joda.time.LocalDate;
 import org.json.JSONObject;
 
+import com.breadcrumbs.database.DBMaster;
 import com.breadcrumbs.models.Trail;
 import com.breadcrumbs.models.UserService;
 
@@ -27,6 +34,23 @@ public class RESTTrailManager {
 		Trail trail = new Trail();
 		System.out.println("Saved these trails: " + TrailPoints);
 		return trail.SaveJSONOfTrailPoints(TrailPointsJSON);
+	}
+	
+	@GET
+	@Path("/GetDurationOfTrailInDays/{TrailId}")
+	public String GetDurationOfTrailInDays(@PathParam("TrailId") String TrailId) {
+		   DBMaster dbMaster = DBMaster.GetAnInstanceOfDBMaster();
+		   String startDate = dbMaster.GetStringPropertyFromNode(TrailId, "StartDate").toString();
+		  
+		   Date date = new Date();
+		   SimpleDateFormat dt1 = new SimpleDateFormat("yyyy-MM-dd");
+		   String currentDate = dt1.format(date);
+		   
+		   LocalDate currentLocalDate = new LocalDate(currentDate);
+		   LocalDate startLocalDate = new LocalDate(startDate);
+		   int days = Days.daysBetween(startLocalDate, currentLocalDate).getDays();
+		   return Integer.toString(days);
+	
 	}
 	
 	@GET
@@ -140,6 +164,18 @@ public class RESTTrailManager {
 	public void DeleteAllTrails() {
 		//USE WITH CAUTION _ THIS SHOULD BE REMOVED BEFORE A PROPER RELEASE
 	}
-		
-	
+        
+    @GET
+    @Path("FollowTrail/{TrailId}/{UserId}")
+    public void FollowTrail(@PathParam("TrailId") String trailId, @PathParam("UserId") String userId) {
+        Trail trail = new Trail();
+        trail.AddFollowerForTrail(trailId, userId);
+    }
+    
+    @GET
+    @Path("/GetNumberOfFollowersForATrail/{TrailId}")
+    public String GetNumberOfFollowersForATrail(@PathParam("TrailId") String trailId) {
+         Trail trail = new Trail();
+         return trail.GetNumberOfFollowersForATrail(trailId);
+    }
 }

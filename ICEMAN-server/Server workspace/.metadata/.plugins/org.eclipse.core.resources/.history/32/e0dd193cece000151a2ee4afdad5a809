@@ -1,0 +1,15 @@
+package tools;
+
+import java.util.Iterator;
+
+import org.json.JSONObject;
+
+public class JSONSpecialist {
+
+	public JSONObject JoinTwoJsonObjects(JSONObject json1, JSONObject json2) {
+		Iterator keys = json2.keys();
+		while (keys.hasNext()) {
+			String next = keys.next();
+		}
+	}
+}

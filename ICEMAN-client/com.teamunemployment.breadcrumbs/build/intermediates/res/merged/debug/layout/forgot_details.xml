@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="200dp">
+
+    <TextView
+        android:id="@+id/forgotten_details_instructions"
+        android:layout_margin="20dp"
+        android:text="Please enter the email address that you signed up with. Your details will be sent to this account"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+    <EditText
+        android:id="@+id/forgotten_details_email"
+        android:hint="Email Address"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp"
+        android:layout_below="@+id/forgotten_details_instructions"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+    <TextView
+        android:id="@+id/send_details_button"
+        android:text="Send Details"
+        android:layout_alignParentBottom="true"
+        android:textSize="24sp"
+        android:gravity="center"
+        android:padding="10dp"
+        android:background="@color/ColorPrimary"
+        android:textColor="@color/white"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+</RelativeLayout>

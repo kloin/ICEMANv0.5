@@ -33,14 +33,17 @@ import org.apache.lucene.util.IOUtils;
 
 import com.breadcrumbs.database.DBMaster;
 import com.breadcrumbs.models.Trail;
+import com.breadcrumbs.models.UserService;
+import com.breadcrumbs.resource.RESTCrumb;
 import com.breadcrumbs.resource.RetrieveData;
 
 public class GETtest {
 	private RetrieveData retrieve;
-
+	private DBMaster dbMaster;
 	@Before
 	public void setUp() throws Exception {
 		retrieve = new RetrieveData();
+		dbMaster = DBMaster.GetAnInstanceOfDBMaster();
 
 	}
 
@@ -49,35 +52,35 @@ public class GETtest {
 		//retrieve.Obliterate(); // Get rid of everything
 	}
 
-	@Test
-	public void TestGetAllCrumbIdsReturnsData() {
-
-		String id = retrieve.CreateNewUser("Josiah", "7873", "23", "M", "1");
-		String trailId = retrieve.SaveTrail("OOOHRAA", "just testing yo", id);
-		String crumbId = retrieve.SaveCrumb("testing123", id, trailId, "-36.8", "174.5", "icon", ".jpg", "1", "Greenlane", "Auckland", "New Zealand", "time");
-		assertTrue(Integer.parseInt(crumbId) > Integer.parseInt(trailId));
-		Trail trails = new Trail();
-		try {
-			JSONObject jsonResponse = new JSONObject(trails.GetAllTrailsForAUser(Integer.parseInt(id)));
-			assertEquals(jsonResponse.length() > 0, true);
-		} catch (JSONException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-	}
-	
-	@Test(expected=org.neo4j.graphdb.NotFoundException.class)
-	public void TestThatDeleteDeletesNodeAndItsRelationship() {
-		String id = retrieve.CreateNewUser("Josiah", "7873", "23", "M", "1");
-		String trailId = retrieve.SaveTrail("OOOHRAA", "just testing yo", id);
-		String crumbId = retrieve.SaveCrumb("testing123", id, trailId, "-36.8", "174.5", "icon", ".jpg", "1", "Greenlane", "Auckland", "New Zealand", "time");
-		assertTrue(Integer.parseInt(crumbId) > Integer.parseInt(trailId));
-		Trail trails = new Trail();
-		trails.DeleteNodeAndRelationship(trailId);
-		DBMaster dbMaster = DBMaster.GetAnInstanceOfDBMaster();
-		int intId = Integer.valueOf(trailId);
-		Node node = dbMaster.RetrieveNode(intId);
-	}
+//	@Test
+//	public void TestGetAllCrumbIdsReturnsData() {
+//
+//		String id = retrieve.CreateNewUser("Josiah", "7873", "23", "M", "1");
+//		String trailId = retrieve.SaveTrail("OOOHRAA", "just testing yo", id);
+//		String crumbId = retrieve.SaveCrumb("testing123", id, trailId, "-36.8", "174.5", "icon", ".jpg", "1", "Greenlane", "Auckland", "New Zealand", "time");
+//		assertTrue(Integer.parseInt(crumbId) > Integer.parseInt(trailId));
+//		Trail trails = new Trail();
+//		try {
+//			JSONObject jsonResponse = new JSONObject(trails.GetAllTrailsForAUser(Integer.parseInt(id)));
+//			assertEquals(jsonResponse.length() > 0, true);
+//		} catch (JSONException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		}
+//	}
+//	
+//	@Test(expected=org.neo4j.graphdb.NotFoundException.class)
+//	public void TestThatDeleteDeletesNodeAndItsRelationship() {
+//		String id = retrieve.CreateNewUser("Josiah", "7873", "23", "M", "1");
+//		String trailId = retrieve.SaveTrail("OOOHRAA", "just testing yo", id);
+//		String crumbId = retrieve.SaveCrumb("testing123", id, trailId, "-36.8", "174.5", "icon", ".jpg", "1", "Greenlane", "Auckland", "New Zealand", "time");
+//		assertTrue(Integer.parseInt(crumbId) > Integer.parseInt(trailId));
+//		Trail trails = new Trail();
+//		trails.DeleteNodeAndRelationship(trailId);
+//		DBMaster dbMaster = DBMaster.GetAnInstanceOfDBMaster();
+//		int intId = Integer.valueOf(trailId);
+//		Node node = dbMaster.RetrieveNode(intId);
+//	}
 
 //	@Test
 //	public void TestGetAllCrumbsReturnsData() {
@@ -163,5 +166,20 @@ public class GETtest {
 //			e.printStackTrace();
 //		}
 //	}
+	
+	@Test
+	public void TestThatICanSendEmailOfDetailsToAddress() {
+		String id = retrieve.CreateNewUser("Josiah", "7873", "23", "M", "1", "jos899@gmail.com", "0");
+		UserService userservice = new UserService();
+		userservice.CheckForDetailsUsingEmailAddress("jos899@gmail.com");
+	}
+	
+	@Test
+	public void TestThatFacebookUserCanBeCreated() {
+		String id = retrieve.CreateNewUser("Josiah", "7873", "23", "M", "1", "jos899@gmail.com", "1112354038828430");
+		UserService userService = new UserService();
+		String result = userService.CheckForUserExistenceUsingFacebookId("1112354038828430");
+		assertTrue(!result.equals("404"));
+	}
 
 }

@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="UTF-8"?><testrun name="GETtest" project="BreadCrumbs" tests="1" started="1" failures="0" errors="0" ignored="0">
+  <testsuite name="testShit.GETtest" time="9.572">
+    <testcase name="TestThatICanSendEmailOfDetailsToAddress" classname="testShit.GETtest" time="9.572"/>
+  </testsuite>
+</testrun>

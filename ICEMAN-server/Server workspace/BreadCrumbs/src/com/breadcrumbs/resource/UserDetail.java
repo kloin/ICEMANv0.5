@@ -19,7 +19,7 @@ public class UserDetail {
 		UserService userService = new UserService();
 		return userService.FetchUserName(userId);
 	}
-	
+
 	
 	@GET
 	@Path("SaveUserAbout/{UserId}/{Description}") 

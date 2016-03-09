@@ -1,0 +1,44 @@
+<!--
+Stolen from polymer github. Subsequently adapted as a test for controlling content with tabs.
+Need to consider animations and shit too
+-->
+
+<link rel="import" href="../../bower_components/paper-tabs/paper-tabs.html">
+<link rel="import" href="../../bower_components/paper-tabs/paper-tab.html">
+<link rel="import" href="../../bower_components/iron-pages/iron-pages.html">
+
+<dom-module is="tab-test">
+  <template>
+    <style>
+      iron-pages {
+        border: none;
+        border-top: none;
+        padding: 0px;
+      }
+      iron-pages.tab-content-pane {
+       border: none;
+        border-top: none;
+        padding: 0px;
+      }
+    </style>
+    <paper-tabs selected="{{selected}}" class='paper-tabs-test' noink>
+      <paper-tab>ABOUT</paper-tab>
+      <paper-tab>PRICING</paper-tab>
+      <paper-tab>PORTFOLIO</paper-tab>
+      <paper-tab>FEATURES</paper-tab>
+    </paper-tabs>
+    
+  </template>
+  <script>
+    Polymer({
+      is: 'tab-test',
+      properties: {
+        selected: {
+          type: Number,
+          notify: true,
+          value: 0
+        }
+      }
+    });
+  </script>
+</dom-module>>

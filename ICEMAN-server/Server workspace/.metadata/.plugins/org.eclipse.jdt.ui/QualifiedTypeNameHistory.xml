@@ -23,4 +23,5 @@
 <fullyQualifiedTypeName name="org.neo4j.graphdb.NotFoundException"/>
 <fullyQualifiedTypeName name="com.breadcrumbs.models.UserService"/>
 <fullyQualifiedTypeName name="org.json.JSONObject"/>
+<fullyQualifiedTypeName name="com.breadcrumbs.gcm.GcmSender"/>
 </qualifiedTypeNameHistroy>

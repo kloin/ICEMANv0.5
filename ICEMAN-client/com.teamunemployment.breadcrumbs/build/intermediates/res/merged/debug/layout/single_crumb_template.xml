@@ -1,0 +1,31 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/singleCrumbTemplate"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_margin="20dp"
+    android:layout_marginBottom="10dp"
+    android:layout_marginTop="10dp"
+    android:background="#00FFFFFF"
+    android:orientation="vertical"
+    android:padding="10dp" >
+
+    <TextView
+        android:id="@+id/Name"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:tag="neededAtRuntime-DoNotRemove"
+        android:text="FirstName"
+        android:textAppearance="?android:attr/textAppearanceMedium" />
+
+    <ImageView
+        android:id="@+id/imageView1"
+        android:layout_width="match_parent"
+        android:layout_height="300dp"/>
+     <TextView
+        android:id="@+id/Description"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:tag="neededAtRuntime-DoNotRemove"
+        android:text="Description"/>
+
+</LinearLayout>
