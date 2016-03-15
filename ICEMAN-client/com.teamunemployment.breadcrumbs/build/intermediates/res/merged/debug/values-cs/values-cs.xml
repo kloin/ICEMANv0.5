@@ -13,7 +13,6 @@
     <string msgid="893419373245838918" name="abc_searchview_description_voice">"Hlasové vyhledávání"</string>
     <string msgid="3421042268587513524" name="abc_shareactionprovider_share_with">"Sdílet pomocí"</string>
     <string msgid="7165123711973476752" name="abc_shareactionprovider_share_with_application">"Sdílet pomocí %s"</string>
-    <string name="com_facebook_device_auth_instructions">Přejděte ze smartphonu nebo počítače na %@ a zadejte tento kód:</string>
     <string name="com_facebook_image_download_unknown_error">Při stahování obrázku došlo k nečekané chybě.</string>
     <string name="com_facebook_internet_permission_error_message">Webové přihlášení vyžaduje oprávnění použít INTERNET</string>
     <string name="com_facebook_internet_permission_error_title">Chyba AndroidManifest</string>

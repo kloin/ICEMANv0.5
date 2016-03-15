@@ -35,10 +35,12 @@ public class BreadCrumbsFusedLocationProvider implements
 
     protected static final String TAG = "location-updates-sample";
 
+    public static boolean isTracking = false;
+
     /**
      * The desired interval for location updates. Inexact. Updates may be more or less frequent.
      */
-    public static final long UPDATE_INTERVAL_IN_MILLISECONDS = 20000;
+    public static final long UPDATE_INTERVAL_IN_MILLISECONDS = 240000;
 
     /**
      * The fastest rate for active location updates. Exact. Updates will never be more frequent
@@ -130,6 +132,7 @@ public class BreadCrumbsFusedLocationProvider implements
     public void StartForegroundGPSService() {
         if (mGoogleApiClient != null && mGoogleApiClient.isConnected() &&
                 mLocationRequest != null) {
+            Log.d("GPS", "GAC successfully started. Location updates have been requested.");
             // Launch our foreground service. Used while running so that we can easily request gps points.
             LocationServices.FusedLocationApi.requestLocationUpdates(mGoogleApiClient, mLocationRequest, this);
         }
@@ -201,7 +204,10 @@ public class BreadCrumbsFusedLocationProvider implements
      *  Stop the service that we are running in the background.
      */
     public void StopBackgroundGPSSerivce() {
-        LocationServices.FusedLocationApi.removeLocationUpdates(mGoogleApiClient, breadcrumbsPendingIntent);
+        mRequestingLocationUpdates = false;
+        if (mGoogleApiClient.isConnected()) {
+            LocationServices.FusedLocationApi.removeLocationUpdates(mGoogleApiClient, breadcrumbsPendingIntent);
+        }
     }
 
     protected void startBackgroundLocationTracking() {

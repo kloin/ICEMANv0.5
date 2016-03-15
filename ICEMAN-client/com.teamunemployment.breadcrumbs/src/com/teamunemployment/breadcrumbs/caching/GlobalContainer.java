@@ -13,19 +13,16 @@ import com.google.maps.android.clustering.Cluster;
 import java.util.ArrayList;
 
 /*
-    TODO : Check the efficiency of this class. Check for mem leaks.
-    I Feel like this class is bad. I would love an alternative, but this is just so fucken easy
-    that I am going to use it (sparingly). I also have concerns about security - this may be very
-    exploitable - I dont know.
 
-    ONLY USE THIS CLASS FOR VARIABLES THAT ARE CALLED VERY REGULARLY. (i.e UserId).
+    This is an old class which is rarely used. Will probably eventually be replaced by
+    the android PreferenceManager / Caching. This is the fastest option however, so it can be useful
+    in case of bitmaps etc. which is why I am keeping it around.
 
     The problem with static variables is that they can cause leaks. These globals will also cause a lot
-    of confusion if used regularily. At the moment I am using these when:
+    of confusion if used regularly. At the moment I am using these when:
 
         - I HAVE to access a variable from another class and i am in the wrong context. (bitmap, camerabutton)
         - I use the variable over many different classes/contexts, and need to have the consistent value.
-        - Caching for efficiency reasons - E.g trails.
  */
 public class GlobalContainer {
 	private static GlobalContainer singletonContainer = null;
@@ -38,7 +35,6 @@ public class GlobalContainer {
     private BreadCrumbsFusedLocationProvider breadCrumbsFusedLocationProvider;
     private ImageButton cameraButton;
     private Long lastSavedTime;
-    private Activity cameraContext;
     private Cluster<DisplayCrumb> cluster;
     private String trails;
     private ArrayList<String> currentTrailIds;
@@ -46,8 +42,8 @@ public class GlobalContainer {
 	private GlobalContainer() {
 	}
 	/*
-	Singleton constructor. only constructs once, and i want it to constantly persits so I am hoping
-	that it wont cause memory leaks.
+        Singleton constructor. only constructs once, and i want it to constantly persits so I am hoping
+        that it wont cause memory leaks.
 	 */
 	public static GlobalContainer GetContainerInstance() {
 		if (singletonContainer == null) {

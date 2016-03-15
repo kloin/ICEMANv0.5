@@ -1,24 +1,33 @@
 package com.teamunemployment.breadcrumbs.client;
 
 import android.app.Activity;
+import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.util.Log;
 import android.view.View;
+import android.view.Window;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.facebook.FacebookSdk;
 import com.facebook.login.LoginManager;
+import com.sromku.simple.fb.SimpleFacebook;
+import com.sromku.simple.fb.listeners.OnLogoutListener;
+import com.teamunemployment.breadcrumbs.Location.BreadCrumbsFusedLocationProvider;
+import com.teamunemployment.breadcrumbs.Network.LoadBalancer;
+import com.teamunemployment.breadcrumbs.Network.ServiceProxy.HTTPRequestHandler;
 import com.teamunemployment.breadcrumbs.R;
+import com.teamunemployment.breadcrumbs.caching.GlobalContainer;
 
 /**
  * Created by Josiah on 2/03/2016.
  */
 public class Settings extends Activity {
-
+    private final String TAG = "SETTINGS";
     private Context context;
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -35,8 +44,18 @@ public class Settings extends Activity {
         backButton.setOnClickListener(backClickListener);
         RelativeLayout about = (RelativeLayout) findViewById(R.id.about_wrapper);
         about.setOnClickListener(aboutOnClickListener);
+
+        RelativeLayout deleteAccount = (RelativeLayout) findViewById(R.id.delete_account_wrapper);
+        deleteAccount.setOnClickListener(deleteAccountClickListener);
     }
 
+    private OnLogoutListener onLogoutListener = new OnLogoutListener() {
+
+        @Override
+        public void onLogout() {
+            Log.i(TAG, "You are logged out");
+        }
+    };
     private View.OnClickListener logoutClickListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
@@ -44,9 +63,16 @@ public class Settings extends Activity {
             PreferenceManager.getDefaultSharedPreferences(context).edit().remove("USERID").commit();
             PreferenceManager.getDefaultSharedPreferences(context).edit().remove("TRAILID").commit();
             PreferenceManager.getDefaultSharedPreferences(context).edit().remove("FACEBOOK_REGISTRATION_ID").commit();
+            PreferenceManager.getDefaultSharedPreferences(context).edit().remove("COVERPHOTOID").commit();
+            PreferenceManager.getDefaultSharedPreferences(context).edit().remove("TRACKING").commit();
 
-            FacebookSdk.sdkInitialize(context);
-            LoginManager.getInstance().logOut();
+            //Stop Tracking
+            BreadCrumbsFusedLocationProvider provider = GlobalContainer.GetContainerInstance().GetBreadCrumbsFusedLocationProvider();
+            provider.StopBackgroundGPSSerivce();
+
+            SimpleFacebook simpleFacebook = SimpleFacebook.getInstance();
+            simpleFacebook.logout(onLogoutListener);
+
             // Start our main intent.
             Intent myIntent = new Intent(context, Main.class);
             myIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
@@ -69,4 +95,65 @@ public class Settings extends Activity {
             context.startActivity(myIntent);
         }
     };
+
+    private View.OnClickListener deleteAccountClickListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            // Need to do account logic here.
+            showDialog("You are about to delete your account. This action is not reversible.");
+        }
+    };
+
+    private void showDialog(String message) {
+        final Dialog dialog = new Dialog(context);
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        dialog.setContentView(R.layout.delete_account_popup);
+        TextView messageTextView = (TextView) dialog.findViewById(R.id.denied_message);
+        messageTextView.setText(message);
+        TextView dialogButton = (TextView) dialog.findViewById(R.id.cancel_dialog);
+        // if button is clicked, close the custom dialog
+        dialogButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+            }
+        });
+
+        TextView deleteButton = (TextView) dialog.findViewById(R.id.delete_dialog);
+        deleteButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                deleteUser();
+            }
+        });
+        dialog.show();
+    }
+
+    private void deleteUser() {
+        String userId = PreferenceManager.getDefaultSharedPreferences(context).getString("TRAILID", "-1");
+        String url = LoadBalancer.RequestServerAddress() + "/rest/login/DeleteNode/" + userId;
+        HTTPRequestHandler requestHandler = new HTTPRequestHandler();
+        requestHandler.SendSimpleHttpRequest(url);
+
+        // Hopefully that is all I need to do. May need to return something here if it fails.
+        PreferenceManager.getDefaultSharedPreferences(context).edit().remove("USERID").commit();
+        PreferenceManager.getDefaultSharedPreferences(context).edit().remove("TRAILID").commit();
+        PreferenceManager.getDefaultSharedPreferences(context).edit().remove("FACEBOOK_REGISTRATION_ID").commit();
+        PreferenceManager.getDefaultSharedPreferences(context).edit().remove("COVERPHOTOID").commit();
+        PreferenceManager.getDefaultSharedPreferences(context).edit().remove("TRACKING").commit();
+
+        //Stop Tracking
+        BreadCrumbsFusedLocationProvider provider = GlobalContainer.GetContainerInstance().GetBreadCrumbsFusedLocationProvider();
+        provider.StopBackgroundGPSSerivce();
+
+        // Close the app
+
+        Intent intent = new Intent(Intent.ACTION_MAIN);
+        intent.addCategory(Intent.CATEGORY_HOME);
+        startActivity(intent);
+
+        Intent myIntent = new Intent(context, Main.class);
+        myIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        context.startActivity(myIntent);
+    }
 }

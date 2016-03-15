@@ -18,6 +18,7 @@ import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -43,7 +44,6 @@ import java.util.Iterator;
 public class ProfilePageViewer extends AppCompatActivity  implements DatePickerDialog.DatePickerDialogListener{
     private GlobalContainer gc;
     private String userId;
-    private View rootView;
     private Activity myContext;
     private boolean isDirty = false;
     private TextView ageEditText;
@@ -54,26 +54,50 @@ public class ProfilePageViewer extends AppCompatActivity  implements DatePickerD
     private TextCaching textCaching;
     private String followKey;
     private String TAG = "PROFILE";
+    private String name;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         myContext = this;
         setContentView(R.layout.profile_screen);
         textCaching = new TextCaching(this);
+
         //Get user Id and name from bundle
         Bundle extras = getIntent().getExtras();
-        userId = extras.getString("userId");
 
+        // Set up User
+        setUpUser(extras);
+
+        // Set up user interaction - click handlers etc depending on the userId.
+        setUpFollowing();
+        setUpCollapsableToolbar(name);
+        setIsDirtyListener();
+        loadDetails();
+        setButtonListeners();
+        setHeaderPic();
+        loadTrailsIntoCard();
+        setEditButtonVisibility();
+    }
+
+    // Set up all the user details, like fetching Name and Id
+    private void setUpUser(Bundle extras) {
+        Log.d(TAG, "Begin setting up user details");
+        userId = extras.getString("userId");
         if (userId != null && userId.equals(PreferenceManager.getDefaultSharedPreferences(this).getString("USERID", "-1"))) {
             isOwnProfile = true;
         }
 
-        String name = extras.getString("name");
+        // Users name
+        name = extras.getString("name");
+        Log.d(TAG, "Found Name: " + name);
         if (userId == null ) {
+            Log.d(TAG, "UserId is null, we are fucked");
             Toast.makeText(this, "Serious issues", Toast.LENGTH_SHORT).show();
         } else if(name == null) {
             // Re fetch name.
-            String url = LoadBalancer.RequestServerAddress() +"/rest/login/GetPropertyFromNode/"+userId+"/Username";
+            Log.d(TAG, "Name was null - re fetching from server using userId");
+            String url = LoadBalancer.RequestServerAddress() +"/rest/login/GetPropertyFromNode/"+
+                    userId+"/Username";
             AsyncDataRetrieval fetchDescription = new AsyncDataRetrieval(url, new AsyncDataRetrieval.RequestListener() {
                 @Override
                 public void onFinished(String result) {
@@ -86,21 +110,20 @@ public class ProfilePageViewer extends AppCompatActivity  implements DatePickerD
             fetchDescription.execute();
         }
 
-        // Set up user interaction - click handlers etc depending on the userId.
         GlobalContainer gc = GlobalContainer.GetContainerInstance();
-        if (userId.equals(PreferenceManager.getDefaultSharedPreferences(this).getString("USERID", gc.GetUserId()))) {
+        if (userId.equals(PreferenceManager.getDefaultSharedPreferences(this).getString("USERID",
+                gc.GetUserId()))) {
             // This means that we are loading our current users profile. Everything should be editable.
+            Log.d(TAG, "We are viewing our active users profile. Need to set up appropriate edit " +
+                    "click handlers.");
             SetUpClickHandlers();
         }
-        setUpFollowing();
-        setUpCollapsableToolbar(name);
-        setIsDirtyListener();
-        loadDetails();
-        setProfilePic();
-        setButtonListeners();
-        setHeaderPic();
-        loadTrailsIntoCard();
+    }
+
+    private void setEditButtonVisibility() {
+        Log.d(TAG, "Setting up edit button visiblity");
         if (!userId.equals(PreferenceManager.getDefaultSharedPreferences(myContext).getString("USERID", "-1"))) {
+            Log.d(TAG, "Not our local user - need to hide the edit/save buttons");
             // Hide the edsit button, and the Save button.
             TextView editButton = (TextView) findViewById(R.id.toggle_edit_profile);
             editButton.setVisibility(View.GONE);
@@ -110,6 +133,7 @@ public class ProfilePageViewer extends AppCompatActivity  implements DatePickerD
     }
 
     private void setUpCollapsableToolbar(String name) {
+        Log.d(TAG, "Setting up the collapsable toolbar");
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
        // mRecyclerView = (RecyclerView) findViewById(R.id.crumb_recycler);
@@ -145,8 +169,6 @@ public class ProfilePageViewer extends AppCompatActivity  implements DatePickerD
         UpdateViewElementWithProperty updater = new UpdateViewElementWithProperty();
         updater.UpdateEditTextElement(bio, userId, "About");
         updater.UpdateTextViewElement(ageDisplay, userId, "Age");
-
-        // BAd but IDGAF
         updater.UpdateTextViewElement(aboutTextView, userId, "About");
     }
 
@@ -167,7 +189,6 @@ public class ProfilePageViewer extends AppCompatActivity  implements DatePickerD
             followKey = currentUser + "FOLLOW" + userId;
 
             String alreadyFollowed = textCaching.FetchCachedText(followKey);
-
             if (alreadyFollowed == null || alreadyFollowed.equals("N")) {
                 setUpFollowButton(currentUser, followButton);
             } else{
@@ -204,8 +225,6 @@ public class ProfilePageViewer extends AppCompatActivity  implements DatePickerD
                 openDatePicker();
             }
         });
-
-
     }
 
     private void setUpUnfollowButton(final String currentUserId, final TextView followButton) {
@@ -215,13 +234,13 @@ public class ProfilePageViewer extends AppCompatActivity  implements DatePickerD
             @Override
             public void onClick(View v) {
                 if (!currentUserId.equals("-1")) {
+                    followButton.setTextColor(myContext.getResources().getColor(R.color.ColorPrimary));
                     String followUserUrl = LoadBalancer.RequestServerAddress() + "/rest/User/UnPinUserForUser/"+currentUserId +"/"+userId;
                     AsyncDataRetrieval asyncDataRetrieval = new AsyncDataRetrieval(followUserUrl, new AsyncDataRetrieval.RequestListener() {
                         @Override
                         public void onFinished(String result) {
                             // need to check its legit here though
                             textCaching.CacheText(followKey, "N");
-                            followButton.setTextColor(myContext.getResources().getColor(R.color.ColorPrimary));
                         }
                     });
                     asyncDataRetrieval.execute();
@@ -239,6 +258,7 @@ public class ProfilePageViewer extends AppCompatActivity  implements DatePickerD
                 // Send request to follow user
                 Log.d(TAG, "Sending follow request to server");
                 if (!currentUserId.equals("-1")) {
+                    followButton.setTextColor(getResources().getColor(R.color.accent));
                     Log.d(TAG, "User with Id: " + currentUserId +" is following user with ID: "+userId);
                     String followUserUrl = LoadBalancer.RequestServerAddress() + "/rest/User/PinUserForUser/"+currentUserId +"/"+userId;
                     AsyncDataRetrieval asyncDataRetrieval = new AsyncDataRetrieval(followUserUrl, new AsyncDataRetrieval.RequestListener() {
@@ -247,7 +267,7 @@ public class ProfilePageViewer extends AppCompatActivity  implements DatePickerD
                             // need to check its legit here though
                             Log.d(TAG, "Follow request responded: " + result);
                             textCaching.CacheText(followKey, "Y");
-                            followButton.setTextColor(getResources().getColor(R.color.accent));
+
                         }
                     });
                     asyncDataRetrieval.execute();
@@ -347,15 +367,6 @@ public class ProfilePageViewer extends AppCompatActivity  implements DatePickerD
     }
 
     // Try to set the profile picture for a user
-    private void setProfilePic() {
-        //Try load
-        gc = GlobalContainer.GetContainerInstance();
-        //ImageView profile = (ImageView) findViewById(R.id.profilePicture);
-       // Glide.with(this).load(LoadBalancer.RequestCurrentDataAddress() + "/images/"+userId + "P.jpg").centerCrop().crossFade().into(profile);
-        //if fail, use normal
-    }
-
-    // Try to set the profile picture for a user
     private void setHeaderPic() {
         // Set hieght
         final ImageView header = (ImageView) findViewById(R.id.headerPicture);
@@ -369,7 +380,7 @@ public class ProfilePageViewer extends AppCompatActivity  implements DatePickerD
         if (!userId.equals(PreferenceManager.getDefaultSharedPreferences(myContext).getString("USERID", "-1"))) {
             TextView textView = (TextView) myContext.findViewById(R.id.profile_select_prompt);
             textView.setVisibility(View.GONE);
-            String imageIdUrl = LoadBalancer.RequestServerAddress() + "/rest/login/GetPropertyFromNode/"+userId+"/CoverPhotoId";
+            String imageIdUrl = LoadBalancer.RequestServerAddress() + "/rest/login/GetPropertyFromNode/" + userId + "/CoverPhotoId";
             AsyncDataRetrieval asyncDataRetrieval = new AsyncDataRetrieval(imageIdUrl, new AsyncDataRetrieval.RequestListener() {
                 @Override
                 public void onFinished(String result) {
@@ -383,9 +394,11 @@ public class ProfilePageViewer extends AppCompatActivity  implements DatePickerD
                 }
             });
             asyncDataRetrieval.execute();
-
         } else {
             TextView textView = (TextView) myContext.findViewById(R.id.profile_select_prompt);
+            if (!coverPhotoId.equals("-1")) {
+                textView.setVisibility(View.GONE);
+            }
             Glide.with(myContext).load(LoadBalancer.RequestCurrentDataAddress() + "/images/"+coverPhotoId + ".jpg").centerCrop().crossFade().into(header);
             header.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -459,6 +472,7 @@ public class ProfilePageViewer extends AppCompatActivity  implements DatePickerD
                     // Get our arrayList for the card adapter
                     JSONObject jsonResult = new JSONObject(result);
                     if (jsonResult != null) {
+                        hideProgressBar();
                         beginProcessingTrailsIntoChips(jsonResult);
                     }
                     // Create the adapter, and set it to the recyclerView so that it displays
@@ -476,6 +490,11 @@ public class ProfilePageViewer extends AppCompatActivity  implements DatePickerD
         clientRequestProxy.execute();
     }
 
+    private void hideProgressBar() {
+        ProgressBar progressBar = (ProgressBar) findViewById(R.id.profile_progress_bar);
+        progressBar.setVisibility(View.GONE);
+
+    }
     private void beginProcessingTrailsIntoChips(JSONObject jsonResult) throws JSONException {
         Iterator<String> iterator = jsonResult.keys();
         int count = 0;
@@ -502,6 +521,7 @@ public class ProfilePageViewer extends AppCompatActivity  implements DatePickerD
             RelativeLayout parent = null;
             if (count == 1) {
                 parent = (RelativeLayout) findViewById(R.id.chip_sub_wrapper0);
+
                 parent.setVisibility(View.VISIBLE);
                 TextView header = (TextView) parent.findViewById(R.id.trail_chip_main_title1);
                 header.setText(title);

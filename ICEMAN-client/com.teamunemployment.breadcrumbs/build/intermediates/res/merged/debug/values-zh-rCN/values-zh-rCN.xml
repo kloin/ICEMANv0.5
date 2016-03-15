@@ -13,7 +13,6 @@
     <string msgid="893419373245838918" name="abc_searchview_description_voice">"语音搜索"</string>
     <string msgid="3421042268587513524" name="abc_shareactionprovider_share_with">"分享方式"</string>
     <string msgid="7165123711973476752" name="abc_shareactionprovider_share_with_application">"通过%s分享"</string>
-    <string name="com_facebook_device_auth_instructions">请用智能手机或电脑访问 %@，然后输入验证码：</string>
     <string name="com_facebook_image_download_unknown_error">下载图片时出现意外错误。</string>
     <string name="com_facebook_internet_permission_error_message">Web 登录需要互联网许可</string>
     <string name="com_facebook_internet_permission_error_title">AndroidManifest 错误</string>

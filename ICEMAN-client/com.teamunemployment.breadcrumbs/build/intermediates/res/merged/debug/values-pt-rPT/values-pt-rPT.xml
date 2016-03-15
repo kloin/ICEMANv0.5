@@ -13,7 +13,6 @@
     <string msgid="893419373245838918" name="abc_searchview_description_voice">"Pesquisa por voz"</string>
     <string msgid="3421042268587513524" name="abc_shareactionprovider_share_with">"Partilhar com"</string>
     <string msgid="7165123711973476752" name="abc_shareactionprovider_share_with_application">"Partilhar com %s"</string>
-    <string name="com_facebook_device_auth_instructions">Visita %@ no teu smartphone ou computador e insere este código:</string>
     <string name="com_facebook_image_download_unknown_error">Ocorreu um erro inesperado ao descarregar uma imagem.</string>
     <string name="com_facebook_internet_permission_error_message">O início de sessão WebView necessita de permissão para aceder à INTERNET</string>
     <string name="com_facebook_internet_permission_error_title">Erro AndroidManifest</string>

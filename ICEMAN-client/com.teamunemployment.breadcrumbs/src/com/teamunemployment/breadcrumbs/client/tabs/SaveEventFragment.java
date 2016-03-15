@@ -145,7 +145,7 @@ public class SaveEventFragment extends Activity {
 				@Override
 				public void onClick(View view) {
 					createNewEvent();
-					finish();
+
 				/*	Intent viewCrumbsIntent = new Intent(context, BreadCrumbsImageSelector.class);
 					String trailId = PreferenceManager.getDefaultSharedPreferences(context).getString("TRAILID", null);
 					if (trailId != null) {
@@ -235,6 +235,7 @@ public class SaveEventFragment extends Activity {
 			Toast.makeText(this, "Failed to find location. Please ensure you have location services enabled", Toast.LENGTH_SHORT).show();
 			return;
 		}
+
 		final String chat;
 		String chat2 = chatTextView.getText().toString();
 		if (chat2.isEmpty()) {
@@ -276,14 +277,21 @@ public class SaveEventFragment extends Activity {
 		locationProvider.GetCurrentPlace(new ResultCallback<PlaceLikelihoodBuffer>() {
 			@Override
 			public void onResult(PlaceLikelihoodBuffer likelyPlaces) {
-				String placeId = "";
-				PlaceLikelihood placeLikelihood = likelyPlaces.get(0);
-				if (placeLikelihood != null ) {
-					Place place = placeLikelihood.getPlace();
-					if (place!=null) {
-						placeId = place.getId();
+				String placeId = " ";
+				try {
+					PlaceLikelihood placeLikelihood = likelyPlaces.get(0);
+					if (placeLikelihood != null ) {
+						Place place = placeLikelihood.getPlace();
+						if (place!=null) {
+							placeId = place.getId();
+						}
 					}
+					likelyPlaces.release();
+				} catch (IllegalStateException ex) {
+					// This happens when we have no network connection
+					ex.printStackTrace();
 				}
+
 		/*		for (PlaceLikelihood placeLikelihood : likelyPlaces) {
 					Log.i("TEST", String.format("Place '%s' has likelihood: %g",
 							placeLikelihood.getPlace().getName(),
@@ -291,9 +299,10 @@ public class SaveEventFragment extends Activity {
 							id = placeLikelihood.getPlace().getId();
 
 				}*/
-				likelyPlaces.release();
+
 				// We need to wait
 				createNewCrumb(chat, UserId, TrailId, latitude, longitude,  "icon", ".jpg", placeId, finalSuburb, finalCity, finalCountry, timeStamp);
+				finish();
 			}
 		});
 	}

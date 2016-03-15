@@ -1,6 +1,7 @@
 package com.teamunemployment.breadcrumbs.Network.ServiceProxy;
 
 import android.os.AsyncTask;
+import android.util.Log;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
@@ -66,8 +67,10 @@ public class AsyncDataRetrieval extends AsyncTask<String, Integer, String> {
 			} catch (IOException e ) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
+				Log.e("FUCK", "Possible timeout on async network request. Url : " +url);
 			} catch (Exception e) {
-                e.printStackTrace();
+				Log.e("FUCK", "Possible timeout on async network request. Url : " +url);
+				e.printStackTrace();
             }
 			return stringResponse;
 		}

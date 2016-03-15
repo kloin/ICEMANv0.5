@@ -3,6 +3,7 @@ package com.teamunemployment.breadcrumbs.client.ImageChooser;
 import android.app.Activity;
 import android.content.Intent;
 import android.preference.PreferenceManager;
+import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.GridView;
@@ -13,6 +14,7 @@ import com.teamunemployment.breadcrumbs.Framework.JsonHandler;
 import com.teamunemployment.breadcrumbs.Network.LoadBalancer;
 import com.teamunemployment.breadcrumbs.Network.ServiceProxy.AsyncDataRetrieval;
 import com.teamunemployment.breadcrumbs.R;
+import com.teamunemployment.breadcrumbs.client.Adapters.FacebookImageGridViewAdapter;
 import com.teamunemployment.breadcrumbs.client.Animations.SimpleAnimations;
 import com.teamunemployment.breadcrumbs.client.Cards.ImageChooserGridViewAdapter;
 
@@ -26,12 +28,36 @@ public class FacebookTab extends GridImageSelector {
     private AccountManager.IAccountManagerCallback accountManagerCallback = new AccountManager.IAccountManagerCallback() {
         @Override
         public void onFacebookRequestFinished(ArrayList<String> arrayList) {
-
+            Log.d("FACEBOOK", "Recieved an array of images: " + arrayList.toString());
+            loadUpFacebookImages(arrayList);
         }
     };
 
     private void loadUpFacebookImages(ArrayList<String> ids) {
+        final GridView gridview = (GridView)  rootView.findViewById(R.id.gridView1);
+        if (ids.size() < 1) {
+            // We want to show the placeholder.
+            emptyGridInfo.setVisibility(View.VISIBLE);
+            SimpleAnimations simpleAnimations = new SimpleAnimations();
+            simpleAnimations.FadeInView(emptyGridInfo);
+        }
 
+        FacebookImageGridViewAdapter adapter = new FacebookImageGridViewAdapter(ids, activityContext);
+        gridview.setAdapter(adapter);
+        gridview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            public void onItemClick(AdapterView<?> parent, View v, int position, long id) {
+                // Save our profile header pic.
+                String newPicId = idsArray.get(position);
+
+                // Save our new selection locally too.
+                //PreferenceManager.getDefaultSharedPreferences(activityContext).edit().putString("TRAILCOVERPHOTO", newPicId).commit();
+                //Intent returnIntent = new Intent();
+                //activityContext.setResult(Activity.RESULT_OK,returnIntent);
+
+                // Quiting on select for now.
+                activityContext.finish();
+            }
+        });
     }
     @Override
     public void setUpGridAndListeners() {
@@ -40,36 +66,7 @@ public class FacebookTab extends GridImageSelector {
             return;
         }
         emptyGridInfo = (TextView) rootView.findViewById(R.id.empty_grid_placeholder);
-        final GridView gridview = (GridView)  rootView.findViewById(R.id.gridView1);
         AccountManager accountManager = new AccountManager(activityContext);
-        accountManager.GetAllAlbumsForAUser(facebookId)
-
-
-                idsArray
-                if (idsArray.size() < 1) {
-                    // We want to show the placeholder.
-                    emptyGridInfo.setVisibility(View.VISIBLE);
-                    SimpleAnimations simpleAnimations = new SimpleAnimations();
-                    simpleAnimations.FadeInView(emptyGridInfo);
-                }
-                ImageChooserGridViewAdapter adapter = new ImageChooserGridViewAdapter(idsArray, activityContext);
-                gridview.setAdapter(adapter);
-                gridview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-                    public void onItemClick(AdapterView<?> parent, View v, int position, long id) {
-                        // Save our profile header pic.
-                        String newPicId = idsArray.get(position);
-
-                        // Save our new selection locally too.
-                        PreferenceManager.getDefaultSharedPreferences(activityContext).edit().putString("TRAILCOVERPHOTO", newPicId).commit();
-                        Intent returnIntent = new Intent();
-                        activityContext.setResult(Activity.RESULT_OK,returnIntent);
-
-                        // Quiting on select for now.
-                        activityContext.finish();
-                    }
-                });
-            }
-        });
-        asyncDataRetrieval.execute();
+        accountManager.GetAllAlbumsForAUser(facebookId, accountManagerCallback);
     }
 }

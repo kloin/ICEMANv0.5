@@ -10,6 +10,7 @@ import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.CardView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.DisplayMetrics;
@@ -30,6 +31,7 @@ import com.teamunemployment.breadcrumbs.Network.ServiceProxy.UpdateViewElementWi
 import com.teamunemployment.breadcrumbs.R;
 import com.teamunemployment.breadcrumbs.Trails.MyCurrentTrailManager;
 import com.teamunemployment.breadcrumbs.caching.GlobalContainer;
+import com.teamunemployment.breadcrumbs.client.Animations.SimpleAnimations;
 import com.teamunemployment.breadcrumbs.client.Cards.HomeCardAdapter;
 
 import org.json.JSONException;
@@ -52,7 +54,7 @@ public class HomeTabFragment extends Fragment {
     public View rootView;
     public Activity activityContext;
     public String userId;
-
+    private final String TAG = "HOME_TAB";
     public void onAttach(Activity activity) {
         activityContext= activity;
         super.onAttach(activity);
@@ -203,29 +205,46 @@ public class HomeTabFragment extends Fragment {
         });
         clientRequestProxy.execute();
     }
+
     // Need this code but for now I am going to comment it out.
     public void loadTrails() {
+        final TextView noDataPlaceholder = (TextView) rootView.findViewById(R.id.no_data_placeholder);
+        final SimpleAnimations simpleAnimations = new SimpleAnimations();
         String url = LoadBalancer.RequestServerAddress() + "/rest/User/GetAllHomePageTrailIdsForAUser/"+userId;
+        Log.d(TAG, "Attempting to load Trails with URL: " + url);
         url = url.replaceAll(" ", "%20");
         clientRequestProxy  = new AsyncDataRetrieval(url, new AsyncDataRetrieval.RequestListener() {
             @Override
             public void onFinished(String result) {
                 try {
+                    Log.d(TAG, "Finished loading trails. Result : " + result);
                     // Hide loading spinner
-                    //ProgressBar loadingSpinner = (ProgressBar) rootView.findViewById(R.id.explore_progress_bar);
-                    //loadingSpinner.setVisibility(View.GONE);
+                    ProgressBar loadingSpinner = (ProgressBar) rootView.findViewById(R.id.explore_progress_bar);
+                    loadingSpinner.setVisibility(View.GONE);
+
                     // Get our arrayList for the card adapter
                     JSONObject jsonResult = new JSONObject(result);
                     ArrayList<String> ids = convertJSONToArrayList(jsonResult);
+                    if (ids.size() == 0) {
+                    Log.d(TAG, "Found some data, setting up placeholder visibility");
+                        // Hide placeholder.
+                        CardView cardPlaceholder = (CardView) rootView.findViewById(R.id.card_view_placeholder);
+                        simpleAnimations.FadeInView(cardPlaceholder);
+                        cardPlaceholder.setVisibility(View.VISIBLE);
+                       // simpleAnimations.FadeInView(noDataPlaceholder);
+                        //noDataPlaceholder.setVisibility(View.VISIBLE);
+                    }
                     globalContainer.SetTrailIdsCurrentlyDisplayed(ids);
                     // Create the adapter, and set it to the recyclerView so that it displays
                     mAdapter = new HomeCardAdapter(ids, context);
                     mRecyclerView.setAdapter(mAdapter);
                 } catch (JSONException e) {
+                    simpleAnimations.FadeInView(noDataPlaceholder);
                     // TODO Auto-generated catch block
                     e.printStackTrace();
                 } catch (NullPointerException e) {
                     Log.e("Cards", "Failed to convert String to json");
+                    simpleAnimations.FadeInView(noDataPlaceholder);
                 }
             }
 

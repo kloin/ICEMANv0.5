@@ -26,20 +26,20 @@ public final class R {
 		public static final int fab_title = 0x7f01005f;
 	}
 	public static final class dimen {
-		public static final int fab_actions_spacing = 0x7f070066;
-		public static final int fab_icon_size = 0x7f07006a;
-		public static final int fab_labels_margin = 0x7f07006b;
-		public static final int fab_plus_icon_size = 0x7f07006c;
-		public static final int fab_plus_icon_stroke = 0x7f07006d;
-		public static final int fab_shadow_offset = 0x7f07006e;
-		public static final int fab_shadow_radius = 0x7f07006f;
-		public static final int fab_size_mini = 0x7f070070;
-		public static final int fab_size_normal = 0x7f070071;
-		public static final int fab_stroke_width = 0x7f070072;
+		public static final int fab_actions_spacing = 0x7f070063;
+		public static final int fab_icon_size = 0x7f070067;
+		public static final int fab_labels_margin = 0x7f070068;
+		public static final int fab_plus_icon_size = 0x7f070069;
+		public static final int fab_plus_icon_stroke = 0x7f07006a;
+		public static final int fab_shadow_offset = 0x7f07006b;
+		public static final int fab_shadow_radius = 0x7f07006c;
+		public static final int fab_size_mini = 0x7f07006d;
+		public static final int fab_size_normal = 0x7f07006e;
+		public static final int fab_stroke_width = 0x7f07006f;
 	}
 	public static final class drawable {
-		public static final int fab_bg_mini = 0x7f0200bb;
-		public static final int fab_bg_normal = 0x7f0200bc;
+		public static final int fab_bg_mini = 0x7f0200b3;
+		public static final int fab_bg_normal = 0x7f0200b4;
 	}
 	public static final class id {
 		public static final int down = 0x7f0d002d;

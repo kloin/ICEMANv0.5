@@ -13,7 +13,6 @@
     <string msgid="893419373245838918" name="abc_searchview_description_voice">"Sprachsuche"</string>
     <string msgid="3421042268587513524" name="abc_shareactionprovider_share_with">"Freigeben für"</string>
     <string msgid="7165123711973476752" name="abc_shareactionprovider_share_with_application">"Freigeben für %s"</string>
-    <string name="com_facebook_device_auth_instructions">Gehe über dein Smartphone oder deinen Computer zu %@ und gib diesen Code ein:</string>
     <string name="com_facebook_image_download_unknown_error">Unerwarteter Fehler beim Herunterladen eines Bildes.</string>
     <string name="com_facebook_internet_permission_error_message">Die WebView-Anmeldung erfordert die INTERNET-Berechtigung</string>
     <string name="com_facebook_internet_permission_error_title">AndroidManifest-Fehler</string>

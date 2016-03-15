@@ -13,7 +13,6 @@
     <string msgid="893419373245838918" name="abc_searchview_description_voice">"ध्वनि खोज"</string>
     <string msgid="3421042268587513524" name="abc_shareactionprovider_share_with">"इसके द्वारा साझा करें"</string>
     <string msgid="7165123711973476752" name="abc_shareactionprovider_share_with_application">"%s के साथ साझा करें"</string>
-    <string name="com_facebook_device_auth_instructions">अपने स्मार्टफ़ोन या कंप्यूटर पर %@ पर जाएँ और यह कोड डालें:</string>
     <string name="com_facebook_image_download_unknown_error">एक चित्र डाउनलोड करते समय अनपेक्षित गलती हुई.</string>
     <string name="com_facebook_internet_permission_error_message">WebView लॉग इन के लिए INTERNET अनुमति की आवश्यकता है</string>
     <string name="com_facebook_internet_permission_error_title">AndroidManifest गलती</string>

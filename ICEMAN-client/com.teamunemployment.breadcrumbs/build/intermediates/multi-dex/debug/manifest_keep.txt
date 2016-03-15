@@ -10,7 +10,6 @@
 -keep class com.teamunemployment.breadcrumbs.client.CrumbViewer.CommentViewer { <init>(); }
 -keep class com.teamunemployment.breadcrumbs.Trails.CreateTrail { <init>(); }
 -keep class com.teamunemployment.breadcrumbs.Trails.EditMyTrail { <init>(); }
--keep class com.teamunemployment.breadcrumbs.client.ImageChooser.GridImageSelector { <init>(); }
 -keep class com.teamunemployment.breadcrumbs.client.TrailActivity { <init>(); }
 -keep class com.teamunemployment.breadcrumbs.client.ProfilePageViewer { <init>(); }
 -keep class com.teamunemployment.breadcrumbs.client.SelectedEventViewerBase { <init>(); }
@@ -31,6 +30,7 @@
 -keep class com.teamunemployment.breadcrumbs.client.EditExistingTrail { <init>(); }
 -keep class com.teamunemployment.breadcrumbs.client.About { <init>(); }
 -keep class com.teamunemployment.breadcrumbs.client.ImageChooser.TrailCoverImageSelector { <init>(); }
+-keep class com.facebook.FacebookContentProvider { <init>(); }
 -keep class com.teamunemployment.breadcrumbs.Location.LocationService { <init>(); }
 -keep class com.google.android.gms.measurement.AppMeasurementContentProvider { <init>(); }
 -keep class com.google.android.gms.measurement.AppMeasurementReceiver { <init>(); }

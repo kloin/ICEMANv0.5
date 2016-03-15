@@ -19,7 +19,7 @@ import java.util.ArrayList;
  * Created by aDirtyCanvas on 7/26/2015.
  */
 public class UpdateViewElementWithProperty {
-
+    private String TAG = "UPDATER";
     public void UpdateMultipleViews(final ArrayList<TextView> views, String nodeId, String nodeProperty){
         String url = LoadBalancer.RequestServerAddress() +"/rest/login/GetPropertyFromNode/"+nodeId+"/"+nodeProperty;
         AsyncDataRetrieval fetchDescription = new AsyncDataRetrieval(url, new AsyncDataRetrieval.RequestListener() {
@@ -76,12 +76,33 @@ public class UpdateViewElementWithProperty {
         fetchDescription.execute();
     }
 
+    // This class fetches the ID of the image using the node as a reference - e.g get the coverId of a trail, then load that coverId into the image using glide
+    public void UpdateImageViewElementAndHidePlaceholder(final ImageView imageToUpdate, String nodeId, String nodeProperty, final Context context, final View placeholder) {
+        String url = LoadBalancer.RequestServerAddress() +"/rest/login/GetPropertyFromNode/"+nodeId+"/"+nodeProperty;
+        AsyncDataRetrieval fetchDescription = new AsyncDataRetrieval(url, new AsyncDataRetrieval.RequestListener() {
+            @Override
+            public void onFinished(String result) {
+                if (result != null && !result.isEmpty()) {
+                    try {
+                        placeholder.setVisibility(View.GONE);
+                        Glide.with(context).load(LoadBalancer.RequestCurrentDataAddress() + "/images/"+result+".jpg").centerCrop().crossFade().into(imageToUpdate);
+                    } catch (IllegalArgumentException ex) {
+                        // standard "loading" once destroyed issue
+                        Log.e("UPDATER", "Tried to update a view on a destroyed activity");
+                    }
+                }
+            }
+        });
+        fetchDescription.execute();
+    }
+
     public void UpdateEditTextElement(final EditText viewElementToUpdate, String nodeId, String nodeProperty) {
         String url = LoadBalancer.RequestServerAddress() +"/rest/login/GetPropertyFromNode/"+nodeId+"/"+nodeProperty;
         AsyncDataRetrieval fetchDescription = new AsyncDataRetrieval(url, new AsyncDataRetrieval.RequestListener() {
             @Override
             public void onFinished(String result) {
                if (result != null && !result.isEmpty()) {
+                   Log.d(TAG, "Updating EditText element: " + viewElementToUpdate.toString() + " with text result: " + result);
                    viewElementToUpdate.setText(result);
                }
             }
@@ -94,6 +115,7 @@ public class UpdateViewElementWithProperty {
             @Override
             public void onFinished(String result) {
                 if (result != null) {
+                    Log.d(TAG, "Updating Text element: " + viewElementToUpdate.toString() + " with text result: " + result);
                     viewElementToUpdate.setText("("+result+")");
                 }
             }

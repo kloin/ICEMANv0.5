@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.content.res.Configuration;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.os.Handler;
 import android.preference.PreferenceManager;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.FloatingActionButton;
@@ -105,8 +106,7 @@ public class BaseViewModel extends AppCompatActivity {
         Intent intent = getIntent();
         Bundle extras = getIntent().getExtras();
         name = PreferenceManager.getDefaultSharedPreferences(this).getString("USERNAME", "");
-        // Do facebook test
-        dofacebooktest();
+
         // This is going to happen after clearing the cache. Need to work out solution for multiple situations like this.
         if (name == null || name.isEmpty()) {
             // need to fetch name here and add it back to the shared preferences
@@ -124,7 +124,6 @@ public class BaseViewModel extends AppCompatActivity {
         mDrawerList.setOnItemClickListener(new DrawerItemClickListener());
         mDrawerView= (LinearLayout) findViewById(R.id.drawer_holder);
         mDrawerToggle = new ActionBarDrawerToggle(this,mDrawerLayout,toolbar,R.string.drawer_open,R.string.drawer_close){
-
             @Override
             public void onDrawerOpened(View drawerView) {
                 super.onDrawerOpened(drawerView);
@@ -163,17 +162,12 @@ public class BaseViewModel extends AppCompatActivity {
         setTrackingButtonsPosition();
     }
 
-    private void dofacebooktest() {
-        AccountManager accountManager = new AccountManager(context);
-        accountManager.GetUserProfilePicture(PreferenceManager.getDefaultSharedPreferences(context).getString("FACEBOOK_REGISTRATION_ID", "-1"));
-
-    }
-
     private void setupViewPager(ViewPager viewPager) {
         ViewPagerAdapter adapter = new ViewPagerAdapter(getSupportFragmentManager());
-        adapter.addFragment(new ExploreTabFragment(), "Explore");
         adapter.addFragment(new HomeTabFragment(), "Home");
-        adapter.addFragment(new TestFragment(), "Featured");
+        adapter.addFragment(new ExploreTabFragment(), "Explore");
+
+        //adapter.addFragment(new TestFragment(), "Featured");
         viewPager.setAdapter(adapter);
     }
 
@@ -262,10 +256,11 @@ public class BaseViewModel extends AppCompatActivity {
         // This checks to see if we now have a trail, and should be displaying the "add content" button.
         setContentButton();
         updateTrailOrientatedButtons();
+        setTrackingButtonsPosition();
+        // Check that we have the correct switch position.
         if (drawerIsOpen) {
             mDrawerLayout.closeDrawer(mDrawerView);
         }
-
         updateCoverPhoto();
         backPressedCounter = 0;
     }
@@ -337,6 +332,8 @@ public class BaseViewModel extends AppCompatActivity {
 
         // Grab a fused location provider from our user class so we can track.
         final BreadCrumbsFusedLocationProvider breadCrumbsFusedLocationProvider = new BreadCrumbsFusedLocationProvider(this);
+        GlobalContainer gc = GlobalContainer.GetContainerInstance();
+        gc.SetBreadCrumbsFusedLocationProvider(breadCrumbsFusedLocationProvider);
         // Check if we were already tracking.
         isTracking = PreferenceManager.getDefaultSharedPreferences(this).getBoolean("TRACKING", false);
         // Our listner for this button. Toggles tracking using fused service, and updates flag.
@@ -432,7 +429,6 @@ public class BaseViewModel extends AppCompatActivity {
                     // Get our arrayList for the card adapter
                     JSONObject jsonResult = new JSONObject(result);
                     ArrayList<String> allIds = convertJSONToArrayList(jsonResult);
-                    ArrayList<String> newIds = new ArrayList<>();
                     ArrayList<String> oldIds = globalContainer.GetTrailIdsCurrentlyDisplayed();
 
                     // Look through all our old Ids and see if we have already loaded them.
@@ -621,24 +617,41 @@ public class BaseViewModel extends AppCompatActivity {
     }
 
     private void selectItem(int position) {
-        Intent newIntent = new Intent();
+        final Intent newIntent = new Intent();
         String trailId = PreferenceManager.getDefaultSharedPreferences(context).getString("TRAILID", "-1");
         //Load the correct page.
         switch (position) {
             case 0:
-                newIntent.setClassName("com.teamunemployment.breadcrumbs", "com.teamunemployment.breadcrumbs.client.ProfilePageViewer");
-                newIntent.putExtra("userId", PreferenceManager.getDefaultSharedPreferences(context).getString("USERID", "-1"));
-                newIntent.putExtra("name", name);
-                startActivity(newIntent);
+                new Handler().postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        newIntent.setClassName("com.teamunemployment.breadcrumbs", "com.teamunemployment.breadcrumbs.client.ProfilePageViewer");
+                        newIntent.putExtra("userId", PreferenceManager.getDefaultSharedPreferences(context).getString("USERID", "-1"));
+                        newIntent.putExtra("name", name);
+                        startActivity(newIntent);
+                    }
+                }, 250);
+
                 break;
             case 1:
-                newIntent.setClassName("com.teamunemployment.breadcrumbs", "com.teamunemployment.breadcrumbs.Trails.CreateTrail");
-                startActivity(newIntent);
+                new Handler().postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        newIntent.setClassName("com.teamunemployment.breadcrumbs", "com.teamunemployment.breadcrumbs.Trails.CreateTrail");
+                        startActivity(newIntent);
+                    }
+                }, 250);
+
                 break;
             case 2:
                 if (!trailId.equals("-1")) {
-                    newIntent.setClassName("com.teamunemployment.breadcrumbs", "com.teamunemployment.breadcrumbs.Trails.EditMyTrail");
-                    startActivity(newIntent);
+                    new Handler().postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            newIntent.setClassName("com.teamunemployment.breadcrumbs", "com.teamunemployment.breadcrumbs.Trails.EditMyTrail");
+                            startActivity(newIntent);
+                        }
+                    }, 250);
                 } else {
                     // We need to show the user a dialog, and give them the option of creating a new trail
                     showDialog("You have no trail to edit");
@@ -647,16 +660,27 @@ public class BaseViewModel extends AppCompatActivity {
             case 3:
                 // Check if we have a trail created. If not we need to tell the user why we cannot take any photos
                 if (!trailId.equals("-1")) {
-                    newIntent.setClassName("com.teamunemployment.breadcrumbs", "com.teamunemployment.breadcrumbs.client.Camera.CameraCapture");
-                    startActivity(newIntent);
+                    new Handler().postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            newIntent.setClassName("com.teamunemployment.breadcrumbs", "com.teamunemployment.breadcrumbs.client.Camera.CameraCapture");
+                            startActivity(newIntent);
+                        }
+                    }, 250);
+
                 } else {
                     // We need to show the user a dialog, and give them the option of creating a new trail
                     showDialog("You need to create a trail to add content");
                 }
                 break;
             case 4:
-                newIntent.setClassName("com.teamunemployment.breadcrumbs", "com.teamunemployment.breadcrumbs.client.Settings");
-                startActivity(newIntent);
+                new Handler().postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        newIntent.setClassName("com.teamunemployment.breadcrumbs", "com.teamunemployment.breadcrumbs.client.Settings");
+                        startActivity(newIntent);
+                    }
+                }, 250);
                 break;
         }
 

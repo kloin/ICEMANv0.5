@@ -6,11 +6,14 @@ import android.support.design.widget.TabLayout;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.view.View;
+import android.widget.ImageButton;
 
 import com.teamunemployment.breadcrumbs.R;
 import com.teamunemployment.breadcrumbs.client.ViewPagerAdapter;
 import com.teamunemployment.breadcrumbs.client.tabs.ExploreTabFragment;
 import com.teamunemployment.breadcrumbs.client.tabs.HomeTabFragment;
+import com.teamunemployment.breadcrumbs.client.tabs.LocalPhotosTab;
 import com.teamunemployment.breadcrumbs.client.tabs.TestFragment;
 
 /**
@@ -34,6 +37,9 @@ public class ImageChooserTabWrapper extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.image_selector_toolbar);
         toolbar.setTitleTextAppearance(this, R.style.HeaderFont);
         setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        toolbar.setNavigationIcon(R.drawable.ic_action_back);
+        toolbar.setNavigationOnClickListener(backButtonListener());
         viewPager = (ViewPager) findViewById(R.id.image_selector_viewpager);
         setupViewPager(viewPager);
         tabLayout = (TabLayout) findViewById(R.id.image_selector_tabs);
@@ -41,11 +47,20 @@ public class ImageChooserTabWrapper extends AppCompatActivity {
         context = this;
     }
 
+    private View.OnClickListener backButtonListener() {
+        return new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+        };
+    }
+
     private void setupViewPager(ViewPager viewPager) {
         ViewPagerAdapter adapter = new ViewPagerAdapter(getSupportFragmentManager());
         adapter.addFragment(new GridImageSelector(), "Uploaded");
-        adapter.addFragment(new GridImageSelector(), "Facebook");
-        adapter.addFragment(new GridImageSelector(), "Local");
+      //  adapter.addFragment(new FacebookTab(), "Facebook");
+        adapter.addFragment(new LocalPhotosTab(), "Local");
         viewPager.setAdapter(adapter);
     }
 }

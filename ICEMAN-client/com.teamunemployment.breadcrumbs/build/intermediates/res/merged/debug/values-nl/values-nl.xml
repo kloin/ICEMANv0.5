@@ -13,7 +13,6 @@
     <string msgid="893419373245838918" name="abc_searchview_description_voice">"Gesproken zoekopdracht"</string>
     <string msgid="3421042268587513524" name="abc_shareactionprovider_share_with">"Delen met"</string>
     <string msgid="7165123711973476752" name="abc_shareactionprovider_share_with_application">"Delen met %s"</string>
-    <string name="com_facebook_device_auth_instructions">Ga op je smartphone of computer naar %@ en voer deze code in:</string>
     <string name="com_facebook_image_download_unknown_error">Onverwachte fout tijdens het downloaden van een afbeelding.</string>
     <string name="com_facebook_internet_permission_error_message">Voor aanmelding via webweergave is de toestemming INTERNET vereist</string>
     <string name="com_facebook_internet_permission_error_title">AndroidManifest Error</string>

@@ -43,6 +43,7 @@ public class HomeCardAdapter extends RecyclerView.Adapter<HomeCardAdapter.ViewHo
     private Context mContext;
     private String userId;
     private String LAST_CACHED_TIME = "LAST_CACHED_TIME";
+    private final String TAG = "HOME_CARD";
     // Provide a reference to the views for each data item
     // Complex data items may need more than one view per item, and
     // you provide access to all the views for a data item in a view holder
@@ -89,7 +90,7 @@ public class HomeCardAdapter extends RecyclerView.Adapter<HomeCardAdapter.ViewHo
     }
 
     private void FetchAndBindObject(final LinearLayout card, final String trailId, final int position) {
-
+        Log.d(TAG, "Begin loading card at position : " +position);
         // This is our url.
         final String keyUrl = "TrailManagerGetBaseDetailsForATrail" + trailId;
         final String url = LoadBalancer.RequestServerAddress() + "/rest/TrailManager/GetBaseDetailsForATrail/" + trailId;
@@ -100,6 +101,7 @@ public class HomeCardAdapter extends RecyclerView.Adapter<HomeCardAdapter.ViewHo
 
         // If we dont have data we will need to fetch it. otherwise we can use the cache
         if (cacheData == null) {
+            Log.d(TAG, "No cache found, Sending network request: " +url );
             AsyncDataRetrieval fetchCardDetails = new AsyncDataRetrieval(url, new AsyncDataRetrieval.RequestListener() {
                 /*
                 ****** This is what an example data return should look like
@@ -115,7 +117,6 @@ public class HomeCardAdapter extends RecyclerView.Adapter<HomeCardAdapter.ViewHo
                 public void onFinished(String result) {
                     //Result is our card details. We need to go though and fetch these
                     BindObject(result, card, trailId, position);
-                    TextCaching textCaching = new TextCaching(mContext);
                     if (!result.isEmpty() && keyUrl != null) {
                         textRetriever.CacheText(keyUrl, result);
                     }
@@ -123,6 +124,7 @@ public class HomeCardAdapter extends RecyclerView.Adapter<HomeCardAdapter.ViewHo
             });
             fetchCardDetails.execute();
         }   else {
+            Log.d(TAG, "Found cache, will begin Binding card");
             BindObject(cacheData, card, trailId, position);
             // Check if it has been 1000 seconds. If it has, we need to do an update of the cache.
             final Calendar c = Calendar.getInstance();
@@ -144,7 +146,7 @@ public class HomeCardAdapter extends RecyclerView.Adapter<HomeCardAdapter.ViewHo
                     public void onFinished(String result) {
                         //Result is our card details. We need to go though and fetch these
                         TextCaching textCaching = new TextCaching(mContext);
-                        if (!result.isEmpty() && keyUrl != null) {
+                        if (result != null && !result.isEmpty() && keyUrl != null) {
                             textRetriever.CacheText(keyUrl, result);
                             int newCacheTime = c.get(Calendar.SECOND);
                             PreferenceManager.getDefaultSharedPreferences(mContext).edit().putInt(LAST_CACHED_TIME + trailId, newCacheTime).commit();
@@ -184,7 +186,7 @@ public class HomeCardAdapter extends RecyclerView.Adapter<HomeCardAdapter.ViewHo
     // Update the cached version of t
     private void updateViews(String trailId, LinearLayout card) {
         TextView viewsTextView = (TextView) card.findViewById(R.id.trail_views);
-       // UpdateViewElementWithProperty updateViewElementWithProperty = new UpdateViewElementWithProperty();
+        // UpdateViewElementWithProperty updateViewElementWithProperty = new UpdateViewElementWithProperty();
         //updateViewElementWithProperty.UpdateTextViewWithElementAndExtraString(viewsTextView, trailId, "Views", " Views");
     }
 
@@ -195,12 +197,9 @@ public class HomeCardAdapter extends RecyclerView.Adapter<HomeCardAdapter.ViewHo
             // These four should all exist. The fifth we have to check for.
             String desc = resultJSON.get("description").toString();
             String title = resultJSON.get("trailName").toString();
-            String userId = resultJSON.getString("userId");
             final String trailsUserId = resultJSON.get("userId").toString();
             String views = resultJSON.get("views").toString() + " views";
             final String userName = resultJSON.get("userName").toString();
-
-            String localUserId = PreferenceManager.getDefaultSharedPreferences(mContext).getString("USERID", "-1");
 
             // Grab views, and set the text/photo for them
             TextView titleTextView = (TextView) card.findViewById(R.id.Title);
@@ -212,51 +211,7 @@ public class HomeCardAdapter extends RecyclerView.Adapter<HomeCardAdapter.ViewHo
             final TextView detailsButton = (TextView) card.findViewById(R.id.details_button);
             TextView description = (TextView) card.findViewById(R.id.trail_description);
             description.setText(desc);
-
-            followButton.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    if (followButton.getTag() != null && followButton.getTag().toString().equals("0")) {
-                        followButton.setTextColor(Color.parseColor("#8a000000"));
-                        followButton.setTag("1");
-
-                        Snackbar snackbar = Snackbar
-                                .make(coordinatorLayout, "Unfollowed trail", Snackbar.LENGTH_LONG)
-                                .setAction("Undo", null);
-                        snackbar.setActionTextColor(Color.RED);
-                        View snackbarView = snackbar.getView();
-                        snackbarView.setBackgroundColor(Color.DKGRAY);
-                        TextView textView = (TextView) snackbarView.findViewById(android.support.design.R.id.snackbar_text);
-                        textView.setTextColor(act.getResources().getColor(R.color.accent));
-                        snackbar.show();
-                    }   else {
-                        followButton.setTextColor(Color.parseColor("#FF4081"));
-                        followButton.setTag("0");
-                        Snackbar snackbar = Snackbar
-                                .make(coordinatorLayout, "Following trail", Snackbar.LENGTH_LONG)
-                                .setAction("Undo", null);
-                        snackbar.setActionTextColor(Color.RED);
-                        View snackbarView = snackbar.getView();
-                        snackbarView.setBackgroundColor(Color.DKGRAY);
-                        TextView textView = (TextView) snackbarView.findViewById(android.support.design.R.id.snackbar_text);
-                        textView.setTextColor(act.getResources().getColor(R.color.accent));
-                        snackbar.show();
-                    }
-
-                }
-            });
             final ImageView trailCoverPhoto = (ImageView) card.findViewById(R.id.main_photo);
-            // Load cover photo here and set it
-            if (resultJSON.has("coverPhotoId")) {
-                String coverId = resultJSON.getString("coverPhotoId");
-                if (coverId.equals("0")) {
-                    trailCoverPhoto.setBackgroundResource(R.drawable.db3);
-                }
-                Glide.with(mContext).load(LoadBalancer.RequestCurrentDataAddress() + "/images/"+coverId+".jpg").centerCrop().crossFade().into(trailCoverPhoto);
-
-            } else {
-                trailCoverPhoto.setBackgroundResource(R.drawable.db3);
-            }
             trailCoverPhoto.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -291,6 +246,52 @@ public class HomeCardAdapter extends RecyclerView.Adapter<HomeCardAdapter.ViewHo
                     mContext.startActivity(profileIntent);
                 }
             });
+
+            followButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (followButton.getTag() != null && followButton.getTag().toString().equals("0")) {
+                        followButton.setTextColor(Color.parseColor("#8a000000"));
+                        followButton.setTag("1");
+
+                        Snackbar snackbar = Snackbar
+                                .make(coordinatorLayout, "Unfollowed trail", Snackbar.LENGTH_LONG)
+                                .setAction("Undo", null);
+                        snackbar.setActionTextColor(Color.RED);
+                        View snackbarView = snackbar.getView();
+                        snackbarView.setBackgroundColor(Color.DKGRAY);
+                        TextView textView = (TextView) snackbarView.findViewById(android.support.design.R.id.snackbar_text);
+                        textView.setTextColor(act.getResources().getColor(R.color.accent));
+                        snackbar.show();
+                    }   else {
+                        followButton.setTextColor(Color.parseColor("#FF4081"));
+                        followButton.setTag("0");
+                        Snackbar snackbar = Snackbar
+                                .make(coordinatorLayout, "Following trail", Snackbar.LENGTH_LONG)
+                                .setAction("Undo", null);
+                        snackbar.setActionTextColor(Color.RED);
+                        View snackbarView = snackbar.getView();
+                        snackbarView.setBackgroundColor(Color.DKGRAY);
+                        TextView textView = (TextView) snackbarView.findViewById(android.support.design.R.id.snackbar_text);
+                        textView.setTextColor(act.getResources().getColor(R.color.accent));
+                        snackbar.show();
+                    }
+
+                }
+            });
+            // Load cover photo here and set it
+            if (resultJSON.has("coverPhotoId")) {
+                String coverId = resultJSON.getString("coverPhotoId");
+                Log.d(TAG, "Found coverPhotoId: " +coverId );
+                if (coverId.equals("0")) {
+                    trailCoverPhoto.setBackgroundResource(R.drawable.db3);
+                }
+                Glide.with(mContext).load(LoadBalancer.RequestCurrentDataAddress() + "/images/"+coverId+".jpg").centerCrop().crossFade().into(trailCoverPhoto);
+
+            } else {
+                Log.d(TAG, "Could not find coverPhotoId");
+                trailCoverPhoto.setBackgroundResource(R.drawable.db3);
+            }
 
             titleTextView.setText(title);
             belongsTo.setText(userName);

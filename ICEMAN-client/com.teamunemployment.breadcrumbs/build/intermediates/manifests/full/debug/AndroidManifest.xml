@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.teamunemployment.breadcrumbs"
-    android:versionCode="2"
-    android:versionName="2" >
+    android:versionCode="5"
+    android:versionName="5" >
 
     <uses-sdk
         android:minSdkVersion="16"
@@ -25,7 +25,6 @@
     <uses-permission android:name="android.permission.RECORD_AUDIO" />
     <uses-permission android:name="com.google.android.c2dm.permission.SEND" />
     <uses-permission android:name="com.google.android.c2dm.permission.RECEIVE" />
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
 
     <uses-feature android:name="android.hardware.camera" />
 
@@ -123,7 +122,6 @@
             android:name="com.teamunemployment.breadcrumbs.Trails.EditMyTrail"
             android:screenOrientation="portrait" >
         </activity>
-        <activity android:name="com.teamunemployment.breadcrumbs.client.ImageChooser.GridImageSelector" />
         <activity
             android:name="com.teamunemployment.breadcrumbs.client.TrailActivity"
             android:screenOrientation="portrait" >
@@ -193,6 +191,11 @@
             android:name="com.teamunemployment.breadcrumbs.client.ImageChooser.TrailCoverImageSelector"
             android:screenOrientation="portrait" />
 
+        <provider
+            android:name="com.facebook.FacebookContentProvider"
+            android:authorities="com.facebook.app.FacebookContentProvider668335369892920"
+            android:exported="true" />
+
         <service android:name="com.teamunemployment.breadcrumbs.Location.LocationService" />
 
         <!-- AIzaSyBQ9w6VrGGquOHwERNrc_jAx_jcm8mrKQw  - this is the legit release one -->
@@ -203,7 +206,7 @@
         -->
         <meta-data
             android:name="com.google.android.geo.API_KEY"
-            android:value="AIzaSyCfkLHIJIAnKKwd5S4nLMN5apRtWj28rwc" />
+            android:value="AIzaSyBQ9w6VrGGquOHwERNrc_jAx_jcm8mrKQw" />
         <meta-data
             android:name="com.facebook.sdk.ApplicationId"
             android:value="@string/facebook_app_id" />

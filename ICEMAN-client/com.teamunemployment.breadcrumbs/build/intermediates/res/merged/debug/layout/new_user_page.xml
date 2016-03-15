@@ -98,9 +98,14 @@
         android:textColor="@color/white"
         android:gravity="center"/>
 
-    <com.facebook.login.widget.LoginButton
+    <Button
         android:id="@+id/facebook_login_button"
         android:layout_below="@id/or"
+        android:background="#3b5998"
+        android:text="Log in with Facebook"
+        android:paddingLeft="20dp"
+        android:paddingRight="20dp"
+        android:textColor="@color/white"
         android:layout_centerInParent="true"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

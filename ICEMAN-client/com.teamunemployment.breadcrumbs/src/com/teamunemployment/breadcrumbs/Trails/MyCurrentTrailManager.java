@@ -69,9 +69,8 @@ public class MyCurrentTrailManager extends Activity {
         this.context = context;
         mapContext=this;
         currentTrailManager = this;
-
-
     }
+
     // Use with caution
     public MyCurrentTrailManager(Activity context) {
         this.context = context;

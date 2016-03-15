@@ -1,510 +1,514 @@
 [
     {
-        "merged": "C:\\Users\\jek40\\iceman\\ICEMANv0.5\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\res\\merged\\debug\\layout\\trail_chip.xml",
-        "source": "C:\\Users\\jek40\\iceman\\ICEMANv0.5\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\res\\layout\\trail_chip.xml"
+        "merged": "C:\\Users\\jek40\\Desktop\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\res\\merged\\debug\\layout\\crumb_cluster_layout.xml",
+        "source": "C:\\Users\\jek40\\Desktop\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\res\\layout\\crumb_cluster_layout.xml"
     },
     {
-        "merged": "C:\\Users\\jek40\\iceman\\ICEMANv0.5\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\res\\merged\\debug\\layout\\story_board_item_dark.xml",
-        "source": "C:\\Users\\jek40\\iceman\\ICEMANv0.5\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\res\\layout\\story_board_item_dark.xml"
+        "merged": "C:\\Users\\jek40\\Desktop\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\res\\merged\\debug\\layout\\abc_popup_menu_item_layout.xml",
+        "source": "C:\\Users\\jek40\\Desktop\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\22.2.1\\res\\layout\\abc_popup_menu_item_layout.xml"
     },
     {
-        "merged": "C:\\Users\\jek40\\iceman\\ICEMANv0.5\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\res\\merged\\debug\\layout\\abc_screen_toolbar.xml",
-        "source": "C:\\Users\\jek40\\iceman\\ICEMANv0.5\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\22.2.0\\res\\layout\\abc_screen_toolbar.xml"
+        "merged": "C:\\Users\\jek40\\Desktop\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\res\\merged\\debug\\layout\\about.xml",
+        "source": "C:\\Users\\jek40\\Desktop\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\res\\layout\\about.xml"
     },
     {
-        "merged": "C:\\Users\\jek40\\iceman\\ICEMANv0.5\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\res\\merged\\debug\\layout\\drawer_list_item.xml",
-        "source": "C:\\Users\\jek40\\iceman\\ICEMANv0.5\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\res\\layout\\drawer_list_item.xml"
+        "merged": "C:\\Users\\jek40\\Desktop\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\res\\merged\\debug\\layout\\explore_tab.xml",
+        "source": "C:\\Users\\jek40\\Desktop\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\res\\layout\\explore_tab.xml"
     },
     {
-        "merged": "C:\\Users\\jek40\\iceman\\ICEMANv0.5\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\res\\merged\\debug\\layout\\save_video.xml",
-        "source": "C:\\Users\\jek40\\iceman\\ICEMANv0.5\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\res\\layout\\save_video.xml"
+        "merged": "C:\\Users\\jek40\\Desktop\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\res\\merged\\debug\\layout\\notification_template_big_media.xml",
+        "source": "C:\\Users\\jek40\\Desktop\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\22.2.1\\res\\layout\\notification_template_big_media.xml"
     },
     {
-        "merged": "C:\\Users\\jek40\\iceman\\ICEMANv0.5\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\res\\merged\\debug\\layout\\abc_list_menu_item_radio.xml",
-        "source": "C:\\Users\\jek40\\iceman\\ICEMANv0.5\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\22.2.0\\res\\layout\\abc_list_menu_item_radio.xml"
+        "merged": "C:\\Users\\jek40\\Desktop\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\res\\merged\\debug\\layout\\abc_list_menu_item_radio.xml",
+        "source": "C:\\Users\\jek40\\Desktop\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\22.2.1\\res\\layout\\abc_list_menu_item_radio.xml"
     },
     {
-        "merged": "C:\\Users\\jek40\\iceman\\ICEMANv0.5\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\res\\merged\\debug\\layout\\layout_snackbar.xml",
-        "source": "C:\\Users\\jek40\\iceman\\ICEMANv0.5\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\exploded-aar\\com.android.support\\design\\22.2.0\\res\\layout\\layout_snackbar.xml"
+        "merged": "C:\\Users\\jek40\\Desktop\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\res\\merged\\debug\\layout\\drawer_list_item.xml",
+        "source": "C:\\Users\\jek40\\Desktop\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\res\\layout\\drawer_list_item.xml"
     },
     {
-        "merged": "C:\\Users\\jek40\\iceman\\ICEMANv0.5\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\res\\merged\\debug\\layout\\abc_action_bar_up_container.xml",
-        "source": "C:\\Users\\jek40\\iceman\\ICEMANv0.5\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\22.2.0\\res\\layout\\abc_action_bar_up_container.xml"
+        "merged": "C:\\Users\\jek40\\Desktop\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\res\\merged\\debug\\layout\\select_dialog_singlechoice_material.xml",
+        "source": "C:\\Users\\jek40\\Desktop\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\22.2.1\\res\\layout\\select_dialog_singlechoice_material.xml"
     },
     {
-        "merged": "C:\\Users\\jek40\\iceman\\ICEMANv0.5\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\res\\merged\\debug\\layout\\shadow_test.xml",
-        "source": "C:\\Users\\jek40\\iceman\\ICEMANv0.5\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\res\\layout\\shadow_test.xml"
+        "merged": "C:\\Users\\jek40\\Desktop\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\res\\merged\\debug\\layout\\support_simple_spinner_dropdown_item.xml",
+        "source": "C:\\Users\\jek40\\Desktop\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\22.2.1\\res\\layout\\support_simple_spinner_dropdown_item.xml"
     },
     {
-        "merged": "C:\\Users\\jek40\\iceman\\ICEMANv0.5\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\res\\merged\\debug\\layout\\abc_popup_menu_item_layout.xml",
-        "source": "C:\\Users\\jek40\\iceman\\ICEMANv0.5\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\22.2.0\\res\\layout\\abc_popup_menu_item_layout.xml"
+        "merged": "C:\\Users\\jek40\\Desktop\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\res\\merged\\debug\\layout\\notification_template_lines.xml",
+        "source": "C:\\Users\\jek40\\Desktop\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\22.2.1\\res\\layout\\notification_template_lines.xml"
     },
     {
-        "merged": "C:\\Users\\jek40\\iceman\\ICEMANv0.5\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\res\\merged\\debug\\layout\\abc_action_mode_close_item_material.xml",
-        "source": "C:\\Users\\jek40\\iceman\\ICEMANv0.5\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\22.2.0\\res\\layout\\abc_action_mode_close_item_material.xml"
+        "merged": "C:\\Users\\jek40\\Desktop\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\res\\merged\\debug\\layout\\single_video_crumb.xml",
+        "source": "C:\\Users\\jek40\\Desktop\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\res\\layout\\single_video_crumb.xml"
     },
     {
-        "merged": "C:\\Users\\jek40\\iceman\\ICEMANv0.5\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\res\\merged\\debug\\layout\\edit_trail_card.xml",
-        "source": "C:\\Users\\jek40\\iceman\\ICEMANv0.5\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\res\\layout\\edit_trail_card.xml"
+        "merged": "C:\\Users\\jek40\\Desktop\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\res\\merged\\debug\\layout\\abc_screen_content_include.xml",
+        "source": "C:\\Users\\jek40\\Desktop\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\22.2.1\\res\\layout\\abc_screen_content_include.xml"
     },
     {
-        "merged": "C:\\Users\\jek40\\iceman\\ICEMANv0.5\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\res\\merged\\debug\\layout\\notification_template_part_time.xml",
-        "source": "C:\\Users\\jek40\\iceman\\ICEMANv0.5\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\22.2.0\\res\\layout\\notification_template_part_time.xml"
+        "merged": "C:\\Users\\jek40\\Desktop\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\res\\merged\\debug\\layout\\unamo_test_view.xml",
+        "source": "C:\\Users\\jek40\\Desktop\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\res\\layout\\unamo_test_view.xml"
     },
     {
-        "merged": "C:\\Users\\jek40\\iceman\\ICEMANv0.5\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\res\\merged\\debug\\layout\\login_screen.xml",
-        "source": "C:\\Users\\jek40\\iceman\\ICEMANv0.5\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\res\\layout\\login_screen.xml"
+        "merged": "C:\\Users\\jek40\\Desktop\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\res\\merged\\debug\\layout\\custom_tab_header.xml",
+        "source": "C:\\Users\\jek40\\Desktop\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\res\\layout\\custom_tab_header.xml"
     },
     {
-        "merged": "C:\\Users\\jek40\\iceman\\ICEMANv0.5\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\res\\merged\\debug\\layout\\test_view_pager_holder.xml",
-        "source": "C:\\Users\\jek40\\iceman\\ICEMANv0.5\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\res\\layout\\test_view_pager_holder.xml"
+        "merged": "C:\\Users\\jek40\\Desktop\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\res\\merged\\debug\\layout\\abc_action_bar_title_item.xml",
+        "source": "C:\\Users\\jek40\\Desktop\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\22.2.1\\res\\layout\\abc_action_bar_title_item.xml"
     },
     {
-        "merged": "C:\\Users\\jek40\\iceman\\ICEMANv0.5\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\res\\merged\\debug\\layout\\remember_me_login.xml",
-        "source": "C:\\Users\\jek40\\iceman\\ICEMANv0.5\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\res\\layout\\remember_me_login.xml"
+        "merged": "C:\\Users\\jek40\\Desktop\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\res\\merged\\debug\\layout\\shadow_test.xml",
+        "source": "C:\\Users\\jek40\\Desktop\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\res\\layout\\shadow_test.xml"
     },
     {
-        "merged": "C:\\Users\\jek40\\iceman\\ICEMANv0.5\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\res\\merged\\debug\\layout\\abc_action_menu_layout.xml",
-        "source": "C:\\Users\\jek40\\iceman\\ICEMANv0.5\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\22.2.0\\res\\layout\\abc_action_menu_layout.xml"
+        "merged": "C:\\Users\\jek40\\Desktop\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\res\\merged\\debug\\layout\\abc_action_menu_item_layout.xml",
+        "source": "C:\\Users\\jek40\\Desktop\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\22.2.1\\res\\layout\\abc_action_menu_item_layout.xml"
     },
     {
-        "merged": "C:\\Users\\jek40\\iceman\\ICEMANv0.5\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\res\\merged\\debug\\layout\\notification_template_media.xml",
-        "source": "C:\\Users\\jek40\\iceman\\ICEMANv0.5\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\22.2.0\\res\\layout\\notification_template_media.xml"
+        "merged": "C:\\Users\\jek40\\Desktop\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\res\\merged\\debug\\layout\\toolbar.xml",
+        "source": "C:\\Users\\jek40\\Desktop\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\res\\layout\\toolbar.xml"
     },
     {
-        "merged": "C:\\Users\\jek40\\iceman\\ICEMANv0.5\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\res\\merged\\debug\\layout\\abc_list_menu_item_checkbox.xml",
-        "source": "C:\\Users\\jek40\\iceman\\ICEMANv0.5\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\22.2.0\\res\\layout\\abc_list_menu_item_checkbox.xml"
+        "merged": "C:\\Users\\jek40\\Desktop\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\res\\merged\\debug\\layout\\messenger_button_send_blue_large.xml",
+        "source": "C:\\Users\\jek40\\Desktop\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\exploded-aar\\com.facebook.android\\facebook-android-sdk\\4.8.0\\res\\layout\\messenger_button_send_blue_large.xml"
     },
     {
-        "merged": "C:\\Users\\jek40\\iceman\\ICEMANv0.5\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\res\\merged\\debug\\layout\\splash_screen.xml",
-        "source": "C:\\Users\\jek40\\iceman\\ICEMANv0.5\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\res\\layout\\splash_screen.xml"
+        "merged": "C:\\Users\\jek40\\Desktop\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\res\\merged\\debug\\layout\\photo_selector_tab_page.xml",
+        "source": "C:\\Users\\jek40\\Desktop\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\res\\layout\\photo_selector_tab_page.xml"
     },
     {
-        "merged": "C:\\Users\\jek40\\iceman\\ICEMANv0.5\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\res\\merged\\debug\\layout\\home_page_with_tabs.xml",
-        "source": "C:\\Users\\jek40\\iceman\\ICEMANv0.5\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\res\\layout\\home_page_with_tabs.xml"
+        "merged": "C:\\Users\\jek40\\Desktop\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\res\\merged\\debug\\layout\\pager_item.xml",
+        "source": "C:\\Users\\jek40\\Desktop\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\res\\layout\\pager_item.xml"
     },
     {
-        "merged": "C:\\Users\\jek40\\iceman\\ICEMANv0.5\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\res\\merged\\debug\\layout\\notification_template_lines.xml",
-        "source": "C:\\Users\\jek40\\iceman\\ICEMANv0.5\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\22.2.0\\res\\layout\\notification_template_lines.xml"
+        "merged": "C:\\Users\\jek40\\Desktop\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\res\\merged\\debug\\layout\\new_user_page.xml",
+        "source": "C:\\Users\\jek40\\Desktop\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\res\\layout\\new_user_page.xml"
     },
     {
-        "merged": "C:\\Users\\jek40\\iceman\\ICEMANv0.5\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\res\\merged\\debug\\layout\\trail_manager.xml",
-        "source": "C:\\Users\\jek40\\iceman\\ICEMANv0.5\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\res\\layout\\trail_manager.xml"
+        "merged": "C:\\Users\\jek40\\Desktop\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\res\\merged\\debug\\layout\\com_facebook_tooltip_bubble.xml",
+        "source": "C:\\Users\\jek40\\Desktop\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\exploded-aar\\com.facebook.android\\facebook-android-sdk\\4.8.0\\res\\layout\\com_facebook_tooltip_bubble.xml"
     },
     {
-        "merged": "C:\\Users\\jek40\\iceman\\ICEMANv0.5\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\res\\merged\\debug\\layout\\pager_item.xml",
-        "source": "C:\\Users\\jek40\\iceman\\ICEMANv0.5\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\res\\layout\\pager_item.xml"
+        "merged": "C:\\Users\\jek40\\Desktop\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\res\\merged\\debug\\layout\\no_user_trail_dialog.xml",
+        "source": "C:\\Users\\jek40\\Desktop\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\res\\layout\\no_user_trail_dialog.xml"
     },
     {
-        "merged": "C:\\Users\\jek40\\iceman\\ICEMANv0.5\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\res\\merged\\debug\\layout\\test_fragment_layout.xml",
-        "source": "C:\\Users\\jek40\\iceman\\ICEMANv0.5\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\res\\layout\\test_fragment_layout.xml"
+        "merged": "C:\\Users\\jek40\\Desktop\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\res\\merged\\debug\\layout\\fragment_holder.xml",
+        "source": "C:\\Users\\jek40\\Desktop\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\res\\layout\\fragment_holder.xml"
     },
     {
-        "merged": "C:\\Users\\jek40\\iceman\\ICEMANv0.5\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\res\\merged\\debug\\layout\\abc_action_menu_item_layout.xml",
-        "source": "C:\\Users\\jek40\\iceman\\ICEMANv0.5\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\22.2.0\\res\\layout\\abc_action_menu_item_layout.xml"
+        "merged": "C:\\Users\\jek40\\Desktop\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\res\\merged\\debug\\layout\\pinned_tab.xml",
+        "source": "C:\\Users\\jek40\\Desktop\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\res\\layout\\pinned_tab.xml"
     },
     {
-        "merged": "C:\\Users\\jek40\\iceman\\ICEMANv0.5\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\res\\merged\\debug\\layout\\grid_image_layout_wrapper.xml",
-        "source": "C:\\Users\\jek40\\iceman\\ICEMANv0.5\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\res\\layout\\grid_image_layout_wrapper.xml"
+        "merged": "C:\\Users\\jek40\\Desktop\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\res\\merged\\debug\\layout\\sub_tab_view_container.xml",
+        "source": "C:\\Users\\jek40\\Desktop\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\res\\layout\\sub_tab_view_container.xml"
     },
     {
-        "merged": "C:\\Users\\jek40\\iceman\\ICEMANv0.5\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\res\\merged\\debug\\layout\\design_navigation_item_separator.xml",
-        "source": "C:\\Users\\jek40\\iceman\\ICEMANv0.5\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\exploded-aar\\com.android.support\\design\\22.2.0\\res\\layout\\design_navigation_item_separator.xml"
+        "merged": "C:\\Users\\jek40\\Desktop\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\res\\merged\\debug\\layout\\image_chooser.xml",
+        "source": "C:\\Users\\jek40\\Desktop\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\res\\layout\\image_chooser.xml"
     },
     {
-        "merged": "C:\\Users\\jek40\\iceman\\ICEMANv0.5\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\res\\merged\\debug\\layout\\settings.xml",
-        "source": "C:\\Users\\jek40\\iceman\\ICEMANv0.5\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\res\\layout\\settings.xml"
+        "merged": "C:\\Users\\jek40\\Desktop\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\res\\merged\\debug\\layout\\trail_editor_window.xml",
+        "source": "C:\\Users\\jek40\\Desktop\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\res\\layout\\trail_editor_window.xml"
     },
     {
-        "merged": "C:\\Users\\jek40\\iceman\\ICEMANv0.5\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\res\\merged\\debug\\layout\\crumbs_holder.xml",
-        "source": "C:\\Users\\jek40\\iceman\\ICEMANv0.5\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\res\\layout\\crumbs_holder.xml"
+        "merged": "C:\\Users\\jek40\\Desktop\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\res\\merged\\debug\\layout\\abc_list_menu_item_layout.xml",
+        "source": "C:\\Users\\jek40\\Desktop\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\22.2.1\\res\\layout\\abc_list_menu_item_layout.xml"
     },
     {
-        "merged": "C:\\Users\\jek40\\iceman\\ICEMANv0.5\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\res\\merged\\debug\\layout\\grid_image_layout.xml",
-        "source": "C:\\Users\\jek40\\iceman\\ICEMANv0.5\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\res\\layout\\grid_image_layout.xml"
+        "merged": "C:\\Users\\jek40\\Desktop\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\res\\merged\\debug\\layout\\layout_snackbar_include.xml",
+        "source": "C:\\Users\\jek40\\Desktop\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\exploded-aar\\com.android.support\\design\\22.2.0\\res\\layout\\layout_snackbar_include.xml"
     },
     {
-        "merged": "C:\\Users\\jek40\\iceman\\ICEMANv0.5\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\res\\merged\\debug\\layout\\abc_search_view.xml",
-        "source": "C:\\Users\\jek40\\iceman\\ICEMANv0.5\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\22.2.0\\res\\layout\\abc_search_view.xml"
+        "merged": "C:\\Users\\jek40\\Desktop\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\res\\merged\\debug\\layout\\subscription_manager.xml",
+        "source": "C:\\Users\\jek40\\Desktop\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\res\\layout\\subscription_manager.xml"
     },
     {
-        "merged": "C:\\Users\\jek40\\iceman\\ICEMANv0.5\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\res\\merged\\debug\\layout\\abc_dialog_title_material.xml",
-        "source": "C:\\Users\\jek40\\iceman\\ICEMANv0.5\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\22.2.0\\res\\layout\\abc_dialog_title_material.xml"
+        "merged": "C:\\Users\\jek40\\Desktop\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\res\\merged\\debug\\layout\\new_trail_dialog.xml",
+        "source": "C:\\Users\\jek40\\Desktop\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\res\\layout\\new_trail_dialog.xml"
     },
     {
-        "merged": "C:\\Users\\jek40\\iceman\\ICEMANv0.5\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\res\\merged\\debug\\layout\\date_picker.xml",
-        "source": "C:\\Users\\jek40\\iceman\\ICEMANv0.5\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\res\\layout\\date_picker.xml"
+        "merged": "C:\\Users\\jek40\\Desktop\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\res\\merged\\debug\\layout\\design_navigation_item_subheader.xml",
+        "source": "C:\\Users\\jek40\\Desktop\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\exploded-aar\\com.android.support\\design\\22.2.0\\res\\layout\\design_navigation_item_subheader.xml"
     },
     {
-        "merged": "C:\\Users\\jek40\\iceman\\ICEMANv0.5\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\res\\merged\\debug\\layout\\abc_screen_simple.xml",
-        "source": "C:\\Users\\jek40\\iceman\\ICEMANv0.5\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\22.2.0\\res\\layout\\abc_screen_simple.xml"
+        "merged": "C:\\Users\\jek40\\Desktop\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\res\\merged\\debug\\layout\\notification_template_big_media_narrow.xml",
+        "source": "C:\\Users\\jek40\\Desktop\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\22.2.1\\res\\layout\\notification_template_big_media_narrow.xml"
     },
     {
-        "merged": "C:\\Users\\jek40\\iceman\\ICEMANv0.5\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\res\\merged\\debug\\layout\\justtestingshit.xml",
-        "source": "C:\\Users\\jek40\\iceman\\ICEMANv0.5\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\res\\layout\\justtestingshit.xml"
+        "merged": "C:\\Users\\jek40\\Desktop\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\res\\merged\\debug\\layout\\splash_screen.xml",
+        "source": "C:\\Users\\jek40\\Desktop\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\res\\layout\\splash_screen.xml"
     },
     {
-        "merged": "C:\\Users\\jek40\\iceman\\ICEMANv0.5\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\res\\merged\\debug\\layout\\notification_template_big_media.xml",
-        "source": "C:\\Users\\jek40\\iceman\\ICEMANv0.5\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\22.2.0\\res\\layout\\notification_template_big_media.xml"
+        "merged": "C:\\Users\\jek40\\Desktop\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\res\\merged\\debug\\layout\\abc_screen_simple.xml",
+        "source": "C:\\Users\\jek40\\Desktop\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\22.2.1\\res\\layout\\abc_screen_simple.xml"
     },
     {
-        "merged": "C:\\Users\\jek40\\iceman\\ICEMANv0.5\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\res\\merged\\debug\\layout\\comment_base_layout.xml",
-        "source": "C:\\Users\\jek40\\iceman\\ICEMANv0.5\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\res\\layout\\comment_base_layout.xml"
+        "merged": "C:\\Users\\jek40\\Desktop\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\res\\merged\\debug\\layout\\edit_crumb_card.xml",
+        "source": "C:\\Users\\jek40\\Desktop\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\res\\layout\\edit_crumb_card.xml"
     },
     {
-        "merged": "C:\\Users\\jek40\\iceman\\ICEMANv0.5\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\res\\merged\\debug\\layout\\crumb_card_video.xml",
-        "source": "C:\\Users\\jek40\\iceman\\ICEMANv0.5\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\res\\layout\\crumb_card_video.xml"
+        "merged": "C:\\Users\\jek40\\Desktop\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\res\\merged\\debug\\layout\\story_board_item_light.xml",
+        "source": "C:\\Users\\jek40\\Desktop\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\res\\layout\\story_board_item_light.xml"
     },
     {
-        "merged": "C:\\Users\\jek40\\iceman\\ICEMANv0.5\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\res\\merged\\debug\\layout\\forgot_details.xml",
-        "source": "C:\\Users\\jek40\\iceman\\ICEMANv0.5\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\res\\layout\\forgot_details.xml"
+        "merged": "C:\\Users\\jek40\\Desktop\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\res\\merged\\debug\\layout\\messenger_button_send_blue_small.xml",
+        "source": "C:\\Users\\jek40\\Desktop\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\exploded-aar\\com.facebook.android\\facebook-android-sdk\\4.8.0\\res\\layout\\messenger_button_send_blue_small.xml"
     },
     {
-        "merged": "C:\\Users\\jek40\\iceman\\ICEMANv0.5\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\res\\merged\\debug\\layout\\trail_activity.xml",
-        "source": "C:\\Users\\jek40\\iceman\\ICEMANv0.5\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\res\\layout\\trail_activity.xml"
+        "merged": "C:\\Users\\jek40\\Desktop\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\res\\merged\\debug\\layout\\signup_dialog.xml",
+        "source": "C:\\Users\\jek40\\Desktop\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\res\\layout\\signup_dialog.xml"
     },
     {
-        "merged": "C:\\Users\\jek40\\iceman\\ICEMANv0.5\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\res\\merged\\debug\\layout\\story_board_item_light_add.xml",
-        "source": "C:\\Users\\jek40\\iceman\\ICEMANv0.5\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\res\\layout\\story_board_item_light_add.xml"
+        "merged": "C:\\Users\\jek40\\Desktop\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\res\\merged\\debug\\layout\\messenger_button_send_white_round.xml",
+        "source": "C:\\Users\\jek40\\Desktop\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\exploded-aar\\com.facebook.android\\facebook-android-sdk\\4.8.0\\res\\layout\\messenger_button_send_white_round.xml"
     },
     {
-        "merged": "C:\\Users\\jek40\\iceman\\ICEMANv0.5\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\res\\merged\\debug\\layout\\select_dialog_multichoice_material.xml",
-        "source": "C:\\Users\\jek40\\iceman\\ICEMANv0.5\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\22.2.0\\res\\layout\\select_dialog_multichoice_material.xml"
+        "merged": "C:\\Users\\jek40\\Desktop\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\res\\merged\\debug\\layout\\select_dialog_multichoice_material.xml",
+        "source": "C:\\Users\\jek40\\Desktop\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\22.2.1\\res\\layout\\select_dialog_multichoice_material.xml"
     },
     {
-        "merged": "C:\\Users\\jek40\\iceman\\ICEMANv0.5\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\res\\merged\\debug\\layout\\story_board_item_light.xml",
-        "source": "C:\\Users\\jek40\\iceman\\ICEMANv0.5\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\res\\layout\\story_board_item_light.xml"
+        "merged": "C:\\Users\\jek40\\Desktop\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\res\\merged\\debug\\layout\\edit_trail.xml",
+        "source": "C:\\Users\\jek40\\Desktop\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\res\\layout\\edit_trail.xml"
     },
     {
-        "merged": "C:\\Users\\jek40\\iceman\\ICEMANv0.5\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\res\\merged\\debug\\layout\\messenger_button_send_blue_large.xml",
-        "source": "C:\\Users\\jek40\\iceman\\ICEMANv0.5\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\exploded-aar\\com.facebook.android\\facebook-android-sdk\\4.10.0\\res\\layout\\messenger_button_send_blue_large.xml"
+        "merged": "C:\\Users\\jek40\\Desktop\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\res\\merged\\debug\\layout\\add_screen.xml",
+        "source": "C:\\Users\\jek40\\Desktop\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\res\\layout\\add_screen.xml"
     },
     {
-        "merged": "C:\\Users\\jek40\\iceman\\ICEMANv0.5\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\res\\merged\\debug\\layout\\abc_expanded_menu_layout.xml",
-        "source": "C:\\Users\\jek40\\iceman\\ICEMANv0.5\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\22.2.0\\res\\layout\\abc_expanded_menu_layout.xml"
+        "merged": "C:\\Users\\jek40\\Desktop\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\res\\merged\\debug\\layout\\story_board_item_light_add.xml",
+        "source": "C:\\Users\\jek40\\Desktop\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\res\\layout\\story_board_item_light_add.xml"
     },
     {
-        "merged": "C:\\Users\\jek40\\iceman\\ICEMANv0.5\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\res\\merged\\debug\\layout\\signup_dialog.xml",
-        "source": "C:\\Users\\jek40\\iceman\\ICEMANv0.5\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\res\\layout\\signup_dialog.xml"
+        "merged": "C:\\Users\\jek40\\Desktop\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\res\\merged\\debug\\layout\\fragment_planet.xml",
+        "source": "C:\\Users\\jek40\\Desktop\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\res\\layout\\fragment_planet.xml"
     },
     {
-        "merged": "C:\\Users\\jek40\\iceman\\ICEMANv0.5\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\res\\merged\\debug\\layout\\local_tab.xml",
-        "source": "C:\\Users\\jek40\\iceman\\ICEMANv0.5\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\res\\layout\\local_tab.xml"
+        "merged": "C:\\Users\\jek40\\Desktop\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\res\\merged\\debug\\layout\\abc_list_menu_item_icon.xml",
+        "source": "C:\\Users\\jek40\\Desktop\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\22.2.1\\res\\layout\\abc_list_menu_item_icon.xml"
     },
     {
-        "merged": "C:\\Users\\jek40\\iceman\\ICEMANv0.5\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\res\\merged\\debug\\layout\\com_facebook_device_auth_dialog_fragment.xml",
-        "source": "C:\\Users\\jek40\\iceman\\ICEMANv0.5\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\exploded-aar\\com.facebook.android\\facebook-android-sdk\\4.10.0\\res\\layout\\com_facebook_device_auth_dialog_fragment.xml"
+        "merged": "C:\\Users\\jek40\\Desktop\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\res\\merged\\debug\\layout\\abc_action_mode_bar.xml",
+        "source": "C:\\Users\\jek40\\Desktop\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\22.2.1\\res\\layout\\abc_action_mode_bar.xml"
     },
     {
-        "merged": "C:\\Users\\jek40\\iceman\\ICEMANv0.5\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\res\\merged\\debug\\layout\\crumb_activity.xml",
-        "source": "C:\\Users\\jek40\\iceman\\ICEMANv0.5\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\res\\layout\\crumb_activity.xml"
+        "merged": "C:\\Users\\jek40\\Desktop\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\res\\merged\\debug\\layout\\testing.xml",
+        "source": "C:\\Users\\jek40\\Desktop\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\res\\layout\\testing.xml"
     },
     {
-        "merged": "C:\\Users\\jek40\\iceman\\ICEMANv0.5\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\res\\merged\\debug\\layout\\custom_base_layout3.xml",
-        "source": "C:\\Users\\jek40\\iceman\\ICEMANv0.5\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\res\\layout\\custom_base_layout3.xml"
+        "merged": "C:\\Users\\jek40\\Desktop\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\res\\merged\\debug\\layout\\select_dialog_item_material.xml",
+        "source": "C:\\Users\\jek40\\Desktop\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\22.2.1\\res\\layout\\select_dialog_item_material.xml"
     },
     {
-        "merged": "C:\\Users\\jek40\\iceman\\ICEMANv0.5\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\res\\merged\\debug\\layout\\trail_editor_2.xml",
-        "source": "C:\\Users\\jek40\\iceman\\ICEMANv0.5\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\res\\layout\\trail_editor_2.xml"
+        "merged": "C:\\Users\\jek40\\Desktop\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\res\\merged\\debug\\layout\\home_map.xml",
+        "source": "C:\\Users\\jek40\\Desktop\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\res\\layout\\home_map.xml"
     },
     {
-        "merged": "C:\\Users\\jek40\\iceman\\ICEMANv0.5\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\res\\merged\\debug\\layout\\single_crumb_template.xml",
-        "source": "C:\\Users\\jek40\\iceman\\ICEMANv0.5\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\res\\layout\\single_crumb_template.xml"
+        "merged": "C:\\Users\\jek40\\Desktop\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\res\\merged\\debug\\layout\\tooltip.xml",
+        "source": "C:\\Users\\jek40\\Desktop\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\exploded-aar\\com.mapbox.mapboxsdk\\mapbox-android-sdk\\0.7.3\\res\\layout\\tooltip.xml"
     },
     {
-        "merged": "C:\\Users\\jek40\\iceman\\ICEMANv0.5\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\res\\merged\\debug\\layout\\abc_simple_dropdown_hint.xml",
-        "source": "C:\\Users\\jek40\\iceman\\ICEMANv0.5\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\22.2.0\\res\\layout\\abc_simple_dropdown_hint.xml"
+        "merged": "C:\\Users\\jek40\\Desktop\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\res\\merged\\debug\\layout\\abc_simple_dropdown_hint.xml",
+        "source": "C:\\Users\\jek40\\Desktop\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\22.2.1\\res\\layout\\abc_simple_dropdown_hint.xml"
     },
     {
-        "merged": "C:\\Users\\jek40\\iceman\\ICEMANv0.5\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\res\\merged\\debug\\layout\\search_view_overlay.xml",
-        "source": "C:\\Users\\jek40\\iceman\\ICEMANv0.5\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\res\\layout\\search_view_overlay.xml"
+        "merged": "C:\\Users\\jek40\\Desktop\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\res\\merged\\debug\\layout\\abc_activity_chooser_view.xml",
+        "source": "C:\\Users\\jek40\\Desktop\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\22.2.1\\res\\layout\\abc_activity_chooser_view.xml"
     },
     {
-        "merged": "C:\\Users\\jek40\\iceman\\ICEMANv0.5\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\res\\merged\\debug\\layout\\com_facebook_activity_layout.xml",
-        "source": "C:\\Users\\jek40\\iceman\\ICEMANv0.5\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\exploded-aar\\com.facebook.android\\facebook-android-sdk\\4.10.0\\res\\layout\\com_facebook_activity_layout.xml"
+        "merged": "C:\\Users\\jek40\\Desktop\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\res\\merged\\debug\\layout\\abc_screen_simple_overlay_action_mode.xml",
+        "source": "C:\\Users\\jek40\\Desktop\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\22.2.1\\res\\layout\\abc_screen_simple_overlay_action_mode.xml"
     },
     {
-        "merged": "C:\\Users\\jek40\\iceman\\ICEMANv0.5\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\res\\merged\\debug\\layout\\messenger_button_send_blue_round.xml",
-        "source": "C:\\Users\\jek40\\iceman\\ICEMANv0.5\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\exploded-aar\\com.facebook.android\\facebook-android-sdk\\4.10.0\\res\\layout\\messenger_button_send_blue_round.xml"
+        "merged": "C:\\Users\\jek40\\Desktop\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\res\\merged\\debug\\layout\\abc_action_bar_view_list_nav_layout.xml",
+        "source": "C:\\Users\\jek40\\Desktop\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\22.2.1\\res\\layout\\abc_action_bar_view_list_nav_layout.xml"
     },
     {
-        "merged": "C:\\Users\\jek40\\iceman\\ICEMANv0.5\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\res\\merged\\debug\\layout\\abc_screen_content_include.xml",
-        "source": "C:\\Users\\jek40\\iceman\\ICEMANv0.5\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\22.2.0\\res\\layout\\abc_screen_content_include.xml"
+        "merged": "C:\\Users\\jek40\\Desktop\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\res\\merged\\debug\\layout\\notification_media_action.xml",
+        "source": "C:\\Users\\jek40\\Desktop\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\22.2.1\\res\\layout\\notification_media_action.xml"
     },
     {
-        "merged": "C:\\Users\\jek40\\iceman\\ICEMANv0.5\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\res\\merged\\debug\\layout\\nav_drawer_item.xml",
-        "source": "C:\\Users\\jek40\\iceman\\ICEMANv0.5\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\res\\layout\\nav_drawer_item.xml"
+        "merged": "C:\\Users\\jek40\\Desktop\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\res\\merged\\debug\\layout\\settings.xml",
+        "source": "C:\\Users\\jek40\\Desktop\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\res\\layout\\settings.xml"
     },
     {
-        "merged": "C:\\Users\\jek40\\iceman\\ICEMANv0.5\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\res\\merged\\debug\\layout\\no_user_trail_dialog.xml",
-        "source": "C:\\Users\\jek40\\iceman\\ICEMANv0.5\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\res\\layout\\no_user_trail_dialog.xml"
+        "merged": "C:\\Users\\jek40\\Desktop\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\res\\merged\\debug\\layout\\abc_select_dialog_material.xml",
+        "source": "C:\\Users\\jek40\\Desktop\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\22.2.1\\res\\layout\\abc_select_dialog_material.xml"
     },
     {
-        "merged": "C:\\Users\\jek40\\iceman\\ICEMANv0.5\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\res\\merged\\debug\\layout\\trail_editor_window.xml",
-        "source": "C:\\Users\\jek40\\iceman\\ICEMANv0.5\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\res\\layout\\trail_editor_window.xml"
+        "merged": "C:\\Users\\jek40\\Desktop\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\res\\merged\\debug\\layout\\messenger_button_send_blue_round.xml",
+        "source": "C:\\Users\\jek40\\Desktop\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\exploded-aar\\com.facebook.android\\facebook-android-sdk\\4.8.0\\res\\layout\\messenger_button_send_blue_round.xml"
     },
     {
-        "merged": "C:\\Users\\jek40\\iceman\\ICEMANv0.5\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\res\\merged\\debug\\layout\\crumb_card.xml",
-        "source": "C:\\Users\\jek40\\iceman\\ICEMANv0.5\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\res\\layout\\crumb_card.xml"
+        "merged": "C:\\Users\\jek40\\Desktop\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\res\\merged\\debug\\layout\\test_view_pager_holder.xml",
+        "source": "C:\\Users\\jek40\\Desktop\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\res\\layout\\test_view_pager_holder.xml"
     },
     {
-        "merged": "C:\\Users\\jek40\\iceman\\ICEMANv0.5\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\res\\merged\\debug\\layout\\design_navigation_item_header.xml",
-        "source": "C:\\Users\\jek40\\iceman\\ICEMANv0.5\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\exploded-aar\\com.android.support\\design\\22.2.0\\res\\layout\\design_navigation_item_header.xml"
+        "merged": "C:\\Users\\jek40\\Desktop\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\res\\merged\\debug\\layout\\design_navigation_item_header.xml",
+        "source": "C:\\Users\\jek40\\Desktop\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\exploded-aar\\com.android.support\\design\\22.2.0\\res\\layout\\design_navigation_item_header.xml"
     },
     {
-        "merged": "C:\\Users\\jek40\\iceman\\ICEMANv0.5\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\res\\merged\\debug\\layout\\messenger_button_send_white_large.xml",
-        "source": "C:\\Users\\jek40\\iceman\\ICEMANv0.5\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\exploded-aar\\com.facebook.android\\facebook-android-sdk\\4.10.0\\res\\layout\\messenger_button_send_white_large.xml"
+        "merged": "C:\\Users\\jek40\\Desktop\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\res\\merged\\debug\\layout\\abc_search_dropdown_item_icons_2line.xml",
+        "source": "C:\\Users\\jek40\\Desktop\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\22.2.1\\res\\layout\\abc_search_dropdown_item_icons_2line.xml"
     },
     {
-        "merged": "C:\\Users\\jek40\\iceman\\ICEMANv0.5\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\res\\merged\\debug\\layout\\support_simple_spinner_dropdown_item.xml",
-        "source": "C:\\Users\\jek40\\iceman\\ICEMANv0.5\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\22.2.0\\res\\layout\\support_simple_spinner_dropdown_item.xml"
+        "merged": "C:\\Users\\jek40\\Desktop\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\res\\merged\\debug\\layout\\layout_snackbar.xml",
+        "source": "C:\\Users\\jek40\\Desktop\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\exploded-aar\\com.android.support\\design\\22.2.0\\res\\layout\\layout_snackbar.xml"
     },
     {
-        "merged": "C:\\Users\\jek40\\iceman\\ICEMANv0.5\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\res\\merged\\debug\\layout\\comments_popup.xml",
-        "source": "C:\\Users\\jek40\\iceman\\ICEMANv0.5\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\res\\layout\\comments_popup.xml"
+        "merged": "C:\\Users\\jek40\\Desktop\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\res\\merged\\debug\\layout\\notification_media_cancel_action.xml",
+        "source": "C:\\Users\\jek40\\Desktop\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\22.2.1\\res\\layout\\notification_media_cancel_action.xml"
     },
     {
-        "merged": "C:\\Users\\jek40\\iceman\\ICEMANv0.5\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\res\\merged\\debug\\layout\\abc_action_bar_title_item.xml",
-        "source": "C:\\Users\\jek40\\iceman\\ICEMANv0.5\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\22.2.0\\res\\layout\\abc_action_bar_title_item.xml"
+        "merged": "C:\\Users\\jek40\\Desktop\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\res\\merged\\debug\\layout\\trail_activity.xml",
+        "source": "C:\\Users\\jek40\\Desktop\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\res\\layout\\trail_activity.xml"
     },
     {
-        "merged": "C:\\Users\\jek40\\iceman\\ICEMANv0.5\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\res\\merged\\debug\\layout\\messenger_button_send_white_round.xml",
-        "source": "C:\\Users\\jek40\\iceman\\ICEMANv0.5\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\exploded-aar\\com.facebook.android\\facebook-android-sdk\\4.10.0\\res\\layout\\messenger_button_send_white_round.xml"
+        "merged": "C:\\Users\\jek40\\Desktop\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\res\\merged\\debug\\layout\\home_tab_fragment.xml",
+        "source": "C:\\Users\\jek40\\Desktop\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\res\\layout\\home_tab_fragment.xml"
     },
     {
-        "merged": "C:\\Users\\jek40\\iceman\\ICEMANv0.5\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\res\\merged\\debug\\layout\\com_facebook_tooltip_bubble.xml",
-        "source": "C:\\Users\\jek40\\iceman\\ICEMANv0.5\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\exploded-aar\\com.facebook.android\\facebook-android-sdk\\4.10.0\\res\\layout\\com_facebook_tooltip_bubble.xml"
+        "merged": "C:\\Users\\jek40\\Desktop\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\res\\merged\\debug\\layout\\abc_action_mode_close_item_material.xml",
+        "source": "C:\\Users\\jek40\\Desktop\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\22.2.1\\res\\layout\\abc_action_mode_close_item_material.xml"
     },
     {
-        "merged": "C:\\Users\\jek40\\iceman\\ICEMANv0.5\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\res\\merged\\debug\\layout\\design_navigation_item_subheader.xml",
-        "source": "C:\\Users\\jek40\\iceman\\ICEMANv0.5\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\exploded-aar\\com.android.support\\design\\22.2.0\\res\\layout\\design_navigation_item_subheader.xml"
+        "merged": "C:\\Users\\jek40\\Desktop\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\res\\merged\\debug\\layout\\delete_crumb_dialog.xml",
+        "source": "C:\\Users\\jek40\\Desktop\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\res\\layout\\delete_crumb_dialog.xml"
     },
     {
-        "merged": "C:\\Users\\jek40\\iceman\\ICEMANv0.5\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\res\\merged\\debug\\layout\\viewpager_container.xml",
-        "source": "C:\\Users\\jek40\\iceman\\ICEMANv0.5\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\res\\layout\\viewpager_container.xml"
+        "merged": "C:\\Users\\jek40\\Desktop\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\res\\merged\\debug\\layout\\abc_expanded_menu_layout.xml",
+        "source": "C:\\Users\\jek40\\Desktop\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\22.2.1\\res\\layout\\abc_expanded_menu_layout.xml"
     },
     {
-        "merged": "C:\\Users\\jek40\\iceman\\ICEMANv0.5\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\res\\merged\\debug\\layout\\sub_tab_view_container.xml",
-        "source": "C:\\Users\\jek40\\iceman\\ICEMANv0.5\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\res\\layout\\sub_tab_view_container.xml"
+        "merged": "C:\\Users\\jek40\\Desktop\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\res\\merged\\debug\\layout\\save_video.xml",
+        "source": "C:\\Users\\jek40\\Desktop\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\res\\layout\\save_video.xml"
     },
     {
-        "merged": "C:\\Users\\jek40\\iceman\\ICEMANv0.5\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\res\\merged\\debug\\layout\\abc_search_dropdown_item_icons_2line.xml",
-        "source": "C:\\Users\\jek40\\iceman\\ICEMANv0.5\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\22.2.0\\res\\layout\\abc_search_dropdown_item_icons_2line.xml"
+        "merged": "C:\\Users\\jek40\\Desktop\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\res\\merged\\debug\\layout\\local_tab.xml",
+        "source": "C:\\Users\\jek40\\Desktop\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\res\\layout\\local_tab.xml"
     },
     {
-        "merged": "C:\\Users\\jek40\\iceman\\ICEMANv0.5\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\res\\merged\\debug\\layout\\abc_activity_chooser_view.xml",
-        "source": "C:\\Users\\jek40\\iceman\\ICEMANv0.5\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\22.2.0\\res\\layout\\abc_activity_chooser_view.xml"
+        "merged": "C:\\Users\\jek40\\Desktop\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\res\\merged\\debug\\layout\\messenger_button_send_white_large.xml",
+        "source": "C:\\Users\\jek40\\Desktop\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\exploded-aar\\com.facebook.android\\facebook-android-sdk\\4.8.0\\res\\layout\\messenger_button_send_white_large.xml"
     },
     {
-        "merged": "C:\\Users\\jek40\\iceman\\ICEMANv0.5\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\res\\merged\\debug\\layout\\crumb_cluster_layout.xml",
-        "source": "C:\\Users\\jek40\\iceman\\ICEMANv0.5\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\res\\layout\\crumb_cluster_layout.xml"
+        "merged": "C:\\Users\\jek40\\Desktop\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\res\\merged\\debug\\layout\\crumb_viewing_item.xml",
+        "source": "C:\\Users\\jek40\\Desktop\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\res\\layout\\crumb_viewing_item.xml"
     },
     {
-        "merged": "C:\\Users\\jek40\\iceman\\ICEMANv0.5\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\res\\merged\\debug\\layout\\text_bubble.xml",
-        "source": "C:\\Users\\jek40\\iceman\\ICEMANv0.5\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\exploded-aar\\com.google.maps.android\\android-maps-utils\\0.3.4\\res\\layout\\text_bubble.xml"
+        "merged": "C:\\Users\\jek40\\Desktop\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\res\\merged\\debug\\layout\\delete_account_popup.xml",
+        "source": "C:\\Users\\jek40\\Desktop\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\res\\layout\\delete_account_popup.xml"
     },
     {
-        "merged": "C:\\Users\\jek40\\iceman\\ICEMANv0.5\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\res\\merged\\debug\\layout\\profile_screen.xml",
-        "source": "C:\\Users\\jek40\\iceman\\ICEMANv0.5\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\res\\layout\\profile_screen.xml"
+        "merged": "C:\\Users\\jek40\\Desktop\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\res\\merged\\debug\\layout\\crumb_card_video.xml",
+        "source": "C:\\Users\\jek40\\Desktop\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\res\\layout\\crumb_card_video.xml"
     },
     {
-        "merged": "C:\\Users\\jek40\\iceman\\ICEMANv0.5\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\res\\merged\\debug\\layout\\new_user_page.xml",
-        "source": "C:\\Users\\jek40\\iceman\\ICEMANv0.5\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\res\\layout\\new_user_page.xml"
+        "merged": "C:\\Users\\jek40\\Desktop\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\res\\merged\\debug\\layout\\abc_activity_chooser_view_list_item.xml",
+        "source": "C:\\Users\\jek40\\Desktop\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\22.2.1\\res\\layout\\abc_activity_chooser_view_list_item.xml"
     },
     {
-        "merged": "C:\\Users\\jek40\\iceman\\ICEMANv0.5\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\res\\merged\\debug\\layout\\custom_base_layout2.xml",
-        "source": "C:\\Users\\jek40\\iceman\\ICEMANv0.5\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\res\\layout\\custom_base_layout2.xml"
+        "merged": "C:\\Users\\jek40\\Desktop\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\res\\merged\\debug\\layout\\crumb_card.xml",
+        "source": "C:\\Users\\jek40\\Desktop\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\res\\layout\\crumb_card.xml"
     },
     {
-        "merged": "C:\\Users\\jek40\\iceman\\ICEMANv0.5\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\res\\merged\\debug\\layout\\design_navigation_menu.xml",
-        "source": "C:\\Users\\jek40\\iceman\\ICEMANv0.5\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\exploded-aar\\com.android.support\\design\\22.2.0\\res\\layout\\design_navigation_menu.xml"
+        "merged": "C:\\Users\\jek40\\Desktop\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\res\\merged\\debug\\layout\\story_board_item_dark.xml",
+        "source": "C:\\Users\\jek40\\Desktop\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\res\\layout\\story_board_item_dark.xml"
     },
     {
-        "merged": "C:\\Users\\jek40\\iceman\\ICEMANv0.5\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\res\\merged\\debug\\layout\\abc_alert_dialog_material.xml",
-        "source": "C:\\Users\\jek40\\iceman\\ICEMANv0.5\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\22.2.0\\res\\layout\\abc_alert_dialog_material.xml"
+        "merged": "C:\\Users\\jek40\\Desktop\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\res\\merged\\debug\\layout\\design_navigation_item_separator.xml",
+        "source": "C:\\Users\\jek40\\Desktop\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\exploded-aar\\com.android.support\\design\\22.2.0\\res\\layout\\design_navigation_item_separator.xml"
     },
     {
-        "merged": "C:\\Users\\jek40\\iceman\\ICEMANv0.5\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\res\\merged\\debug\\layout\\abc_select_dialog_material.xml",
-        "source": "C:\\Users\\jek40\\iceman\\ICEMANv0.5\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\22.2.0\\res\\layout\\abc_select_dialog_material.xml"
+        "merged": "C:\\Users\\jek40\\Desktop\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\res\\merged\\debug\\layout\\delete.xml",
+        "source": "C:\\Users\\jek40\\Desktop\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\res\\layout\\delete.xml"
     },
     {
-        "merged": "C:\\Users\\jek40\\iceman\\ICEMANv0.5\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\res\\merged\\debug\\layout\\abc_action_mode_bar.xml",
-        "source": "C:\\Users\\jek40\\iceman\\ICEMANv0.5\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\22.2.0\\res\\layout\\abc_action_mode_bar.xml"
+        "merged": "C:\\Users\\jek40\\Desktop\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\res\\merged\\debug\\layout\\edit_trail_card.xml",
+        "source": "C:\\Users\\jek40\\Desktop\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\res\\layout\\edit_trail_card.xml"
     },
     {
-        "merged": "C:\\Users\\jek40\\iceman\\ICEMANv0.5\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\res\\merged\\debug\\layout\\abc_list_menu_item_icon.xml",
-        "source": "C:\\Users\\jek40\\iceman\\ICEMANv0.5\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\22.2.0\\res\\layout\\abc_list_menu_item_icon.xml"
+        "merged": "C:\\Users\\jek40\\Desktop\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\res\\merged\\debug\\layout\\crumbs_holder.xml",
+        "source": "C:\\Users\\jek40\\Desktop\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\res\\layout\\crumbs_holder.xml"
     },
     {
-        "merged": "C:\\Users\\jek40\\iceman\\ICEMANv0.5\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\res\\merged\\debug\\layout\\edit_trail_view.xml",
-        "source": "C:\\Users\\jek40\\iceman\\ICEMANv0.5\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\res\\layout\\edit_trail_view.xml"
+        "merged": "C:\\Users\\jek40\\Desktop\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\res\\merged\\debug\\layout\\abc_action_menu_layout.xml",
+        "source": "C:\\Users\\jek40\\Desktop\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\22.2.1\\res\\layout\\abc_action_menu_layout.xml"
     },
     {
-        "merged": "C:\\Users\\jek40\\iceman\\ICEMANv0.5\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\res\\merged\\debug\\layout\\subscription_manager.xml",
-        "source": "C:\\Users\\jek40\\iceman\\ICEMANv0.5\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\res\\layout\\subscription_manager.xml"
+        "merged": "C:\\Users\\jek40\\Desktop\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\res\\merged\\debug\\layout\\grid_image_layout_wrapper.xml",
+        "source": "C:\\Users\\jek40\\Desktop\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\res\\layout\\grid_image_layout_wrapper.xml"
     },
     {
-        "merged": "C:\\Users\\jek40\\iceman\\ICEMANv0.5\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\res\\merged\\debug\\layout\\image_chooser.xml",
-        "source": "C:\\Users\\jek40\\iceman\\ICEMANv0.5\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\res\\layout\\image_chooser.xml"
+        "merged": "C:\\Users\\jek40\\Desktop\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\res\\merged\\debug\\layout\\notification_template_part_chronometer.xml",
+        "source": "C:\\Users\\jek40\\Desktop\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\22.2.1\\res\\layout\\notification_template_part_chronometer.xml"
     },
     {
-        "merged": "C:\\Users\\jek40\\iceman\\ICEMANv0.5\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\res\\merged\\debug\\layout\\single_video_crumb.xml",
-        "source": "C:\\Users\\jek40\\iceman\\ICEMANv0.5\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\res\\layout\\single_video_crumb.xml"
+        "merged": "C:\\Users\\jek40\\Desktop\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\res\\merged\\debug\\layout\\single_crumb_template.xml",
+        "source": "C:\\Users\\jek40\\Desktop\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\res\\layout\\single_crumb_template.xml"
     },
     {
-        "merged": "C:\\Users\\jek40\\iceman\\ICEMANv0.5\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\res\\merged\\debug\\layout\\layout_snackbar_include.xml",
-        "source": "C:\\Users\\jek40\\iceman\\ICEMANv0.5\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\exploded-aar\\com.android.support\\design\\22.2.0\\res\\layout\\layout_snackbar_include.xml"
+        "merged": "C:\\Users\\jek40\\Desktop\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\res\\merged\\debug\\layout\\remember_me_login.xml",
+        "source": "C:\\Users\\jek40\\Desktop\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\res\\layout\\remember_me_login.xml"
     },
     {
-        "merged": "C:\\Users\\jek40\\iceman\\ICEMANv0.5\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\res\\merged\\debug\\layout\\select_dialog_item_material.xml",
-        "source": "C:\\Users\\jek40\\iceman\\ICEMANv0.5\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\22.2.0\\res\\layout\\select_dialog_item_material.xml"
+        "merged": "C:\\Users\\jek40\\Desktop\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\res\\merged\\debug\\layout\\custom_base_layout3.xml",
+        "source": "C:\\Users\\jek40\\Desktop\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\res\\layout\\custom_base_layout3.xml"
     },
     {
-        "merged": "C:\\Users\\jek40\\iceman\\ICEMANv0.5\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\res\\merged\\debug\\layout\\edit_trail.xml",
-        "source": "C:\\Users\\jek40\\iceman\\ICEMANv0.5\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\res\\layout\\edit_trail.xml"
+        "merged": "C:\\Users\\jek40\\Desktop\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\res\\merged\\debug\\layout\\com_facebook_activity_layout.xml",
+        "source": "C:\\Users\\jek40\\Desktop\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\exploded-aar\\com.facebook.android\\facebook-android-sdk\\4.8.0\\res\\layout\\com_facebook_activity_layout.xml"
     },
     {
-        "merged": "C:\\Users\\jek40\\iceman\\ICEMANv0.5\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\res\\merged\\debug\\layout\\notification_template_part_chronometer.xml",
-        "source": "C:\\Users\\jek40\\iceman\\ICEMANv0.5\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\22.2.0\\res\\layout\\notification_template_part_chronometer.xml"
+        "merged": "C:\\Users\\jek40\\Desktop\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\res\\merged\\debug\\layout\\abc_action_bar_up_container.xml",
+        "source": "C:\\Users\\jek40\\Desktop\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\22.2.1\\res\\layout\\abc_action_bar_up_container.xml"
     },
     {
-        "merged": "C:\\Users\\jek40\\iceman\\ICEMANv0.5\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\res\\merged\\debug\\layout\\single_trail_view.xml",
-        "source": "C:\\Users\\jek40\\iceman\\ICEMANv0.5\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\res\\layout\\single_trail_view.xml"
+        "merged": "C:\\Users\\jek40\\Desktop\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\res\\merged\\debug\\layout\\forgot_details.xml",
+        "source": "C:\\Users\\jek40\\Desktop\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\res\\layout\\forgot_details.xml"
     },
     {
-        "merged": "C:\\Users\\jek40\\iceman\\ICEMANv0.5\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\res\\merged\\debug\\layout\\abc_activity_chooser_view_list_item.xml",
-        "source": "C:\\Users\\jek40\\iceman\\ICEMANv0.5\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\22.2.0\\res\\layout\\abc_activity_chooser_view_list_item.xml"
+        "merged": "C:\\Users\\jek40\\Desktop\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\res\\merged\\debug\\layout\\home_screen_empty_card.xml",
+        "source": "C:\\Users\\jek40\\Desktop\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\res\\layout\\home_screen_empty_card.xml"
     },
     {
-        "merged": "C:\\Users\\jek40\\iceman\\ICEMANv0.5\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\res\\merged\\debug\\layout\\trail_manager_first_time_notifier.xml",
-        "source": "C:\\Users\\jek40\\iceman\\ICEMANv0.5\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\res\\layout\\trail_manager_first_time_notifier.xml"
+        "merged": "C:\\Users\\jek40\\Desktop\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\res\\merged\\debug\\layout\\viewpager_container.xml",
+        "source": "C:\\Users\\jek40\\Desktop\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\res\\layout\\viewpager_container.xml"
     },
     {
-        "merged": "C:\\Users\\jek40\\iceman\\ICEMANv0.5\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\res\\merged\\debug\\layout\\photo_selector_tab_page.xml",
-        "source": "C:\\Users\\jek40\\iceman\\ICEMANv0.5\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\res\\layout\\photo_selector_tab_page.xml"
+        "merged": "C:\\Users\\jek40\\Desktop\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\res\\merged\\debug\\layout\\grid_image_layout.xml",
+        "source": "C:\\Users\\jek40\\Desktop\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\res\\layout\\grid_image_layout.xml"
     },
     {
-        "merged": "C:\\Users\\jek40\\iceman\\ICEMANv0.5\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\res\\merged\\debug\\layout\\delete.xml",
-        "source": "C:\\Users\\jek40\\iceman\\ICEMANv0.5\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\res\\layout\\delete.xml"
+        "merged": "C:\\Users\\jek40\\Desktop\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\res\\merged\\debug\\layout\\search_view_overlay.xml",
+        "source": "C:\\Users\\jek40\\Desktop\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\res\\layout\\search_view_overlay.xml"
     },
     {
-        "merged": "C:\\Users\\jek40\\iceman\\ICEMANv0.5\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\res\\merged\\debug\\layout\\com_facebook_login_fragment.xml",
-        "source": "C:\\Users\\jek40\\iceman\\ICEMANv0.5\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\exploded-aar\\com.facebook.android\\facebook-android-sdk\\4.10.0\\res\\layout\\com_facebook_login_fragment.xml"
+        "merged": "C:\\Users\\jek40\\Desktop\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\res\\merged\\debug\\layout\\add_activity.xml",
+        "source": "C:\\Users\\jek40\\Desktop\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\res\\layout\\add_activity.xml"
     },
     {
-        "merged": "C:\\Users\\jek40\\iceman\\ICEMANv0.5\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\res\\merged\\debug\\layout\\add_screen.xml",
-        "source": "C:\\Users\\jek40\\iceman\\ICEMANv0.5\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\res\\layout\\add_screen.xml"
+        "merged": "C:\\Users\\jek40\\Desktop\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\res\\merged\\debug\\layout\\text_bubble.xml",
+        "source": "C:\\Users\\jek40\\Desktop\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\exploded-aar\\com.google.maps.android\\android-maps-utils\\0.3.4\\res\\layout\\text_bubble.xml"
     },
     {
-        "merged": "C:\\Users\\jek40\\iceman\\ICEMANv0.5\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\res\\merged\\debug\\layout\\unamo_test_view.xml",
-        "source": "C:\\Users\\jek40\\iceman\\ICEMANv0.5\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\res\\layout\\unamo_test_view.xml"
+        "merged": "C:\\Users\\jek40\\Desktop\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\res\\merged\\debug\\layout\\abc_dialog_title_material.xml",
+        "source": "C:\\Users\\jek40\\Desktop\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\22.2.1\\res\\layout\\abc_dialog_title_material.xml"
     },
     {
-        "merged": "C:\\Users\\jek40\\iceman\\ICEMANv0.5\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\res\\merged\\debug\\layout\\toolbar.xml",
-        "source": "C:\\Users\\jek40\\iceman\\ICEMANv0.5\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\res\\layout\\toolbar.xml"
+        "merged": "C:\\Users\\jek40\\Desktop\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\res\\merged\\debug\\layout\\home_page_with_tabs.xml",
+        "source": "C:\\Users\\jek40\\Desktop\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\res\\layout\\home_page_with_tabs.xml"
     },
     {
-        "merged": "C:\\Users\\jek40\\iceman\\ICEMANv0.5\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\res\\merged\\debug\\layout\\testing.xml",
-        "source": "C:\\Users\\jek40\\iceman\\ICEMANv0.5\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\res\\layout\\testing.xml"
+        "merged": "C:\\Users\\jek40\\Desktop\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\res\\merged\\debug\\layout\\new_trail.xml",
+        "source": "C:\\Users\\jek40\\Desktop\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\res\\layout\\new_trail.xml"
     },
     {
-        "merged": "C:\\Users\\jek40\\iceman\\ICEMANv0.5\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\res\\merged\\debug\\layout\\explore_tab.xml",
-        "source": "C:\\Users\\jek40\\iceman\\ICEMANv0.5\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\res\\layout\\explore_tab.xml"
+        "merged": "C:\\Users\\jek40\\Desktop\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\res\\merged\\debug\\layout\\crumb_activity.xml",
+        "source": "C:\\Users\\jek40\\Desktop\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\res\\layout\\crumb_activity.xml"
     },
     {
-        "merged": "C:\\Users\\jek40\\iceman\\ICEMANv0.5\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\res\\merged\\debug\\layout\\custom_tab_header.xml",
-        "source": "C:\\Users\\jek40\\iceman\\ICEMANv0.5\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\res\\layout\\custom_tab_header.xml"
+        "merged": "C:\\Users\\jek40\\Desktop\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\res\\merged\\debug\\layout\\notification_template_media.xml",
+        "source": "C:\\Users\\jek40\\Desktop\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\22.2.1\\res\\layout\\notification_template_media.xml"
     },
     {
-        "merged": "C:\\Users\\jek40\\iceman\\ICEMANv0.5\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\res\\merged\\debug\\layout\\home_tab_fragment.xml",
-        "source": "C:\\Users\\jek40\\iceman\\ICEMANv0.5\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\res\\layout\\home_tab_fragment.xml"
+        "merged": "C:\\Users\\jek40\\Desktop\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\res\\merged\\debug\\layout\\abc_screen_toolbar.xml",
+        "source": "C:\\Users\\jek40\\Desktop\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\22.2.1\\res\\layout\\abc_screen_toolbar.xml"
     },
     {
-        "merged": "C:\\Users\\jek40\\iceman\\ICEMANv0.5\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\res\\merged\\debug\\layout\\add_activity.xml",
-        "source": "C:\\Users\\jek40\\iceman\\ICEMANv0.5\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\res\\layout\\add_activity.xml"
+        "merged": "C:\\Users\\jek40\\Desktop\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\res\\merged\\debug\\layout\\single_trail_view.xml",
+        "source": "C:\\Users\\jek40\\Desktop\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\res\\layout\\single_trail_view.xml"
     },
     {
-        "merged": "C:\\Users\\jek40\\iceman\\ICEMANv0.5\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\res\\merged\\debug\\layout\\about.xml",
-        "source": "C:\\Users\\jek40\\iceman\\ICEMANv0.5\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\res\\layout\\about.xml"
+        "merged": "C:\\Users\\jek40\\Desktop\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\res\\merged\\debug\\layout\\test_fragment_layout.xml",
+        "source": "C:\\Users\\jek40\\Desktop\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\res\\layout\\test_fragment_layout.xml"
     },
     {
-        "merged": "C:\\Users\\jek40\\iceman\\ICEMANv0.5\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\res\\merged\\debug\\layout\\notification_media_cancel_action.xml",
-        "source": "C:\\Users\\jek40\\iceman\\ICEMANv0.5\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\22.2.0\\res\\layout\\notification_media_cancel_action.xml"
+        "merged": "C:\\Users\\jek40\\Desktop\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\res\\merged\\debug\\layout\\justtestingshit.xml",
+        "source": "C:\\Users\\jek40\\Desktop\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\res\\layout\\justtestingshit.xml"
     },
     {
-        "merged": "C:\\Users\\jek40\\iceman\\ICEMANv0.5\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\res\\merged\\debug\\layout\\edit_crumb_card.xml",
-        "source": "C:\\Users\\jek40\\iceman\\ICEMANv0.5\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\res\\layout\\edit_crumb_card.xml"
+        "merged": "C:\\Users\\jek40\\Desktop\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\res\\merged\\debug\\layout\\design_navigation_menu.xml",
+        "source": "C:\\Users\\jek40\\Desktop\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\exploded-aar\\com.android.support\\design\\22.2.0\\res\\layout\\design_navigation_menu.xml"
     },
     {
-        "merged": "C:\\Users\\jek40\\iceman\\ICEMANv0.5\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\res\\merged\\debug\\layout\\fragment_planet.xml",
-        "source": "C:\\Users\\jek40\\iceman\\ICEMANv0.5\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\res\\layout\\fragment_planet.xml"
+        "merged": "C:\\Users\\jek40\\Desktop\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\res\\merged\\debug\\layout\\trail_editor_2.xml",
+        "source": "C:\\Users\\jek40\\Desktop\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\res\\layout\\trail_editor_2.xml"
     },
     {
-        "merged": "C:\\Users\\jek40\\iceman\\ICEMANv0.5\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\res\\merged\\debug\\layout\\crumb_viewing_item.xml",
-        "source": "C:\\Users\\jek40\\iceman\\ICEMANv0.5\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\res\\layout\\crumb_viewing_item.xml"
+        "merged": "C:\\Users\\jek40\\Desktop\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\res\\merged\\debug\\layout\\com_facebook_login_fragment.xml",
+        "source": "C:\\Users\\jek40\\Desktop\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\exploded-aar\\com.facebook.android\\facebook-android-sdk\\4.8.0\\res\\layout\\com_facebook_login_fragment.xml"
     },
     {
-        "merged": "C:\\Users\\jek40\\iceman\\ICEMANv0.5\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\res\\merged\\debug\\layout\\abc_action_bar_view_list_nav_layout.xml",
-        "source": "C:\\Users\\jek40\\iceman\\ICEMANv0.5\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\22.2.0\\res\\layout\\abc_action_bar_view_list_nav_layout.xml"
+        "merged": "C:\\Users\\jek40\\Desktop\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\res\\merged\\debug\\layout\\nav_drawer_item.xml",
+        "source": "C:\\Users\\jek40\\Desktop\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\res\\layout\\nav_drawer_item.xml"
     },
     {
-        "merged": "C:\\Users\\jek40\\iceman\\ICEMANv0.5\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\res\\merged\\debug\\layout\\notification_template_big_media_narrow.xml",
-        "source": "C:\\Users\\jek40\\iceman\\ICEMANv0.5\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\22.2.0\\res\\layout\\notification_template_big_media_narrow.xml"
+        "merged": "C:\\Users\\jek40\\Desktop\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\res\\merged\\debug\\layout\\abc_search_view.xml",
+        "source": "C:\\Users\\jek40\\Desktop\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\22.2.1\\res\\layout\\abc_search_view.xml"
     },
     {
-        "merged": "C:\\Users\\jek40\\iceman\\ICEMANv0.5\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\res\\merged\\debug\\layout\\messenger_button_send_white_small.xml",
-        "source": "C:\\Users\\jek40\\iceman\\ICEMANv0.5\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\exploded-aar\\com.facebook.android\\facebook-android-sdk\\4.10.0\\res\\layout\\messenger_button_send_white_small.xml"
+        "merged": "C:\\Users\\jek40\\Desktop\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\res\\merged\\debug\\layout\\profile_screen.xml",
+        "source": "C:\\Users\\jek40\\Desktop\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\res\\layout\\profile_screen.xml"
     },
     {
-        "merged": "C:\\Users\\jek40\\iceman\\ICEMANv0.5\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\res\\merged\\debug\\layout\\delete_crumb_dialog.xml",
-        "source": "C:\\Users\\jek40\\iceman\\ICEMANv0.5\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\res\\layout\\delete_crumb_dialog.xml"
+        "merged": "C:\\Users\\jek40\\Desktop\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\res\\merged\\debug\\layout\\comments_popup.xml",
+        "source": "C:\\Users\\jek40\\Desktop\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\res\\layout\\comments_popup.xml"
     },
     {
-        "merged": "C:\\Users\\jek40\\iceman\\ICEMANv0.5\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\res\\merged\\debug\\layout\\select_dialog_singlechoice_material.xml",
-        "source": "C:\\Users\\jek40\\iceman\\ICEMANv0.5\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\22.2.0\\res\\layout\\select_dialog_singlechoice_material.xml"
+        "merged": "C:\\Users\\jek40\\Desktop\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\res\\merged\\debug\\layout\\custom_base_layout2.xml",
+        "source": "C:\\Users\\jek40\\Desktop\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\res\\layout\\custom_base_layout2.xml"
     },
     {
-        "merged": "C:\\Users\\jek40\\iceman\\ICEMANv0.5\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\res\\merged\\debug\\layout\\notification_media_action.xml",
-        "source": "C:\\Users\\jek40\\iceman\\ICEMANv0.5\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\22.2.0\\res\\layout\\notification_media_action.xml"
+        "merged": "C:\\Users\\jek40\\Desktop\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\res\\merged\\debug\\layout\\abc_list_menu_item_checkbox.xml",
+        "source": "C:\\Users\\jek40\\Desktop\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\22.2.1\\res\\layout\\abc_list_menu_item_checkbox.xml"
     },
     {
-        "merged": "C:\\Users\\jek40\\iceman\\ICEMANv0.5\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\res\\merged\\debug\\layout\\pinned_tab.xml",
-        "source": "C:\\Users\\jek40\\iceman\\ICEMANv0.5\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\res\\layout\\pinned_tab.xml"
+        "merged": "C:\\Users\\jek40\\Desktop\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\res\\merged\\debug\\layout\\date_picker.xml",
+        "source": "C:\\Users\\jek40\\Desktop\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\res\\layout\\date_picker.xml"
     },
     {
-        "merged": "C:\\Users\\jek40\\iceman\\ICEMANv0.5\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\res\\merged\\debug\\layout\\new_trail_dialog.xml",
-        "source": "C:\\Users\\jek40\\iceman\\ICEMANv0.5\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\res\\layout\\new_trail_dialog.xml"
+        "merged": "C:\\Users\\jek40\\Desktop\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\res\\merged\\debug\\layout\\design_navigation_item.xml",
+        "source": "C:\\Users\\jek40\\Desktop\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\exploded-aar\\com.android.support\\design\\22.2.0\\res\\layout\\design_navigation_item.xml"
     },
     {
-        "merged": "C:\\Users\\jek40\\iceman\\ICEMANv0.5\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\res\\merged\\debug\\layout\\design_navigation_item.xml",
-        "source": "C:\\Users\\jek40\\iceman\\ICEMANv0.5\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\exploded-aar\\com.android.support\\design\\22.2.0\\res\\layout\\design_navigation_item.xml"
+        "merged": "C:\\Users\\jek40\\Desktop\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\res\\merged\\debug\\layout\\trail_manager_first_time_notifier.xml",
+        "source": "C:\\Users\\jek40\\Desktop\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\res\\layout\\trail_manager_first_time_notifier.xml"
     },
     {
-        "merged": "C:\\Users\\jek40\\iceman\\ICEMANv0.5\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\res\\merged\\debug\\layout\\abc_list_menu_item_layout.xml",
-        "source": "C:\\Users\\jek40\\iceman\\ICEMANv0.5\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\22.2.0\\res\\layout\\abc_list_menu_item_layout.xml"
+        "merged": "C:\\Users\\jek40\\Desktop\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\res\\merged\\debug\\layout\\messenger_button_send_white_small.xml",
+        "source": "C:\\Users\\jek40\\Desktop\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\exploded-aar\\com.facebook.android\\facebook-android-sdk\\4.8.0\\res\\layout\\messenger_button_send_white_small.xml"
     },
     {
-        "merged": "C:\\Users\\jek40\\iceman\\ICEMANv0.5\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\res\\merged\\debug\\layout\\tooltip.xml",
-        "source": "C:\\Users\\jek40\\iceman\\ICEMANv0.5\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\exploded-aar\\com.mapbox.mapboxsdk\\mapbox-android-sdk\\0.7.3\\res\\layout\\tooltip.xml"
+        "merged": "C:\\Users\\jek40\\Desktop\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\res\\merged\\debug\\layout\\abc_alert_dialog_material.xml",
+        "source": "C:\\Users\\jek40\\Desktop\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\22.2.1\\res\\layout\\abc_alert_dialog_material.xml"
     },
     {
-        "merged": "C:\\Users\\jek40\\iceman\\ICEMANv0.5\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\res\\merged\\debug\\layout\\messenger_button_send_blue_small.xml",
-        "source": "C:\\Users\\jek40\\iceman\\ICEMANv0.5\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\exploded-aar\\com.facebook.android\\facebook-android-sdk\\4.10.0\\res\\layout\\messenger_button_send_blue_small.xml"
+        "merged": "C:\\Users\\jek40\\Desktop\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\res\\merged\\debug\\layout\\edit_trail_view.xml",
+        "source": "C:\\Users\\jek40\\Desktop\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\res\\layout\\edit_trail_view.xml"
     },
     {
-        "merged": "C:\\Users\\jek40\\iceman\\ICEMANv0.5\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\res\\merged\\debug\\layout\\abc_screen_simple_overlay_action_mode.xml",
-        "source": "C:\\Users\\jek40\\iceman\\ICEMANv0.5\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\22.2.0\\res\\layout\\abc_screen_simple_overlay_action_mode.xml"
+        "merged": "C:\\Users\\jek40\\Desktop\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\res\\merged\\debug\\layout\\trail_manager.xml",
+        "source": "C:\\Users\\jek40\\Desktop\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\res\\layout\\trail_manager.xml"
     },
     {
-        "merged": "C:\\Users\\jek40\\iceman\\ICEMANv0.5\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\res\\merged\\debug\\layout\\new_trail.xml",
-        "source": "C:\\Users\\jek40\\iceman\\ICEMANv0.5\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\res\\layout\\new_trail.xml"
+        "merged": "C:\\Users\\jek40\\Desktop\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\res\\merged\\debug\\layout\\trail_chip.xml",
+        "source": "C:\\Users\\jek40\\Desktop\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\res\\layout\\trail_chip.xml"
     },
     {
-        "merged": "C:\\Users\\jek40\\iceman\\ICEMANv0.5\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\res\\merged\\debug\\layout\\home_map.xml",
-        "source": "C:\\Users\\jek40\\iceman\\ICEMANv0.5\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\res\\layout\\home_map.xml"
+        "merged": "C:\\Users\\jek40\\Desktop\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\res\\merged\\debug\\layout\\notification_template_part_time.xml",
+        "source": "C:\\Users\\jek40\\Desktop\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\22.2.1\\res\\layout\\notification_template_part_time.xml"
     },
     {
-        "merged": "C:\\Users\\jek40\\iceman\\ICEMANv0.5\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\res\\merged\\debug\\layout\\fragment_holder.xml",
-        "source": "C:\\Users\\jek40\\iceman\\ICEMANv0.5\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\res\\layout\\fragment_holder.xml"
+        "merged": "C:\\Users\\jek40\\Desktop\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\res\\merged\\debug\\layout\\login_screen.xml",
+        "source": "C:\\Users\\jek40\\Desktop\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\res\\layout\\login_screen.xml"
+    },
+    {
+        "merged": "C:\\Users\\jek40\\Desktop\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\res\\merged\\debug\\layout\\comment_base_layout.xml",
+        "source": "C:\\Users\\jek40\\Desktop\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\res\\layout\\comment_base_layout.xml"
     }
 ]

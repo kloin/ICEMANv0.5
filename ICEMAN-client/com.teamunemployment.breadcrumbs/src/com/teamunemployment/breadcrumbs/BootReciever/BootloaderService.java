@@ -11,7 +11,8 @@ import android.widget.Toast;
 import com.teamunemployment.breadcrumbs.Location.BreadCrumbsFusedLocationProvider;
 
 /**
- * Created by jek40 on 1/03/2016.
+ *  Bootloader class to check the whether we need to start tracking on device startup. This is a
+ *  service that we call from the acutal bootloader.
  */
 public class BootloaderService extends Service{
 
@@ -21,9 +22,9 @@ public class BootloaderService extends Service{
         boolean isTracking = PreferenceManager.getDefaultSharedPreferences(this).getBoolean("TRACKING", false);
         BreadCrumbsFusedLocationProvider breadCrumbsFusedLocationProvider = new BreadCrumbsFusedLocationProvider(this);
         String trailId = PreferenceManager.getDefaultSharedPreferences(this).getString("TRAILID", "-1");
-        //if (!trailId.equals("-1") && isTracking) {
+        if (!trailId.equals("-1") && isTracking) {
             breadCrumbsFusedLocationProvider.StartBackgroundGPSService();
-        //}
+        }
         // do something when the service is created
     }
 

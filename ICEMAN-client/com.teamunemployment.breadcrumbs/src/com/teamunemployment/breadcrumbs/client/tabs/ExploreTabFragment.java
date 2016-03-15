@@ -1,10 +1,14 @@
 package com.teamunemployment.breadcrumbs.client.tabs;
 
 import android.util.Log;
+import android.view.View;
+import android.widget.ProgressBar;
 
 import com.teamunemployment.breadcrumbs.Network.LoadBalancer;
 import com.teamunemployment.breadcrumbs.Network.ServiceProxy.AsyncDataRetrieval;
+import com.teamunemployment.breadcrumbs.R;
 import com.teamunemployment.breadcrumbs.client.Cards.HomeCardAdapter;
+import com.teamunemployment.breadcrumbs.client.TrailActivity;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -16,9 +20,11 @@ import java.util.Iterator;
  * Written By Josiah Kendall, 2016. All Rights reserved
  */
 public class ExploreTabFragment extends HomeTabFragment {
+    private static final String TAG = "EXPLORE_TAB";
     public void reloadTrails() {
         // Our url - just gets a json string of all trail ids.
         String url = LoadBalancer.RequestServerAddress() + "/rest/TrailManager/GetAllTrailIds";
+        Log.d(TAG, "Explore tab load start with url: " + url);
         url = url.replaceAll(" ", "%20");
         clientRequestProxy  = new AsyncDataRetrieval(url, new AsyncDataRetrieval.RequestListener() {
             @Override
@@ -43,7 +49,6 @@ public class ExploreTabFragment extends HomeTabFragment {
                             newIds.add(item);
                         }
                     }*/
-
                     globalContainer.SetTrailIdsCurrentlyDisplayed(allIds);
 
                     mAdapter = new HomeCardAdapter(allIds, context);
@@ -100,8 +105,8 @@ public class ExploreTabFragment extends HomeTabFragment {
             public void onFinished(String result) {
                 try {
                     // Hide loading spinner
-                    //ProgressBar loadingSpinner = (ProgressBar) rootView.findViewById(R.id.explore_progress_bar);
-                    //loadingSpinner.setVisibility(View.GONE);
+                    ProgressBar loadingSpinner = (ProgressBar) rootView.findViewById(R.id.explore_progress_bar);
+                    loadingSpinner.setVisibility(View.GONE);
                     // Get our arrayList for the card adapter
                     JSONObject jsonResult = new JSONObject(result);
                     ArrayList<String> ids = convertJSONToArrayList(jsonResult);

@@ -238,9 +238,8 @@ public class EditMyTrail extends AppCompatActivity {
         // header.setLayoutParams(layoutParams);
         //header.setBackgroundResource(R.color.ColorPrimary);
         UpdateViewElementWithProperty viewElementWithProperty = new UpdateViewElementWithProperty();
-        viewElementWithProperty.UpdateImageViewElement(header, crumbId, "CoverPhotoId", context);
         TextView textView = (TextView) findViewById(R.id.profile_select_prompt);
-       // textView.setVisibility(View.GONE);
+        viewElementWithProperty.UpdateImageViewElementAndHidePlaceholder(header, crumbId, "CoverPhotoId", context, textView);
         header.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

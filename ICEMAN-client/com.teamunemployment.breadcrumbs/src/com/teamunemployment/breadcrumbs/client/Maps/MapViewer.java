@@ -40,36 +40,57 @@ public class MapViewer extends Activity implements
 		OnMapClickListener, OnMapLongClickListener, OnMarkerClickListener {
 	private GoogleMap mMap;
 	private JSONObject json;
+	private String TAG = "MapViewer";
 	private AsyncDataRetrieval clientRequestProxy;
-	private PopupWindow popUp; 
-	private LinearLayout parent;
 	private boolean requestingImage = false;
-	private AsyncDataRetrieval imageFetcher;
     private MyCurrentTrailManager myCurrentTrailManager;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-
 		setContentView(R.layout.home_map);
-        mMap = ((MapFragment) getFragmentManager().findFragmentById(R.id.map))
-                .getMap();
-        myCurrentTrailManager = new MyCurrentTrailManager(mMap, this);
-        String trailId = this.getIntent().getStringExtra("TrailId");
-        clientRequestProxy  = new AsyncDataRetrieval(LoadBalancer.RequestServerAddress() +"/rest/TrailManager/AddTrailView/"+trailId, new AsyncDataRetrieval.RequestListener() {
-            @Override
-            public void onFinished(String result) {
-                //Initialise our object, and attempt to construct it from the string.
-                Log.i("MapViewer.ViewUpdate", "Added view to map. Status : " + result);
-            }
-        });
-        clientRequestProxy.execute();
+        mMap = ((MapFragment) getFragmentManager().findFragmentById(R.id.map)).getMap();
+		setListenersAndLoaders();
+	}
 
-		// Get our data
-		myCurrentTrailManager.DisplayTrailAndCrumbs(trailId);
+	@Override
+	protected void onStart() {
+		super.onStart();
+		Log.d(TAG, "Begining onStart");
+		// TrailManager is used for drawing trails and shit on the map.
+
+	}
+
+	// This is a method that wraps up all the startup shit done in onStart() and
+	private void setListenersAndLoaders() {
+		createCurrentTrailManager(mMap);
+
+		// Button listeners, do as they say.
 		setToggleSatellite();
 		setBackButtonListener();
+
+		/* Grab the trail Id, which is used to load the details of the map and */
+		String trailId = this.getIntent().getStringExtra("TrailId");
 		getBaseDetailsForATrail(trailId);
+		myCurrentTrailManager.DisplayTrailAndCrumbs(trailId);
+		addViewToTrail(trailId);
+	}
+
+	private void addViewToTrail(String trailId) {
+		clientRequestProxy  = new AsyncDataRetrieval(LoadBalancer.RequestServerAddress() +
+				"/rest/TrailManager/AddTrailView/"+trailId,
+				new AsyncDataRetrieval.RequestListener() {
+			@Override
+			public void onFinished(String result) {
+				// Dont actually need to do anything with this result, so I just log it.
+				Log.i("MapViewer.ViewUpdate", "Successfully added view to map. Status : " + result);
+			}
+		});
+		clientRequestProxy.execute();
+	}
+
+	private void createCurrentTrailManager(GoogleMap map) {
+		myCurrentTrailManager = new MyCurrentTrailManager(map, this);
 	}
 
 	private void setTrailClickHandlers(final String userId) {

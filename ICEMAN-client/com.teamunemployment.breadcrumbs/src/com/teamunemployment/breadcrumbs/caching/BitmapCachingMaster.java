@@ -25,11 +25,14 @@ import java.io.InputStream;
 import java.io.OutputStream;
 
 /**
- * Created by jek40 on 30/11/2015.
+ * Created by Josiah Kendall on 30/11/2015.
+ *
+ * CURRENTLY USING GLIDE RATHER THAN THIS
  *
  * Class which handles caching and fetching of bitmaps. Might need to abstract some sort of dev friendly
  * interface from this mess, as everything is currently at the same level.
  */
+@Deprecated
 public class BitmapCachingMaster {
     private DiskLruCache mDiskLruCache;
     private LruCache<String, Bitmap> mMemoryCache;
@@ -44,7 +47,6 @@ public class BitmapCachingMaster {
 
         // Use 1/8th of the available memory for this memory cache.
         final int cacheSize = maxMemory / 8;
-
         mMemoryCache = new LruCache<String, Bitmap>(cacheSize) {
             @Override
             protected int sizeOf(String key, Bitmap bitmap) {

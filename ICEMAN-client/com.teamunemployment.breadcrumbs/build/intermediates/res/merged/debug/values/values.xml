@@ -51,20 +51,15 @@
     <color name="com_facebook_blue">#3B5998</color>
     <color name="com_facebook_button_background_color">#415dae</color>
     <color name="com_facebook_button_background_color_disabled">#bdc1c9</color>
-    <color name="com_facebook_button_background_color_focused">#FFFFFe</color>
-    <color name="com_facebook_button_background_color_focused_disabled">#84878c</color>
     <color name="com_facebook_button_background_color_pressed">#2f477a</color>
-    <color name="com_facebook_button_background_color_selected">#7c8fc8</color>
-    <color name="com_facebook_button_border_color_focused">#dedee6</color>
+    <color name="com_facebook_button_like_background_color_selected">#7c8fc8</color>
     <color name="com_facebook_button_login_silver_background_color">#f4f6f8</color>
     <color name="com_facebook_button_login_silver_background_color_pressed">#e9eaf0</color>
-    <color name="com_facebook_button_send_background_color">@color/com_facebook_messenger_blue</color>
+    <color name="com_facebook_button_send_background_color">#0084ff</color>
     <color name="com_facebook_button_send_background_color_pressed">#006fff</color>
-    <color name="com_facebook_device_auth_text">#797E87</color>
     <color name="com_facebook_likeboxcountview_border_color">#6a7180</color>
     <color name="com_facebook_likeboxcountview_text_color">#6a7180</color>
     <color name="com_facebook_likeview_text_color">#6a7180</color>
-    <color name="com_facebook_messenger_blue">#0084ff</color>
     <color name="com_facebook_share_button_text_color">#FFFFFF</color>
     <color name="common_action_bar_splitter">#d2d2d2</color>
     <color name="common_google_signin_btn_text_dark_default">@android:color/white</color>
@@ -256,9 +251,6 @@
     <dimen name="cardview_compat_inset_shadow">1dp</dimen>
     <dimen name="cardview_default_elevation">2dp</dimen>
     <dimen name="cardview_default_radius">2dp</dimen>
-    <dimen name="com_facebook_auth_dialog_corner_radius">2dp</dimen>
-    <dimen name="com_facebook_auth_dialog_corner_radius_oversized">4dp</dimen>
-    <dimen name="com_facebook_button_corner_radius">2dp</dimen>
     <dimen name="com_facebook_likeboxcountview_border_radius">3dp</dimen>
     <dimen name="com_facebook_likeboxcountview_border_width">1dp</dimen>
     <dimen name="com_facebook_likeboxcountview_caret_height">3dp</dimen>
@@ -367,7 +359,6 @@
     <string name="appbar_scrolling_view_behavior" translatable="false">android.support.design.widget.AppBarLayout$ScrollingViewBehavior</string>
     <string name="auth_google_play_services_client_facebook_display_name">Facebook</string>
     <string name="auth_google_play_services_client_google_display_name">Google</string>
-    <string name="com_facebook_device_auth_instructions">Visit &lt;b>facebook.com/device&lt;/b>&lt;br />on your smartphone or computer&lt;br />and enter this code</string>
     <string name="com_facebook_image_download_unknown_error">Unexpected error while downloading an image.</string>
     <string name="com_facebook_internet_permission_error_message">WebView login requires INTERNET permission</string>
     <string name="com_facebook_internet_permission_error_title">AndroidManifest Error</string>
@@ -670,7 +661,7 @@
         <item name="colorControlNormal">?android:attr/textColorPrimary</item>
         <item name="searchViewStyle">@style/Widget.AppCompat.SearchView.ActionBar</item>
     </style>
-    <style name="Base.ThemeOverlay.AppCompat.Dark">
+    <style name="Base.ThemeOverlay.AppCompat.Dark" parent="Platform.ThemeOverlay.AppCompat.Dark">
         <item name="android:windowBackground">@color/background_material_dark</item>
         <item name="android:colorForeground">@color/bright_foreground_material_dark</item>
         <item name="android:colorForegroundInverse">@color/bright_foreground_material_light</item>
@@ -1733,8 +1724,7 @@
         <item name="color">?attr/colorControlNormal</item>
     </style>
     <style name="Widget.AppCompat.DropDownItem.Spinner" parent="RtlOverlay.Widget.AppCompat.Search.DropDown.Text"/>
-    <style name="Widget.AppCompat.EditText" parent="Base.Widget.AppCompat.EditText">
-    </style>
+    <style name="Widget.AppCompat.EditText" parent="Base.Widget.AppCompat.EditText"/>
     <style name="Widget.AppCompat.Light.ActionBar" parent="Base.Widget.AppCompat.Light.ActionBar">
     </style>
     <style name="Widget.AppCompat.Light.ActionBar.Solid" parent="Base.Widget.AppCompat.Light.ActionBar.Solid">
@@ -1841,12 +1831,6 @@
         <item name="hintTextAppearance">@style/TextAppearance.Design.Hint</item>
         <item name="errorTextAppearance">@style/TextAppearance.Design.Error</item>
     </style>
-    <style name="com_facebook_auth_dialog" parent="android:style/Theme.Dialog">
-        <item name="android:windowIsTranslucent">true</item>
-        <item name="android:windowBackground">@android:color/transparent</item>
-        <item name="android:windowNoTitle">true</item>
-        <item name="android:windowIsFloating">true</item>
-    </style>
     <style name="com_facebook_button" parent="@android:style/Widget.Button">
         <item name="android:background">@drawable/com_facebook_button_background</item>
         <item name="android:drawablePadding">6dp</item>
@@ -1855,7 +1839,7 @@
         <item name="android:paddingLeft">8dp</item>
         <item name="android:paddingRight">8dp</item>
         <item name="android:paddingTop">5dp</item>
-        <item name="android:textColor">@color/com_facebook_button_text_color</item>
+        <item name="android:textColor">#ffffff</item>
         <item name="android:textSize">14.0dp</item>
     </style>
     <style name="com_facebook_button_like" parent="com_facebook_button">
@@ -1863,9 +1847,8 @@
     </style>
     <style name="com_facebook_button_send" parent="com_facebook_button">
         <item name="android:background">@drawable/com_facebook_button_send_background</item>
-        <item name="android:drawableLeft">@drawable/com_facebook_send_button_icon</item>
+        <item name="android:drawableLeft">@drawable/com_facebook_button_send_icon</item>
         <item name="android:text">@string/com_facebook_send_button_text</item>
-        <item name="android:textColor">@color/com_facebook_send_button_text_color</item>
     </style>
     <style name="com_facebook_button_share" parent="com_facebook_button">
         <item name="android:drawableLeft">@drawable/com_facebook_button_icon</item>
@@ -1880,11 +1863,11 @@
         <item name="android:textColor">#4b5164</item>
     </style>
     <style name="tooltip_bubble_text">
-        <item name="android:textColor">@android:color/white</item>
-        <item name="android:gravity">left</item>
-        <item name="android:textSize">12sp</item>
-        <item name="android:shadowDy">-1</item>
-        <item name="android:shadowRadius">0.25</item>
-        <item name="android:shadowColor">#40000000</item>
+	    <item name="android:textColor">@android:color/white</item>
+	    <item name="android:gravity">left</item>
+	    <item name="android:textSize">12sp</item>
+	    <item name="android:shadowDy">-1</item>
+	    <item name="android:shadowRadius">0.25</item>
+	    <item name="android:shadowColor">#40000000</item>
     </style>
 </resources>

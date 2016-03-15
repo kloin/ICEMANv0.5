@@ -1,6 +1,6 @@
 [
     {
-        "outputFile": "C:\\Users\\jek40\\iceman\\ICEMANv0.5\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\res\\merged\\debug\\values-v21\\values-v21.xml",
+        "outputFile": "C:\\Users\\jek40\\Desktop\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\res\\merged\\debug\\values-v21\\values-v21.xml",
         "map": [
             {
                 "to": {
@@ -11,7 +11,7 @@
                     "endOffset": 112
                 },
                 "from": {
-                    "file": "C:\\Users\\jek40\\iceman\\ICEMANv0.5\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\exploded-aar\\com.android.support\\design\\22.2.0\\res\\values-v21\\values-v21.xml",
+                    "file": "C:\\Users\\jek40\\Desktop\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\exploded-aar\\com.android.support\\design\\22.2.0\\res\\values-v21\\values-v21.xml",
                     "position": {
                         "startLine": 4,
                         "startColumn": 4,
@@ -30,7 +30,7 @@
                     "endOffset": 203
                 },
                 "from": {
-                    "file": "C:\\Users\\jek40\\iceman\\ICEMANv0.5\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\22.2.0\\res\\values-v21\\values-v21.xml",
+                    "file": "C:\\Users\\jek40\\Desktop\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\22.2.1\\res\\values-v21\\values-v21.xml",
                     "position": {
                         "startLine": 4,
                         "startColumn": 4,
@@ -49,7 +49,7 @@
                     "endOffset": 306
                 },
                 "from": {
-                    "file": "C:\\Users\\jek40\\iceman\\ICEMANv0.5\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\22.2.0\\res\\values-v21\\values-v21.xml",
+                    "file": "C:\\Users\\jek40\\Desktop\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\22.2.1\\res\\values-v21\\values-v21.xml",
                     "position": {
                         "startLine": 5,
                         "startColumn": 4,
@@ -68,7 +68,7 @@
                     "endOffset": 409
                 },
                 "from": {
-                    "file": "C:\\Users\\jek40\\iceman\\ICEMANv0.5\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\22.2.0\\res\\values-v21\\values-v21.xml",
+                    "file": "C:\\Users\\jek40\\Desktop\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\22.2.1\\res\\values-v21\\values-v21.xml",
                     "position": {
                         "startLine": 6,
                         "startColumn": 4,
@@ -87,7 +87,7 @@
                     "endOffset": 514
                 },
                 "from": {
-                    "file": "C:\\Users\\jek40\\iceman\\ICEMANv0.5\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\22.2.0\\res\\values-v21\\values-v21.xml",
+                    "file": "C:\\Users\\jek40\\Desktop\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\22.2.1\\res\\values-v21\\values-v21.xml",
                     "position": {
                         "startLine": 7,
                         "startColumn": 4,
@@ -106,7 +106,7 @@
                     "endOffset": 621
                 },
                 "from": {
-                    "file": "C:\\Users\\jek40\\iceman\\ICEMANv0.5\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\22.2.0\\res\\values-v21\\values-v21.xml",
+                    "file": "C:\\Users\\jek40\\Desktop\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\22.2.1\\res\\values-v21\\values-v21.xml",
                     "position": {
                         "startLine": 8,
                         "startColumn": 4,
@@ -125,7 +125,7 @@
                     "endOffset": 730
                 },
                 "from": {
-                    "file": "C:\\Users\\jek40\\iceman\\ICEMANv0.5\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\22.2.0\\res\\values-v21\\values-v21.xml",
+                    "file": "C:\\Users\\jek40\\Desktop\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\22.2.1\\res\\values-v21\\values-v21.xml",
                     "position": {
                         "startLine": 9,
                         "startColumn": 4,
@@ -144,7 +144,7 @@
                     "endOffset": 839
                 },
                 "from": {
-                    "file": "C:\\Users\\jek40\\iceman\\ICEMANv0.5\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\22.2.0\\res\\values-v21\\values-v21.xml",
+                    "file": "C:\\Users\\jek40\\Desktop\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\22.2.1\\res\\values-v21\\values-v21.xml",
                     "position": {
                         "startLine": 10,
                         "startColumn": 4,
@@ -163,7 +163,7 @@
                     "endOffset": 948
                 },
                 "from": {
-                    "file": "C:\\Users\\jek40\\iceman\\ICEMANv0.5\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\22.2.0\\res\\values-v21\\values-v21.xml",
+                    "file": "C:\\Users\\jek40\\Desktop\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\22.2.1\\res\\values-v21\\values-v21.xml",
                     "position": {
                         "startLine": 11,
                         "startColumn": 4,
@@ -182,7 +182,7 @@
                     "endOffset": 1057
                 },
                 "from": {
-                    "file": "C:\\Users\\jek40\\iceman\\ICEMANv0.5\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\22.2.0\\res\\values-v21\\values-v21.xml",
+                    "file": "C:\\Users\\jek40\\Desktop\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\22.2.1\\res\\values-v21\\values-v21.xml",
                     "position": {
                         "startLine": 12,
                         "startColumn": 4,
@@ -201,7 +201,7 @@
                     "endOffset": 1166
                 },
                 "from": {
-                    "file": "C:\\Users\\jek40\\iceman\\ICEMANv0.5\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\22.2.0\\res\\values-v21\\values-v21.xml",
+                    "file": "C:\\Users\\jek40\\Desktop\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\22.2.1\\res\\values-v21\\values-v21.xml",
                     "position": {
                         "startLine": 13,
                         "startColumn": 4,
@@ -220,7 +220,7 @@
                     "endOffset": 1273
                 },
                 "from": {
-                    "file": "C:\\Users\\jek40\\iceman\\ICEMANv0.5\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\22.2.0\\res\\values-v21\\values-v21.xml",
+                    "file": "C:\\Users\\jek40\\Desktop\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\22.2.1\\res\\values-v21\\values-v21.xml",
                     "position": {
                         "startLine": 14,
                         "startColumn": 4,
@@ -239,7 +239,7 @@
                     "endOffset": 1376
                 },
                 "from": {
-                    "file": "C:\\Users\\jek40\\iceman\\ICEMANv0.5\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\22.2.0\\res\\values-v21\\values-v21.xml",
+                    "file": "C:\\Users\\jek40\\Desktop\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\22.2.1\\res\\values-v21\\values-v21.xml",
                     "position": {
                         "startLine": 15,
                         "startColumn": 4,
@@ -258,7 +258,7 @@
                     "endOffset": 1495
                 },
                 "from": {
-                    "file": "C:\\Users\\jek40\\iceman\\ICEMANv0.5\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\22.2.0\\res\\values-v21\\values-v21.xml",
+                    "file": "C:\\Users\\jek40\\Desktop\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\22.2.1\\res\\values-v21\\values-v21.xml",
                     "position": {
                         "startLine": 16,
                         "startColumn": 4,
@@ -278,7 +278,7 @@
                     "endOffset": 1650
                 },
                 "from": {
-                    "file": "C:\\Users\\jek40\\iceman\\ICEMANv0.5\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\22.2.0\\res\\values-v21\\values-v21.xml",
+                    "file": "C:\\Users\\jek40\\Desktop\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\22.2.1\\res\\values-v21\\values-v21.xml",
                     "position": {
                         "startLine": 19,
                         "startColumn": 4,
@@ -299,7 +299,7 @@
                     "endOffset": 1805
                 },
                 "from": {
-                    "file": "C:\\Users\\jek40\\iceman\\ICEMANv0.5\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\22.2.0\\res\\values-v21\\values-v21.xml",
+                    "file": "C:\\Users\\jek40\\Desktop\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\22.2.1\\res\\values-v21\\values-v21.xml",
                     "position": {
                         "startLine": 21,
                         "startColumn": 4,
@@ -319,7 +319,7 @@
                     "endOffset": 1910
                 },
                 "from": {
-                    "file": "C:\\Users\\jek40\\iceman\\ICEMANv0.5\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\22.2.0\\res\\values-v21\\values-v21.xml",
+                    "file": "C:\\Users\\jek40\\Desktop\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\22.2.1\\res\\values-v21\\values-v21.xml",
                     "position": {
                         "startLine": 25,
                         "startColumn": 4,
@@ -338,7 +338,7 @@
                     "endOffset": 2031
                 },
                 "from": {
-                    "file": "C:\\Users\\jek40\\iceman\\ICEMANv0.5\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\22.2.0\\res\\values-v21\\values-v21.xml",
+                    "file": "C:\\Users\\jek40\\Desktop\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\22.2.1\\res\\values-v21\\values-v21.xml",
                     "position": {
                         "startLine": 26,
                         "startColumn": 4,
@@ -357,7 +357,7 @@
                     "endOffset": 2132
                 },
                 "from": {
-                    "file": "C:\\Users\\jek40\\iceman\\ICEMANv0.5\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\22.2.0\\res\\values-v21\\values-v21.xml",
+                    "file": "C:\\Users\\jek40\\Desktop\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\22.2.1\\res\\values-v21\\values-v21.xml",
                     "position": {
                         "startLine": 27,
                         "startColumn": 4,
@@ -377,7 +377,7 @@
                     "endOffset": 2279
                 },
                 "from": {
-                    "file": "C:\\Users\\jek40\\iceman\\ICEMANv0.5\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\22.2.0\\res\\values-v21\\values-v21.xml",
+                    "file": "C:\\Users\\jek40\\Desktop\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\22.2.1\\res\\values-v21\\values-v21.xml",
                     "position": {
                         "startLine": 30,
                         "startColumn": 4,
@@ -398,7 +398,7 @@
                     "endOffset": 2420
                 },
                 "from": {
-                    "file": "C:\\Users\\jek40\\iceman\\ICEMANv0.5\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\22.2.0\\res\\values-v21\\values-v21.xml",
+                    "file": "C:\\Users\\jek40\\Desktop\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\22.2.1\\res\\values-v21\\values-v21.xml",
                     "position": {
                         "startLine": 32,
                         "startColumn": 4,
@@ -418,7 +418,7 @@
                     "endOffset": 2523
                 },
                 "from": {
-                    "file": "C:\\Users\\jek40\\iceman\\ICEMANv0.5\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\22.2.0\\res\\values-v21\\values-v21.xml",
+                    "file": "C:\\Users\\jek40\\Desktop\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\22.2.1\\res\\values-v21\\values-v21.xml",
                     "position": {
                         "startLine": 36,
                         "startColumn": 4,
@@ -437,7 +437,7 @@
                     "endOffset": 2642
                 },
                 "from": {
-                    "file": "C:\\Users\\jek40\\iceman\\ICEMANv0.5\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\22.2.0\\res\\values-v21\\values-v21.xml",
+                    "file": "C:\\Users\\jek40\\Desktop\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\22.2.1\\res\\values-v21\\values-v21.xml",
                     "position": {
                         "startLine": 37,
                         "startColumn": 4,
@@ -456,7 +456,7 @@
                     "endOffset": 2749
                 },
                 "from": {
-                    "file": "C:\\Users\\jek40\\iceman\\ICEMANv0.5\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\22.2.0\\res\\values-v21\\values-v21.xml",
+                    "file": "C:\\Users\\jek40\\Desktop\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\22.2.1\\res\\values-v21\\values-v21.xml",
                     "position": {
                         "startLine": 38,
                         "startColumn": 4,
@@ -475,7 +475,7 @@
                     "endOffset": 2852
                 },
                 "from": {
-                    "file": "C:\\Users\\jek40\\iceman\\ICEMANv0.5\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\22.2.0\\res\\values-v21\\values-v21.xml",
+                    "file": "C:\\Users\\jek40\\Desktop\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\22.2.1\\res\\values-v21\\values-v21.xml",
                     "position": {
                         "startLine": 39,
                         "startColumn": 4,
@@ -495,7 +495,7 @@
                     "endOffset": 2999
                 },
                 "from": {
-                    "file": "C:\\Users\\jek40\\iceman\\ICEMANv0.5\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\22.2.0\\res\\values-v21\\values-v21.xml",
+                    "file": "C:\\Users\\jek40\\Desktop\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\22.2.1\\res\\values-v21\\values-v21.xml",
                     "position": {
                         "startLine": 42,
                         "startColumn": 4,
@@ -516,7 +516,7 @@
                     "endOffset": 3154
                 },
                 "from": {
-                    "file": "C:\\Users\\jek40\\iceman\\ICEMANv0.5\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\22.2.0\\res\\values-v21\\values-v21.xml",
+                    "file": "C:\\Users\\jek40\\Desktop\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\22.2.1\\res\\values-v21\\values-v21.xml",
                     "position": {
                         "startLine": 44,
                         "startColumn": 4,
@@ -537,7 +537,7 @@
                     "endOffset": 3325
                 },
                 "from": {
-                    "file": "C:\\Users\\jek40\\iceman\\ICEMANv0.5\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\22.2.0\\res\\values-v21\\values-v21.xml",
+                    "file": "C:\\Users\\jek40\\Desktop\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\22.2.1\\res\\values-v21\\values-v21.xml",
                     "position": {
                         "startLine": 46,
                         "startColumn": 4,
@@ -558,7 +558,7 @@
                     "endOffset": 3474
                 },
                 "from": {
-                    "file": "C:\\Users\\jek40\\iceman\\ICEMANv0.5\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\22.2.0\\res\\values-v21\\values-v21.xml",
+                    "file": "C:\\Users\\jek40\\Desktop\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\22.2.1\\res\\values-v21\\values-v21.xml",
                     "position": {
                         "startLine": 48,
                         "startColumn": 4,
@@ -579,7 +579,7 @@
                     "endOffset": 3639
                 },
                 "from": {
-                    "file": "C:\\Users\\jek40\\iceman\\ICEMANv0.5\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\22.2.0\\res\\values-v21\\values-v21.xml",
+                    "file": "C:\\Users\\jek40\\Desktop\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\22.2.1\\res\\values-v21\\values-v21.xml",
                     "position": {
                         "startLine": 50,
                         "startColumn": 4,
@@ -600,7 +600,7 @@
                     "endOffset": 3796
                 },
                 "from": {
-                    "file": "C:\\Users\\jek40\\iceman\\ICEMANv0.5\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\22.2.0\\res\\values-v21\\values-v21.xml",
+                    "file": "C:\\Users\\jek40\\Desktop\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\22.2.1\\res\\values-v21\\values-v21.xml",
                     "position": {
                         "startLine": 52,
                         "startColumn": 4,
@@ -621,7 +621,7 @@
                     "endOffset": 3947
                 },
                 "from": {
-                    "file": "C:\\Users\\jek40\\iceman\\ICEMANv0.5\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\22.2.0\\res\\values-v21\\values-v21.xml",
+                    "file": "C:\\Users\\jek40\\Desktop\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\22.2.1\\res\\values-v21\\values-v21.xml",
                     "position": {
                         "startLine": 54,
                         "startColumn": 4,
@@ -642,7 +642,7 @@
                     "endOffset": 4096
                 },
                 "from": {
-                    "file": "C:\\Users\\jek40\\iceman\\ICEMANv0.5\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\22.2.0\\res\\values-v21\\values-v21.xml",
+                    "file": "C:\\Users\\jek40\\Desktop\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\22.2.1\\res\\values-v21\\values-v21.xml",
                     "position": {
                         "startLine": 56,
                         "startColumn": 4,
@@ -663,7 +663,7 @@
                     "endOffset": 4245
                 },
                 "from": {
-                    "file": "C:\\Users\\jek40\\iceman\\ICEMANv0.5\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\22.2.0\\res\\values-v21\\values-v21.xml",
+                    "file": "C:\\Users\\jek40\\Desktop\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\22.2.1\\res\\values-v21\\values-v21.xml",
                     "position": {
                         "startLine": 58,
                         "startColumn": 4,
@@ -683,7 +683,7 @@
                     "endOffset": 4357
                 },
                 "from": {
-                    "file": "C:\\Users\\jek40\\iceman\\ICEMANv0.5\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\22.2.0\\res\\values-v21\\values-v21.xml",
+                    "file": "C:\\Users\\jek40\\Desktop\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\22.2.1\\res\\values-v21\\values-v21.xml",
                     "position": {
                         "startLine": 62,
                         "startColumn": 4,
@@ -702,7 +702,7 @@
                     "endOffset": 4504
                 },
                 "from": {
-                    "file": "C:\\Users\\jek40\\iceman\\ICEMANv0.5\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\22.2.0\\res\\values-v21\\values-v21.xml",
+                    "file": "C:\\Users\\jek40\\Desktop\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\22.2.1\\res\\values-v21\\values-v21.xml",
                     "position": {
                         "startLine": 65,
                         "startColumn": 4,
@@ -722,7 +722,7 @@
                     "endOffset": 4657
                 },
                 "from": {
-                    "file": "C:\\Users\\jek40\\iceman\\ICEMANv0.5\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\22.2.0\\res\\values-v21\\values-v21.xml",
+                    "file": "C:\\Users\\jek40\\Desktop\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\22.2.1\\res\\values-v21\\values-v21.xml",
                     "position": {
                         "startLine": 66,
                         "startColumn": 4,
@@ -743,7 +743,7 @@
                     "endOffset": 4804
                 },
                 "from": {
-                    "file": "C:\\Users\\jek40\\iceman\\ICEMANv0.5\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\22.2.0\\res\\values-v21\\values-v21.xml",
+                    "file": "C:\\Users\\jek40\\Desktop\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\22.2.1\\res\\values-v21\\values-v21.xml",
                     "position": {
                         "startLine": 68,
                         "startColumn": 4,
@@ -763,7 +763,7 @@
                     "endOffset": 4879
                 },
                 "from": {
-                    "file": "C:\\Users\\jek40\\iceman\\ICEMANv0.5\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\22.2.0\\res\\values-v21\\values-v21.xml",
+                    "file": "C:\\Users\\jek40\\Desktop\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\22.2.1\\res\\values-v21\\values-v21.xml",
                     "position": {
                         "startLine": 72,
                         "startColumn": 4,
@@ -782,7 +782,7 @@
                     "endOffset": 4968
                 },
                 "from": {
-                    "file": "C:\\Users\\jek40\\iceman\\ICEMANv0.5\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\22.2.0\\res\\values-v21\\values-v21.xml",
+                    "file": "C:\\Users\\jek40\\Desktop\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\22.2.1\\res\\values-v21\\values-v21.xml",
                     "position": {
                         "startLine": 73,
                         "startColumn": 4,
@@ -801,7 +801,7 @@
                     "endOffset": 5055
                 },
                 "from": {
-                    "file": "C:\\Users\\jek40\\iceman\\ICEMANv0.5\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\22.2.0\\res\\values-v21\\values-v21.xml",
+                    "file": "C:\\Users\\jek40\\Desktop\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\22.2.1\\res\\values-v21\\values-v21.xml",
                     "position": {
                         "startLine": 74,
                         "startColumn": 4,
@@ -820,7 +820,7 @@
                     "endOffset": 5156
                 },
                 "from": {
-                    "file": "C:\\Users\\jek40\\iceman\\ICEMANv0.5\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\22.2.0\\res\\values-v21\\values-v21.xml",
+                    "file": "C:\\Users\\jek40\\Desktop\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\22.2.1\\res\\values-v21\\values-v21.xml",
                     "position": {
                         "startLine": 75,
                         "startColumn": 4,
@@ -840,7 +840,7 @@
                     "endOffset": 8640
                 },
                 "from": {
-                    "file": "C:\\Users\\jek40\\iceman\\ICEMANv0.5\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\22.2.0\\res\\values-v21\\values-v21.xml",
+                    "file": "C:\\Users\\jek40\\Desktop\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\22.2.1\\res\\values-v21\\values-v21.xml",
                     "position": {
                         "startLine": 76,
                         "startColumn": 4,
@@ -861,7 +861,7 @@
                     "endOffset": 8826
                 },
                 "from": {
-                    "file": "C:\\Users\\jek40\\iceman\\ICEMANv0.5\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\22.2.0\\res\\values-v21\\values-v21.xml",
+                    "file": "C:\\Users\\jek40\\Desktop\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\22.2.1\\res\\values-v21\\values-v21.xml",
                     "position": {
                         "startLine": 125,
                         "startColumn": 4,
@@ -882,7 +882,7 @@
                     "endOffset": 12322
                 },
                 "from": {
-                    "file": "C:\\Users\\jek40\\iceman\\ICEMANv0.5\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\22.2.0\\res\\values-v21\\values-v21.xml",
+                    "file": "C:\\Users\\jek40\\Desktop\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\22.2.1\\res\\values-v21\\values-v21.xml",
                     "position": {
                         "startLine": 128,
                         "startColumn": 4,
@@ -903,7 +903,7 @@
                     "endOffset": 12520
                 },
                 "from": {
-                    "file": "C:\\Users\\jek40\\iceman\\ICEMANv0.5\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\22.2.0\\res\\values-v21\\values-v21.xml",
+                    "file": "C:\\Users\\jek40\\Desktop\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\22.2.1\\res\\values-v21\\values-v21.xml",
                     "position": {
                         "startLine": 177,
                         "startColumn": 4,
@@ -924,7 +924,7 @@
                     "endOffset": 12643
                 },
                 "from": {
-                    "file": "C:\\Users\\jek40\\iceman\\ICEMANv0.5\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\22.2.0\\res\\values-v21\\values-v21.xml",
+                    "file": "C:\\Users\\jek40\\Desktop\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\22.2.1\\res\\values-v21\\values-v21.xml",
                     "position": {
                         "startLine": 182,
                         "startColumn": 4,
@@ -945,7 +945,7 @@
                     "endOffset": 12766
                 },
                 "from": {
-                    "file": "C:\\Users\\jek40\\iceman\\ICEMANv0.5\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\22.2.0\\res\\values-v21\\values-v21.xml",
+                    "file": "C:\\Users\\jek40\\Desktop\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\22.2.1\\res\\values-v21\\values-v21.xml",
                     "position": {
                         "startLine": 184,
                         "startColumn": 4,
@@ -966,7 +966,7 @@
                     "endOffset": 12879
                 },
                 "from": {
-                    "file": "C:\\Users\\jek40\\iceman\\ICEMANv0.5\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\22.2.0\\res\\values-v21\\values-v21.xml",
+                    "file": "C:\\Users\\jek40\\Desktop\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\22.2.1\\res\\values-v21\\values-v21.xml",
                     "position": {
                         "startLine": 186,
                         "startColumn": 4,
@@ -987,7 +987,7 @@
                     "endOffset": 13062
                 },
                 "from": {
-                    "file": "C:\\Users\\jek40\\iceman\\ICEMANv0.5\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\22.2.0\\res\\values-v21\\values-v21.xml",
+                    "file": "C:\\Users\\jek40\\Desktop\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\22.2.1\\res\\values-v21\\values-v21.xml",
                     "position": {
                         "startLine": 188,
                         "startColumn": 4,
@@ -1008,7 +1008,7 @@
                     "endOffset": 13193
                 },
                 "from": {
-                    "file": "C:\\Users\\jek40\\iceman\\ICEMANv0.5\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\22.2.0\\res\\values-v21\\values-v21.xml",
+                    "file": "C:\\Users\\jek40\\Desktop\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\22.2.1\\res\\values-v21\\values-v21.xml",
                     "position": {
                         "startLine": 191,
                         "startColumn": 4,
@@ -1028,7 +1028,7 @@
                     "endOffset": 13310
                 },
                 "from": {
-                    "file": "C:\\Users\\jek40\\iceman\\ICEMANv0.5\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\22.2.0\\res\\values-v21\\values-v21.xml",
+                    "file": "C:\\Users\\jek40\\Desktop\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\22.2.1\\res\\values-v21\\values-v21.xml",
                     "position": {
                         "startLine": 193,
                         "startColumn": 4,
@@ -1047,7 +1047,7 @@
                     "endOffset": 13399
                 },
                 "from": {
-                    "file": "C:\\Users\\jek40\\iceman\\ICEMANv0.5\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\22.2.0\\res\\values-v21\\values-v21.xml",
+                    "file": "C:\\Users\\jek40\\Desktop\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\22.2.1\\res\\values-v21\\values-v21.xml",
                     "position": {
                         "startLine": 194,
                         "startColumn": 4,
@@ -1066,7 +1066,7 @@
                     "endOffset": 13510
                 },
                 "from": {
-                    "file": "C:\\Users\\jek40\\iceman\\ICEMANv0.5\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\22.2.0\\res\\values-v21\\values-v21.xml",
+                    "file": "C:\\Users\\jek40\\Desktop\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\22.2.1\\res\\values-v21\\values-v21.xml",
                     "position": {
                         "startLine": 195,
                         "startColumn": 4,
@@ -1085,7 +1085,7 @@
                     "endOffset": 13637
                 },
                 "from": {
-                    "file": "C:\\Users\\jek40\\iceman\\ICEMANv0.5\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\22.2.0\\res\\values-v21\\values-v21.xml",
+                    "file": "C:\\Users\\jek40\\Desktop\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\22.2.1\\res\\values-v21\\values-v21.xml",
                     "position": {
                         "startLine": 196,
                         "startColumn": 4,
@@ -1104,7 +1104,7 @@
                     "endOffset": 13738
                 },
                 "from": {
-                    "file": "C:\\Users\\jek40\\iceman\\ICEMANv0.5\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\22.2.0\\res\\values-v21\\values-v21.xml",
+                    "file": "C:\\Users\\jek40\\Desktop\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\22.2.1\\res\\values-v21\\values-v21.xml",
                     "position": {
                         "startLine": 197,
                         "startColumn": 4,
@@ -1123,7 +1123,7 @@
                     "endOffset": 13833
                 },
                 "from": {
-                    "file": "C:\\Users\\jek40\\iceman\\ICEMANv0.5\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\22.2.0\\res\\values-v21\\values-v21.xml",
+                    "file": "C:\\Users\\jek40\\Desktop\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\22.2.1\\res\\values-v21\\values-v21.xml",
                     "position": {
                         "startLine": 198,
                         "startColumn": 4,
@@ -1142,7 +1142,7 @@
                     "endOffset": 13956
                 },
                 "from": {
-                    "file": "C:\\Users\\jek40\\iceman\\ICEMANv0.5\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\22.2.0\\res\\values-v21\\values-v21.xml",
+                    "file": "C:\\Users\\jek40\\Desktop\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\22.2.1\\res\\values-v21\\values-v21.xml",
                     "position": {
                         "startLine": 199,
                         "startColumn": 4,
@@ -1161,7 +1161,7 @@
                     "endOffset": 14085
                 },
                 "from": {
-                    "file": "C:\\Users\\jek40\\iceman\\ICEMANv0.5\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\22.2.0\\res\\values-v21\\values-v21.xml",
+                    "file": "C:\\Users\\jek40\\Desktop\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\22.2.1\\res\\values-v21\\values-v21.xml",
                     "position": {
                         "startLine": 200,
                         "startColumn": 4,
@@ -1180,7 +1180,7 @@
                     "endOffset": 14202
                 },
                 "from": {
-                    "file": "C:\\Users\\jek40\\iceman\\ICEMANv0.5\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\22.2.0\\res\\values-v21\\values-v21.xml",
+                    "file": "C:\\Users\\jek40\\Desktop\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\22.2.1\\res\\values-v21\\values-v21.xml",
                     "position": {
                         "startLine": 201,
                         "startColumn": 4,
@@ -1195,142 +1195,142 @@
                     "startLine": 183,
                     "startColumn": 4,
                     "startOffset": 14207,
-                    "endLine": 184,
-                    "endColumn": 12,
-                    "endOffset": 14337
+                    "endColumn": 92,
+                    "endOffset": 14295
                 },
                 "from": {
-                    "file": "C:\\Users\\jek40\\iceman\\ICEMANv0.5\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\22.2.0\\res\\values-v21\\values-v21.xml",
+                    "file": "C:\\Users\\jek40\\Desktop\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\22.2.1\\res\\values-v21\\values-v21.xml",
                     "position": {
                         "startLine": 202,
                         "startColumn": 4,
                         "startOffset": 16575,
-                        "endLine": 203,
-                        "endColumn": 12,
-                        "endOffset": 16705
+                        "endColumn": 92,
+                        "endOffset": 16663
                     }
                 }
             },
             {
                 "to": {
-                    "startLine": 185,
+                    "startLine": 184,
                     "startColumn": 4,
-                    "startOffset": 14342,
-                    "endLine": 186,
+                    "startOffset": 14300,
+                    "endLine": 185,
                     "endColumn": 12,
-                    "endOffset": 14480
+                    "endOffset": 14430
                 },
                 "from": {
-                    "file": "C:\\Users\\jek40\\iceman\\ICEMANv0.5\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\22.2.0\\res\\values-v21\\values-v21.xml",
+                    "file": "C:\\Users\\jek40\\Desktop\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\22.2.1\\res\\values-v21\\values-v21.xml",
                     "position": {
-                        "startLine": 204,
+                        "startLine": 203,
                         "startColumn": 4,
-                        "startOffset": 16710,
-                        "endLine": 205,
+                        "startOffset": 16668,
+                        "endLine": 204,
                         "endColumn": 12,
-                        "endOffset": 16848
+                        "endOffset": 16798
                     }
                 }
             },
             {
                 "to": {
-                    "startLine": 187,
+                    "startLine": 186,
                     "startColumn": 4,
-                    "startOffset": 14485,
-                    "endLine": 188,
+                    "startOffset": 14435,
+                    "endLine": 187,
                     "endColumn": 12,
-                    "endOffset": 14615
+                    "endOffset": 14573
                 },
                 "from": {
-                    "file": "C:\\Users\\jek40\\iceman\\ICEMANv0.5\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\22.2.0\\res\\values-v21\\values-v21.xml",
+                    "file": "C:\\Users\\jek40\\Desktop\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\22.2.1\\res\\values-v21\\values-v21.xml",
                     "position": {
-                        "startLine": 206,
+                        "startLine": 205,
                         "startColumn": 4,
-                        "startOffset": 16853,
-                        "endLine": 207,
+                        "startOffset": 16803,
+                        "endLine": 206,
                         "endColumn": 12,
-                        "endOffset": 16983
+                        "endOffset": 16941
                     }
                 }
             },
             {
                 "to": {
-                    "startLine": 189,
+                    "startLine": 188,
                     "startColumn": 4,
-                    "startOffset": 14620,
-                    "endLine": 190,
+                    "startOffset": 14578,
+                    "endLine": 189,
                     "endColumn": 12,
-                    "endOffset": 14734
+                    "endOffset": 14708
                 },
                 "from": {
-                    "file": "C:\\Users\\jek40\\iceman\\ICEMANv0.5\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\22.2.0\\res\\values-v21\\values-v21.xml",
+                    "file": "C:\\Users\\jek40\\Desktop\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\22.2.1\\res\\values-v21\\values-v21.xml",
                     "position": {
-                        "startLine": 208,
+                        "startLine": 207,
                         "startColumn": 4,
-                        "startOffset": 16988,
-                        "endLine": 209,
+                        "startOffset": 16946,
+                        "endLine": 208,
                         "endColumn": 12,
-                        "endOffset": 17102
+                        "endOffset": 17076
                     }
                 }
             },
             {
                 "to": {
-                    "startLine": 191,
+                    "startLine": 190,
                     "startColumn": 4,
-                    "startOffset": 14739,
-                    "endLine": 194,
+                    "startOffset": 14713,
+                    "endLine": 191,
                     "endColumn": 12,
-                    "endOffset": 14935
+                    "endOffset": 14827
                 },
                 "from": {
-                    "file": "C:\\Users\\jek40\\iceman\\ICEMANv0.5\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\22.2.0\\res\\values-v21\\values-v21.xml",
+                    "file": "C:\\Users\\jek40\\Desktop\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\22.2.1\\res\\values-v21\\values-v21.xml",
                     "position": {
-                        "startLine": 210,
+                        "startLine": 209,
                         "startColumn": 4,
-                        "startOffset": 17107,
-                        "endLine": 213,
+                        "startOffset": 17081,
+                        "endLine": 210,
                         "endColumn": 12,
-                        "endOffset": 17303
+                        "endOffset": 17195
                     }
                 }
             },
             {
                 "to": {
-                    "startLine": 195,
+                    "startLine": 192,
                     "startColumn": 4,
-                    "startOffset": 14940,
-                    "endLine": 196,
+                    "startOffset": 14832,
+                    "endLine": 195,
                     "endColumn": 12,
-                    "endOffset": 15054
+                    "endOffset": 15028
                 },
                 "from": {
-                    "file": "C:\\Users\\jek40\\iceman\\ICEMANv0.5\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\22.2.0\\res\\values-v21\\values-v21.xml",
+                    "file": "C:\\Users\\jek40\\Desktop\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\22.2.1\\res\\values-v21\\values-v21.xml",
                     "position": {
-                        "startLine": 214,
+                        "startLine": 211,
                         "startColumn": 4,
-                        "startOffset": 17308,
-                        "endLine": 215,
+                        "startOffset": 17200,
+                        "endLine": 214,
                         "endColumn": 12,
-                        "endOffset": 17422
+                        "endOffset": 17396
                     }
                 }
             },
             {
                 "to": {
-                    "startLine": 197,
+                    "startLine": 196,
                     "startColumn": 4,
-                    "startOffset": 15059,
-                    "endColumn": 92,
+                    "startOffset": 15033,
+                    "endLine": 197,
+                    "endColumn": 12,
                     "endOffset": 15147
                 },
                 "from": {
-                    "file": "C:\\Users\\jek40\\iceman\\ICEMANv0.5\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\22.2.0\\res\\values-v21\\values-v21.xml",
+                    "file": "C:\\Users\\jek40\\Desktop\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\22.2.1\\res\\values-v21\\values-v21.xml",
                     "position": {
-                        "startLine": 216,
+                        "startLine": 215,
                         "startColumn": 4,
-                        "startOffset": 17427,
-                        "endColumn": 92,
+                        "startOffset": 17401,
+                        "endLine": 216,
+                        "endColumn": 12,
                         "endOffset": 17515
                     }
                 }
@@ -1340,17 +1340,17 @@
                     "startLine": 198,
                     "startColumn": 4,
                     "startOffset": 15152,
-                    "endColumn": 110,
-                    "endOffset": 15258
+                    "endColumn": 92,
+                    "endOffset": 15240
                 },
                 "from": {
-                    "file": "C:\\Users\\jek40\\iceman\\ICEMANv0.5\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\22.2.0\\res\\values-v21\\values-v21.xml",
+                    "file": "C:\\Users\\jek40\\Desktop\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\22.2.1\\res\\values-v21\\values-v21.xml",
                     "position": {
                         "startLine": 217,
                         "startColumn": 4,
                         "startOffset": 17520,
-                        "endColumn": 110,
-                        "endOffset": 17626
+                        "endColumn": 92,
+                        "endOffset": 17608
                     }
                 }
             },
@@ -1358,18 +1358,18 @@
                 "to": {
                     "startLine": 199,
                     "startColumn": 4,
-                    "startOffset": 15263,
-                    "endColumn": 55,
-                    "endOffset": 15314
+                    "startOffset": 15245,
+                    "endColumn": 110,
+                    "endOffset": 15351
                 },
                 "from": {
-                    "file": "C:\\Users\\jek40\\iceman\\ICEMANv0.5\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\22.2.0\\res\\values-v21\\values-v21.xml",
+                    "file": "C:\\Users\\jek40\\Desktop\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\22.2.1\\res\\values-v21\\values-v21.xml",
                     "position": {
                         "startLine": 218,
                         "startColumn": 4,
-                        "startOffset": 17631,
-                        "endColumn": 55,
-                        "endOffset": 17682
+                        "startOffset": 17613,
+                        "endColumn": 110,
+                        "endOffset": 17719
                     }
                 }
             },
@@ -1377,102 +1377,102 @@
                 "to": {
                     "startLine": 200,
                     "startColumn": 4,
-                    "startOffset": 15319,
-                    "endLine": 201,
-                    "endColumn": 12,
-                    "endOffset": 15421
+                    "startOffset": 15356,
+                    "endColumn": 55,
+                    "endOffset": 15407
                 },
                 "from": {
-                    "file": "C:\\Users\\jek40\\iceman\\ICEMANv0.5\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\22.2.0\\res\\values-v21\\values-v21.xml",
+                    "file": "C:\\Users\\jek40\\Desktop\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\22.2.1\\res\\values-v21\\values-v21.xml",
                     "position": {
                         "startLine": 219,
                         "startColumn": 4,
-                        "startOffset": 17687,
-                        "endLine": 220,
-                        "endColumn": 12,
-                        "endOffset": 17789
+                        "startOffset": 17724,
+                        "endColumn": 55,
+                        "endOffset": 17775
                     }
                 }
             },
             {
                 "to": {
-                    "startLine": 202,
+                    "startLine": 201,
                     "startColumn": 4,
-                    "startOffset": 15426,
-                    "endLine": 205,
+                    "startOffset": 15412,
+                    "endLine": 202,
                     "endColumn": 12,
-                    "endOffset": 15616
+                    "endOffset": 15514
                 },
                 "from": {
-                    "file": "C:\\Users\\jek40\\iceman\\ICEMANv0.5\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\22.2.0\\res\\values-v21\\values-v21.xml",
+                    "file": "C:\\Users\\jek40\\Desktop\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\22.2.1\\res\\values-v21\\values-v21.xml",
                     "position": {
-                        "startLine": 221,
+                        "startLine": 220,
                         "startColumn": 4,
-                        "startOffset": 17794,
-                        "endLine": 224,
+                        "startOffset": 17780,
+                        "endLine": 221,
                         "endColumn": 12,
-                        "endOffset": 17984
+                        "endOffset": 17882
                     }
                 }
             },
             {
                 "to": {
-                    "startLine": 206,
+                    "startLine": 203,
                     "startColumn": 4,
-                    "startOffset": 15621,
-                    "endLine": 207,
+                    "startOffset": 15519,
+                    "endLine": 206,
                     "endColumn": 12,
-                    "endOffset": 15727
+                    "endOffset": 15709
                 },
                 "from": {
-                    "file": "C:\\Users\\jek40\\iceman\\ICEMANv0.5\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\22.2.0\\res\\values-v21\\values-v21.xml",
+                    "file": "C:\\Users\\jek40\\Desktop\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\22.2.1\\res\\values-v21\\values-v21.xml",
                     "position": {
-                        "startLine": 225,
+                        "startLine": 222,
                         "startColumn": 4,
-                        "startOffset": 17989,
-                        "endLine": 226,
+                        "startOffset": 17887,
+                        "endLine": 225,
                         "endColumn": 12,
-                        "endOffset": 18095
+                        "endOffset": 18077
                     }
                 }
             },
             {
                 "to": {
-                    "startLine": 208,
+                    "startLine": 207,
                     "startColumn": 4,
-                    "startOffset": 15732,
-                    "endLine": 209,
+                    "startOffset": 15714,
+                    "endLine": 208,
                     "endColumn": 12,
-                    "endOffset": 15860
+                    "endOffset": 15820
                 },
                 "from": {
-                    "file": "C:\\Users\\jek40\\iceman\\ICEMANv0.5\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\22.2.0\\res\\values-v21\\values-v21.xml",
+                    "file": "C:\\Users\\jek40\\Desktop\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\22.2.1\\res\\values-v21\\values-v21.xml",
                     "position": {
-                        "startLine": 227,
+                        "startLine": 226,
                         "startColumn": 4,
-                        "startOffset": 18100,
-                        "endLine": 228,
+                        "startOffset": 18082,
+                        "endLine": 227,
                         "endColumn": 12,
-                        "endOffset": 18228
+                        "endOffset": 18188
                     }
                 }
             },
             {
                 "to": {
-                    "startLine": 210,
+                    "startLine": 209,
                     "startColumn": 4,
-                    "startOffset": 15865,
-                    "endColumn": 94,
-                    "endOffset": 15955
+                    "startOffset": 15825,
+                    "endLine": 210,
+                    "endColumn": 12,
+                    "endOffset": 15953
                 },
                 "from": {
-                    "file": "C:\\Users\\jek40\\iceman\\ICEMANv0.5\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\22.2.0\\res\\values-v21\\values-v21.xml",
+                    "file": "C:\\Users\\jek40\\Desktop\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\22.2.1\\res\\values-v21\\values-v21.xml",
                     "position": {
-                        "startLine": 229,
+                        "startLine": 228,
                         "startColumn": 4,
-                        "startOffset": 18233,
-                        "endColumn": 94,
-                        "endOffset": 18323
+                        "startOffset": 18193,
+                        "endLine": 229,
+                        "endColumn": 12,
+                        "endOffset": 18321
                     }
                 }
             },
@@ -1480,18 +1480,18 @@
                 "to": {
                     "startLine": 211,
                     "startColumn": 4,
-                    "startOffset": 15960,
-                    "endColumn": 90,
-                    "endOffset": 16046
+                    "startOffset": 15958,
+                    "endColumn": 94,
+                    "endOffset": 16048
                 },
                 "from": {
-                    "file": "C:\\Users\\jek40\\iceman\\ICEMANv0.5\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\22.2.0\\res\\values-v21\\values-v21.xml",
+                    "file": "C:\\Users\\jek40\\Desktop\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\22.2.1\\res\\values-v21\\values-v21.xml",
                     "position": {
                         "startLine": 230,
                         "startColumn": 4,
-                        "startOffset": 18328,
-                        "endColumn": 90,
-                        "endOffset": 18414
+                        "startOffset": 18326,
+                        "endColumn": 94,
+                        "endOffset": 18416
                     }
                 }
             },
@@ -1499,39 +1499,39 @@
                 "to": {
                     "startLine": 212,
                     "startColumn": 4,
-                    "startOffset": 16051,
-                    "endLine": 216,
-                    "endColumn": 12,
-                    "endOffset": 16355
+                    "startOffset": 16053,
+                    "endColumn": 90,
+                    "endOffset": 16139
                 },
                 "from": {
-                    "file": "C:\\Users\\jek40\\iceman\\ICEMANv0.5\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\22.2.0\\res\\values-v21\\values-v21.xml",
+                    "file": "C:\\Users\\jek40\\Desktop\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\22.2.1\\res\\values-v21\\values-v21.xml",
                     "position": {
                         "startLine": 231,
                         "startColumn": 4,
-                        "startOffset": 18419,
-                        "endLine": 235,
-                        "endColumn": 12,
-                        "endOffset": 18723
+                        "startOffset": 18421,
+                        "endColumn": 90,
+                        "endOffset": 18507
                     }
                 }
             },
             {
                 "to": {
-                    "startLine": 217,
+                    "startLine": 213,
                     "startColumn": 4,
-                    "startOffset": 16360,
-                    "endColumn": 112,
-                    "endOffset": 16468
+                    "startOffset": 16144,
+                    "endLine": 217,
+                    "endColumn": 12,
+                    "endOffset": 16448
                 },
                 "from": {
-                    "file": "C:\\Users\\jek40\\iceman\\ICEMANv0.5\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\22.2.0\\res\\values-v21\\values-v21.xml",
+                    "file": "C:\\Users\\jek40\\Desktop\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\22.2.1\\res\\values-v21\\values-v21.xml",
                     "position": {
-                        "startLine": 236,
+                        "startLine": 232,
                         "startColumn": 4,
-                        "startOffset": 18728,
-                        "endColumn": 112,
-                        "endOffset": 18836
+                        "startOffset": 18512,
+                        "endLine": 236,
+                        "endColumn": 12,
+                        "endOffset": 18816
                     }
                 }
             },
@@ -1539,18 +1539,18 @@
                 "to": {
                     "startLine": 218,
                     "startColumn": 4,
-                    "startOffset": 16473,
-                    "endColumn": 116,
-                    "endOffset": 16585
+                    "startOffset": 16453,
+                    "endColumn": 112,
+                    "endOffset": 16561
                 },
                 "from": {
-                    "file": "C:\\Users\\jek40\\iceman\\ICEMANv0.5\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\22.2.0\\res\\values-v21\\values-v21.xml",
+                    "file": "C:\\Users\\jek40\\Desktop\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\22.2.1\\res\\values-v21\\values-v21.xml",
                     "position": {
                         "startLine": 237,
                         "startColumn": 4,
-                        "startOffset": 18841,
-                        "endColumn": 116,
-                        "endOffset": 18953
+                        "startOffset": 18821,
+                        "endColumn": 112,
+                        "endOffset": 18929
                     }
                 }
             },
@@ -1558,104 +1558,123 @@
                 "to": {
                     "startLine": 219,
                     "startColumn": 4,
-                    "startOffset": 16590,
-                    "endLine": 220,
-                    "endColumn": 12,
-                    "endOffset": 16724
+                    "startOffset": 16566,
+                    "endColumn": 116,
+                    "endOffset": 16678
                 },
                 "from": {
-                    "file": "C:\\Users\\jek40\\iceman\\ICEMANv0.5\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\22.2.0\\res\\values-v21\\values-v21.xml",
+                    "file": "C:\\Users\\jek40\\Desktop\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\22.2.1\\res\\values-v21\\values-v21.xml",
                     "position": {
                         "startLine": 238,
                         "startColumn": 4,
-                        "startOffset": 18958,
-                        "endLine": 239,
-                        "endColumn": 12,
-                        "endOffset": 19092
+                        "startOffset": 18934,
+                        "endColumn": 116,
+                        "endOffset": 19046
                     }
                 }
             },
             {
                 "to": {
-                    "startLine": 221,
+                    "startLine": 220,
                     "startColumn": 4,
-                    "startOffset": 16729,
-                    "endLine": 227,
+                    "startOffset": 16683,
+                    "endLine": 221,
                     "endColumn": 12,
-                    "endOffset": 17077
+                    "endOffset": 16817
                 },
                 "from": {
-                    "file": "C:\\Users\\jek40\\iceman\\ICEMANv0.5\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\22.2.0\\res\\values-v21\\values-v21.xml",
+                    "file": "C:\\Users\\jek40\\Desktop\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\22.2.1\\res\\values-v21\\values-v21.xml",
                     "position": {
-                        "startLine": 242,
+                        "startLine": 239,
                         "startColumn": 4,
-                        "startOffset": 19338,
-                        "endLine": 248,
+                        "startOffset": 19051,
+                        "endLine": 240,
                         "endColumn": 12,
-                        "endOffset": 19686
+                        "endOffset": 19185
                     }
                 }
             },
             {
                 "to": {
-                    "startLine": 228,
+                    "startLine": 222,
                     "startColumn": 4,
-                    "startOffset": 17082,
-                    "endLine": 234,
+                    "startOffset": 16822,
+                    "endLine": 228,
                     "endColumn": 12,
-                    "endOffset": 17442
+                    "endOffset": 17170
                 },
                 "from": {
-                    "file": "C:\\Users\\jek40\\iceman\\ICEMANv0.5\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\22.2.0\\res\\values-v21\\values-v21.xml",
+                    "file": "C:\\Users\\jek40\\Desktop\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\22.2.1\\res\\values-v21\\values-v21.xml",
                     "position": {
-                        "startLine": 249,
+                        "startLine": 243,
                         "startColumn": 4,
-                        "startOffset": 19691,
-                        "endLine": 255,
+                        "startOffset": 19431,
+                        "endLine": 249,
                         "endColumn": 12,
-                        "endOffset": 20051
+                        "endOffset": 19779
                     }
                 }
             },
             {
                 "to": {
-                    "startLine": 235,
+                    "startLine": 229,
                     "startColumn": 4,
-                    "startOffset": 17447,
-                    "endLine": 244,
+                    "startOffset": 17175,
+                    "endLine": 235,
                     "endColumn": 12,
-                    "endOffset": 18127
+                    "endOffset": 17535
                 },
                 "from": {
-                    "file": "C:\\Users\\jek40\\iceman\\ICEMANv0.5\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\22.2.0\\res\\values-v21\\values-v21.xml",
+                    "file": "C:\\Users\\jek40\\Desktop\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\22.2.1\\res\\values-v21\\values-v21.xml",
                     "position": {
-                        "startLine": 256,
+                        "startLine": 250,
                         "startColumn": 4,
-                        "startOffset": 20056,
-                        "endLine": 265,
+                        "startOffset": 19784,
+                        "endLine": 256,
                         "endColumn": 12,
-                        "endOffset": 20736
+                        "endOffset": 20144
                     }
                 }
             },
             {
                 "to": {
-                    "startLine": 245,
+                    "startLine": 236,
                     "startColumn": 4,
-                    "startOffset": 18132,
-                    "endLine": 254,
+                    "startOffset": 17540,
+                    "endLine": 245,
                     "endColumn": 12,
-                    "endOffset": 18813
+                    "endOffset": 18220
                 },
                 "from": {
-                    "file": "C:\\Users\\jek40\\iceman\\ICEMANv0.5\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\22.2.0\\res\\values-v21\\values-v21.xml",
+                    "file": "C:\\Users\\jek40\\Desktop\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\22.2.1\\res\\values-v21\\values-v21.xml",
                     "position": {
-                        "startLine": 266,
+                        "startLine": 257,
                         "startColumn": 4,
-                        "startOffset": 20741,
-                        "endLine": 275,
+                        "startOffset": 20149,
+                        "endLine": 266,
                         "endColumn": 12,
-                        "endOffset": 21422
+                        "endOffset": 20829
+                    }
+                }
+            },
+            {
+                "to": {
+                    "startLine": 246,
+                    "startColumn": 4,
+                    "startOffset": 18225,
+                    "endLine": 255,
+                    "endColumn": 12,
+                    "endOffset": 18906
+                },
+                "from": {
+                    "file": "C:\\Users\\jek40\\Desktop\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\22.2.1\\res\\values-v21\\values-v21.xml",
+                    "position": {
+                        "startLine": 267,
+                        "startColumn": 4,
+                        "startOffset": 20834,
+                        "endLine": 276,
+                        "endColumn": 12,
+                        "endOffset": 21515
                     }
                 }
             }

@@ -67,22 +67,50 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="?attr/selectableItemBackground">
-    <ImageView
-        android:id="@+id/logout_icon"
-        android:layout_width="wrap_content"
-        android:alpha="0.5"
-        android:layout_margin="20dp"
-        android:layout_height="wrap_content"
-        android:background="@drawable/ic_exit_to_app_black_24dp"/>
-        <TextView
-            android:id="@+id/logout"
-            android:layout_toRightOf="@id/logout_icon"
-            android:layout_margin="20dp"
-            android:textSize="16sp"
-            android:text="Log Out"
-            android:layout_width="wrap_content"
-            android:layout_height="25dp" />
-            </RelativeLayout>
+            <ImageView
+                android:id="@+id/logout_icon"
+                android:layout_width="wrap_content"
+                android:alpha="0.5"
+                android:layout_margin="20dp"
+                android:layout_height="wrap_content"
+                android:background="@drawable/ic_exit_to_app_black_24dp"/>
+            <TextView
+                android:id="@+id/logout"
+                android:layout_toRightOf="@id/logout_icon"
+                android:layout_margin="20dp"
+                android:textSize="16sp"
+                android:text="Log Out"
+                android:layout_width="wrap_content"
+                android:layout_height="25dp" />
+        </RelativeLayout>
+    </RelativeLayout>
+    <RelativeLayout
+        android:id="@+id/delete_account_wrapper"
+        android:layout_marginTop="1dp"
+        android:background="@color/white"
+        android:layout_below="@id/logout_wrapper"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="?attr/selectableItemBackground">
+            <ImageView
+                android:id="@+id/delete_icon"
+                android:layout_width="wrap_content"
+                android:alpha="0.5"
+                android:layout_margin="20dp"
+                android:layout_height="wrap_content"
+                android:background="@drawable/ic_delete_black_24dp"/>
+            <TextView
+                android:id="@+id/delete"
+                android:layout_toRightOf="@id/delete_icon"
+                android:layout_margin="20dp"
+                android:textSize="16sp"
+                android:text="Delete Account"
+                android:layout_width="wrap_content"
+                android:layout_height="25dp" />
+        </RelativeLayout>
     </RelativeLayout>
     <TextView
             android:id="@+id/contact"

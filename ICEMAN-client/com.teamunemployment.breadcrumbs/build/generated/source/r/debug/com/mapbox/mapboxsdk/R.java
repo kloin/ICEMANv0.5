@@ -17,27 +17,27 @@ public final class R {
 	}
 	public static final class color {
 		public static final int black = 0x7f0c000f;
-		public static final int white = 0x7f0c0077;
+		public static final int white = 0x7f0c0072;
 	}
 	public static final class drawable {
 		public static final int clusteri = 0x7f020054;
-		public static final int defpin = 0x7f0200b3;
-		public static final int direction_arrow = 0x7f0200b4;
-		public static final int location_marker = 0x7f0200ff;
+		public static final int defpin = 0x7f0200ab;
+		public static final int direction_arrow = 0x7f0200ac;
+		public static final int location_marker = 0x7f0200f8;
 	}
 	public static final class id {
-		public static final int tooltip_description = 0x7f0d0184;
-		public static final int tooltip_subdescription = 0x7f0d0185;
-		public static final int tooltip_title = 0x7f0d0183;
+		public static final int tooltip_description = 0x7f0d018a;
+		public static final int tooltip_subdescription = 0x7f0d018b;
+		public static final int tooltip_title = 0x7f0d0189;
 	}
 	public static final class layout {
-		public static final int tooltip = 0x7f030076;
+		public static final int tooltip = 0x7f030077;
 	}
 	public static final class string {
-		public static final int mapboxAndroidSDKVersion = 0x7f06004f;
-		public static final int toolTipAddress = 0x7f060051;
-		public static final int toolTipDescription = 0x7f060052;
-		public static final int toolTipTitle = 0x7f060053;
+		public static final int mapboxAndroidSDKVersion = 0x7f06004e;
+		public static final int toolTipAddress = 0x7f060050;
+		public static final int toolTipDescription = 0x7f060051;
+		public static final int toolTipTitle = 0x7f060052;
 	}
 	public static final class styleable {
 		public static final int[] MapView = { 0x7f010080, 0x7f010081, 0x7f010082, 0x7f010083, 0x7f010084, 0x7f010085 };

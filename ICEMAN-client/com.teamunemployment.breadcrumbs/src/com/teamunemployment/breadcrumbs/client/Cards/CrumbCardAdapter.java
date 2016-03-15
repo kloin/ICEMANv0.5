@@ -200,7 +200,6 @@ import java.util.Locale;
             loadAndAdjustVideo(card, crumbId);
         } else {
             loadAndAdjustImage(card, crumbId);
-
         }
 
 

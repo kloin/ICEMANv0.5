@@ -1,30 +1,30 @@
 [
     {
-        "merged": "C:\\Users\\jek40\\iceman\\ICEMANv0.5\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\res\\merged\\debug\\animator\\slide_in_right.xml",
-        "source": "C:\\Users\\jek40\\iceman\\ICEMANv0.5\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\res\\animator\\slide_in_right.xml"
+        "merged": "C:\\Users\\jek40\\Desktop\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\res\\merged\\debug\\animator\\slide_out_right.xml",
+        "source": "C:\\Users\\jek40\\Desktop\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\res\\animator\\slide_out_right.xml"
     },
     {
-        "merged": "C:\\Users\\jek40\\iceman\\ICEMANv0.5\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\res\\merged\\debug\\animator\\card_flip_left_in.xml",
-        "source": "C:\\Users\\jek40\\iceman\\ICEMANv0.5\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\res\\animator\\card_flip_left_in.xml"
+        "merged": "C:\\Users\\jek40\\Desktop\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\res\\merged\\debug\\animator\\card_flip_right_out.xml",
+        "source": "C:\\Users\\jek40\\Desktop\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\res\\animator\\card_flip_right_out.xml"
     },
     {
-        "merged": "C:\\Users\\jek40\\iceman\\ICEMANv0.5\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\res\\merged\\debug\\animator\\slide_open_text_file_animation.xml",
-        "source": "C:\\Users\\jek40\\iceman\\ICEMANv0.5\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\res\\animator\\slide_open_text_file_animation.xml"
+        "merged": "C:\\Users\\jek40\\Desktop\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\res\\merged\\debug\\animator\\card_flip_left_out.xml",
+        "source": "C:\\Users\\jek40\\Desktop\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\res\\animator\\card_flip_left_out.xml"
     },
     {
-        "merged": "C:\\Users\\jek40\\iceman\\ICEMANv0.5\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\res\\merged\\debug\\animator\\card_flip_left_out.xml",
-        "source": "C:\\Users\\jek40\\iceman\\ICEMANv0.5\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\res\\animator\\card_flip_left_out.xml"
+        "merged": "C:\\Users\\jek40\\Desktop\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\res\\merged\\debug\\animator\\card_flip_left_in.xml",
+        "source": "C:\\Users\\jek40\\Desktop\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\res\\animator\\card_flip_left_in.xml"
     },
     {
-        "merged": "C:\\Users\\jek40\\iceman\\ICEMANv0.5\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\res\\merged\\debug\\animator\\card_flip_right_out.xml",
-        "source": "C:\\Users\\jek40\\iceman\\ICEMANv0.5\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\res\\animator\\card_flip_right_out.xml"
+        "merged": "C:\\Users\\jek40\\Desktop\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\res\\merged\\debug\\animator\\slide_in_right.xml",
+        "source": "C:\\Users\\jek40\\Desktop\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\res\\animator\\slide_in_right.xml"
     },
     {
-        "merged": "C:\\Users\\jek40\\iceman\\ICEMANv0.5\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\res\\merged\\debug\\animator\\card_flip_right_in.xml",
-        "source": "C:\\Users\\jek40\\iceman\\ICEMANv0.5\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\res\\animator\\card_flip_right_in.xml"
+        "merged": "C:\\Users\\jek40\\Desktop\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\res\\merged\\debug\\animator\\card_flip_right_in.xml",
+        "source": "C:\\Users\\jek40\\Desktop\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\res\\animator\\card_flip_right_in.xml"
     },
     {
-        "merged": "C:\\Users\\jek40\\iceman\\ICEMANv0.5\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\res\\merged\\debug\\animator\\slide_out_right.xml",
-        "source": "C:\\Users\\jek40\\iceman\\ICEMANv0.5\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\res\\animator\\slide_out_right.xml"
+        "merged": "C:\\Users\\jek40\\Desktop\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\res\\merged\\debug\\animator\\slide_open_text_file_animation.xml",
+        "source": "C:\\Users\\jek40\\Desktop\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\res\\animator\\slide_open_text_file_animation.xml"
     }
 ]

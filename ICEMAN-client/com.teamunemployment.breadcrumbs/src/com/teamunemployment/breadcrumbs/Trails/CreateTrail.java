@@ -4,6 +4,8 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.design.widget.AppBarLayout;
@@ -15,13 +17,17 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.accessibility.AccessibilityManager;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.teamunemployment.breadcrumbs.Location.BreadCrumbsFusedLocationProvider;
 import com.teamunemployment.breadcrumbs.Network.LoadBalancer;
 import com.teamunemployment.breadcrumbs.R;
 import com.teamunemployment.breadcrumbs.Network.ServiceProxy.AsyncDataRetrieval;
@@ -51,6 +57,7 @@ public class CreateTrail extends AppCompatActivity implements DatePickerDialog.D
     private ArrayList<CrumbCardDataObject> crumbsArray;
     private CrumbCardAdapter mAdapter;
     static final int PICK_PROFILE_REQUEST = 1;
+    private final String TAG = "CREATE_TRAIL";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -269,6 +276,16 @@ public class CreateTrail extends AppCompatActivity implements DatePickerDialog.D
     }
 
     private void createNewTrail() {
+        final ConnectivityManager cm =
+                (ConnectivityManager)context.getSystemService(Context.CONNECTIVITY_SERVICE);
+
+        NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
+        boolean isConnected = activeNetwork != null &&
+                activeNetwork.isConnectedOrConnecting();
+        if (!isConnected) {
+            Toast.makeText(context, "No internet connection available.", Toast.LENGTH_LONG);
+            return;
+        }
         //Get the text for description etc..
         EditText trailTitleEdit = (EditText) findViewById(R.id.title_edit);
         EditText trailDescriptionEdit = (EditText) findViewById(R.id.countries_edit);
@@ -284,16 +301,17 @@ public class CreateTrail extends AppCompatActivity implements DatePickerDialog.D
             trailDescription = " ";
         }
         // Not using preferences here seems risky but it also seems to be working. Maybe have a double check (i.e try both) if it is not working.
-        final String userId = GlobalContainer.GetContainerInstance().GetUserId();//PreferenceManager.getDefaultSharedPreferences(this.getApplicationContext()).getString("USERID", "-1");
+        final String userId = PreferenceManager.getDefaultSharedPreferences(this.getApplicationContext()).getString("USERID", "-1");//PreferenceManager.getDefaultSharedPreferences(this.getApplicationContext()).getString("USERID", "-1");
 
         String url = MessageFormat.format("{0}/rest/login/saveTrail/{1}/{2}/{3}",
                 LoadBalancer.RequestServerAddress(),
                 trailTitle,
                 trailDescription,
                 userId);
-
+        Log.d(TAG, "Sending url request: " + url);
         url = url.replaceAll(" ", "%20");
-        AsyncDataRetrieval asyncDataRetrieval  = new AsyncDataRetrieval(url, new AsyncDataRetrieval.RequestListener() {
+        Toast.makeText(context, "Creating trail....", Toast.LENGTH_LONG).show();
+        AsyncDataRetrieval asyncDataRetrieval = new AsyncDataRetrieval(url, new AsyncDataRetrieval.RequestListener() {
 
             /*
              * Override for the
@@ -301,7 +319,10 @@ public class CreateTrail extends AppCompatActivity implements DatePickerDialog.D
             @Override
             public void onFinished(String result) {
                 // Not sure I want to do anything here.
+                Log.d(TAG, "Url request sent successfully, recieved response : " + result);
                 PreferenceManager.getDefaultSharedPreferences(context).edit().putString("TRAILID", result).commit();
+
+                // This should be being done server side when trail is created.
                 String updateActiveTrailUrl = LoadBalancer.RequestServerAddress() + "/rest/login/SaveStringPropertyToNode/"+userId+"/ActiveTrail/"+result;
                 AsyncDataRetrieval updateActiveTrail = new AsyncDataRetrieval(updateActiveTrailUrl, new AsyncDataRetrieval.RequestListener() {
                     @Override
@@ -310,12 +331,15 @@ public class CreateTrail extends AppCompatActivity implements DatePickerDialog.D
                     }
                 });
                 updateActiveTrail.execute();
+                // Begin tracking
+                PreferenceManager.getDefaultSharedPreferences(context).edit().putBoolean("TRACKING", true).commit();
+                BreadCrumbsFusedLocationProvider breadCrumbsFusedLocationProvider = new BreadCrumbsFusedLocationProvider(context);
+                breadCrumbsFusedLocationProvider.StartBackgroundGPSService();
+                finish();
             }
         });
-
-
         asyncDataRetrieval.execute();
-        finish();
+
     }
 
     /*

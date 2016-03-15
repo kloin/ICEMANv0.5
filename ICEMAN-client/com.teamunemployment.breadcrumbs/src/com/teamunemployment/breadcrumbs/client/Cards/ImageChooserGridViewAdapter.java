@@ -21,8 +21,8 @@ import java.util.ArrayList;
  * image selector in mind
  */
 public class ImageChooserGridViewAdapter extends BaseAdapter {
-    private ArrayList<String> imageIds;
-    private Context context;
+    public ArrayList<String> imageIds;
+    public Context context;
 
     public ImageChooserGridViewAdapter(ArrayList<String> myDataset, Context context) {
         imageIds = myDataset;
@@ -71,4 +71,5 @@ public class ImageChooserGridViewAdapter extends BaseAdapter {
 
         return gridView;
     }
+
 }

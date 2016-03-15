@@ -13,7 +13,6 @@
     <string msgid="893419373245838918" name="abc_searchview_description_voice">"音声検索"</string>
     <string msgid="3421042268587513524" name="abc_shareactionprovider_share_with">"共有"</string>
     <string msgid="7165123711973476752" name="abc_shareactionprovider_share_with_application">"%sと共有"</string>
-    <string name="com_facebook_device_auth_instructions">スマートフォンまたはコンピュータから%@にアクセスし、次のコードを入力してください。</string>
     <string name="com_facebook_image_download_unknown_error">画像のダウンロード中に予期しないエラーが発生しました。</string>
     <string name="com_facebook_internet_permission_error_message">WebViewログインにはINTERNET権限が必要です</string>
     <string name="com_facebook_internet_permission_error_title">AndroidManifestエラー</string>

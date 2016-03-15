@@ -8,19 +8,23 @@
     <android.support.design.widget.CoordinatorLayout
         android:id="@+id/home_wrapper"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:fitsSystemWindows="true">
+        android:layout_height="match_parent">
         <android.support.design.widget.AppBarLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:orientation="vertical"
+                android:layout_height="wrap_content">
+
             <android.support.v7.widget.Toolbar
                 android:id="@+id/toolbar"
                 android:layout_width="match_parent"
-                android:layout_height="?attr/actionBarSize"
+                android:layout_height="50dp"
                 android:background="?attr/colorPrimary"
                 app:layout_scrollFlags="enterAlways"
-                app:popupTheme="@style/ThemeOverlay.AppCompat.Light" >
+                app:popupTheme="@style/ThemeOverlay.AppCompat.Light">
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
@@ -30,22 +34,22 @@
                     android:textColor="@color/accent"
                     android:textStyle="italic"
                     android:layout_marginRight="20dp"
-                    android:text="Beta"/>
+                    android:text="Beta v5"/>
             </android.support.v7.widget.Toolbar>
-
-            <android.support.design.widget.TabLayout
-                android:id="@+id/tabs"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                app:tabMode="fixed"
-                app:layout_scrollFlags="enterAlways"
-                app:tabGravity="fill"/>
+                <android.support.design.widget.TabLayout
+                    android:id="@+id/tabs"
+                    android:layout_below="@+id/toolbar"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:tabMode="fixed"
+                    app:layout_scrollFlags="enterAlways|scroll"
+                    app:tabGravity="fill"/>
+            </LinearLayout>
         </android.support.design.widget.AppBarLayout>
-
         <android.support.v4.view.ViewPager
             android:id="@+id/viewpager"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="fill_parent"
             app:layout_behavior="@string/appbar_scrolling_view_behavior"  />
 
         <android.support.design.widget.FloatingActionButton

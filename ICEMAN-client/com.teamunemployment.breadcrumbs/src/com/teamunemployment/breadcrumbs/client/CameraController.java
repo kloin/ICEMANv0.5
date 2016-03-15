@@ -2,6 +2,7 @@ package com.teamunemployment.breadcrumbs.client;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.ContextWrapper;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -9,7 +10,10 @@ import android.graphics.Matrix;
 import android.hardware.Camera;
 import android.media.MediaRecorder;
 import android.os.Environment;
+import android.preference.PreferenceManager;
+import android.provider.MediaStore;
 import android.util.AttributeSet;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.Display;
 import android.view.MotionEvent;
@@ -17,14 +21,19 @@ import android.view.Surface;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.ImageButton;
+import android.widget.RelativeLayout;
 import android.widget.Toast;
 
+import com.google.android.gms.common.api.Releasable;
 import com.teamunemployment.breadcrumbs.R;
 import com.teamunemployment.breadcrumbs.caching.GlobalContainer;
 
 import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.List;
 
@@ -64,12 +73,6 @@ public class CameraController extends SurfaceView implements SurfaceHolder.Callb
     @Override
     public void surfaceCreated(SurfaceHolder holder) {
         // Set the height of the camera to be the same as the width so we get a square.
-        //CameraController cameraController = (CameraController) findViewById(R.id.camera_preview);
-        //ViewGroup.LayoutParams layoutParams = cameraController.getLayoutParams();
-        //DisplayMetrics displaymetrics = new DisplayMetrics();
-        //context.getWindowManager().getDefaultDisplay().getMetrics(displaymetrics);
-        //layoutParams.height = displaymetrics.widthPixels;
-        //cameraController.setLayoutParams(layoutParams);
 
         mHolder = holder;
         if (backCameraOpen) {
@@ -233,19 +236,19 @@ public class CameraController extends SurfaceView implements SurfaceHolder.Callb
         mCamera = null;
         mCamera = Camera.open(1);
         mCamera.startPreview();
-        /*Camera.Parameters parameters = mCamera.getParameters();
+        Camera.Parameters parameters = mCamera.getParameters();
         List<Camera.Size> sizes = parameters.getSupportedPictureSizes();
-        Camera.Size size = sizes.get(1);
+        Camera.Size size = getOptimalPreviewSize(sizes);
         //parameters.setJpegQuality(50);
-        parameters.setPreviewSize(size.height, size.width);
-        parameters.setPictureSize(size.height, size.width);
-        mCamera.setParameters(parameters);*/
+        parameters.setPreviewSize(size.width,size.height);
+        parameters.setPictureSize(size.width,size.height);
+        mCamera.setParameters(parameters);
         isPreviewRunning = true;
 
         try {
             Display display = ((WindowManager)context.getSystemService(context.WINDOW_SERVICE)).getDefaultDisplay();
-            Camera.Parameters parameters = mCamera.getParameters();
-            CheckOrientationIsNotAllFuckingRetarded(parameters, display);
+            Camera.Parameters parameters2 = mCamera.getParameters();
+            CheckOrientationIsNotAllFuckingRetarded(parameters2, display);
             mCamera.setPreviewDisplay(mHolder);
 
         } catch (IOException e) {
@@ -333,7 +336,9 @@ public class CameraController extends SurfaceView implements SurfaceHolder.Callb
            @Override
            public void onClick(View v) {
                // Take a photo
+
                mCamera.takePicture(null, rawCallback, jpegCallback);
+               //mCamera.stopPreview();
            }
 
        });
@@ -427,7 +432,7 @@ public class CameraController extends SurfaceView implements SurfaceHolder.Callb
              //if (bm.getWidth() > 720 && bm.getHeight() > 1100 && backCameraOpen) {
             int difference = cameraWidth -cameraHeight;
             Log.d("CAM", "Creating bitmap. Width: " + cameraWidth + " Height: " + cameraHeight + " Difference: " + difference);
-            bm = Bitmap.createBitmap(bm, 0, difference/2, 720, 720);
+            bm = Bitmap.createBitmap(bm, 0, 0, 720, 720);
            // bm = Bitmap.createScaledBitmap(bm, 400, 400, true);
             // }
             // Cache our photo.
@@ -438,8 +443,24 @@ public class CameraController extends SurfaceView implements SurfaceHolder.Callb
         }
     };
 
-
     static final int REQUEST_VIDEO_CAPTURE = 1;
+    private String saveToInternalStorage(Bitmap bitmap) throws IOException {
+        ContextWrapper cw = new ContextWrapper(context.getApplicationContext());
+        // Create imageDir
+        File mypath=new File(String.valueOf(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES.toString()+ "/profile.jpg")));
+
+        FileOutputStream fos = null;
+        try {
+            fos = new FileOutputStream(mypath);
+            // Use the compress method on the BitMap object to write image to the OutputStream
+            bitmap.compress(Bitmap.CompressFormat.PNG, 100, fos);
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            fos.close();
+        }
+        return mypath.getPath();
+    }
 
 /*
     private void dispatchTakeVideoIntent() {

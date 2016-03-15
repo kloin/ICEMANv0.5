@@ -48,6 +48,7 @@ import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
 /**
+ * CURRENTLY NOT USED I USE GLIDE LIBRARY INSTEAD
  ******************************************************************************
  * Taken from the JB source code, can be found in:
  * libcore/luni/src/main/java/libcore/io/DiskLruCache.java

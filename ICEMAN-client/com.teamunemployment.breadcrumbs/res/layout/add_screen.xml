@@ -5,11 +5,19 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
     <!-- Layout for CRUMBS -->
+    <View
+        android:id="@+id/header"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:background="@color/ColorPrimary">
+
+    </View>
+
     <ImageView
         android:id="@+id/media"
         android:layout_width="match_parent"
-        android:layout_height="300dp"
-        android:scaleType="centerCrop"
+        android:layout_below="@+id/header"
+        android:layout_height="wrap_content"
         android:layout_gravity="center"/>
     <ImageButton
         android:id="@+id/backAddScreen"

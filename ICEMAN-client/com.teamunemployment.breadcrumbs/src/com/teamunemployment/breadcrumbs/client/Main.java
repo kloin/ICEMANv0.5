@@ -19,6 +19,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.View;
 import android.view.Window;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.TextView;
@@ -33,6 +34,13 @@ import com.facebook.appevents.AppEventsLogger;
 import com.facebook.login.LoginManager;
 import com.facebook.login.LoginResult;
 import com.facebook.login.widget.LoginButton;
+import com.sromku.simple.fb.Permission;
+import com.sromku.simple.fb.SimpleFacebook;
+import com.sromku.simple.fb.SimpleFacebookConfiguration;
+import com.sromku.simple.fb.entities.Profile;
+import com.sromku.simple.fb.listeners.OnLoginListener;
+import com.sromku.simple.fb.listeners.OnProfileListener;
+import com.teamunemployment.breadcrumbs.Facebook.AccountManager;
 import com.teamunemployment.breadcrumbs.GCM.RegistrationIntentService;
 import com.teamunemployment.breadcrumbs.Network.LoadBalancer;
 import com.teamunemployment.breadcrumbs.Network.ServiceProxy.HTTPRequestHandler;
@@ -48,6 +56,7 @@ import com.google.android.gms.common.GoogleApiAvailability;
 
 import java.text.MessageFormat;
 import java.util.Arrays;
+import java.util.List;
 
 import com.facebook.FacebookSdk;
 
@@ -70,14 +79,32 @@ public class Main extends AppCompatActivity {
 	private String TAG = "MAIN";
 	private static final int PLAY_SERVICES_RESOLUTION_REQUEST = 9000;
 
-	private CallbackManager callbackManager;
+	private SimpleFacebook mSimpleFacebook;
+	private OnLoginListener onLoginListener;
+	private OnProfileListener mOnProfileListener;
 	private BroadcastReceiver registrationBroadcastReceiver;
+	private static final String appId = "668335369892920";
+
+	private Permission[] permissions = new Permission[] {
+			Permission.USER_ABOUT_ME
+	};
+
+	Profile.Properties properties = new Profile.Properties.Builder()
+			.add(Profile.Properties.ID)
+			.add(Profile.Properties.FIRST_NAME)
+			.add(Profile.Properties.EMAIL)
+			.add(Profile.Properties.PICTURE)
+			.build();
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 	    super.onCreate(savedInstanceState);
-		FacebookSdk.sdkInitialize(getApplicationContext());
-		callbackManager = CallbackManager.Factory.create();
+		SimpleFacebookConfiguration configuration = new SimpleFacebookConfiguration.Builder()
+				.setAppId(appId)
+				.setNamespace("com.teamunemployment.breadcrumbs")
+				.setPermissions(permissions)
+				.build();
+		SimpleFacebook.setConfiguration(configuration);
 
 		// Just call the constructor. The contoller has an oncreate method that should create a
 	    // userDb com.teamunemployment.breadcrumbs.database if there is none there (first time install etc..).
@@ -90,6 +117,32 @@ public class Main extends AppCompatActivity {
 		newAccountClickHandler();
 		standardAccountLoginHandler();
 		forgotDetailsClickHandler();
+		setUpSimpleFacebook();
+		setUpProfileListener();
+	}
+
+	// Listener for fetching facebook profile data
+	private void setUpProfileListener() {
+		mOnProfileListener = new OnProfileListener() {
+			@Override
+			public void onComplete(Profile profile) {
+				Log.i(TAG, "My name is : " + profile.getFirstName());
+				Log.i(TAG, "My Id is:" + profile.getId());
+				Log.i(TAG, "My Email is: " + profile.getEmail());
+				handleFacebookRegistration(profile.getId(), profile.getFirstName());
+				// Check if the user has already created a profile
+			}
+
+			@Override
+			public void onFail(String reason) {
+				Log.e(TAG, "Facebook profile setup failed because: " + reason);
+			}
+
+    /*
+     * You can override other methods here:
+     * onThinking(), onFail(String reason), onException(Throwable throwable)
+     */
+		};
 	}
 
 	/*
@@ -112,35 +165,61 @@ public class Main extends AppCompatActivity {
 		}
 	}
 
+	private void setUpSimpleFacebook() {
+		onLoginListener = new OnLoginListener() {
+
+			@Override
+			public void onLogin(String accessToken, List<Permission> acceptedPermissions, List<Permission> declinedPermissions) {
+				// change the state of the button or do whatever you want
+				Log.i(TAG, "Logged in");
+				mSimpleFacebook.getProfile(properties, mOnProfileListener);
+			}
+
+			@Override
+			public void onCancel() {
+				// user canceled the dialog
+			}
+
+			@Override
+			public void onFail(String reason) {
+				// failed to login
+			}
+
+			@Override
+			public void onException(Throwable throwable) {
+				// exception from facebook
+			}
+
+		};
+	}
+
 	private void standardAccountLoginHandler() {
 		TextView login_button = (TextView) findViewById(R.id.login_button);
 		login_button.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
-
 				doSimpleLogin();
-
 			}
 		});
 	}
 
 	private void doSimpleLogin() {
-		EditText userName = (EditText) findViewById(R.id.userNameLogin);
+		final EditText userName = (EditText) findViewById(R.id.userNameLogin);
 		Editable userNameEditable = userName.getText();
-		if (userNameEditable == null) {
-			Toast.makeText(context, "Enter a username", Toast.LENGTH_LONG).show();
+		if (userNameEditable.toString().length() < 2) {
+			Toast.makeText(context, "Enter a valid username", Toast.LENGTH_LONG).show();
 			return;
 		}
 
 		EditText pin = (EditText) findViewById(R.id.password);
 		Editable pinEditable = pin.getText();
-		if (pinEditable == null) {
+		if (pinEditable.toString().length() != 4) {
 			Toast.makeText(context, "4 digit pin required", Toast.LENGTH_LONG).show();
 			return;
 		}
 
 		String pinString = pinEditable.toString();
-		String userNameString = userNameEditable.toString();
+		final String userNameString = userNameEditable.toString();
 
 		String loginUrl = LoadBalancer.RequestServerAddress() + "/rest/login/AttemptToLogInUser/"+userNameString +"/"+pinString;
 		AsyncDataRetrieval asyncDataRetrieval = new AsyncDataRetrieval(loginUrl, new AsyncDataRetrieval.RequestListener() {
@@ -151,10 +230,11 @@ public class Main extends AppCompatActivity {
 
 					return;
 				}
-
+				// We should save the user to the database if they are not in there.
 				Intent myIntent = new Intent();
 				PreferenceManager.getDefaultSharedPreferences(context).edit().putString("USERID", result).commit();
 				// Need to get TrailId
+				PreferenceManager.getDefaultSharedPreferences(context).edit().putString("USERNAME", userNameString).commit();
 				myIntent.setClassName("com.teamunemployment.breadcrumbs", "com.teamunemployment.breadcrumbs.client.SplashScreen");
 				startActivity(myIntent);
 			}
@@ -163,7 +243,7 @@ public class Main extends AppCompatActivity {
 	}
 
 	private void facebookLoginClickHandler() {
-		LoginButton loginButton = (LoginButton) findViewById(R.id.facebook_login_button);
+		Button loginButton = (Button) findViewById(R.id.facebook_login_button);
 		loginButton.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
@@ -173,8 +253,9 @@ public class Main extends AppCompatActivity {
 	}
 
 	private void onFBLogin() {
-		LoginManager.getInstance().logInWithReadPermissions(this, Arrays.asList("email","user_photos","public_profile"));
-		LoginManager.getInstance().registerCallback(callbackManager,
+		LoginManager.getInstance().logInWithReadPermissions(this, Arrays.asList("email", "user_photos", "public_profile"));
+		mSimpleFacebook.login(onLoginListener);
+		/*LoginManager.getInstance().registerCallback(callbackManager,
 				new FacebookCallback<LoginResult>() {
 					@Override
 					public void onSuccess(LoginResult loginResult) {
@@ -191,7 +272,7 @@ public class Main extends AppCompatActivity {
 											System.out.println("Success");
 											try {
 												String jsonresult = String.valueOf(json);
-												System.out.println("JSON Result"+jsonresult);
+												System.out.println("JSON Result" + jsonresult);
 
 												//String str_email = json.getString("email");
 												String str_id = json.getString("id");
@@ -215,28 +296,26 @@ public class Main extends AppCompatActivity {
 
 					@Override
 					public void onCancel() {
-						Log.d("CANCEL","On cancel");
+						Log.d("CANCEL", "On cancel");
 					}
 
 					@Override
 					public void onError(FacebookException error) {
-						Log.d("ERROR",error.toString());
+						Log.d("ERROR", error.toString());
 					}
-				});
+				});*/
 	}
 
 	@Override
 	public void onActivityResult(int requestCode, int resultCode, Intent data) {
 		super.onActivityResult(requestCode, resultCode, data);
-
-		callbackManager.onActivityResult(requestCode, resultCode, data);
+		mSimpleFacebook.onActivityResult(requestCode, resultCode, data);
 	}
 	
 	//Check if a user already has an account.
 	private boolean userHasPreviouslyLoggedIn() {
 		//Check for the first id that would be there (needs to be changed)
 		Cursor cursor = dbc.getReadableDatabase().rawQuery("SELECT * FROM users", null);
-        Cursor cursor1 = dbc.getReadableDatabase().rawQuery("SELECT * from trailPoints", null);
 		//IF present, we have a user.
 		 if(cursor.getCount()<1) {
              cursor.close();
@@ -245,7 +324,7 @@ public class Main extends AppCompatActivity {
         cursor.moveToFirst();
         //This is our id we want.
         String id = Integer.toString(cursor.getInt(1));
-        //Set the id so we can use it in the app.
+		//Set the id so we can use it in the app.
         gc.SetUserId(id);
 		return true;
 	}
@@ -304,7 +383,8 @@ public class Main extends AppCompatActivity {
 				new IntentFilter(Preferences.REGISTRATION_COMPLETE));
 
 		// Logs 'install' and 'app activate' App events
-		AppEventsLogger.activateApp(this);
+		mSimpleFacebook = SimpleFacebook.getInstance(this);
+		//AppEventsLogger.activateApp(this);
 	}
 
 	@Override
@@ -312,7 +392,7 @@ public class Main extends AppCompatActivity {
 		super.onPause();
 		LocalBroadcastManager.getInstance(this).unregisterReceiver(registrationBroadcastReceiver);
 		// Logs 'app deactivate' App Event.
-		AppEventsLogger.deactivateApp(this);
+		//AppEventsLogger.deactivateApp(this);
 	}
 
 	private void setUpGCM() {
@@ -365,18 +445,20 @@ public class Main extends AppCompatActivity {
 			 */
 			@Override
 			public void onFinished(String result) {
-				//Save to the com.teamunemployment.breadcrumbs.database once we have finshed saving
-				saveUserBaseData(userName, pin, result);
+				if (result!= null && result.length() < 50) { // Error messages are always longer that 50 characters, but if all going well it will return an id, which will be less than 50
+					saveUserBaseData(userName, pin, result);
+					Intent myIntent = new Intent();
+					myIntent.putExtra("UserName", userName);
+					PreferenceManager.getDefaultSharedPreferences(context).edit().putString("USERNAME", userName).commit();
+					myIntent.setClassName("com.teamunemployment.breadcrumbs", "com.teamunemployment.breadcrumbs.client.BaseViewModel");
+					startActivity(myIntent);
+				}
 			}
 		});
 		
 		serviceProxy.execute();
 
-        Intent myIntent = new Intent();
-		myIntent.putExtra("UserName", userName);
-		PreferenceManager.getDefaultSharedPreferences(context).edit().putString("USERNAME", userName).commit();
-        myIntent.setClassName("com.teamunemployment.breadcrumbs", "com.teamunemployment.breadcrumbs.client.BaseViewModel");
-        startActivity(myIntent);
+
 	}
 
 	/*
@@ -387,6 +469,9 @@ public class Main extends AppCompatActivity {
 		String token =  PreferenceManager.getDefaultSharedPreferences(this).getString("TOKEN", "-1");
 		if (token.equals("-1")) {
 			// do I Fail here? 100% need the token otherwise there will never be any notifications for that user.
+			Toast.makeText(context, "Login failed due to missing GCM token. If issue persists contact support.", Toast.LENGTH_LONG).show();
+			// Shitty message i know but If this happens we are really fucked. It should not happen unless we proceed without a proper internet conenction/or api key is wrong.
+			return;
 		}
 		//Construct our url
 		String url = MessageFormat.format("{0}/rest/login/CreateNewUser/{1}/{2}/{3}/{4}/{5}/{6}/{7}",
@@ -409,18 +494,30 @@ public class Main extends AppCompatActivity {
 			@Override
 			public void onFinished(String result) {
 				//Save to the com.teamunemployment.breadcrumbs.database once we have finshed saving
+				/*
+				Have put this inside the on finished, because starting the app without a success here is catastrophic
+				 */
 				Log.d("FBLOGIN", "Create account request using facebook info responded with result: " + result);
-				saveUserBaseData(userName, " ", result);
+				if (result != null && result.length() < 40) {
+					saveUserBaseData(userName, " ", result);
+					Intent myIntent = new Intent();
+					myIntent.putExtra("UserName", userName);
+					PreferenceManager.getDefaultSharedPreferences(context).edit().putString("USERNAME", userName).commit();
+					myIntent.setClassName("com.teamunemployment.breadcrumbs", "com.teamunemployment.breadcrumbs.client.BaseViewModel");
+					startActivity(myIntent);
+				}
+
 			}
 		});
 
 		serviceProxy.execute();
 
-		Intent myIntent = new Intent();
-		myIntent.putExtra("UserName", userName);
-		PreferenceManager.getDefaultSharedPreferences(context).edit().putString("USERNAME", userName).commit();
-		myIntent.setClassName("com.teamunemployment.breadcrumbs", "com.teamunemployment.breadcrumbs.client.BaseViewModel");
-		startActivity(myIntent);
+
+	}
+
+	private void grabFacebookProfilePicture() {
+		AccountManager accountManager = new AccountManager(context);
+		accountManager.GetUserProfilePicture(PreferenceManager.getDefaultSharedPreferences(context).getString("FACEBOOK_REGISTRATION_ID", "-1"));
 	}
 	
 	//Handler for when login is clicked.
@@ -464,6 +561,8 @@ public class Main extends AppCompatActivity {
 					// Not found, create account
 					Log.d(TAG, "Could not find user with facebook Id : " + facebookRegistrationId);
 					processUserSignUpForFacebookAccount(name, facebookRegistrationId);
+					Log.d(TAG, "Grabbing facebook profile picture and setting it as profile");
+					grabFacebookProfilePicture();
 				} else if (result.equals("500")) {
 					// Shits fucked, we need to fix this.
 					Log.e(TAG, "Finding facebook user failed critically. Facebook Id : " + facebookRegistrationId);
