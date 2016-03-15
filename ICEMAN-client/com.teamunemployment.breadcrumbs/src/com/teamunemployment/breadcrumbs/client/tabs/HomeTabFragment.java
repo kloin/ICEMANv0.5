@@ -158,13 +158,16 @@ public class HomeTabFragment extends Fragment {
                             newIds.add(item);
                         }
                     }*/
-
+                    if (allIds.size() == 0) {
+                        return;
+                    }
                     globalContainer.SetTrailIdsCurrentlyDisplayed(allIds);
 
                     mAdapter = new HomeCardAdapter(allIds, context);
                     mRecyclerView.setAdapter(mAdapter);
-                    int difference = allIds.size() - oldIds.size();
-                    displayMessage(difference + " New Trails");
+                    // Hide the placeholder
+                    CardView placeholder = (CardView) rootView.findViewById(R.id.card_view_placeholder);
+                    placeholder.setVisibility(View.GONE);
                 } catch (JSONException e) {
                     // TODO Auto-generated catch block
                     e.printStackTrace();
