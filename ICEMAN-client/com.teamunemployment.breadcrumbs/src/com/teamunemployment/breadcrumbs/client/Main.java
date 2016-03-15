@@ -506,13 +506,10 @@ public class Main extends AppCompatActivity {
 					myIntent.setClassName("com.teamunemployment.breadcrumbs", "com.teamunemployment.breadcrumbs.client.BaseViewModel");
 					startActivity(myIntent);
 				}
-
 			}
 		});
 
 		serviceProxy.execute();
-
-
 	}
 
 	private void grabFacebookProfilePicture() {
@@ -523,20 +520,20 @@ public class Main extends AppCompatActivity {
 	//Handler for when login is clicked.
 	private void handleLogin() {
 		ImageButton loginButton = (ImageButton) findViewById(R.id.authButton);
-		loginButton.setOnClickListener( new View.OnClickListener() {
-		    @Override
-		    public void onClick(View v) {
-		     EditText pword = (EditText) findViewById(R.id.editText1);
-		     if (pword.getText().toString().equals(getUserPassword())) {
-		    	 Toast.makeText(context, "Logging in...", Toast.LENGTH_LONG).show();
-		    	 Intent myIntent = new Intent();
-				 myIntent.putExtra("UserName", userName);
-				 myIntent.setClassName("com.teamunemployment.breadcrumbs", "com.teamunemployment.breadcrumbs.client.BaseViewModel");
-				 startActivity(myIntent);
-		     	} else {
-		     		Toast.makeText(context, "Incorrect Password!", Toast.LENGTH_LONG).show();
-		     	}
-		    }
+		loginButton.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				EditText pword = (EditText) findViewById(R.id.editText1);
+				if (pword.getText().toString().equals(getUserPassword())) {
+					Toast.makeText(context, "Logging in...", Toast.LENGTH_LONG).show();
+					Intent myIntent = new Intent();
+					myIntent.putExtra("UserName", userName);
+					myIntent.setClassName("com.teamunemployment.breadcrumbs", "com.teamunemployment.breadcrumbs.client.BaseViewModel");
+					startActivity(myIntent);
+				} else {
+					Toast.makeText(context, "Incorrect Password!", Toast.LENGTH_LONG).show();
+				}
+			}
 		});
 	}
 
@@ -571,6 +568,10 @@ public class Main extends AppCompatActivity {
 					String userId = result;
 					Log.d(TAG, "Found user with facebook Id : " + facebookRegistrationId + ". Logging in now with userId :" + userId);
 					//Log in and set userId, TrailId etc
+					boolean userIsInDB = checkUserExists(userId);
+					if (!userIsInDB) {
+						saveUserBaseData(name, " ", userId);
+					}
 					Intent myIntent = new Intent();
 					myIntent.putExtra("UserName", name);
 					PreferenceManager.getDefaultSharedPreferences(context).edit().putString("USERID", result).commit();
@@ -586,6 +587,9 @@ public class Main extends AppCompatActivity {
 		asyncDataRetrieval.execute();
 	}
 
+	private boolean checkUserExists(String userId){
+		return dbc.CheckUserExists(userId);
+	}
 	/*
 	 * Save a new user, based on its base data - names, pin.
 	 */

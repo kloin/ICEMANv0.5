@@ -59,6 +59,14 @@ public class DatabaseController extends SQLiteOpenHelper {
 		//cursor.getColumnNames();
 	}
 
+    public boolean CheckUserExists(String userId) {
+        Cursor cursor = db.rawQuery("Select * from "+DATABASE_NAME+" where userid="+userId, null);
+        if (cursor.getCount() > 0) {
+            return true;
+        }
+        return false;
+    }
+
     /*
     a method made to delete all the saved trail points for a trail
      */
