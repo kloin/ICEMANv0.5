@@ -20,6 +20,7 @@ import android.view.Window;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
@@ -109,9 +110,9 @@ public class EditMyTrail extends AppCompatActivity {
             @Override
             public void onFinished(String result) {
                 try {
-                    // Hide loading spinner
-                   // ProgressBar loadingSpinner = (ProgressBar) context.findViewById(R.id.explore_progress_bar);
-                  //  loadingSpinner.setVisibility(View.GONE);
+                    // Hide loading spinnerIce
+                    ProgressBar loadingSpinner = (ProgressBar) context.findViewById(R.id.my_trail_progress_bar);
+                    loadingSpinner.setVisibility(View.GONE);
                     // Get our arrayList for the card adapter
                     JSONObject jsonResult = new JSONObject(result);
                     ArrayList<String> ids = convertJSONToArrayList(jsonResult);
