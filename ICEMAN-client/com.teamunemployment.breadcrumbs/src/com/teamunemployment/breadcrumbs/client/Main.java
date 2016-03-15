@@ -206,8 +206,8 @@ public class Main extends AppCompatActivity {
 	private void doSimpleLogin() {
 		final EditText userName = (EditText) findViewById(R.id.userNameLogin);
 		Editable userNameEditable = userName.getText();
-		if (userNameEditable.toString().length() < 2) {
-			Toast.makeText(context, "Enter a valid username", Toast.LENGTH_LONG).show();
+		if (userNameEditable.toString().length() < 2 || userNameEditable.toString().contains(" ")) {
+			Toast.makeText(context, "Enter a valid username. A user name must be at least 3 characters and cannot contain spaces", Toast.LENGTH_LONG).show();
 			return;
 		}
 
@@ -644,7 +644,7 @@ public class Main extends AppCompatActivity {
 				Editable emailEditable = email.getText();
 				Editable pinEditable = pin.getText();
 				Editable userNameEditable = userName.getText();
-				if (userNameEditable != null && userNameEditable.toString().length() > 2) {
+				if (userNameEditable != null && userNameEditable.toString().length() > 2 && !userNameEditable.toString().contains(" ")) {
 					if (pinEditable!=null && pinEditable.toString().length() == 4) {
 						if (emailEditable != null && emailEditable.toString().contains("@")) {
 							processUserSignUp(userNameEditable.toString(), pinEditable.toString(), emailEditable.toString());
@@ -655,7 +655,7 @@ public class Main extends AppCompatActivity {
 						Toast.makeText(context, "Pin must be 4 digits", Toast.LENGTH_LONG).show();
 					}
 				}	else {
-					Toast.makeText(context, "Username must be 3 characters or more",Toast.LENGTH_LONG).show();
+					Toast.makeText(context, "Enter a valid username. A user name must be at least 3 characters and cannot contain spaces", Toast.LENGTH_LONG).show();
 				}
 			}
 		});

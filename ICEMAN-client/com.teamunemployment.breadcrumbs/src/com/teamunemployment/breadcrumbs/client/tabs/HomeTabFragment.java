@@ -113,7 +113,7 @@ public class HomeTabFragment extends Fragment {
     // Show a snackbar message to the user
     public void displayMessage(String string) {
 
-        final CoordinatorLayout coordinatorLayout = (CoordinatorLayout) rootView.findViewById(R.id.main_content);
+        final CoordinatorLayout coordinatorLayout = (CoordinatorLayout) rootView.findViewById(R.id.test);
         Snackbar snackbar = Snackbar.make(coordinatorLayout, string, Snackbar.LENGTH_LONG).setAction("UNDO", null);
 
         // Set text color

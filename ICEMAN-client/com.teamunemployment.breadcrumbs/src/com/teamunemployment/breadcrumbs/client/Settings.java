@@ -66,12 +66,18 @@ public class Settings extends Activity {
             PreferenceManager.getDefaultSharedPreferences(context).edit().remove("COVERPHOTOID").commit();
             PreferenceManager.getDefaultSharedPreferences(context).edit().remove("TRACKING").commit();
 
-            //Stop Tracking
             BreadCrumbsFusedLocationProvider provider = GlobalContainer.GetContainerInstance().GetBreadCrumbsFusedLocationProvider();
-            provider.StopBackgroundGPSSerivce();
+            if (provider != null) {
+                provider.StopBackgroundGPSSerivce();
+            }
+            //Stop Tracking
+
 
             SimpleFacebook simpleFacebook = SimpleFacebook.getInstance();
-            simpleFacebook.logout(onLogoutListener);
+            if (simpleFacebook != null) {
+                // Should never be null anyway
+                simpleFacebook.logout(onLogoutListener);
+            }
 
             // Start our main intent.
             Intent myIntent = new Intent(context, Main.class);
