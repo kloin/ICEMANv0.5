@@ -335,6 +335,7 @@ public class CreateTrail extends AppCompatActivity implements DatePickerDialog.D
                 PreferenceManager.getDefaultSharedPreferences(context).edit().putBoolean("TRACKING", true).commit();
                 BreadCrumbsFusedLocationProvider breadCrumbsFusedLocationProvider = new BreadCrumbsFusedLocationProvider(context);
                 breadCrumbsFusedLocationProvider.StartBackgroundGPSService();
+                GlobalContainer.GetContainerInstance().SetBreadCrumbsFusedLocationProvider(breadCrumbsFusedLocationProvider);
                 finish();
             }
         });

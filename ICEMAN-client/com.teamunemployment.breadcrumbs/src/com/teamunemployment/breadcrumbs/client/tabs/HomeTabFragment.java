@@ -146,11 +146,11 @@ public class HomeTabFragment extends Fragment {
                     ArrayList<String> oldIds = globalContainer.GetTrailIdsCurrentlyDisplayed();
 
                     // Look through all our old Ids and see if we have already loaded them.
-                    if (oldIds == null || allIds.size() == oldIds.size()) {
+                    //if (oldIds == null || allIds.size() == oldIds.size()) {
                         // This should not happen, but it may.
-                        displayMessage("Trails up to date");
-                        return;
-                    }
+                    //    displayMessage("Trails up to date");
+                    //    return;
+                   // }
                     // This is for efficiency. However in the mean time it is only text so I am just going to reload all.
                   /*  for (String item:allIds) {
                         if (!oldIds.contains(item)){
