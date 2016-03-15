@@ -4,6 +4,7 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.database.sqlite.SQLiteException;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.location.Location;
 import android.preference.PreferenceManager;
@@ -60,10 +61,17 @@ public class DatabaseController extends SQLiteOpenHelper {
 	}
 
     public boolean CheckUserExists(String userId) {
-        Cursor cursor = db.rawQuery("Select * from "+DATABASE_NAME+" where userid="+userId, null);
-        if (cursor.getCount() > 0) {
-            return true;
+        try {
+            db = getReadableDatabase();
+            Cursor cursor = db.rawQuery("Select * from "+DATABASE_NAME+" where userid="+userId, null);
+            if (cursor.getCount() > 0) {
+                return true;
+            }
+        }catch (SQLiteException ex) {
+            Log.d("DB", "Checking for user failed, most likely due to database not existing.");
+            ex.printStackTrace();
         }
+
         return false;
     }
 
