@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:fab="http://schemas.android.com/apk/res-auto"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#333"
+    android:orientation="vertical">
+<RelativeLayout
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <com.teamunemployment.breadcrumbs.client.CameraController
+        android:id="@+id/camera_preview"
+        android:layout_below="@+id/header"
+        android:layout_width="match_parent"
+    android:layout_height="match_parent" />
+    <RelativeLayout
+        android:id="@+id/camera_preview_cover"
+        android:layout_width="match_parent"
+        android:layout_height="200dp"
+        android:layout_alignParentBottom="true"
+        android:background="@color/white_pressed">
+    </RelativeLayout>
+
+    <com.getbase.floatingactionbutton.FloatingActionButton
+        android:id="@+id/captureButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        fab:fab_icon="@drawable/ic_action_camera"
+        fab:fab_colorNormal="@color/accent"
+        android:layout_alignParentBottom="true"
+        android:layout_centerInParent="true"
+        android:layout_marginBottom="16dp"/>
+    <FrameLayout
+        android:id="@+id/header"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:background="@color/ColorPrimary">
+    </FrameLayout>
+
+    <ImageButton
+        android:id="@+id/backButtonCapture"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:padding="8dp"
+        android:background="?attr/selectableItemBackground"
+        android:src="@drawable/ic_action_back" />
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="?attr/actionBarSize"
+        android:text="Capture"
+        style="@style/CodeFont"
+        android:padding="8dp"
+        android:textSize="12pt"
+        android:layout_marginLeft="50dp"
+        android:textColor="@color/white"/>
+    <ImageButton
+        android:id="@+id/font_or_back_camera"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:padding="8dp"
+        android:layout_alignParentRight="true"
+        android:background="@null"
+        android:src="@drawable/ic_action_switch_camera" />
+    </RelativeLayout>
+</LinearLayout>

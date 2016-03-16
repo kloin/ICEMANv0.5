@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+android:id="@+id/chip_sub_wrapper"
+android:orientation="vertical"
+android:layout_width="match_parent"
+android:layout_height="wrap_content"
+android:padding="20dp">
+<ImageView
+    android:id="@+id/trail_image"
+    android:layout_width="40dp"
+    android:layout_height="40dp" />
+<TextView
+    android:id="@+id/trail_chip_main_title"
+    android:layout_toRightOf="@+id/trail_image"
+    android:layout_marginLeft="16dp"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:text="header"/>
+<TextView
+    android:id="@+id/trail_chip_secondary_title"
+    android:layout_toRightOf="@+id/trail_image"
+    android:layout_marginLeft="16dp"
+    android:layout_below="@+id/trail_chip_main_title"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:text="secondary"/>
+</RelativeLayout>

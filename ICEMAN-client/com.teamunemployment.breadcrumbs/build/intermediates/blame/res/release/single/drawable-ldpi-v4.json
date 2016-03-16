@@ -1,0 +1,10 @@
+[
+    {
+        "merged": "C:\\Users\\jek40\\Desktop\\ICEMANv0.5\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\res\\merged\\release\\drawable-ldpi-v4\\direction_arrow.png",
+        "source": "C:\\Users\\jek40\\Desktop\\ICEMANv0.5\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\exploded-aar\\com.mapbox.mapboxsdk\\mapbox-android-sdk\\0.7.3\\res\\drawable-ldpi-v4\\direction_arrow.png"
+    },
+    {
+        "merged": "C:\\Users\\jek40\\Desktop\\ICEMANv0.5\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\res\\merged\\release\\drawable-ldpi-v4\\location_marker.png",
+        "source": "C:\\Users\\jek40\\Desktop\\ICEMANv0.5\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\exploded-aar\\com.mapbox.mapboxsdk\\mapbox-android-sdk\\0.7.3\\res\\drawable-ldpi-v4\\location_marker.png"
+    }
+]

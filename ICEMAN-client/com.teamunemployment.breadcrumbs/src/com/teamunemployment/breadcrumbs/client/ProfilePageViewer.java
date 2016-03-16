@@ -38,6 +38,8 @@ import org.json.JSONObject;
 
 import java.util.Iterator;
 
+import mehdi.sakout.fancybuttons.FancyButton;
+
 /**
  * Created by Josiah Kendall on 4/21/2015.
  */
@@ -173,10 +175,11 @@ public class ProfilePageViewer extends AppCompatActivity  implements DatePickerD
     }
 
     private void setUpFollowing() {
-        TextView followButton = (TextView) findViewById(R.id.follow_button);
+        FancyButton followButton = (FancyButton) findViewById(R.id.follow_button);
         if (isOwnProfile) {
             Log.d(TAG, "Is own profile - hiding follow button");
             followButton.setVisibility(View.GONE);
+
         } else {
             /*
              Check if we are following. If we are, make unfollow an option. If we are not,. make follow the option.
@@ -227,15 +230,60 @@ public class ProfilePageViewer extends AppCompatActivity  implements DatePickerD
         });
     }
 
-    private void setUpUnfollowButton(final String currentUserId, final TextView followButton) {
+    private void setUpUnfollowButton(final String currentUserId, final FancyButton followButton) {
         followButton.setVisibility(View.VISIBLE);
-        followButton.setTextColor(getResources().getColor(R.color.accent));
+        followButton.setText("Following");
+        followButton.setTextColor(Color.WHITE);
+        followButton.setBackgroundColor(getResources().getColor(R.color.ColorPrimary));
+        unfollowUserOnClickHandler(followButton, currentUserId);
+
+    }
+
+    private void setUpFollowButton(final String currentUserId, final FancyButton followButton) {
+        followButton.setVisibility(View.VISIBLE);
+        followButton.setText("Follow");
+        // Need to cache whether the user is following the other user or not
+        followUserOnClickHandler(followButton, currentUserId);
+    }
+
+    private void followUserOnClickHandler(final FancyButton followButton, final String currentUserId) {
+        followButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // Send request to follow user
+                Log.d(TAG, "Sending follow request to server");
+
+                if (!currentUserId.equals("-1")) {
+                    //followButton.setTextColor(getResources().getColor(R.color.accent));
+                    followButton.setText("Following");
+                    followButton.setTextColor(Color.WHITE);
+                    followButton.setBackgroundColor(getResources().getColor(R.color.ColorPrimary));
+                    Log.d(TAG, "User with Id: " + currentUserId + " is following user with ID: " + userId);
+                    String followUserUrl = LoadBalancer.RequestServerAddress() + "/rest/User/PinUserForUser/" + currentUserId + "/" + userId;
+                    AsyncDataRetrieval asyncDataRetrieval = new AsyncDataRetrieval(followUserUrl, new AsyncDataRetrieval.RequestListener() {
+                        @Override
+                        public void onFinished(String result) {
+                            // need to check its legit here though
+                            Log.d(TAG, "Follow request responded: " + result);
+                            textCaching.CacheText(followKey, "Y");
+                        }
+                    });
+                    asyncDataRetrieval.execute();
+                    unfollowUserOnClickHandler(followButton, currentUserId);
+                }
+            }
+        });
+    }
+
+    private void unfollowUserOnClickHandler(final FancyButton followButton, final String currentUserId) {
         followButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (!currentUserId.equals("-1")) {
-                    followButton.setTextColor(myContext.getResources().getColor(R.color.ColorPrimary));
-                    String followUserUrl = LoadBalancer.RequestServerAddress() + "/rest/User/UnPinUserForUser/"+currentUserId +"/"+userId;
+                    followButton.setText("Follow");
+                    followButton.setTextColor(getResources().getColor(R.color.ColorPrimary));
+                    followButton.setBackgroundColor(Color.WHITE);
+                    String followUserUrl = LoadBalancer.RequestServerAddress() + "/rest/User/UnPinUserForUser/" + currentUserId + "/" + userId;
                     AsyncDataRetrieval asyncDataRetrieval = new AsyncDataRetrieval(followUserUrl, new AsyncDataRetrieval.RequestListener() {
                         @Override
                         public void onFinished(String result) {
@@ -244,36 +292,12 @@ public class ProfilePageViewer extends AppCompatActivity  implements DatePickerD
                         }
                     });
                     asyncDataRetrieval.execute();
+                    followUserOnClickHandler(followButton, currentUserId);
                 }
             }
         });
-    }
 
-    private void setUpFollowButton(final String currentUserId, final TextView followButton) {
-        followButton.setVisibility(View.VISIBLE);
-        // Need to cache whether the user is following the other user or not
-        followButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                // Send request to follow user
-                Log.d(TAG, "Sending follow request to server");
-                if (!currentUserId.equals("-1")) {
-                    followButton.setTextColor(getResources().getColor(R.color.accent));
-                    Log.d(TAG, "User with Id: " + currentUserId +" is following user with ID: "+userId);
-                    String followUserUrl = LoadBalancer.RequestServerAddress() + "/rest/User/PinUserForUser/"+currentUserId +"/"+userId;
-                    AsyncDataRetrieval asyncDataRetrieval = new AsyncDataRetrieval(followUserUrl, new AsyncDataRetrieval.RequestListener() {
-                        @Override
-                        public void onFinished(String result) {
-                            // need to check its legit here though
-                            Log.d(TAG, "Follow request responded: " + result);
-                            textCaching.CacheText(followKey, "Y");
 
-                        }
-                    });
-                    asyncDataRetrieval.execute();
-                }
-            }
-        });
     }
     private void openDatePicker() {
         DatePickerDialog datePickerDialog = new DatePickerDialog();

@@ -8,12 +8,12 @@ package com.mapbox.mapboxsdk;
 
 public final class R {
 	public static final class attr {
-		public static final int accessToken = 0x7f010081;
-		public static final int centerLat = 0x7f010082;
-		public static final int centerLng = 0x7f010083;
-		public static final int mapid = 0x7f010080;
-		public static final int uiControls = 0x7f010085;
-		public static final int zoomLevel = 0x7f010084;
+		public static final int accessToken = 0x7f010097;
+		public static final int centerLat = 0x7f010098;
+		public static final int centerLng = 0x7f010099;
+		public static final int mapid = 0x7f010096;
+		public static final int uiControls = 0x7f01009b;
+		public static final int zoomLevel = 0x7f01009a;
 	}
 	public static final class color {
 		public static final int black = 0x7f0c000f;
@@ -26,12 +26,12 @@ public final class R {
 		public static final int location_marker = 0x7f0200f8;
 	}
 	public static final class id {
-		public static final int tooltip_description = 0x7f0d018a;
-		public static final int tooltip_subdescription = 0x7f0d018b;
-		public static final int tooltip_title = 0x7f0d0189;
+		public static final int tooltip_description = 0x7f0d018c;
+		public static final int tooltip_subdescription = 0x7f0d018d;
+		public static final int tooltip_title = 0x7f0d018b;
 	}
 	public static final class layout {
-		public static final int tooltip = 0x7f030077;
+		public static final int tooltip = 0x7f030078;
 	}
 	public static final class string {
 		public static final int mapboxAndroidSDKVersion = 0x7f06004e;
@@ -40,7 +40,7 @@ public final class R {
 		public static final int toolTipTitle = 0x7f060052;
 	}
 	public static final class styleable {
-		public static final int[] MapView = { 0x7f010080, 0x7f010081, 0x7f010082, 0x7f010083, 0x7f010084, 0x7f010085 };
+		public static final int[] MapView = { 0x7f010096, 0x7f010097, 0x7f010098, 0x7f010099, 0x7f01009a, 0x7f01009b };
 		public static final int MapView_accessToken = 1;
 		public static final int MapView_centerLat = 2;
 		public static final int MapView_centerLng = 3;

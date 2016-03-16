@@ -214,6 +214,7 @@ com/teamunemployment/breadcrumbs/client/Camera/CameraCapture.class
 com/google/android/gms/measurement/internal/zzv.class
 com/teamunemployment/breadcrumbs/client/Adapters/CrumbCardEditAdapter.class
 com/facebook/share/ShareBuilder.class
+mehdi/sakout/fancybuttons/FancyButton.class
 android/support/v4/media/session/PlaybackStateCompat$State.class
 com/teamunemployment/breadcrumbs/client/Cards/HomeCardAdapter.class
 org/apache/http/params/HttpParams.class

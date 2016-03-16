@@ -36,7 +36,7 @@
                     android:textColor="@color/white"
                     android:gravity="center"
                     android:textSize="16sp"
-                    android:text="Click to Select a Cover Image"/>
+                    android:text="Tap to Select a Cover Image"/>
             </RelativeLayout>
 
             <android.support.v7.widget.Toolbar
@@ -78,7 +78,12 @@
         android:layout_height="match_parent"
         app:layout_behavior="@string/appbar_scrolling_view_behavior"
         android:background="#e5e5e5">
-
     </android.support.v7.widget.RecyclerView>
-
+    <ProgressBar
+        android:id="@+id/my_trail_progress_bar"
+        style="?android:progressBarStyle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="200dp"
+        android:layout_gravity="center"/>
 </android.support.design.widget.CoordinatorLayout>
