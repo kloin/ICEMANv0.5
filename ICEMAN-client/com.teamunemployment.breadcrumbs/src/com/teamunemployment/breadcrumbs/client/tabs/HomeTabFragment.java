@@ -22,6 +22,7 @@ import android.view.ViewGroup;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapFragment;
@@ -59,6 +60,8 @@ public class HomeTabFragment extends Fragment {
         activityContext= activity;
         super.onAttach(activity);
     }
+
+    final SimpleAnimations simpleAnimations = new SimpleAnimations();
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -140,6 +143,17 @@ public class HomeTabFragment extends Fragment {
             public void onFinished(String result) {
                 try {
                     // Get our arrayList for the card adapter
+                    CardView networkIssueCard = (CardView) rootView.findViewById(R.id.network_issue_placeholder);
+                    if (result.equals("NE1")) {
+
+                        simpleAnimations.FadeInView(networkIssueCard);
+                        networkIssueCard.setVisibility(View.VISIBLE);
+                        ArrayList<String> ids = new ArrayList<>();
+                        mAdapter = new HomeCardAdapter(ids, context);
+                        mRecyclerView.setAdapter(mAdapter);
+                        return;
+                    }
+                    networkIssueCard.setVisibility(View.GONE);
                     JSONObject jsonResult = new JSONObject(result);
                     ArrayList<String> allIds = convertJSONToArrayList(jsonResult);
                     ArrayList<String> newIds = new ArrayList<>();
@@ -211,8 +225,7 @@ public class HomeTabFragment extends Fragment {
 
     // Need this code but for now I am going to comment it out.
     public void loadTrails() {
-        final TextView noDataPlaceholder = (TextView) rootView.findViewById(R.id.no_data_placeholder);
-        final SimpleAnimations simpleAnimations = new SimpleAnimations();
+        //final TextView noDataPlaceholder = (TextView) rootView.findViewById(R.id.no_data_placeholder);
         String url = LoadBalancer.RequestServerAddress() + "/rest/User/GetAllHomePageTrailIdsForAUser/"+userId;
         Log.d(TAG, "Attempting to load Trails with URL: " + url);
         url = url.replaceAll(" ", "%20");
@@ -224,7 +237,14 @@ public class HomeTabFragment extends Fragment {
                     // Hide loading spinner
                     ProgressBar loadingSpinner = (ProgressBar) rootView.findViewById(R.id.explore_progress_bar);
                     loadingSpinner.setVisibility(View.GONE);
+                    CardView networkIssueCard = (CardView) rootView.findViewById(R.id.network_issue_placeholder);
+                    if (result.equals("NE1")) {
 
+                        simpleAnimations.FadeInView(networkIssueCard);
+                        networkIssueCard.setVisibility(View.VISIBLE);
+                        return;
+                    }
+                    networkIssueCard.setVisibility(View.GONE);
                     // Get our arrayList for the card adapter
                     JSONObject jsonResult = new JSONObject(result);
                     ArrayList<String> ids = convertJSONToArrayList(jsonResult);
@@ -242,12 +262,12 @@ public class HomeTabFragment extends Fragment {
                     mAdapter = new HomeCardAdapter(ids, context);
                     mRecyclerView.setAdapter(mAdapter);
                 } catch (JSONException e) {
-                    simpleAnimations.FadeInView(noDataPlaceholder);
+                   // simpleAnimations.FadeInView(noDataPlaceholder);
                     // TODO Auto-generated catch block
                     e.printStackTrace();
                 } catch (NullPointerException e) {
                     Log.e("Cards", "Failed to convert String to json");
-                    simpleAnimations.FadeInView(noDataPlaceholder);
+                    //simpleAnimations.FadeInView(noDataPlaceholder);
                 }
             }
 

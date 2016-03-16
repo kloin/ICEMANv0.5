@@ -1,5 +1,6 @@
 package com.teamunemployment.breadcrumbs.client.tabs;
 
+import android.support.v7.widget.CardView;
 import android.util.Log;
 import android.view.View;
 import android.widget.ProgressBar;
@@ -31,6 +32,16 @@ public class ExploreTabFragment extends HomeTabFragment {
             public void onFinished(String result) {
                 try {
                     // Get our arrayList for the card adapter
+                    CardView networkIssueCard = (CardView) rootView.findViewById(R.id.network_issue_placeholder);
+                    if (result.equals("NE1")) {
+                        simpleAnimations.FadeInView(networkIssueCard);
+                        networkIssueCard.setVisibility(View.VISIBLE);
+                        ArrayList<String> ids = new ArrayList<>();
+                        mAdapter = new HomeCardAdapter(ids, context);
+                        mRecyclerView.setAdapter(mAdapter);
+                        return;
+                    }
+                    networkIssueCard.setVisibility(View.GONE);
                     JSONObject jsonResult = new JSONObject(result);
                     ArrayList<String> allIds = convertJSONToArrayList(jsonResult);
                     ArrayList<String> newIds = new ArrayList<>();

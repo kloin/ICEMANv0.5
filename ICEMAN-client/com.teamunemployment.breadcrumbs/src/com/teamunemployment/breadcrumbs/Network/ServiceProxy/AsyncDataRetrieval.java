@@ -20,7 +20,6 @@ public class AsyncDataRetrieval extends AsyncTask<String, Integer, String> {
 		private JSONObject json = new JSONObject();
 		private String url;
         // jsonResult was losing a variable some how, so im testing with this to see what happens.
-        private String localResponse = null;
 		
 		// This is the interface for the callback method to use.
 		public interface RequestListener {
@@ -44,7 +43,7 @@ public class AsyncDataRetrieval extends AsyncTask<String, Integer, String> {
 		@Override
 	    protected void onPostExecute(String jsonResult) {
 			if (requestListener != null) {
-				requestListener.onFinished(this.localResponse);
+				requestListener.onFinished(jsonResult);
 			}
 	    }
 		
@@ -62,15 +61,17 @@ public class AsyncDataRetrieval extends AsyncTask<String, Integer, String> {
 		    	    //No fucking clue what this magic does
 				 HttpEntity httpEntity = httpResponse.getEntity();
 		    	  stringResponse = EntityUtils.toString(httpEntity);
-		    	  localResponse = stringResponse;
 		    	    //Turn our JSON string into actual JSON
 			} catch (IOException e ) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
-				Log.e("FUCK", "Possible timeout on async network request. Url : " +url);
+				Log.e("FUCK", "Possible timeout on async network request. Url : " + url);
+				return "NE1";
+
 			} catch (Exception e) {
 				Log.e("FUCK", "Possible timeout on async network request. Url : " +url);
 				e.printStackTrace();
+				return "NE1";
             }
 			return stringResponse;
 		}

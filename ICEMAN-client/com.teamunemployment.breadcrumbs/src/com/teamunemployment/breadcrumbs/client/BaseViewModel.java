@@ -280,7 +280,7 @@ public class BaseViewModel extends AppCompatActivity {
     // Show a snackbar message to the user
     private void displayMessage(String string) {
 
-        final CoordinatorLayout coordinatorLayout = (CoordinatorLayout) findViewById(R.id.main_content);
+        final CoordinatorLayout coordinatorLayout = (CoordinatorLayout) findViewById(R.id.test);
         Snackbar snackbar = Snackbar.make(coordinatorLayout, string, Snackbar.LENGTH_LONG).setAction("UNDO", null);
 
         // Set text color

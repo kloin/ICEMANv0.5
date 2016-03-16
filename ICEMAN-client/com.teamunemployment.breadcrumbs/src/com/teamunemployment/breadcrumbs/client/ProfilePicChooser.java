@@ -15,7 +15,7 @@ import com.teamunemployment.breadcrumbs.caching.GlobalContainer;
 import java.io.IOException;
 
 /**
- * Created by aDirtyCanvas on 4/23/2015.
+ * Created by Josiah kendall on 4/23/2015.
  */
 public class ProfilePicChooser extends Activity {
 
