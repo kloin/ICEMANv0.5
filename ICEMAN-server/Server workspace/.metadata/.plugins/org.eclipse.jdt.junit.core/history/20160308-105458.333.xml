@@ -1,6 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun name="GETtest" project="BreadCrumbs" tests="2" started="2" failures="0" errors="0" ignored="0">
-  <testsuite name="testShit.GETtest" incomplete="true">
-    <testcase name="TestThatICanSendEmailOfDetailsToAddress" classname="testShit.GETtest" time="44.525"/>
-    <testcase name="TestThatFacebookUserCanBeCreated" classname="testShit.GETtest" incomplete="true"/>
-  </testsuite>
-</testrun>

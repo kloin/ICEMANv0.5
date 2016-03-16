@@ -66,6 +66,21 @@ public class RESTUser {
 	}
 	
 	@GET
+	@Path("UnPinUserForUser/{UserId}/{UserId2}")
+	public String UnPinUserForUser(@PathParam("UserId") String UserId, @PathParam("UserId2") String UserId2) {
+		UserService user = new UserService();
+		user.UnPinUserForAUser(UserId, UserId2);
+		return "200";
+	}
+	
+	@GET
+	@Path("DeleteAccount/{UserId}")
+	public String DeleteAccount(@PathParam("UserId") String UserId) {
+		Trail trail = new Trail();
+		return trail.DeleteNodeAndRelationship(UserId);	
+	}
+	
+	@GET
 	@Path("PinUserForUser/{FollowingUser}/{FollowedUser}")
 	public String PinUserForUser(@PathParam("FollowingUser") String UserIdA,
 			@PathParam("FollowedUser") String UserIdB) {

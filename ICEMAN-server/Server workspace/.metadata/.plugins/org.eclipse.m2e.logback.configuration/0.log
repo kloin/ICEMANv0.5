@@ -10833,3 +10833,186 @@ java.lang.NullPointerException: null
 2016-03-08 13:33:52,378 [Worker-141] INFO  o.e.m.c.i.embedder.EclipseLogger - skip non existing resourceDirectory C:\Users\jek40\iceman\ICEMANv0.5\ICEMAN-server\Server workspace\BreadCrumbs\src\main\resources
 2016-03-08 13:33:52,384 [Worker-141] WARN  o.e.m.c.i.embedder.EclipseLogger - Using platform encoding (Cp1252 actually) to copy filtered resources, i.e. build is platform dependent!
 2016-03-08 13:33:52,395 [Worker-141] INFO  o.e.m.c.i.embedder.EclipseLogger - skip non existing resourceDirectory C:\Users\jek40\iceman\ICEMANv0.5\ICEMAN-server\Server workspace\BreadCrumbs\src\test\resources
+2016-03-16 13:44:12,236 [Worker-1] ERROR o.e.m.c.i.p.r.ProjectRegistryReader - Can't read workspace state
+java.io.InvalidClassException: org.eclipse.m2e.core.internal.project.registry.BasicProjectRegistry; local class incompatible: stream classdesc serialVersionUID = 6232274446642339434, local class serialVersionUID = 5542512601401896748
+	at java.io.ObjectStreamClass.initNonProxy(Unknown Source) ~[na:1.7.0_79]
+	at java.io.ObjectInputStream.readNonProxyDesc(Unknown Source) ~[na:1.7.0_79]
+	at java.io.ObjectInputStream.readClassDesc(Unknown Source) ~[na:1.7.0_79]
+	at java.io.ObjectInputStream.readNonProxyDesc(Unknown Source) ~[na:1.7.0_79]
+	at java.io.ObjectInputStream.readClassDesc(Unknown Source) ~[na:1.7.0_79]
+	at java.io.ObjectInputStream.readOrdinaryObject(Unknown Source) ~[na:1.7.0_79]
+	at java.io.ObjectInputStream.readObject0(Unknown Source) ~[na:1.7.0_79]
+	at java.io.ObjectInputStream.readObject(Unknown Source) ~[na:1.7.0_79]
+	at org.eclipse.m2e.core.internal.project.registry.ProjectRegistryReader.readWorkspaceState(ProjectRegistryReader.java:100) ~[org.eclipse.m2e.core_1.4.0.20130601-0317.jar:na]
+	at org.eclipse.m2e.core.internal.project.registry.ProjectRegistryManager.<init>(ProjectRegistryManager.java:139) [org.eclipse.m2e.core_1.4.0.20130601-0317.jar:na]
+	at org.eclipse.m2e.core.internal.MavenPluginActivator.start(MavenPluginActivator.java:204) [org.eclipse.m2e.core_1.4.0.20130601-0317.jar:na]
+	at org.eclipse.osgi.framework.internal.core.BundleContextImpl$1.run(BundleContextImpl.java:711) [org.eclipse.osgi_3.9.1.v20140110-1610.jar:na]
+	at java.security.AccessController.doPrivileged(Native Method) [na:1.7.0_79]
+	at org.eclipse.osgi.framework.internal.core.BundleContextImpl.startActivator(BundleContextImpl.java:702) [org.eclipse.osgi_3.9.1.v20140110-1610.jar:na]
+	at org.eclipse.osgi.framework.internal.core.BundleContextImpl.start(BundleContextImpl.java:683) [org.eclipse.osgi_3.9.1.v20140110-1610.jar:na]
+	at org.eclipse.osgi.framework.internal.core.BundleHost.startWorker(BundleHost.java:381) [org.eclipse.osgi_3.9.1.v20140110-1610.jar:na]
+	at org.eclipse.osgi.framework.internal.core.AbstractBundle.start(AbstractBundle.java:300) [org.eclipse.osgi_3.9.1.v20140110-1610.jar:na]
+	at org.eclipse.osgi.framework.util.SecureAction.start(SecureAction.java:478) [org.eclipse.osgi_3.9.1.v20140110-1610.jar:na]
+	at org.eclipse.osgi.internal.loader.BundleLoader.setLazyTrigger(BundleLoader.java:263) [org.eclipse.osgi_3.9.1.v20140110-1610.jar:na]
+	at org.eclipse.core.runtime.internal.adaptor.EclipseLazyStarter.postFindLocalClass(EclipseLazyStarter.java:109) [org.eclipse.osgi_3.9.1.v20140110-1610.jar:na]
+	at org.eclipse.osgi.baseadaptor.loader.ClasspathManager.findLocalClass(ClasspathManager.java:469) [org.eclipse.osgi_3.9.1.v20140110-1610.jar:na]
+	at org.eclipse.osgi.internal.baseadaptor.DefaultClassLoader.findLocalClass(DefaultClassLoader.java:216) [org.eclipse.osgi_3.9.1.v20140110-1610.jar:na]
+	at org.eclipse.osgi.internal.loader.BundleLoader.findLocalClass(BundleLoader.java:395) [org.eclipse.osgi_3.9.1.v20140110-1610.jar:na]
+	at org.eclipse.osgi.internal.loader.SingleSourcePackage.loadClass(SingleSourcePackage.java:35) [org.eclipse.osgi_3.9.1.v20140110-1610.jar:na]
+	at org.eclipse.osgi.internal.loader.BundleLoader.findClassInternal(BundleLoader.java:461) [org.eclipse.osgi_3.9.1.v20140110-1610.jar:na]
+	at org.eclipse.osgi.internal.loader.BundleLoader.findClass(BundleLoader.java:421) [org.eclipse.osgi_3.9.1.v20140110-1610.jar:na]
+	at org.eclipse.osgi.internal.loader.BundleLoader.findClass(BundleLoader.java:412) [org.eclipse.osgi_3.9.1.v20140110-1610.jar:na]
+	at org.eclipse.osgi.internal.baseadaptor.DefaultClassLoader.loadClass(DefaultClassLoader.java:107) [org.eclipse.osgi_3.9.1.v20140110-1610.jar:na]
+	at java.lang.ClassLoader.loadClass(Unknown Source) [na:1.7.0_79]
+	at java.lang.Class.getDeclaredConstructors0(Native Method) [na:1.7.0_79]
+	at java.lang.Class.privateGetDeclaredConstructors(Unknown Source) [na:1.7.0_79]
+	at java.lang.Class.getConstructor0(Unknown Source) [na:1.7.0_79]
+	at java.lang.Class.newInstance(Unknown Source) [na:1.7.0_79]
+	at org.eclipse.osgi.framework.internal.core.AbstractBundle.loadBundleActivator(AbstractBundle.java:167) [org.eclipse.osgi_3.9.1.v20140110-1610.jar:na]
+	at org.eclipse.osgi.framework.internal.core.BundleContextImpl.start(BundleContextImpl.java:679) [org.eclipse.osgi_3.9.1.v20140110-1610.jar:na]
+	at org.eclipse.osgi.framework.internal.core.BundleHost.startWorker(BundleHost.java:381) [org.eclipse.osgi_3.9.1.v20140110-1610.jar:na]
+	at org.eclipse.osgi.framework.internal.core.AbstractBundle.start(AbstractBundle.java:300) [org.eclipse.osgi_3.9.1.v20140110-1610.jar:na]
+	at org.eclipse.osgi.framework.util.SecureAction.start(SecureAction.java:478) [org.eclipse.osgi_3.9.1.v20140110-1610.jar:na]
+	at org.eclipse.osgi.internal.loader.BundleLoader.setLazyTrigger(BundleLoader.java:263) [org.eclipse.osgi_3.9.1.v20140110-1610.jar:na]
+	at org.eclipse.core.runtime.internal.adaptor.EclipseLazyStarter.postFindLocalClass(EclipseLazyStarter.java:109) [org.eclipse.osgi_3.9.1.v20140110-1610.jar:na]
+	at org.eclipse.osgi.baseadaptor.loader.ClasspathManager.findLocalClass(ClasspathManager.java:469) [org.eclipse.osgi_3.9.1.v20140110-1610.jar:na]
+	at org.eclipse.osgi.internal.baseadaptor.DefaultClassLoader.findLocalClass(DefaultClassLoader.java:216) [org.eclipse.osgi_3.9.1.v20140110-1610.jar:na]
+	at org.eclipse.osgi.internal.loader.BundleLoader.findLocalClass(BundleLoader.java:395) [org.eclipse.osgi_3.9.1.v20140110-1610.jar:na]
+	at org.eclipse.osgi.internal.loader.BundleLoader.findClassInternal(BundleLoader.java:464) [org.eclipse.osgi_3.9.1.v20140110-1610.jar:na]
+	at org.eclipse.osgi.internal.loader.BundleLoader.findClass(BundleLoader.java:421) [org.eclipse.osgi_3.9.1.v20140110-1610.jar:na]
+	at org.eclipse.osgi.internal.loader.BundleLoader.findClass(BundleLoader.java:412) [org.eclipse.osgi_3.9.1.v20140110-1610.jar:na]
+	at org.eclipse.osgi.internal.baseadaptor.DefaultClassLoader.loadClass(DefaultClassLoader.java:107) [org.eclipse.osgi_3.9.1.v20140110-1610.jar:na]
+	at java.lang.ClassLoader.loadClass(Unknown Source) [na:1.7.0_79]
+	at org.eclipse.osgi.internal.loader.BundleLoader.loadClass(BundleLoader.java:340) [org.eclipse.osgi_3.9.1.v20140110-1610.jar:na]
+	at org.eclipse.osgi.framework.internal.core.BundleHost.loadClass(BundleHost.java:229) [org.eclipse.osgi_3.9.1.v20140110-1610.jar:na]
+	at org.eclipse.osgi.framework.internal.core.AbstractBundle.loadClass(AbstractBundle.java:1212) [org.eclipse.osgi_3.9.1.v20140110-1610.jar:na]
+	at org.eclipse.core.internal.registry.osgi.RegistryStrategyOSGI.createExecutableExtension(RegistryStrategyOSGI.java:174) [org.eclipse.equinox.registry_3.5.301.v20130717-1549.jar:na]
+	at org.eclipse.core.internal.registry.ExtensionRegistry.createExecutableExtension(ExtensionRegistry.java:905) [org.eclipse.equinox.registry_3.5.301.v20130717-1549.jar:na]
+	at org.eclipse.core.internal.registry.ConfigurationElement.createExecutableExtension(ConfigurationElement.java:243) [org.eclipse.equinox.registry_3.5.301.v20130717-1549.jar:na]
+	at org.eclipse.core.internal.registry.ConfigurationElementHandle.createExecutableExtension(ConfigurationElementHandle.java:55) [org.eclipse.equinox.registry_3.5.301.v20130717-1549.jar:na]
+	at org.eclipse.jdt.core.JavaCore.computeClasspathContainerInitializer(JavaCore.java:3268) [org.eclipse.jdt.core_3.9.2.v20140114-1555.jar:na]
+	at org.eclipse.jdt.core.JavaCore.getClasspathContainerInitializer(JavaCore.java:3244) [org.eclipse.jdt.core_3.9.2.v20140114-1555.jar:na]
+	at org.eclipse.jdt.internal.core.JavaModelManager.initializeContainer(JavaModelManager.java:2848) [org.eclipse.jdt.core_3.9.2.v20140114-1555.jar:na]
+	at org.eclipse.jdt.internal.core.JavaModelManager$11.run(JavaModelManager.java:2773) [org.eclipse.jdt.core_3.9.2.v20140114-1555.jar:na]
+	at org.eclipse.jdt.internal.core.JavaModelManager.initializeAllContainers(JavaModelManager.java:2811) [org.eclipse.jdt.core_3.9.2.v20140114-1555.jar:na]
+	at org.eclipse.jdt.internal.core.JavaModelManager.getClasspathContainer(JavaModelManager.java:1897) [org.eclipse.jdt.core_3.9.2.v20140114-1555.jar:na]
+	at org.eclipse.jdt.core.JavaCore.getClasspathContainer(JavaCore.java:3221) [org.eclipse.jdt.core_3.9.2.v20140114-1555.jar:na]
+	at org.eclipse.jdt.internal.core.JavaProject.resolveClasspath(JavaProject.java:2692) [org.eclipse.jdt.core_3.9.2.v20140114-1555.jar:na]
+	at org.eclipse.jdt.internal.core.JavaProject.resolveClasspath(JavaProject.java:2856) [org.eclipse.jdt.core_3.9.2.v20140114-1555.jar:na]
+	at org.eclipse.jdt.internal.core.ClasspathChange.generateDelta(ClasspathChange.java:220) [org.eclipse.jdt.core_3.9.2.v20140114-1555.jar:na]
+	at org.eclipse.jdt.internal.core.DeltaProcessor.resourceChanged(DeltaProcessor.java:2052) [org.eclipse.jdt.core_3.9.2.v20140114-1555.jar:na]
+	at org.eclipse.jdt.internal.core.DeltaProcessingState.resourceChanged(DeltaProcessingState.java:470) [org.eclipse.jdt.core_3.9.2.v20140114-1555.jar:na]
+	at org.eclipse.core.internal.events.NotificationManager$1.run(NotificationManager.java:291) [org.eclipse.core.resources_3.8.101.v20130717-0806.jar:na]
+	at org.eclipse.core.runtime.SafeRunner.run(SafeRunner.java:42) [org.eclipse.equinox.common_3.6.200.v20130402-1505.jar:na]
+	at org.eclipse.core.internal.events.NotificationManager.notify(NotificationManager.java:285) [org.eclipse.core.resources_3.8.101.v20130717-0806.jar:na]
+	at org.eclipse.core.internal.events.NotificationManager.broadcastChanges(NotificationManager.java:149) [org.eclipse.core.resources_3.8.101.v20130717-0806.jar:na]
+	at org.eclipse.core.internal.resources.Workspace.broadcastPostChange(Workspace.java:396) [org.eclipse.core.resources_3.8.101.v20130717-0806.jar:na]
+	at org.eclipse.core.internal.resources.Workspace.endOperation(Workspace.java:1531) [org.eclipse.core.resources_3.8.101.v20130717-0806.jar:na]
+	at org.eclipse.core.internal.resources.InternalWorkspaceJob.run(InternalWorkspaceJob.java:45) [org.eclipse.core.resources_3.8.101.v20130717-0806.jar:na]
+	at org.eclipse.core.internal.jobs.Worker.run(Worker.java:53) [org.eclipse.core.jobs_3.5.300.v20130429-1813.jar:na]
+2016-03-16 13:44:29,316 [Worker-7] INFO  o.e.m.c.i.l.LifecycleMappingFactory - Using org.maven.ide.eclipse.wtp.WarLifecycleMapping lifecycle mapping for MavenProject: BreadCrumbs:BreadCrumbs:1 @ C:\Users\jek40\Desktop\ICEMANv0.5\ICEMAN-server\Server workspace\BreadCrumbs\pom.xml.
+2016-03-16 13:44:30,794 [Worker-1] INFO  o.e.m.c.i.l.LifecycleMappingFactory - Using org.maven.ide.eclipse.wtp.WarLifecycleMapping lifecycle mapping for MavenProject: BreadCrumbs:BreadCrumbs:1 @ C:\Users\jek40\Desktop\ICEMANv0.5\ICEMAN-server\Server workspace\BreadCrumbs\pom.xml.
+2016-03-16 13:44:37,723 [Worker-1] WARN  o.e.m.c.i.embedder.EclipseLogger - Using platform encoding (Cp1252 actually) to copy filtered resources, i.e. build is platform dependent!
+2016-03-16 13:44:37,773 [Worker-1] INFO  o.e.m.c.i.embedder.EclipseLogger - skip non existing resourceDirectory C:\Users\jek40\Desktop\ICEMANv0.5\ICEMAN-server\Server workspace\BreadCrumbs\src\main\resources
+2016-03-16 13:44:37,800 [Worker-1] WARN  o.e.m.c.i.embedder.EclipseLogger - Using platform encoding (Cp1252 actually) to copy filtered resources, i.e. build is platform dependent!
+2016-03-16 13:44:37,835 [Worker-1] INFO  o.e.m.c.i.embedder.EclipseLogger - skip non existing resourceDirectory C:\Users\jek40\Desktop\ICEMANv0.5\ICEMAN-server\Server workspace\BreadCrumbs\src\test\resources
+2016-03-16 13:44:37,841 [Worker-1] INFO  o.e.m.w.i.f.ResourceFilteringBuildParticipant - Changed resources require a complete clean of filtered resources of BreadCrumbs
+2016-03-16 13:44:37,842 [Worker-1] INFO  o.e.m.w.i.f.ResourceFilteringBuildParticipant - Executing resource filtering for BreadCrumbs
+2016-03-16 13:44:37,845 [Worker-1] WARN  o.e.m.c.i.embedder.EclipseLogger - The POM for org.apache.maven.plugins:maven-clean-plugin:jar:2.4.1 is missing, no dependency information available
+2016-03-16 13:44:37,854 [Worker-1] WARN  o.e.m.c.i.embedder.EclipseLogger - Failed to retrieve plugin descriptor for org.apache.maven.plugins:maven-clean-plugin:2.4.1: Plugin org.apache.maven.plugins:maven-clean-plugin:2.4.1 or one of its dependencies could not be resolved: Failed to read artifact descriptor for org.apache.maven.plugins:maven-clean-plugin:jar:2.4.1
+2016-03-16 13:44:37,860 [Worker-1] WARN  o.e.m.c.i.embedder.EclipseLogger - The POM for org.apache.maven.plugins:maven-install-plugin:jar:2.3.1 is missing, no dependency information available
+2016-03-16 13:44:37,868 [Worker-1] WARN  o.e.m.c.i.embedder.EclipseLogger - Failed to retrieve plugin descriptor for org.apache.maven.plugins:maven-install-plugin:2.3.1: Plugin org.apache.maven.plugins:maven-install-plugin:2.3.1 or one of its dependencies could not be resolved: Failed to read artifact descriptor for org.apache.maven.plugins:maven-install-plugin:jar:2.3.1
+2016-03-16 13:44:37,883 [Worker-1] WARN  o.e.m.c.i.embedder.EclipseLogger - The POM for org.apache.maven.plugins:maven-clean-plugin:jar:2.4.1 is missing, no dependency information available
+2016-03-16 13:44:37,902 [Worker-1] WARN  o.e.m.c.i.embedder.EclipseLogger - Failed to retrieve plugin descriptor for org.apache.maven.plugins:maven-clean-plugin:2.4.1: Plugin org.apache.maven.plugins:maven-clean-plugin:2.4.1 or one of its dependencies could not be resolved: Failed to read artifact descriptor for org.apache.maven.plugins:maven-clean-plugin:jar:2.4.1
+2016-03-16 13:44:37,910 [Worker-1] WARN  o.e.m.c.i.embedder.EclipseLogger - The POM for org.apache.maven.plugins:maven-install-plugin:jar:2.3.1 is missing, no dependency information available
+2016-03-16 13:44:37,926 [Worker-1] WARN  o.e.m.c.i.embedder.EclipseLogger - Failed to retrieve plugin descriptor for org.apache.maven.plugins:maven-install-plugin:2.3.1: Plugin org.apache.maven.plugins:maven-install-plugin:2.3.1 or one of its dependencies could not be resolved: Failed to read artifact descriptor for org.apache.maven.plugins:maven-install-plugin:jar:2.3.1
+2016-03-16 13:44:37,944 [Worker-1] WARN  o.e.m.c.i.embedder.EclipseLogger - Using platform encoding (Cp1252 actually) to copy filtered resources, i.e. build is platform dependent!
+2016-03-16 13:44:37,995 [Worker-5] INFO  o.e.m.c.i.l.LifecycleMappingFactory - Using org.maven.ide.eclipse.wtp.WarLifecycleMapping lifecycle mapping for MavenProject: BreadCrumbs:BreadCrumbs:1 @ C:\Users\jek40\Desktop\ICEMANv0.5\ICEMAN-server\Server workspace\BreadCrumbs\pom.xml.
+2016-03-16 13:45:24,971 [Worker-11] WARN  o.e.m.c.i.embedder.EclipseLogger - Using platform encoding (Cp1252 actually) to copy filtered resources, i.e. build is platform dependent!
+2016-03-16 13:45:24,982 [Worker-11] INFO  o.e.m.c.i.embedder.EclipseLogger - skip non existing resourceDirectory C:\Users\jek40\Desktop\ICEMANv0.5\ICEMAN-server\Server workspace\BreadCrumbs\src\main\resources
+2016-03-16 13:45:24,989 [Worker-11] WARN  o.e.m.c.i.embedder.EclipseLogger - Using platform encoding (Cp1252 actually) to copy filtered resources, i.e. build is platform dependent!
+2016-03-16 13:45:24,997 [Worker-11] INFO  o.e.m.c.i.embedder.EclipseLogger - skip non existing resourceDirectory C:\Users\jek40\Desktop\ICEMANv0.5\ICEMAN-server\Server workspace\BreadCrumbs\src\test\resources
+2016-03-16 13:48:18,493 [Worker-4] INFO  o.e.m.c.i.l.LifecycleMappingFactory - Using org.maven.ide.eclipse.wtp.WarLifecycleMapping lifecycle mapping for MavenProject: BreadCrumbs:BreadCrumbs:1 @ C:\Users\jek40\Desktop\ICEMANv0.5\ICEMAN-server\Server workspace\BreadCrumbs\pom.xml.
+2016-03-16 13:48:19,643 [Worker-4] WARN  o.e.m.c.i.embedder.EclipseLogger - Using platform encoding (Cp1252 actually) to copy filtered resources, i.e. build is platform dependent!
+2016-03-16 13:48:19,648 [Worker-4] INFO  o.e.m.c.i.embedder.EclipseLogger - skip non existing resourceDirectory C:\Users\jek40\Desktop\ICEMANv0.5\ICEMAN-server\Server workspace\BreadCrumbs\src\main\resources
+2016-03-16 13:48:19,650 [Worker-4] WARN  o.e.m.c.i.embedder.EclipseLogger - Using platform encoding (Cp1252 actually) to copy filtered resources, i.e. build is platform dependent!
+2016-03-16 13:48:19,654 [Worker-4] INFO  o.e.m.c.i.embedder.EclipseLogger - skip non existing resourceDirectory C:\Users\jek40\Desktop\ICEMANv0.5\ICEMAN-server\Server workspace\BreadCrumbs\src\test\resources
+2016-03-16 13:48:19,654 [Worker-4] INFO  o.e.m.w.i.f.ResourceFilteringBuildParticipant - Changed resources require a complete clean of filtered resources of BreadCrumbs
+2016-03-16 13:48:19,654 [Worker-4] INFO  o.e.m.w.i.f.ResourceFilteringBuildParticipant - Executing resource filtering for BreadCrumbs
+2016-03-16 13:48:19,655 [Worker-4] WARN  o.e.m.c.i.embedder.EclipseLogger - The POM for org.apache.maven.plugins:maven-clean-plugin:jar:2.4.1 is missing, no dependency information available
+2016-03-16 13:48:19,659 [Worker-4] WARN  o.e.m.c.i.embedder.EclipseLogger - Failed to retrieve plugin descriptor for org.apache.maven.plugins:maven-clean-plugin:2.4.1: Plugin org.apache.maven.plugins:maven-clean-plugin:2.4.1 or one of its dependencies could not be resolved: Failed to read artifact descriptor for org.apache.maven.plugins:maven-clean-plugin:jar:2.4.1
+2016-03-16 13:48:19,664 [Worker-4] WARN  o.e.m.c.i.embedder.EclipseLogger - The POM for org.apache.maven.plugins:maven-install-plugin:jar:2.3.1 is missing, no dependency information available
+2016-03-16 13:48:19,669 [Worker-4] WARN  o.e.m.c.i.embedder.EclipseLogger - Failed to retrieve plugin descriptor for org.apache.maven.plugins:maven-install-plugin:2.3.1: Plugin org.apache.maven.plugins:maven-install-plugin:2.3.1 or one of its dependencies could not be resolved: Failed to read artifact descriptor for org.apache.maven.plugins:maven-install-plugin:jar:2.3.1
+2016-03-16 13:48:19,674 [Worker-4] WARN  o.e.m.c.i.embedder.EclipseLogger - The POM for org.apache.maven.plugins:maven-clean-plugin:jar:2.4.1 is missing, no dependency information available
+2016-03-16 13:48:19,678 [Worker-4] WARN  o.e.m.c.i.embedder.EclipseLogger - Failed to retrieve plugin descriptor for org.apache.maven.plugins:maven-clean-plugin:2.4.1: Plugin org.apache.maven.plugins:maven-clean-plugin:2.4.1 or one of its dependencies could not be resolved: Failed to read artifact descriptor for org.apache.maven.plugins:maven-clean-plugin:jar:2.4.1
+2016-03-16 13:48:19,682 [Worker-4] WARN  o.e.m.c.i.embedder.EclipseLogger - The POM for org.apache.maven.plugins:maven-install-plugin:jar:2.3.1 is missing, no dependency information available
+2016-03-16 13:48:19,687 [Worker-4] WARN  o.e.m.c.i.embedder.EclipseLogger - Failed to retrieve plugin descriptor for org.apache.maven.plugins:maven-install-plugin:2.3.1: Plugin org.apache.maven.plugins:maven-install-plugin:2.3.1 or one of its dependencies could not be resolved: Failed to read artifact descriptor for org.apache.maven.plugins:maven-install-plugin:jar:2.3.1
+2016-03-16 13:48:19,695 [Worker-4] WARN  o.e.m.c.i.embedder.EclipseLogger - Using platform encoding (Cp1252 actually) to copy filtered resources, i.e. build is platform dependent!
+2016-03-16 13:48:34,060 [Worker-14] WARN  o.e.m.c.i.embedder.EclipseLogger - Using platform encoding (Cp1252 actually) to copy filtered resources, i.e. build is platform dependent!
+2016-03-16 13:48:34,065 [Worker-14] INFO  o.e.m.c.i.embedder.EclipseLogger - skip non existing resourceDirectory C:\Users\jek40\Desktop\ICEMANv0.5\ICEMAN-server\Server workspace\BreadCrumbs\src\main\resources
+2016-03-16 13:48:34,067 [Worker-14] WARN  o.e.m.c.i.embedder.EclipseLogger - Using platform encoding (Cp1252 actually) to copy filtered resources, i.e. build is platform dependent!
+2016-03-16 13:48:34,073 [Worker-14] INFO  o.e.m.c.i.embedder.EclipseLogger - skip non existing resourceDirectory C:\Users\jek40\Desktop\ICEMANv0.5\ICEMAN-server\Server workspace\BreadCrumbs\src\test\resources
+2016-03-16 13:48:57,860 [Worker-5] INFO  o.e.m.c.i.l.LifecycleMappingFactory - Using org.maven.ide.eclipse.wtp.WarLifecycleMapping lifecycle mapping for MavenProject: BreadCrumbs:BreadCrumbs:1 @ C:\Users\jek40\Desktop\ICEMANv0.5\ICEMAN-server\Server workspace\BreadCrumbs\pom.xml.
+2016-03-16 13:48:58,639 [Worker-5] WARN  o.e.m.c.i.embedder.EclipseLogger - Using platform encoding (Cp1252 actually) to copy filtered resources, i.e. build is platform dependent!
+2016-03-16 13:48:58,648 [Worker-5] INFO  o.e.m.c.i.embedder.EclipseLogger - skip non existing resourceDirectory C:\Users\jek40\Desktop\ICEMANv0.5\ICEMAN-server\Server workspace\BreadCrumbs\src\main\resources
+2016-03-16 13:48:58,654 [Worker-5] WARN  o.e.m.c.i.embedder.EclipseLogger - Using platform encoding (Cp1252 actually) to copy filtered resources, i.e. build is platform dependent!
+2016-03-16 13:48:58,662 [Worker-5] INFO  o.e.m.c.i.embedder.EclipseLogger - skip non existing resourceDirectory C:\Users\jek40\Desktop\ICEMANv0.5\ICEMAN-server\Server workspace\BreadCrumbs\src\test\resources
+2016-03-16 13:48:58,662 [Worker-5] INFO  o.e.m.w.i.f.ResourceFilteringBuildParticipant - Changed resources require a complete clean of filtered resources of BreadCrumbs
+2016-03-16 13:48:58,663 [Worker-5] INFO  o.e.m.w.i.f.ResourceFilteringBuildParticipant - Executing resource filtering for BreadCrumbs
+2016-03-16 13:48:58,663 [Worker-5] WARN  o.e.m.c.i.embedder.EclipseLogger - The POM for org.apache.maven.plugins:maven-clean-plugin:jar:2.4.1 is missing, no dependency information available
+2016-03-16 13:48:58,671 [Worker-5] WARN  o.e.m.c.i.embedder.EclipseLogger - Failed to retrieve plugin descriptor for org.apache.maven.plugins:maven-clean-plugin:2.4.1: Plugin org.apache.maven.plugins:maven-clean-plugin:2.4.1 or one of its dependencies could not be resolved: Failed to read artifact descriptor for org.apache.maven.plugins:maven-clean-plugin:jar:2.4.1
+2016-03-16 13:48:58,676 [Worker-5] WARN  o.e.m.c.i.embedder.EclipseLogger - The POM for org.apache.maven.plugins:maven-install-plugin:jar:2.3.1 is missing, no dependency information available
+2016-03-16 13:48:58,679 [Worker-5] WARN  o.e.m.c.i.embedder.EclipseLogger - Failed to retrieve plugin descriptor for org.apache.maven.plugins:maven-install-plugin:2.3.1: Plugin org.apache.maven.plugins:maven-install-plugin:2.3.1 or one of its dependencies could not be resolved: Failed to read artifact descriptor for org.apache.maven.plugins:maven-install-plugin:jar:2.3.1
+2016-03-16 13:48:58,684 [Worker-5] WARN  o.e.m.c.i.embedder.EclipseLogger - The POM for org.apache.maven.plugins:maven-clean-plugin:jar:2.4.1 is missing, no dependency information available
+2016-03-16 13:48:58,692 [Worker-5] WARN  o.e.m.c.i.embedder.EclipseLogger - Failed to retrieve plugin descriptor for org.apache.maven.plugins:maven-clean-plugin:2.4.1: Plugin org.apache.maven.plugins:maven-clean-plugin:2.4.1 or one of its dependencies could not be resolved: Failed to read artifact descriptor for org.apache.maven.plugins:maven-clean-plugin:jar:2.4.1
+2016-03-16 13:48:58,698 [Worker-5] WARN  o.e.m.c.i.embedder.EclipseLogger - The POM for org.apache.maven.plugins:maven-install-plugin:jar:2.3.1 is missing, no dependency information available
+2016-03-16 13:48:58,702 [Worker-5] WARN  o.e.m.c.i.embedder.EclipseLogger - Failed to retrieve plugin descriptor for org.apache.maven.plugins:maven-install-plugin:2.3.1: Plugin org.apache.maven.plugins:maven-install-plugin:2.3.1 or one of its dependencies could not be resolved: Failed to read artifact descriptor for org.apache.maven.plugins:maven-install-plugin:jar:2.3.1
+2016-03-16 13:48:58,719 [Worker-5] WARN  o.e.m.c.i.embedder.EclipseLogger - Using platform encoding (Cp1252 actually) to copy filtered resources, i.e. build is platform dependent!
+2016-03-16 13:49:04,196 [Worker-14] INFO  o.e.m.i.launch.MavenLaunchDelegate - C:\Users\jek40\Desktop\ICEMANv0.5\ICEMAN-server\Server workspace\BreadCrumbs
+2016-03-16 13:49:04,196 [Worker-14] INFO  o.e.m.i.launch.MavenLaunchDelegate -  mvn  -B install
+2016-03-16 13:49:17,544 [Worker-16] WARN  o.e.m.c.i.embedder.EclipseLogger - Using platform encoding (Cp1252 actually) to copy filtered resources, i.e. build is platform dependent!
+2016-03-16 13:49:17,549 [Worker-16] INFO  o.e.m.c.i.embedder.EclipseLogger - skip non existing resourceDirectory C:\Users\jek40\Desktop\ICEMANv0.5\ICEMAN-server\Server workspace\BreadCrumbs\src\main\resources
+2016-03-16 13:49:17,552 [Worker-16] WARN  o.e.m.c.i.embedder.EclipseLogger - Using platform encoding (Cp1252 actually) to copy filtered resources, i.e. build is platform dependent!
+2016-03-16 13:49:17,557 [Worker-16] INFO  o.e.m.c.i.embedder.EclipseLogger - skip non existing resourceDirectory C:\Users\jek40\Desktop\ICEMANv0.5\ICEMAN-server\Server workspace\BreadCrumbs\src\test\resources
+2016-03-16 13:55:17,028 [Worker-1] WARN  o.e.m.c.i.embedder.EclipseLogger - Using platform encoding (Cp1252 actually) to copy filtered resources, i.e. build is platform dependent!
+2016-03-16 13:55:17,427 [Worker-1] INFO  o.e.m.c.i.embedder.EclipseLogger - skip non existing resourceDirectory C:\Users\jek40\Desktop\ICEMANv0.5\ICEMAN-server\Server workspace\BreadCrumbs\src\main\resources
+2016-03-16 13:55:17,430 [Worker-1] WARN  o.e.m.c.i.embedder.EclipseLogger - Using platform encoding (Cp1252 actually) to copy filtered resources, i.e. build is platform dependent!
+2016-03-16 13:55:17,624 [Worker-1] INFO  o.e.m.c.i.embedder.EclipseLogger - skip non existing resourceDirectory C:\Users\jek40\Desktop\ICEMANv0.5\ICEMAN-server\Server workspace\BreadCrumbs\src\test\resources
+2016-03-16 14:02:12,284 [Worker-1] WARN  o.e.m.c.i.embedder.EclipseLogger - Using platform encoding (Cp1252 actually) to copy filtered resources, i.e. build is platform dependent!
+2016-03-16 14:02:12,359 [Worker-1] INFO  o.e.m.c.i.embedder.EclipseLogger - skip non existing resourceDirectory C:\Users\jek40\Desktop\ICEMANv0.5\ICEMAN-server\Server workspace\BreadCrumbs\src\main\resources
+2016-03-16 14:02:12,363 [Worker-1] WARN  o.e.m.c.i.embedder.EclipseLogger - Using platform encoding (Cp1252 actually) to copy filtered resources, i.e. build is platform dependent!
+2016-03-16 14:02:12,372 [Worker-1] INFO  o.e.m.c.i.embedder.EclipseLogger - skip non existing resourceDirectory C:\Users\jek40\Desktop\ICEMANv0.5\ICEMAN-server\Server workspace\BreadCrumbs\src\test\resources
+2016-03-16 14:03:20,776 [Worker-2] WARN  o.e.m.c.i.embedder.EclipseLogger - Using platform encoding (Cp1252 actually) to copy filtered resources, i.e. build is platform dependent!
+2016-03-16 14:03:20,780 [Worker-2] INFO  o.e.m.c.i.embedder.EclipseLogger - skip non existing resourceDirectory C:\Users\jek40\Desktop\ICEMANv0.5\ICEMAN-server\Server workspace\BreadCrumbs\src\main\resources
+2016-03-16 14:03:20,782 [Worker-2] WARN  o.e.m.c.i.embedder.EclipseLogger - Using platform encoding (Cp1252 actually) to copy filtered resources, i.e. build is platform dependent!
+2016-03-16 14:03:20,787 [Worker-2] INFO  o.e.m.c.i.embedder.EclipseLogger - skip non existing resourceDirectory C:\Users\jek40\Desktop\ICEMANv0.5\ICEMAN-server\Server workspace\BreadCrumbs\src\test\resources
+2016-03-16 14:03:27,651 [Worker-2] INFO  o.e.m.i.launch.MavenLaunchDelegate - C:\Users\jek40\Desktop\ICEMANv0.5\ICEMAN-server\Server workspace\BreadCrumbs
+2016-03-16 14:03:27,651 [Worker-2] INFO  o.e.m.i.launch.MavenLaunchDelegate -  mvn  -B install
+2016-03-16 14:03:32,200 [Worker-6] WARN  o.e.m.c.i.embedder.EclipseLogger - Using platform encoding (Cp1252 actually) to copy filtered resources, i.e. build is platform dependent!
+2016-03-16 14:03:32,206 [Worker-6] INFO  o.e.m.c.i.embedder.EclipseLogger - skip non existing resourceDirectory C:\Users\jek40\Desktop\ICEMANv0.5\ICEMAN-server\Server workspace\BreadCrumbs\src\main\resources
+2016-03-16 14:03:32,209 [Worker-6] WARN  o.e.m.c.i.embedder.EclipseLogger - Using platform encoding (Cp1252 actually) to copy filtered resources, i.e. build is platform dependent!
+2016-03-16 14:03:32,215 [Worker-6] INFO  o.e.m.c.i.embedder.EclipseLogger - skip non existing resourceDirectory C:\Users\jek40\Desktop\ICEMANv0.5\ICEMAN-server\Server workspace\BreadCrumbs\src\test\resources
+2016-03-16 14:03:50,615 [Worker-8] WARN  o.e.m.c.i.embedder.EclipseLogger - Using platform encoding (Cp1252 actually) to copy filtered resources, i.e. build is platform dependent!
+2016-03-16 14:03:50,621 [Worker-8] INFO  o.e.m.c.i.embedder.EclipseLogger - skip non existing resourceDirectory C:\Users\jek40\Desktop\ICEMANv0.5\ICEMAN-server\Server workspace\BreadCrumbs\src\main\resources
+2016-03-16 14:03:50,627 [Worker-8] WARN  o.e.m.c.i.embedder.EclipseLogger - Using platform encoding (Cp1252 actually) to copy filtered resources, i.e. build is platform dependent!
+2016-03-16 14:03:50,633 [Worker-8] INFO  o.e.m.c.i.embedder.EclipseLogger - skip non existing resourceDirectory C:\Users\jek40\Desktop\ICEMANv0.5\ICEMAN-server\Server workspace\BreadCrumbs\src\test\resources
+2016-03-16 14:03:56,162 [Worker-6] INFO  o.e.m.i.launch.MavenLaunchDelegate - C:\Users\jek40\Desktop\ICEMANv0.5\ICEMAN-server\Server workspace\BreadCrumbs
+2016-03-16 14:03:56,162 [Worker-6] INFO  o.e.m.i.launch.MavenLaunchDelegate -  mvn  -B install
+2016-03-16 14:05:40,726 [Worker-7] WARN  o.e.m.c.i.embedder.EclipseLogger - Using platform encoding (Cp1252 actually) to copy filtered resources, i.e. build is platform dependent!
+2016-03-16 14:05:40,736 [Worker-7] INFO  o.e.m.c.i.embedder.EclipseLogger - skip non existing resourceDirectory C:\Users\jek40\Desktop\ICEMANv0.5\ICEMAN-server\Server workspace\BreadCrumbs\src\main\resources
+2016-03-16 14:05:40,741 [Worker-7] WARN  o.e.m.c.i.embedder.EclipseLogger - Using platform encoding (Cp1252 actually) to copy filtered resources, i.e. build is platform dependent!
+2016-03-16 14:05:40,745 [Worker-7] INFO  o.e.m.c.i.embedder.EclipseLogger - skip non existing resourceDirectory C:\Users\jek40\Desktop\ICEMANv0.5\ICEMAN-server\Server workspace\BreadCrumbs\src\test\resources
+2016-03-16 14:05:59,327 [Worker-1] WARN  o.e.m.c.i.embedder.EclipseLogger - Using platform encoding (Cp1252 actually) to copy filtered resources, i.e. build is platform dependent!
+2016-03-16 14:05:59,333 [Worker-1] INFO  o.e.m.c.i.embedder.EclipseLogger - skip non existing resourceDirectory C:\Users\jek40\Desktop\ICEMANv0.5\ICEMAN-server\Server workspace\BreadCrumbs\src\main\resources
+2016-03-16 14:05:59,336 [Worker-1] WARN  o.e.m.c.i.embedder.EclipseLogger - Using platform encoding (Cp1252 actually) to copy filtered resources, i.e. build is platform dependent!
+2016-03-16 14:05:59,342 [Worker-1] INFO  o.e.m.c.i.embedder.EclipseLogger - skip non existing resourceDirectory C:\Users\jek40\Desktop\ICEMANv0.5\ICEMAN-server\Server workspace\BreadCrumbs\src\test\resources
+2016-03-16 14:06:25,562 [Worker-6] WARN  o.e.m.c.i.embedder.EclipseLogger - Using platform encoding (Cp1252 actually) to copy filtered resources, i.e. build is platform dependent!
+2016-03-16 14:06:25,572 [Worker-6] INFO  o.e.m.c.i.embedder.EclipseLogger - skip non existing resourceDirectory C:\Users\jek40\Desktop\ICEMANv0.5\ICEMAN-server\Server workspace\BreadCrumbs\src\main\resources
+2016-03-16 14:06:25,579 [Worker-6] WARN  o.e.m.c.i.embedder.EclipseLogger - Using platform encoding (Cp1252 actually) to copy filtered resources, i.e. build is platform dependent!
+2016-03-16 14:06:25,587 [Worker-6] INFO  o.e.m.c.i.embedder.EclipseLogger - skip non existing resourceDirectory C:\Users\jek40\Desktop\ICEMANv0.5\ICEMAN-server\Server workspace\BreadCrumbs\src\test\resources
+2016-03-16 14:06:31,114 [Worker-4] INFO  o.e.m.i.launch.MavenLaunchDelegate - C:\Users\jek40\Desktop\ICEMANv0.5\ICEMAN-server\Server workspace\BreadCrumbs
+2016-03-16 14:06:31,115 [Worker-4] INFO  o.e.m.i.launch.MavenLaunchDelegate -  mvn  -B install
+2016-03-16 14:06:45,711 [Worker-2] WARN  o.e.m.c.i.embedder.EclipseLogger - Using platform encoding (Cp1252 actually) to copy filtered resources, i.e. build is platform dependent!
+2016-03-16 14:06:45,719 [Worker-2] INFO  o.e.m.c.i.embedder.EclipseLogger - skip non existing resourceDirectory C:\Users\jek40\Desktop\ICEMANv0.5\ICEMAN-server\Server workspace\BreadCrumbs\src\main\resources
+2016-03-16 14:06:45,730 [Worker-2] WARN  o.e.m.c.i.embedder.EclipseLogger - Using platform encoding (Cp1252 actually) to copy filtered resources, i.e. build is platform dependent!
+2016-03-16 14:06:45,746 [Worker-2] INFO  o.e.m.c.i.embedder.EclipseLogger - skip non existing resourceDirectory C:\Users\jek40\Desktop\ICEMANv0.5\ICEMAN-server\Server workspace\BreadCrumbs\src\test\resources
