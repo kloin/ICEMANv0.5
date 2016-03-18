@@ -124,13 +124,13 @@ public class ProfilePageViewer extends AppCompatActivity  implements DatePickerD
 
     private void setEditButtonVisibility() {
         Log.d(TAG, "Setting up edit button visiblity");
+        TextView saveButton = (TextView) findViewById(R.id.profile_save);
+        saveButton.setVisibility(View.GONE);
         if (!userId.equals(PreferenceManager.getDefaultSharedPreferences(myContext).getString("USERID", "-1"))) {
             Log.d(TAG, "Not our local user - need to hide the edit/save buttons");
             // Hide the edsit button, and the Save button.
             TextView editButton = (TextView) findViewById(R.id.toggle_edit_profile);
             editButton.setVisibility(View.GONE);
-            TextView saveButton = (TextView) findViewById(R.id.profile_save);
-            saveButton.setVisibility(View.GONE);
         }
     }
 
@@ -453,7 +453,7 @@ public class ProfilePageViewer extends AppCompatActivity  implements DatePickerD
         // IF tag = 0, it is in edit mode, if it is 1 it is in
         String tag = editButton.getTag().toString();
         if (tag.equals(EDITMODE)) {
-            editButton.setText("DONE");
+            editButton.setText("SAVE");
             editButton.setTag(READONLY);
 
             TextView descriptionTextView = (TextView) findViewById(R.id.about_uneditable);
@@ -475,6 +475,13 @@ public class ProfilePageViewer extends AppCompatActivity  implements DatePickerD
             descriptionTextView.setText(aboutEdit.getText().toString());
             aboutEdit.setVisibility(View.GONE);
             aboutEdit.setEnabled(false);
+            //SAVE HERE
+            Editable aboutEditable = aboutEdit.getText();
+            String userId = PreferenceManager.getDefaultSharedPreferences(myContext).getString("USERID", "-1");
+            HTTPRequestHandler requestHandler = new HTTPRequestHandler();
+            if (aboutEditable != null) {
+                requestHandler.SaveNodeProperty(userId, "About", aboutEditable.toString());
+            }
         }
     }
 
@@ -536,6 +543,7 @@ public class ProfilePageViewer extends AppCompatActivity  implements DatePickerD
         String desc = resultJSON.get("Description").toString();
         String title = resultJSON.get("TrailName").toString();
         String coverId = resultJSON.get("CoverPhotoId").toString();
+        String id = resultJSON.get("Id").toString();
         try {
             // While we have not added three things:
             // For option 0, add it to the first
@@ -554,7 +562,7 @@ public class ProfilePageViewer extends AppCompatActivity  implements DatePickerD
 
                 ImageView imageView = (ImageView) parent.findViewById(R.id.trail_image1);
                 Glide.with(myContext).load(LoadBalancer.RequestCurrentDataAddress() + "/images/"+coverId+".jpg").centerCrop().crossFade().into(imageView);
-
+                parent.setOnClickListener(fetchOpenTrailClickListener(id));
             } else if (count == 2) {
                 parent = (RelativeLayout) findViewById(R.id.chip_sub_wrapper);
                 parent.setVisibility(View.VISIBLE);
@@ -564,6 +572,7 @@ public class ProfilePageViewer extends AppCompatActivity  implements DatePickerD
                 description.setText(desc);
                 ImageView imageView = (ImageView) parent.findViewById(R.id.trail_image);
                 Glide.with(myContext).load(LoadBalancer.RequestCurrentDataAddress() + "/images/"+coverId+".jpg").centerCrop().crossFade().into(imageView);
+                parent.setOnClickListener(fetchOpenTrailClickListener(id));
             } else {
                 parent = (RelativeLayout) findViewById(R.id.chip_sub_wrapper2);
                 parent.setVisibility(View.VISIBLE);
@@ -573,6 +582,7 @@ public class ProfilePageViewer extends AppCompatActivity  implements DatePickerD
                 description.setText(desc);
                 ImageView imageView = (ImageView) parent.findViewById(R.id.trail_image2);
                 Glide.with(myContext).load(LoadBalancer.RequestCurrentDataAddress() + "/images/"+coverId+".jpg").centerCrop().crossFade().into(imageView);
+                parent.setOnClickListener(fetchOpenTrailClickListener(id));
             }
         } catch (IllegalArgumentException ex) {
             // Generally happens if we press back too fast. Need to catch this
@@ -580,6 +590,22 @@ public class ProfilePageViewer extends AppCompatActivity  implements DatePickerD
         }
 
 
+    }
+
+    // A method that returns a click listener to load a trail when it is clicked on.
+    private View.OnClickListener fetchOpenTrailClickListener(final String id) {
+        return new View.OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+                Intent TrailViewer = new Intent();
+                TrailViewer.setClassName("com.teamunemployment.breadcrumbs", "com.teamunemployment.breadcrumbs.client.Maps.MapViewer");
+                Bundle extras = new Bundle();
+                extras.putString("TrailId", id);
+                TrailViewer.putExtras(extras);
+                myContext.startActivity(TrailViewer);
+            }
+        };
     }
 
     @Override

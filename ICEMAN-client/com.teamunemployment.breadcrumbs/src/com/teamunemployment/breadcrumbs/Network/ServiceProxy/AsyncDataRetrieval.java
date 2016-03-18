@@ -58,7 +58,6 @@ public class AsyncDataRetrieval extends AsyncTask<String, Integer, String> {
 			try {
 				 HttpGet httpGet = new HttpGet(url);
 				 HttpResponse httpResponse = httpClient.execute(httpGet);
-		    	    //No fucking clue what this magic does
 				 HttpEntity httpEntity = httpResponse.getEntity();
 		    	  stringResponse = EntityUtils.toString(httpEntity);
 		    	    //Turn our JSON string into actual JSON

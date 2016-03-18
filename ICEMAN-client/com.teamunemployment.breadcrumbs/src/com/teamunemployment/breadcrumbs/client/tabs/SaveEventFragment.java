@@ -3,6 +3,7 @@ package com.teamunemployment.breadcrumbs.client.tabs;
 import android.app.ActionBar;
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.location.Address;
 import android.location.Geocoder;
@@ -20,6 +21,7 @@ import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.getbase.floatingactionbutton.FloatingActionButton;
@@ -35,6 +37,8 @@ import com.google.android.gms.common.api.ResultCallback;
 import com.google.android.gms.location.places.Place;
 import com.google.android.gms.location.places.PlaceLikelihood;
 import com.google.android.gms.location.places.PlaceLikelihoodBuffer;
+import com.teamunemployment.breadcrumbs.client.BaseViewModel;
+import com.teamunemployment.breadcrumbs.client.Main;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -139,8 +143,8 @@ public class SaveEventFragment extends Activity {
             }
         });*/
 
-		final FloatingActionButton newTrailButton =
-				(FloatingActionButton) findViewById(R.id.done_button);
+		final TextView newTrailButton =
+				(TextView) findViewById(R.id.done_button);
 			newTrailButton.setOnClickListener(new OnClickListener() {
 				@Override
 				public void onClick(View view) {
@@ -302,7 +306,9 @@ public class SaveEventFragment extends Activity {
 
 				// We need to wait
 				createNewCrumb(chat, UserId, TrailId, latitude, longitude,  "icon", ".jpg", placeId, finalSuburb, finalCity, finalCountry, timeStamp);
-				finish();
+				Intent myIntent = new Intent(context, BaseViewModel.class);
+				myIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+				context.startActivity(myIntent);
 			}
 		});
 	}

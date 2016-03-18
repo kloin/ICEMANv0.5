@@ -26,8 +26,8 @@ import java.util.Date;
 /**
  * Created by Josiah Kendall August 2015.
  *
- * This is basically and adaption of the fused location provider provided by google in their code
- * samples.
+ * Breadcrumbs Fused Location Provider is mostly used as a Background tracking service. Has been
+ * replaced mostly by the PathSense.
  */
 public class BreadCrumbsFusedLocationProvider implements
         GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, LocationListener {
@@ -164,18 +164,20 @@ public class BreadCrumbsFusedLocationProvider implements
         // you may receive them slower than requested. You may also receive updates faster than
         // requested if other applications are requesting location at a faster interval.
         mLocationRequest.setInterval(UPDATE_INTERVAL_IN_MILLISECONDS);
-
+        mLocationRequest.setSmallestDisplacement(100);
         // Sets the fastest rate for active location updates. This interval is exact, and your
         // application will never receive updates faster than this value.
         mLocationRequest.setFastestInterval(FASTEST_UPDATE_INTERVAL_IN_MILLISECONDS);
-        //mLocationRequest.setSmallestDisplacement(10);
         mLocationRequest.setPriority(LocationRequest.PRIORITY_LOW_POWER);
         mGoogleApiClient.connect();
     }
 
+    // Note really used because it is used in the master class. Keeping this in a seperate class for
+    // keeping the other class simpler.
     public static Location GetCurrentLocation() {
         return mCurrentLocation;
     }
+
     /**
      * Requests location updates from the FusedLocationApi.
      */

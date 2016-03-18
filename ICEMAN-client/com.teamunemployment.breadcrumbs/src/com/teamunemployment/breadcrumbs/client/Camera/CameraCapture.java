@@ -55,19 +55,12 @@ public class CameraCapture extends ActionBarActivity {
         // Construction purposes.
 		setBackButtonListener();
         clientProxyService = MasterProxy.GetProxyInstance();
-		FrameLayout header = (FrameLayout) findViewById(R.id.header);
-		ViewGroup.LayoutParams headerLayoutParams = header.getLayoutParams();
-		RelativeLayout previewBlocker = (RelativeLayout) findViewById(R.id.camera_preview_cover);
-		ViewGroup.LayoutParams layoutParams = previewBlocker.getLayoutParams();
+		FrameLayout overlay = (FrameLayout) findViewById(R.id.camera_overlay);
+		ViewGroup.LayoutParams overlayParams = overlay.getLayoutParams();
 		DisplayMetrics displaymetrics = new DisplayMetrics();
 		getWindowManager().getDefaultDisplay().getMetrics(displaymetrics);
-		int height = displaymetrics.heightPixels-headerLayoutParams.height;
-		height = height - displaymetrics.widthPixels;
-		Log.d("CAM", "Setting camera height : " + height);
-		Log.d("CAM", "screen width: " + displaymetrics.widthPixels);
-
-		layoutParams.height = height;
-		previewBlocker.setLayoutParams(layoutParams);
+		overlayParams.height = displaymetrics.widthPixels;
+		overlay.setLayoutParams(overlayParams);
 	}
 
 	private void setBackButtonListener() {

@@ -91,6 +91,7 @@ public class CameraController extends SurfaceView implements SurfaceHolder.Callb
         cameraHeight = size.height;
         cameraWidth = size.width;
         parameters.setPictureSize(size.width, size.height);
+
         mCamera.setParameters(parameters);
 
         CheckOrientationIsNotAllFuckingRetarded(parameters, display);
@@ -432,7 +433,7 @@ public class CameraController extends SurfaceView implements SurfaceHolder.Callb
              //if (bm.getWidth() > 720 && bm.getHeight() > 1100 && backCameraOpen) {
             int difference = cameraWidth -cameraHeight;
             Log.d("CAM", "Creating bitmap. Width: " + cameraWidth + " Height: " + cameraHeight + " Difference: " + difference);
-            bm = Bitmap.createBitmap(bm, 0, 0, 720, 720);
+            bm = Bitmap.createBitmap(bm, 0, 150, 720, 720);
            // bm = Bitmap.createScaledBitmap(bm, 400, 400, true);
             // }
             // Cache our photo.

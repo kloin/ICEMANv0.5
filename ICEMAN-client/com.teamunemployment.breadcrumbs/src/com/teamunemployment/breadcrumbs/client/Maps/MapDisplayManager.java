@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 
 import com.teamunemployment.breadcrumbs.Location.BreadCrumbsFusedLocationProvider;
 import com.teamunemployment.breadcrumbs.Network.ServiceProxy.AsyncFetchThumbnail;
@@ -195,11 +196,16 @@ public class MapDisplayManager implements GoogleMap.OnMarkerClickListener, Googl
                 locationProvider.GetPlaceNameFromId(placeId, new ResultCallback<PlaceBuffer>() {
                     @Override
                     public void onResult(PlaceBuffer places) {
-                        Place place = places.get(0);
-                        if (place != null) {
-                           // TextView mapOverLayTitle = (TextView) context.findViewById(R.id.map_overlay_title);
-                           // mapOverLayTitle.setText(place.getName() + ", " + suburb );
+                        try {
+                            Place place = places.get(0);
+                            if (place != null) {
+                                // TextView mapOverLayTitle = (TextView) context.findViewById(R.id.map_overlay_title);
+                                // mapOverLayTitle.setText(place.getName() + ", " + suburb );
+                            }
+                        }catch(IllegalStateException ex) {
+                            Log.d("MAP", "Failed to get place. It probably doesnt exist");
                         }
+
                     }
                 });
 
