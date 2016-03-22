@@ -34,7 +34,7 @@
                     android:textColor="@color/accent"
                     android:textStyle="italic"
                     android:layout_marginRight="20dp"
-                    android:text="Beta v5"/>
+                    android:text="Beta v6"/>
             </android.support.v7.widget.Toolbar>
                 <android.support.design.widget.TabLayout
                     android:id="@+id/tabs"

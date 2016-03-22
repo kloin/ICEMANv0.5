@@ -66,6 +66,12 @@
         </receiver>
         <!-- [END gcm_receiver] -->
 
+        <!-- Path sense shit -->
+        <receiver android:name=".Location.PathSense.Geofence.BreadCrumbsPathSenseGeofenceEventReceiver" />
+        <receiver android:name=".Location.PathSense.Activity.PathsenseActivityChangeBroadcastReceiver" />
+        <receiver android:name=".Location.PathSense.Activity.PathsenseActivityUpdateBroadcastReceiver" />
+        <receiver android:name=".Location.PathSense.Activity.PathsenseDeviceHoldingBroadcastReceiver" />
+
         <!-- [START gcm_listener] -->
         <service
             android:name="com.teamunemployment.breadcrumbs.GCM.BreadcrumbsGcmReceiver"
@@ -110,7 +116,8 @@
             android:name=".client.TrailActivity"
             android:screenOrientation="portrait">
         </activity>
-        <activity android:name=".client.ProfilePageViewer"></activity>
+        <activity android:name=".client.ProfilePageViewer"
+            android:screenOrientation="portrait"></activity>
         <activity
             android:name=".client.SelectedEventViewerBase"
             android:screenOrientation="portrait">
@@ -119,11 +126,13 @@
             android:screenOrientation="portrait"
              android:windowSoftInputMode="stateHidden"> <!-- hide keyboard by default -->
          </activity>
-        <activity android:name=".client.Camera.CameraCapture">
+        <activity android:name=".client.Camera.CameraCapture"
+            android:screenOrientation="portrait">
         </activity>
         <activity android:name=".client.BreadCrumbsImageSelector"
             android:screenOrientation="portrait"></activity>
-        <activity android:name=".client.CrumbViewer.CrumbsHolder"></activity>
+        <activity android:name=".client.CrumbViewer.CrumbsHolder"
+            android:screenOrientation="portrait"></activity>
         <activity android:name="com.teamunemployment.breadcrumbs.client.tabs.SaveEventFragment"
                 android:screenOrientation="portrait">         
         </activity>
@@ -142,7 +151,8 @@
             android:theme="@android:style/Theme.Translucent.NoTitleBar"
             android:label="@string/app_name" />
         <activity android:name=".client.Settings"></activity>
-            <activity android:name=".client.tabs.SaveVideoActivity">
+            <activity android:name=".client.tabs.SaveVideoActivity"
+                android:screenOrientation="portrait">
         </activity>
         <activity android:name=".client.Maps.MapViewController"
                 android:screenOrientation="portrait">
@@ -170,12 +180,21 @@
 <!--AIzaSyBQ9w6VrGGquOHwERNrc_jAx_jcm8mrKQw  - this is the legit release one-->
       <!--  AIzaSyBmkUW1b2c3cXhz-Sw7cfWtK41Qz-0aaww -->
       <!--  AIzaSyCy82ucudMrzKRtUsF0S3v_DSVyNL5m9n8
+      A4:0B:0E:F1:E0:AB:A0:FF:3B:E4:C2:8E:D3:71:CA:93:6B:CB:84:70
       AIzaSyCfkLHIJIAnKKwd5S4nLMN5apRtWj28rwc- debug key-->
         <meta-data
             android:name="com.google.android.geo.API_KEY"
-            android:value="AIzaSyBQ9w6VrGGquOHwERNrc_jAx_jcm8mrKQw"/>
+            android:value="AIzaSyD1tXj_z3zgxB-5tPG8H9sXS4NCBWAJosA"/>
 
         <meta-data android:name="com.facebook.sdk.ApplicationId" android:value="@string/facebook_app_id"/>
+        <!-- Pathsense APIs -->
+        <meta-data
+            android:name="com.pathsense.android.sdk.CLIENT_ID"
+            android:value="eokdbRz3bSp5pnKIeclvscXZ4LxtTOc8JfNy0r9h" />
+
+        <meta-data
+            android:name="com.pathsense.android.sdk.API_KEY"
+            android:value="3sLBJDvIB97xvzeAF6VJD3UqFIQExqRJ2jnmp3JN" /> -->
     </application>
 
 </manifest>

@@ -39,6 +39,7 @@ import android.widget.TextView;
 
 import com.teamunemployment.breadcrumbs.Facebook.AccountManager;
 import com.teamunemployment.breadcrumbs.Location.BreadCrumbsFusedLocationProvider;
+import com.teamunemployment.breadcrumbs.Location.BreadcrumbsLocationProvider;
 import com.teamunemployment.breadcrumbs.Network.LoadBalancer;
 import com.teamunemployment.breadcrumbs.R;
 import com.teamunemployment.breadcrumbs.Network.ServiceProxy.AsyncDataRetrieval;
@@ -345,13 +346,16 @@ public class BaseViewModel extends AppCompatActivity {
                     // Stop and save here.
                     PreferenceManager.getDefaultSharedPreferences(context).edit().putBoolean("TRACKING", false).commit();
                     breadCrumbsFusedLocationProvider.StopBackgroundGPSSerivce();
+                    BreadcrumbsLocationProvider.getInstance(context).StopListeningToPathSense();
                     isTracking = false;
                 } else {
                     // Start tracking
                     String trailId = PreferenceManager.getDefaultSharedPreferences(context).getString("TRAILID", "-1");
                     if (!trailId.equals("-1")) {
                         PreferenceManager.getDefaultSharedPreferences(context).edit().putBoolean("TRACKING", true).commit();
-                        breadCrumbsFusedLocationProvider.StartBackgroundGPSService();
+                        //breadCrumbsFusedLocationProvider.StartBackgroundGPSService();
+                        BreadcrumbsLocationProvider.getInstance(context).StartListeningToPathSense();
+                        //BreadcrumbsLocationProvider.getInstance(context).ListenPassivelyForGPSUpdatesInBackground();
                         isTracking = true;
                     } else {
                         // Show dialog - cant start tracking

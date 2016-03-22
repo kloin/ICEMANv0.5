@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--    android:foreground="?android:windowContentOverlay" -->
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/popup_element"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:background="#88bbbbbb"
+    android:layout_height="match_parent">
+    <FrameLayout
+        android:id="@+id/comment_scroll_holder"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@drawable/border">
+        <ScrollView
+            android:id="@+id/comments_scroll"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical"
+                android:id="@+id/comment_holder">
+                </LinearLayout>
+
+     </ScrollView>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:orientation="horizontal"
+            android:layout_gravity="bottom"
+            android:layout_above="@+id/title_cont">
+
+            <EditText
+                android:layout_width="wrap_content"
+                android:layout_height="100px"
+                android:id="@+id/user_comment"
+                android:textColor="@color/half_black"
+                android:background="@drawable/rounded_edit_text_background"
+                android:layout_weight="1.64"
+                android:paddingLeft="10dp"
+                android:backgroundTint="@drawable/border"
+                android:hint="Comment..."/>
+
+            <ImageButton
+                android:layout_width="76dp"
+                android:layout_height="wrap_content"
+                android:src="@drawable/ic_action_accept"
+                android:textColor="@color/half_black"
+                android:background="@color/half_black"
+                android:id="@+id/comment_button" />
+        </LinearLayout>
+    </FrameLayout>
+</FrameLayout>

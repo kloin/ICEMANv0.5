@@ -1,0 +1,198 @@
+-injars 'C:\Users\jek40\Desktop\ICEMANv0.5\ICEMAN-client\com.teamunemployment.breadcrumbs\build\intermediates\transforms\jarMerging\debug\jars\1\1f\combined.jar'
+-outjars 'C:\Users\jek40\Desktop\ICEMANv0.5\ICEMAN-client\com.teamunemployment.breadcrumbs\build\intermediates\multi-dex\debug\componentClasses.jar'
+
+-libraryjars 'C:\Users\jek40\AppData\Local\Android\sdk\build-tools\23.0.2\lib\shrinkedAndroid.jar'
+
+-forceprocessing
+-dontoptimize
+-dontobfuscate
+-dontusemixedcaseclassnames
+-dontpreverify
+-dontwarn
+-printconfiguration 'C:\Users\jek40\Desktop\ICEMANv0.5\ICEMAN-client\com.teamunemployment.breadcrumbs\build\intermediates\multi-dex\debug\components.flags'
+
+
+-keep class com.teamunemployment.breadcrumbs.client.Main {
+    <init>();
+}
+
+-keep class com.teamunemployment.breadcrumbs.BootReciever.BootReceiver {
+    <init>();
+}
+
+-keep class com.google.android.gms.gcm.GcmReceiver {
+    <init>();
+}
+
+-keep class com.teamunemployment.breadcrumbs.Location.PathSense.Geofence.BreadCrumbsPathSenseGeofenceEventReceiver {
+    <init>();
+}
+
+-keep class com.teamunemployment.breadcrumbs.Location.PathSense.Activity.PathsenseActivityChangeBroadcastReceiver {
+    <init>();
+}
+
+-keep class com.teamunemployment.breadcrumbs.Location.PathSense.Activity.PathsenseActivityUpdateBroadcastReceiver {
+    <init>();
+}
+
+-keep class com.teamunemployment.breadcrumbs.Location.PathSense.Activity.PathsenseDeviceHoldingBroadcastReceiver {
+    <init>();
+}
+
+-keep class com.teamunemployment.breadcrumbs.GCM.BreadcrumbsGcmReceiver {
+    <init>();
+}
+
+-keep class com.teamunemployment.breadcrumbs.GCM.BreadcrumbsInstanceIdListenerService {
+    <init>();
+}
+
+-keep class com.teamunemployment.breadcrumbs.GCM.RegistrationIntentService {
+    <init>();
+}
+
+-keep class com.teamunemployment.breadcrumbs.BootReciever.BootloaderService {
+    <init>();
+}
+
+-keep class com.teamunemployment.breadcrumbs.client.TrailManager {
+    <init>();
+}
+
+-keep class com.teamunemployment.breadcrumbs.client.BaseViewModel {
+    <init>();
+}
+
+-keep class com.teamunemployment.breadcrumbs.client.CrumbViewer.CommentViewer {
+    <init>();
+}
+
+-keep class com.teamunemployment.breadcrumbs.Trails.CreateTrail {
+    <init>();
+}
+
+-keep class com.teamunemployment.breadcrumbs.Trails.EditMyTrail {
+    <init>();
+}
+
+-keep class com.teamunemployment.breadcrumbs.client.TrailActivity {
+    <init>();
+}
+
+-keep class com.teamunemployment.breadcrumbs.client.ProfilePageViewer {
+    <init>();
+}
+
+-keep class com.teamunemployment.breadcrumbs.client.SelectedEventViewerBase {
+    <init>();
+}
+
+-keep class com.teamunemployment.breadcrumbs.client.ImageViewer {
+    <init>();
+}
+
+-keep class com.teamunemployment.breadcrumbs.client.Camera.CameraCapture {
+    <init>();
+}
+
+-keep class com.teamunemployment.breadcrumbs.client.BreadCrumbsImageSelector {
+    <init>();
+}
+
+-keep class com.teamunemployment.breadcrumbs.client.CrumbViewer.CrumbsHolder {
+    <init>();
+}
+
+-keep class com.teamunemployment.breadcrumbs.client.tabs.SaveEventFragment {
+    <init>();
+}
+
+-keep class com.teamunemployment.breadcrumbs.client.Maps.MapViewer {
+    <init>();
+}
+
+-keep class com.teamunemployment.breadcrumbs.client.SplashScreen {
+    <init>();
+}
+
+-keep class com.teamunemployment.breadcrumbs.client.ImageChooser.ImageChooserTabWrapper {
+    <init>();
+}
+
+-keep class com.facebook.FacebookActivity {
+    <init>();
+}
+
+-keep class com.teamunemployment.breadcrumbs.client.Settings {
+    <init>();
+}
+
+-keep class com.teamunemployment.breadcrumbs.client.tabs.SaveVideoActivity {
+    <init>();
+}
+
+-keep class com.teamunemployment.breadcrumbs.client.Maps.MapViewController {
+    <init>();
+}
+
+-keep class com.teamunemployment.breadcrumbs.client.ProfilePicChooser {
+    <init>();
+}
+
+-keep class com.teamunemployment.breadcrumbs.client.OverflowNavigationDrawer {
+    <init>();
+}
+
+-keep class com.teamunemployment.breadcrumbs.client.EditExistingTrail {
+    <init>();
+}
+
+-keep class com.teamunemployment.breadcrumbs.client.About {
+    <init>();
+}
+
+-keep class com.teamunemployment.breadcrumbs.client.ImageChooser.TrailCoverImageSelector {
+    <init>();
+}
+
+-keep class com.facebook.FacebookContentProvider {
+    <init>();
+}
+
+-keep class com.teamunemployment.breadcrumbs.Location.LocationService {
+    <init>();
+}
+
+-keep class com.google.android.gms.measurement.AppMeasurementContentProvider {
+    <init>();
+}
+
+-keep class com.google.android.gms.measurement.AppMeasurementReceiver {
+    <init>();
+}
+
+-keep class com.google.android.gms.measurement.AppMeasurementService {
+    <init>();
+}
+
+-keep class com.pathsense.android.sdk.location.PathsenseLocationProviderApiBootCompletedReceiver {
+    <init>();
+}
+
+-keep class com.pathsense.android.sdk.location.PathsenseLocationProviderApiPackageUpdatedReceiver {
+    <init>();
+}
+
+-keep class com.pathsense.locationengine.apklib.locationEngine.LocationEngineService {
+    <init>();
+}
+
+-keep public class * extends android.app.backup.BackupAgent {
+    <init>();
+}
+
+-keep public class * extends java.lang.annotation.Annotation {
+    <fields>;
+    <methods>;
+}

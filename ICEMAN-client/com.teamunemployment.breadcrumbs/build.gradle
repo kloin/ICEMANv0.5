@@ -2,6 +2,9 @@ allprojects {
     repositories {
         mavenCentral()
         jcenter()
+        flatDir {
+            dirs 'libs'
+        }
     }
 }
 buildscript {
@@ -41,6 +44,7 @@ dependencies {
     compile 'com.facebook.android:facebook-android-sdk:4.8.0'
     compile 'com.sromku:simple-fb:4.1.1'
     compile 'com.github.medyo:fancybuttons:1.6'
+    compile(name:'pathsense-android-sdk-bundle-release-2.0.0.0', ext:'aar')
 }
 
 android {

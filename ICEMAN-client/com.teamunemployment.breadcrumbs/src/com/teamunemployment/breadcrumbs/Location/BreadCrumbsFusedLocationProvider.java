@@ -40,7 +40,7 @@ public class BreadCrumbsFusedLocationProvider implements
     /**
      * The desired interval for location updates. Inexact. Updates may be more or less frequent.
      */
-    public static final long UPDATE_INTERVAL_IN_MILLISECONDS = 240000;
+    public static final long UPDATE_INTERVAL_IN_MILLISECONDS = 900000;
 
     /**
      * The fastest rate for active location updates. Exact. Updates will never be more frequent
@@ -164,11 +164,11 @@ public class BreadCrumbsFusedLocationProvider implements
         // you may receive them slower than requested. You may also receive updates faster than
         // requested if other applications are requesting location at a faster interval.
         mLocationRequest.setInterval(UPDATE_INTERVAL_IN_MILLISECONDS);
-        mLocationRequest.setSmallestDisplacement(100);
+        mLocationRequest.setSmallestDisplacement(0);
         // Sets the fastest rate for active location updates. This interval is exact, and your
         // application will never receive updates faster than this value.
-        mLocationRequest.setFastestInterval(FASTEST_UPDATE_INTERVAL_IN_MILLISECONDS);
-        mLocationRequest.setPriority(LocationRequest.PRIORITY_LOW_POWER);
+        mLocationRequest.setFastestInterval(2000);
+        mLocationRequest.setPriority(LocationRequest.PRIORITY_NO_POWER);
         mGoogleApiClient.connect();
     }
 

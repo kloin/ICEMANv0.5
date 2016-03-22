@@ -1,0 +1,163 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.design.widget.CoordinatorLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/coordinatorLayout"
+    android:layout_height="match_parent"
+    android:layout_width="match_parent"
+    xmlns:card_view="http://schemas.android.com/tools">
+    <android.support.design.widget.AppBarLayout
+        android:id="@+id/app_bar_layout_profile"
+        android:layout_height="20dp"
+        android:layout_width="match_parent">
+        <android.support.design.widget.CollapsingToolbarLayout
+            android:id="@+id/collapsable_toolbar_holder"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:contentScrim="?attr/colorPrimary"
+            app:layout_scrollFlags="scroll|exitUntilCollapsed">
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <ImageView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:id="@+id/headerPicture"
+                    android:layout_alignParentLeft="true"
+                    android:scaleType="centerCrop"
+                    android:background="@color/ColorPrimary"
+                    android:layout_alignParentStart="true" />
+                <TextView
+                    android:id="@+id/profile_select_prompt"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_centerInParent="true"
+                    android:textColor="@color/white"
+                    android:gravity="center"
+                    android:textSize="16sp"
+                    android:text="Click to Select a Cover Image"/>
+
+
+            </RelativeLayout>
+
+            <android.support.v7.widget.Toolbar
+                android:id="@+id/toolbar"
+                android:layout_height="?attr/actionBarSize"
+                android:layout_width="match_parent"
+                app:layout_collapseMode="pin">
+                <ImageButton
+                    android:id="@+id/profile_back_button"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="-10dp"
+                    android:background="?attr/selectableItemBackground"
+                    android:src="@drawable/ic_action_back"/>
+                <TextView
+                    android:id="@+id/trail_save"
+                    android:text="SAVE"
+                    android:layout_alignParentEnd="true"
+                    android:layout_alignParentRight="true"
+                    android:textColor="@color/white"
+                    android:textSize="18sp"
+                    style="@style/CodeFont"
+                    android:layout_gravity="right"
+                    android:layout_width="wrap_content"
+                    android:gravity="center"
+                    android:layout_height="?attr/actionBarSize"
+                    android:layout_marginRight="10dp"
+                    android:background="?attr/selectableItemBackground" />
+            </android.support.v7.widget.Toolbar>
+        </android.support.design.widget.CollapsingToolbarLayout>
+    </android.support.design.widget.AppBarLayout>
+    <android.support.v4.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:fillViewport="true"
+        android:layout_gravity="fill_vertical"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:padding="1dp">
+
+            <android.support.v7.widget.CardView
+                android:id="@+id/basic_info_card"
+                android:layout_margin="5dp"
+                card_view:cardCornerRadius="1dp"
+                card_view:contentPadding="10dp"
+                android:elevation="2dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <RelativeLayout
+                    android:layout_below="@+id/headerContainer"
+                    android:id="@+id/trail_details_container"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:paddingLeft="10dp"
+                    android:paddingRight="10dp">
+
+                    <EditText
+                        android:id="@+id/title_edit"
+                        android:hint="Title"
+                        android:textSize="34sp"
+                        style="@style/CodeFont"
+                        android:layout_marginLeft="20dp"
+                        android:inputType="textCapSentences"
+                        android:layout_marginRight="20dp"
+                        android:layout_marginTop="10dp"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content" />
+                    <EditText
+                        android:id="@+id/countries_edit"
+                        android:textSize="16sp"
+                        style="@style/CodeFont"
+                        android:inputType="textCapSentences"
+                        android:layout_marginRight="20dp"
+                        android:hint="Brief Description (optional)"
+                        android:layout_below="@+id/title_edit"
+                        android:layout_marginTop="20dp"
+                        android:layout_marginBottom="20dp"
+                        android:layout_marginLeft="20dp"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content" />
+
+                    <DatePicker
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:visibility="gone"
+                        android:id="@+id/datePicker" />
+
+                    <!--
+                    <ImageView
+                        android:id="@+id/tags_icon"
+                        android:layout_below="@+id/countries_icon"
+                        android:layout_width="wrap_content"
+                        android:layout_marginLeft="30dp"
+                        android:layout_marginTop="30dp"
+                        android:layout_height="wrap_content"
+                        android:src="@drawable/ic_code_black_24dp"/>
+                   <EditText
+                        android:id="@+id/tags_edit"
+                        android:hint="Express yourself with a few tags!"
+                        android:layout_alignBottom="@+id/tags_icon"
+                        android:layout_toRightOf="@+id/countries_icon"
+                        android:textSize="13sp"
+                        android:layout_marginLeft="20dp"
+                        android:layout_width="wrap_content"
+                        android:minWidth="250dp"
+                        android:layout_marginRight="20dp"
+                        android:layout_height="wrap_content" /> -->
+
+                </RelativeLayout>
+            </android.support.v7.widget.CardView>
+
+
+        </LinearLayout>
+
+    </android.support.v4.widget.NestedScrollView>
+
+</android.support.design.widget.CoordinatorLayout>

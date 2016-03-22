@@ -1,11 +1,12 @@
 package com.teamunemployment.breadcrumbs.Location;
 
 import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.SharedPreferences;
-import android.graphics.Color;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
@@ -14,19 +15,17 @@ import android.os.Handler;
 import android.os.Message;
 import android.preference.PreferenceManager;
 import android.support.v4.app.NotificationCompat;
+import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
-import android.widget.Button;
+import android.widget.Toast;
 
-import com.google.android.gms.location.Geofence;
-import com.google.android.gms.maps.CameraUpdateFactory;
-import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.Circle;
-import com.google.android.gms.maps.model.CircleOptions;
-import com.google.android.gms.maps.model.LatLng;
 import com.pathsense.android.sdk.location.PathsenseGeofenceEvent;
 import com.pathsense.android.sdk.location.PathsenseLocationProviderApi;
-import com.teamunemployment.breadcrumbs.Location.PathSense.BreadCrumbsPathSenseGeofenceEventReceiver;
+import com.teamunemployment.breadcrumbs.Location.PathSense.Activity.PathSenseActivityManager;
+import com.teamunemployment.breadcrumbs.Location.PathSense.Geofence.BreadCrumbsPathSenseGeofenceEventReceiver;
 import com.teamunemployment.breadcrumbs.R;
+import com.teamunemployment.breadcrumbs.caching.TextCaching;
 import com.teamunemployment.breadcrumbs.database.DatabaseController;
 
 import java.util.ArrayList;
@@ -38,70 +37,107 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 /**
  * Written by Josiah Kendall.
  *
- * This is the master class for gps access. All gps calls should eventually go through here. This
- * is the main interface.
+ * This is the Master/God/Wrapper class for Location Access. All gps calls should go through here.
+ *
+ * This class can:
+ *      * Fetch Accurate GPS location on demand
+ *      * Fetch last known gps Location
+ *      * Fetch last known wi-fi location
+ *      * Fetch current providers
+ *      * Fetch location using cheapset provider
+ *      * Track user constatly using :
+ *          - PathSense
+ *          - GPS
+ *          - Fused (Kinda useless, becase wifi will rarely be available)
+ *
+ *  ************************************************
+ *      PathSense
+ *
+ *      PathSense is an APK from some guys in san diago. They have really shitty support, so good
+ *      luck contacting them.
+ *      It tracks user movement by understanding user activity (walking, running, driving), and uses
+ *      this to figure out speed and travel path. It needs to be along a road however (far as Im
+ *      aware) so when off a known road we need to fall back to regular GPS.
+ *
+ *  **************************************************
+ *      This class also has the regular gps, and the LocationManager has been made public to allow
+ *      other classes to have access to it, rather than reimplement all the methods.
+ *
  */
 public class BreadcrumbsLocationProvider implements LocationListener {
 
-    public static boolean isPathSenseRunning = false;
-    public static LocationManager androidLocationManager;
+    public int updates = 0;
+    // We want to allow other classes to access this and do stuff.
+    public LocationManager androidLocationManager;
 
     // Messages
-    static final int MESSAGE_ON_GEOFENCE_EVENT = 1;
-    static final String TAG = BreadcrumbsLocationProvider.class.getName();
-    static BreadcrumbsLocationProvider sInstance;
-
+    private static final int MESSAGE_ON_GEOFENCE_EVENT = 1;
+    private static final String TAG = BreadcrumbsLocationProvider.class.getName();
+    private static BreadcrumbsLocationProvider sInstance;
     // Manages fetching location from androids Location
 
-    private PathsenseLocationProviderApi mPathsenseLocationProviderApi;
-    public InternalHandler mHandler;
-    private Geofence geofence;
+
+    // Needs to be public so that we can access it from activity?
+    private InternalHandler mHandler;
     private Context mContext;
-    Circle mGeofence;
-    Circle mGeofenceEgress;
-    Circle mGeofenceIngress;
+    private Circle mGeofence;
+    private Circle mGeofenceEgress;
+    private Circle mGeofenceIngress;
     private InternalLocalGeofenceEventReceiver mLocalGeofenceEventReceiver;
+    private BreadCrumbsFusedLocationProvider mBreadcrumbsFusedLocationProvider;
     private PathsenseLocationProviderApi mApi;
     private SharedPreferences mPreferences;
     private int mFindLocation;
+    // debug shit
+    private TextCaching gpsHardLoggin;
 
     /*
         Singleton Entry point
      */
-    public static synchronized BreadcrumbsLocationProvider getInstance(Context context)
-    {
-        if (sInstance == null)
-        {
+    public static synchronized BreadcrumbsLocationProvider getInstance(Context context) {
+        if (sInstance == null) {
             sInstance = new BreadcrumbsLocationProvider(context);
         }
         return sInstance;
     }
-    // ---------------------- Instance Fields
+
     Queue<InternalHolder> mHolders = new ConcurrentLinkedQueue<InternalHolder>();
-    // ---------------------- Instance Methods
     private BreadcrumbsLocationProvider(Context context) {
         mContext = context;
         androidLocationManager = (LocationManager) context.getSystemService(Context.LOCATION_SERVICE);
-        mPathsenseLocationProviderApi = PathsenseLocationProviderApi.getInstance(context);
+        mPreferences = PreferenceManager.getDefaultSharedPreferences(mContext);
+
+        mLocalGeofenceEventReceiver = new InternalLocalGeofenceEventReceiver(this);
+        LocalBroadcastManager.getInstance(context).registerReceiver(mLocalGeofenceEventReceiver, new IntentFilter("geofenceEvent"));
+        mApi = PathsenseLocationProviderApi.getInstance(context);
+        mHandler = new InternalHandler(this);
+        gpsHardLoggin = new TextCaching(context);
+        //mFusedLocationProvider = new BreadCrumbsFusedLocationProvider(context);
     }
 
     /*
         Location Listener Overrides Start
      *******************************************************************************
+     *
+     * This is what we use to start our geoFencing. We have to fetch the location first to know where we are.
       */
     @Override
     public void onLocationChanged(Location location) {
 
         final SharedPreferences preferences = mPreferences;
         final PathsenseLocationProviderApi api = mApi;
-
-        if (preferences != null && api != null)
-        {
+        Toast.makeText(mContext, "Location found. Attempting to start PathSense",Toast.LENGTH_SHORT).show();
+        if (preferences != null && api != null) {
             if (mFindLocation == 1) {
                 mFindLocation = 0;
             } else {
                 // add 100m geofence around me
-                api.addGeofence("MYGEOFENCE", location.getLatitude(), location.getLongitude(), 100, BreadCrumbsPathSenseGeofenceEventReceiver.class);
+                Toast.makeText(mContext, "GeoFence in place",Toast.LENGTH_SHORT).show();
+                mApi.removeGeofence("MYGEOFENCE");
+                mApi.addGeofence("MYGEOFENCE", location.getLatitude(), location.getLongitude(), 100, BreadCrumbsPathSenseGeofenceEventReceiver.class);
+
+                // Debug shit while pathsense is not that solid.
+                gpsHardLoggin.CacheText("gps_location_found", "Added geoFence");
             }
         }
     }
@@ -123,26 +159,30 @@ public class BreadcrumbsLocationProvider implements LocationListener {
 
     public void StartListeningToPathSense() {
         cleanUp();
-        requestLocationUpdate(this);
+        //requestLocationUpdate(this);
+        startListeningToActivityChangesForUser(12);
+        BreadCrumbsFusedLocationProvider provider = new BreadCrumbsFusedLocationProvider(mContext);
+        provider.StartBackgroundGPSService();
     }
 
     // Just sort shit out before we start listening to the pathsense, incase of previous instances.
     private void cleanUp() {
-        if (mGeofence != null)
-        {
+        if (mGeofence != null) {
             mGeofence.remove();
             mGeofence = null;
         }
-        if (mGeofenceEgress != null)
-        {
+        if (mGeofenceEgress != null) {
             mGeofenceEgress.remove();
             mGeofenceEgress = null;
         }
-        if (mGeofenceIngress != null)
-        {
+        if (mGeofenceIngress != null) {
             mGeofenceIngress.remove();
             mGeofenceIngress = null;
         }
+    }
+
+    public void StartFusedBackGroundService() {
+
     }
 
     public void StopListeningToPathSense() {
@@ -154,96 +194,100 @@ public class BreadcrumbsLocationProvider implements LocationListener {
     // Purpose of this method is to put a getfence for pathSense around a given location.
     private void triggerPathSenseGeofenceAtLocation(Location location) {
         mApi.addGeofence("MYGEOFENCE", location.getLatitude(), location.getLongitude(), 100, BreadCrumbsPathSenseGeofenceEventReceiver.class);
+
     }
 
 
 
     // ---------------------- Static Classes
     // This class is used for holding diferent locations listeners that are used when actual location updates.
-    static class InternalHolder
-    {
+    static class InternalHolder {
         LocationListener mListener;
         List<InternalLocationListenerFilter> mFilterList;
     }
 
     /*
-        The InternalLocalGeoFenceEventReviever is where the updates on what our position is when the geofence is broken.
+        The InternalLocalGeoFenceEventReviever. This recieves the event that is thrown when
+        a geofence is exceeded by pathsense.
      */
-    static class InternalLocalGeofenceEventReceiver extends BroadcastReceiver
-    {
+    private static class InternalLocalGeofenceEventReceiver extends BroadcastReceiver {
         BreadcrumbsLocationProvider mActivity;
+        TextCaching localCache;
         //
         InternalLocalGeofenceEventReceiver(BreadcrumbsLocationProvider activity) {
             mActivity = activity;
+            localCache = new TextCaching(mActivity.mContext);
         }
+
         @Override
         public void onReceive(Context context, Intent intent) {
             final BreadcrumbsLocationProvider activity = mActivity;
-            final InternalHandler handler = activity != null ? activity.mHandler : null;
-            //
-            if (activity != null && handler != null)
-            {
+            final InternalHandler handler = mActivity.mHandler;
+            localCache.CacheText("GeoFenceEvent", "Recieved event! Doing work now");
+            if (activity != null && handler != null) {
+                localCache.CacheText("GeoFenceEvent", "Passed if statement");
                 // local broadcast from PathsenseGeofenceEventBroadcastReceiver
                 PathsenseGeofenceEvent geofenceEvent = (PathsenseGeofenceEvent) intent.getSerializableExtra("geofenceEvent");
                 Message msg = Message.obtain();
                 msg.what = MESSAGE_ON_GEOFENCE_EVENT;
                 msg.obj = geofenceEvent;
                 handler.sendMessage(msg);
+                localCache.CacheText("GeoFenceEvent", "Sent message to handler");
             }
         }
     }
 
     /*
-            This class is where we handle the location / Perimeter breach events.
+        This class is where we handle the location / Perimeter breach events.
      */
-    static class InternalHandler extends Handler
-    {
+    private static class InternalHandler extends Handler {
         BreadcrumbsLocationProvider mActivity;
-        //
-        int mZIndex;
-        //
+        TextCaching localCaching;
         InternalHandler(BreadcrumbsLocationProvider activity) {
             mActivity = activity;
+            localCaching = new TextCaching(activity.mContext);
         }
+
         @Override
         public void handleMessage(Message msg) {
+            localCaching.CacheText("Handler", "Handler triggered with message: " + msg.toString());
             final BreadcrumbsLocationProvider activity = mActivity;
-            //
+
             if (activity != null) {
+                localCaching.CacheText("Handler", "msg.what: " + msg.what);
                 switch (msg.what) {
                     case MESSAGE_ON_GEOFENCE_EVENT: {
+                        localCaching.CacheText("Handler", "Case correct. Now doing geofence work: ");
+
                         PathsenseGeofenceEvent geofenceEvent = (PathsenseGeofenceEvent) msg.obj;
                         Location location = geofenceEvent.getLocation();
+                        activity.mApi.removeGeofence("MYGEOFENCE2");
+                        activity.mApi.addGeofence("MYGEOFENCE2", location.getLatitude(), location.getLongitude(), 100, BreadCrumbsPathSenseGeofenceEventReceiver.class);
                         activity.ProcessUpdatedLocation(location);
 
                         // Trigger another api call.
-                        activity.mApi.addGeofence("MYGEOFENCE", location.getLatitude(), location.getLongitude(), 100, BreadCrumbsPathSenseGeofenceEventReceiver.class);
-
-                        }
+                        Toast.makeText(mActivity.mContext, "Added a new geofence",Toast.LENGTH_SHORT).show();
                     }
                 }
             }
         }
-
+    }
 
     private void ProcessUpdatedLocation(Location location) {
         // Save to database.
         DatabaseController dbc = new DatabaseController(mContext);
-        // Save to our db.
-
-        // Toast.makeText(this, location.getSpeed()+ "", Toast.LENGTH_SHORT).show();
-
-        /*
-         * Base conditions - We must be moving. We must have some level of accuracy. Hopefully this will sop
-         */
-        //if (location.getAccuracy() <= 60) {
         // I should actually set current trail Id at the end. Having more than one trail at a time does not make sense.
         String trailId = PreferenceManager.getDefaultSharedPreferences(mContext).getString("TRAILID", "-1");
         String userId = PreferenceManager.getDefaultSharedPreferences(mContext).getString("USERID", "-1");
         // If we successfully have retrieved our userId and trailId, we can save this point.
         // double lat = location.getLatitude();
         //  double lon = location.getLongitude();
-
+        NotificationManager notificationManager = (NotificationManager) mContext.getSystemService(mContext.NOTIFICATION_SERVICE);
+        NotificationCompat.Builder noti = new NotificationCompat.Builder(mContext);
+        noti.setContentTitle("BreadCrumbs");
+        noti.setContentText(location.getSpeed() + "is Speed , Provider: " + location.getProvider());
+        noti.setSmallIcon(R.drawable.bc64);
+        notificationManager.notify(1234, noti.build());
         if (!trailId.equals("-1") || !userId.equals("-1")) {
             dbc.saveTrailPoint(trailId, location, userId);
         }
@@ -285,6 +329,7 @@ public class BreadcrumbsLocationProvider implements LocationListener {
         }
     }
 
+
     boolean removeUpdates(LocationListener listener) {
         final Queue<InternalHolder> holders = mHolders;
         final LocationManager locationManager = androidLocationManager;
@@ -307,6 +352,12 @@ public class BreadcrumbsLocationProvider implements LocationListener {
             }
         }
         return false;
+    }
+
+    // Start listening for activity changes from a user (walking driving, rest etc)
+    private void startListeningToActivityChangesForUser(int durationInSeconds) {
+        PathSenseActivityManager pathSenseActivityManager = new PathSenseActivityManager(mContext);
+        pathSenseActivityManager.StartPathSenseActivityManager();
     }
 
     /*
@@ -345,25 +396,34 @@ public class BreadcrumbsLocationProvider implements LocationListener {
             }
         }
     }
-    boolean validate(Location location)
-    {
-        if (location != null)
-        {
 
+    /*
+        Listen to gps requests from other apps in the background.
+     */
+    public boolean ListenPassivelyForGPSUpdatesInBackground() {
+        Intent passiveGpsIntentService = new Intent(mContext, LocationService.class);
+        PendingIntent passiveGpsPendingIntent = PendingIntent.getService(mContext, 1, passiveGpsIntentService, 0);
+
+        androidLocationManager.requestLocationUpdates(LocationManager.PASSIVE_PROVIDER, 0, 0, passiveGpsPendingIntent);
+        return true;
+    }
+
+    public void AddGeofences(Location location) {
+        mApi.removeGeofences();
+        mApi.addGeofence("MYGEOFENCE2", location.getLatitude(), location.getLongitude(), 100, BreadCrumbsPathSenseGeofenceEventReceiver.class);
+    }
+    boolean validate(Location location) {
+        if (location != null) {
             String provider = location.getProvider();
-            if (androidLocationManager.NETWORK_PROVIDER.equals(provider))
-            {
+            if (androidLocationManager.NETWORK_PROVIDER.equals(provider)) {
                 double accuracy = location.getAccuracy();
                 long age = System.currentTimeMillis() - location.getTime();
                 Log.i(TAG, "provider=" + provider + ",accuracy=" + accuracy + ",age=" + age);
-                if (location.getAccuracy() <= 100.0 && age <= 20000)
-                {
+                if (location.getAccuracy() <= 100.0 && age <= 20000) {
                     return true;
                 }
-            } else if (androidLocationManager.GPS_PROVIDER.equals(provider))
-            {
-                if (location.getAccuracy() <= 50.0 && (System.currentTimeMillis() - location.getTime()) <= 5000)
-                {
+            } else if (androidLocationManager.GPS_PROVIDER.equals(provider)) {
+                if (location.getAccuracy() <= 50.0 && (System.currentTimeMillis() - location.getTime()) <= 5000) {
                     return true;
                 }
             }
