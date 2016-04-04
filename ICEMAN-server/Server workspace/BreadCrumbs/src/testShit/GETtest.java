@@ -32,10 +32,20 @@ import org.apache.commons.codec.binary.*;
 import org.apache.lucene.util.IOUtils;
 
 import com.breadcrumbs.database.DBMaster;
+import com.breadcrumbs.heavylifting.TrailManager20;
+import com.breadcrumbs.models.Location;
+import com.breadcrumbs.models.Polyline;
 import com.breadcrumbs.models.Trail;
 import com.breadcrumbs.models.UserService;
 import com.breadcrumbs.resource.RESTCrumb;
 import com.breadcrumbs.resource.RetrieveData;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Iterator;
+import java.util.List;
+
+import org.junit.Assert;
 
 public class GETtest {
 	private RetrieveData retrieve;
@@ -44,7 +54,6 @@ public class GETtest {
 	public void setUp() throws Exception {
 		retrieve = new RetrieveData();
 		dbMaster = DBMaster.GetAnInstanceOfDBMaster();
-
 	}
 
 	@After
@@ -182,4 +191,54 @@ public class GETtest {
 		assertTrue(!result.equals("404"));
 	}
 
+	@Test
+	public void TestRuebensFuckenMaoriWords() {
+		String id = retrieve.CreateNewUser("Josiah", "7873", "23", "M", "1", "jos899@gmail.com", "0");
+		String trailId = retrieve.SaveTrail("OOOHRAA", "just testing yo", id);
+		Trail trail = new Trail();
+		String trails = trail.GetSimpleDetailsForATrail(trailId);
+		System.out.println(trails);
+	}
+        
+        @Test
+        public void TestThatWeCanGetAPolylineFromGoogle() {
+            ArrayList<Location> locationList = new ArrayList<Location>();
+            Location location = new Location(-44.9439635,168.8379247 );
+            Location location2 = new Location(-45.0180531,168.9337654 );
+            Location location3 = new Location(-45.0375501,169.1944608 );
+            Location location4 = new Location(-43.4721,170.017685 );
+            locationList.add(location);
+            locationList.add(location2);
+            locationList.add(location3);
+            locationList.add(location4);
+            TrailManager20 trailManager = new TrailManager20();
+           // String response = trailManager.FetchTotalTrailPath(locationList);
+        }
+        
+        @Test
+        public void TestEncodedPolylineWorks() {
+        	
+        	//String result0 = Polyline.ConvertSignedValueToAscii(-179.9832104);
+        	//Assert.assertTrue(result0.equals("`~oia@"));
+            String result1 = Polyline.ConvertSignedValueToAscii(43.252);
+            System.out.println("Resut1: " + result1);
+            //Assert.assertTrue(result1.equals("_mqN"));
+            String result2 = Polyline.ConvertSignedValueToAscii(-126.453);
+            System.out.println("Resut2: " + result2);
+            Assert.assertTrue(result1.equals("vxq`@"));
+        	
+        }
+        
+        private List<String> splitEqually(String text, int size) {
+            // Give the list the right capacity to start with. You could use an array
+            // instead if you wanted.
+            List<String> ret = new ArrayList<String>((text.length() + size - 1) / size);
+
+            for (int start = text.length(); start > 0; start -= size) {
+                ret.add(text.substring(start, Math.min(text.length(), start + size)));
+            }
+            return ret;
+        }
+        
+       
 }

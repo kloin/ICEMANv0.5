@@ -7,8 +7,407 @@
                     "startLine": 2,
                     "startColumn": 4,
                     "startOffset": 105,
+                    "endLine": 5,
+                    "endColumn": 14,
+                    "endOffset": 354
+                },
+                "from": {
+                    "file": "C:\\Users\\jek40\\Desktop\\ICEMANv0.5\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\exploded-aar\\net.danlew\\android.joda\\2.9.2\\res\\values-fr-rCA\\values-fr-rCA.xml",
+                    "position": {
+                        "startLine": 2,
+                        "startColumn": 4,
+                        "startOffset": 105,
+                        "endLine": 5,
+                        "endColumn": 14,
+                        "endOffset": 354
+                    }
+                }
+            },
+            {
+                "to": {
+                    "startLine": 6,
+                    "startColumn": 4,
+                    "startOffset": 359,
+                    "endLine": 9,
+                    "endColumn": 14,
+                    "endOffset": 616
+                },
+                "from": {
+                    "file": "C:\\Users\\jek40\\Desktop\\ICEMANv0.5\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\exploded-aar\\net.danlew\\android.joda\\2.9.2\\res\\values-fr-rCA\\values-fr-rCA.xml",
+                    "position": {
+                        "startLine": 6,
+                        "startColumn": 4,
+                        "startOffset": 359,
+                        "endLine": 9,
+                        "endColumn": 14,
+                        "endOffset": 616
+                    }
+                }
+            },
+            {
+                "to": {
+                    "startLine": 10,
+                    "startColumn": 4,
+                    "startOffset": 621,
+                    "endLine": 13,
+                    "endColumn": 14,
+                    "endOffset": 881
+                },
+                "from": {
+                    "file": "C:\\Users\\jek40\\Desktop\\ICEMANv0.5\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\exploded-aar\\net.danlew\\android.joda\\2.9.2\\res\\values-fr-rCA\\values-fr-rCA.xml",
+                    "position": {
+                        "startLine": 10,
+                        "startColumn": 4,
+                        "startOffset": 621,
+                        "endLine": 13,
+                        "endColumn": 14,
+                        "endOffset": 881
+                    }
+                }
+            },
+            {
+                "to": {
+                    "startLine": 14,
+                    "startColumn": 4,
+                    "startOffset": 886,
+                    "endLine": 17,
+                    "endColumn": 14,
+                    "endOffset": 1149
+                },
+                "from": {
+                    "file": "C:\\Users\\jek40\\Desktop\\ICEMANv0.5\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\exploded-aar\\net.danlew\\android.joda\\2.9.2\\res\\values-fr-rCA\\values-fr-rCA.xml",
+                    "position": {
+                        "startLine": 14,
+                        "startColumn": 4,
+                        "startOffset": 886,
+                        "endLine": 17,
+                        "endColumn": 14,
+                        "endOffset": 1149
+                    }
+                }
+            },
+            {
+                "to": {
+                    "startLine": 18,
+                    "startColumn": 4,
+                    "startOffset": 1154,
+                    "endLine": 21,
+                    "endColumn": 14,
+                    "endOffset": 1404
+                },
+                "from": {
+                    "file": "C:\\Users\\jek40\\Desktop\\ICEMANv0.5\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\exploded-aar\\net.danlew\\android.joda\\2.9.2\\res\\values-fr-rCA\\values-fr-rCA.xml",
+                    "position": {
+                        "startLine": 18,
+                        "startColumn": 4,
+                        "startOffset": 1154,
+                        "endLine": 21,
+                        "endColumn": 14,
+                        "endOffset": 1404
+                    }
+                }
+            },
+            {
+                "to": {
+                    "startLine": 22,
+                    "startColumn": 4,
+                    "startOffset": 1409,
+                    "endLine": 25,
+                    "endColumn": 14,
+                    "endOffset": 1668
+                },
+                "from": {
+                    "file": "C:\\Users\\jek40\\Desktop\\ICEMANv0.5\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\exploded-aar\\net.danlew\\android.joda\\2.9.2\\res\\values-fr-rCA\\values-fr-rCA.xml",
+                    "position": {
+                        "startLine": 22,
+                        "startColumn": 4,
+                        "startOffset": 1409,
+                        "endLine": 25,
+                        "endColumn": 14,
+                        "endOffset": 1668
+                    }
+                }
+            },
+            {
+                "to": {
+                    "startLine": 26,
+                    "startColumn": 4,
+                    "startOffset": 1673,
+                    "endLine": 29,
+                    "endColumn": 14,
+                    "endOffset": 1935
+                },
+                "from": {
+                    "file": "C:\\Users\\jek40\\Desktop\\ICEMANv0.5\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\exploded-aar\\net.danlew\\android.joda\\2.9.2\\res\\values-fr-rCA\\values-fr-rCA.xml",
+                    "position": {
+                        "startLine": 26,
+                        "startColumn": 4,
+                        "startOffset": 1673,
+                        "endLine": 29,
+                        "endColumn": 14,
+                        "endOffset": 1935
+                    }
+                }
+            },
+            {
+                "to": {
+                    "startLine": 30,
+                    "startColumn": 4,
+                    "startOffset": 1940,
+                    "endLine": 33,
+                    "endColumn": 14,
+                    "endOffset": 2208
+                },
+                "from": {
+                    "file": "C:\\Users\\jek40\\Desktop\\ICEMANv0.5\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\exploded-aar\\net.danlew\\android.joda\\2.9.2\\res\\values-fr-rCA\\values-fr-rCA.xml",
+                    "position": {
+                        "startLine": 30,
+                        "startColumn": 4,
+                        "startOffset": 1940,
+                        "endLine": 33,
+                        "endColumn": 14,
+                        "endOffset": 2208
+                    }
+                }
+            },
+            {
+                "to": {
+                    "startLine": 34,
+                    "startColumn": 4,
+                    "startOffset": 2213,
+                    "endLine": 37,
+                    "endColumn": 14,
+                    "endOffset": 2455
+                },
+                "from": {
+                    "file": "C:\\Users\\jek40\\Desktop\\ICEMANv0.5\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\exploded-aar\\net.danlew\\android.joda\\2.9.2\\res\\values-fr-rCA\\values-fr-rCA.xml",
+                    "position": {
+                        "startLine": 34,
+                        "startColumn": 4,
+                        "startOffset": 2213,
+                        "endLine": 37,
+                        "endColumn": 14,
+                        "endOffset": 2455
+                    }
+                }
+            },
+            {
+                "to": {
+                    "startLine": 38,
+                    "startColumn": 4,
+                    "startOffset": 2460,
+                    "endLine": 41,
+                    "endColumn": 14,
+                    "endOffset": 2705
+                },
+                "from": {
+                    "file": "C:\\Users\\jek40\\Desktop\\ICEMANv0.5\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\exploded-aar\\net.danlew\\android.joda\\2.9.2\\res\\values-fr-rCA\\values-fr-rCA.xml",
+                    "position": {
+                        "startLine": 38,
+                        "startColumn": 4,
+                        "startOffset": 2460,
+                        "endLine": 41,
+                        "endColumn": 14,
+                        "endOffset": 2705
+                    }
+                }
+            },
+            {
+                "to": {
+                    "startLine": 42,
+                    "startColumn": 4,
+                    "startOffset": 2710,
+                    "endLine": 45,
+                    "endColumn": 14,
+                    "endOffset": 2958
+                },
+                "from": {
+                    "file": "C:\\Users\\jek40\\Desktop\\ICEMANv0.5\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\exploded-aar\\net.danlew\\android.joda\\2.9.2\\res\\values-fr-rCA\\values-fr-rCA.xml",
+                    "position": {
+                        "startLine": 42,
+                        "startColumn": 4,
+                        "startOffset": 2710,
+                        "endLine": 45,
+                        "endColumn": 14,
+                        "endOffset": 2958
+                    }
+                }
+            },
+            {
+                "to": {
+                    "startLine": 46,
+                    "startColumn": 4,
+                    "startOffset": 2963,
+                    "endLine": 49,
+                    "endColumn": 14,
+                    "endOffset": 3205
+                },
+                "from": {
+                    "file": "C:\\Users\\jek40\\Desktop\\ICEMANv0.5\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\exploded-aar\\net.danlew\\android.joda\\2.9.2\\res\\values-fr-rCA\\values-fr-rCA.xml",
+                    "position": {
+                        "startLine": 46,
+                        "startColumn": 4,
+                        "startOffset": 2963,
+                        "endLine": 49,
+                        "endColumn": 14,
+                        "endOffset": 3205
+                    }
+                }
+            },
+            {
+                "to": {
+                    "startLine": 50,
+                    "startColumn": 4,
+                    "startOffset": 3210,
+                    "endLine": 53,
+                    "endColumn": 14,
+                    "endOffset": 3459
+                },
+                "from": {
+                    "file": "C:\\Users\\jek40\\Desktop\\ICEMANv0.5\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\exploded-aar\\net.danlew\\android.joda\\2.9.2\\res\\values-fr-rCA\\values-fr-rCA.xml",
+                    "position": {
+                        "startLine": 50,
+                        "startColumn": 4,
+                        "startOffset": 3210,
+                        "endLine": 53,
+                        "endColumn": 14,
+                        "endOffset": 3459
+                    }
+                }
+            },
+            {
+                "to": {
+                    "startLine": 54,
+                    "startColumn": 4,
+                    "startOffset": 3464,
+                    "endLine": 57,
+                    "endColumn": 14,
+                    "endOffset": 3718
+                },
+                "from": {
+                    "file": "C:\\Users\\jek40\\Desktop\\ICEMANv0.5\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\exploded-aar\\net.danlew\\android.joda\\2.9.2\\res\\values-fr-rCA\\values-fr-rCA.xml",
+                    "position": {
+                        "startLine": 54,
+                        "startColumn": 4,
+                        "startOffset": 3464,
+                        "endLine": 57,
+                        "endColumn": 14,
+                        "endOffset": 3718
+                    }
+                }
+            },
+            {
+                "to": {
+                    "startLine": 58,
+                    "startColumn": 4,
+                    "startOffset": 3723,
+                    "endLine": 61,
+                    "endColumn": 14,
+                    "endOffset": 3979
+                },
+                "from": {
+                    "file": "C:\\Users\\jek40\\Desktop\\ICEMANv0.5\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\exploded-aar\\net.danlew\\android.joda\\2.9.2\\res\\values-fr-rCA\\values-fr-rCA.xml",
+                    "position": {
+                        "startLine": 58,
+                        "startColumn": 4,
+                        "startOffset": 3723,
+                        "endLine": 61,
+                        "endColumn": 14,
+                        "endOffset": 3979
+                    }
+                }
+            },
+            {
+                "to": {
+                    "startLine": 62,
+                    "startColumn": 4,
+                    "startOffset": 3984,
+                    "endLine": 65,
+                    "endColumn": 14,
+                    "endOffset": 4226
+                },
+                "from": {
+                    "file": "C:\\Users\\jek40\\Desktop\\ICEMANv0.5\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\exploded-aar\\net.danlew\\android.joda\\2.9.2\\res\\values-fr-rCA\\values-fr-rCA.xml",
+                    "position": {
+                        "startLine": 62,
+                        "startColumn": 4,
+                        "startOffset": 3984,
+                        "endLine": 65,
+                        "endColumn": 14,
+                        "endOffset": 4226
+                    }
+                }
+            },
+            {
+                "to": {
+                    "startLine": 66,
+                    "startColumn": 4,
+                    "startOffset": 4231,
+                    "endLine": 69,
+                    "endColumn": 14,
+                    "endOffset": 4486
+                },
+                "from": {
+                    "file": "C:\\Users\\jek40\\Desktop\\ICEMANv0.5\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\exploded-aar\\net.danlew\\android.joda\\2.9.2\\res\\values-fr-rCA\\values-fr-rCA.xml",
+                    "position": {
+                        "startLine": 66,
+                        "startColumn": 4,
+                        "startOffset": 4231,
+                        "endLine": 69,
+                        "endColumn": 14,
+                        "endOffset": 4486
+                    }
+                }
+            },
+            {
+                "to": {
+                    "startLine": 70,
+                    "startColumn": 4,
+                    "startOffset": 4491,
+                    "endLine": 73,
+                    "endColumn": 14,
+                    "endOffset": 4750
+                },
+                "from": {
+                    "file": "C:\\Users\\jek40\\Desktop\\ICEMANv0.5\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\exploded-aar\\net.danlew\\android.joda\\2.9.2\\res\\values-fr-rCA\\values-fr-rCA.xml",
+                    "position": {
+                        "startLine": 70,
+                        "startColumn": 4,
+                        "startOffset": 4491,
+                        "endLine": 73,
+                        "endColumn": 14,
+                        "endOffset": 4750
+                    }
+                }
+            },
+            {
+                "to": {
+                    "startLine": 74,
+                    "startColumn": 4,
+                    "startOffset": 4755,
+                    "endLine": 77,
+                    "endColumn": 14,
+                    "endOffset": 5016
+                },
+                "from": {
+                    "file": "C:\\Users\\jek40\\Desktop\\ICEMANv0.5\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\exploded-aar\\net.danlew\\android.joda\\2.9.2\\res\\values-fr-rCA\\values-fr-rCA.xml",
+                    "position": {
+                        "startLine": 74,
+                        "startColumn": 4,
+                        "startOffset": 4755,
+                        "endLine": 77,
+                        "endColumn": 14,
+                        "endOffset": 5016
+                    }
+                }
+            },
+            {
+                "to": {
+                    "startLine": 78,
+                    "startColumn": 4,
+                    "startOffset": 5021,
                     "endColumn": 110,
-                    "endOffset": 211
+                    "endOffset": 5127
                 },
                 "from": {
                     "file": "C:\\Users\\jek40\\Desktop\\ICEMANv0.5\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\22.2.1\\res\\values-fr-rCA\\values-fr-rCA.xml",
@@ -23,11 +422,11 @@
             },
             {
                 "to": {
-                    "startLine": 3,
+                    "startLine": 79,
                     "startColumn": 4,
-                    "startOffset": 216,
+                    "startOffset": 5132,
                     "endColumn": 114,
-                    "endOffset": 326
+                    "endOffset": 5242
                 },
                 "from": {
                     "file": "C:\\Users\\jek40\\Desktop\\ICEMANv0.5\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\22.2.1\\res\\values-fr-rCA\\values-fr-rCA.xml",
@@ -42,11 +441,11 @@
             },
             {
                 "to": {
-                    "startLine": 4,
+                    "startLine": 80,
                     "startColumn": 4,
-                    "startOffset": 331,
+                    "startOffset": 5247,
                     "endColumn": 110,
-                    "endOffset": 437
+                    "endOffset": 5353
                 },
                 "from": {
                     "file": "C:\\Users\\jek40\\Desktop\\ICEMANv0.5\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\22.2.1\\res\\values-fr-rCA\\values-fr-rCA.xml",
@@ -61,11 +460,11 @@
             },
             {
                 "to": {
-                    "startLine": 5,
+                    "startLine": 81,
                     "startColumn": 4,
-                    "startOffset": 442,
+                    "startOffset": 5358,
                     "endColumn": 86,
-                    "endOffset": 524
+                    "endOffset": 5440
                 },
                 "from": {
                     "file": "C:\\Users\\jek40\\Desktop\\ICEMANv0.5\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\22.2.1\\res\\values-fr-rCA\\values-fr-rCA.xml",
@@ -80,11 +479,11 @@
             },
             {
                 "to": {
-                    "startLine": 6,
+                    "startLine": 82,
                     "startColumn": 4,
-                    "startOffset": 529,
+                    "startOffset": 5445,
                     "endColumn": 115,
-                    "endOffset": 640
+                    "endOffset": 5556
                 },
                 "from": {
                     "file": "C:\\Users\\jek40\\Desktop\\ICEMANv0.5\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\22.2.1\\res\\values-fr-rCA\\values-fr-rCA.xml",
@@ -99,11 +498,11 @@
             },
             {
                 "to": {
-                    "startLine": 7,
+                    "startLine": 83,
                     "startColumn": 4,
-                    "startOffset": 645,
+                    "startOffset": 5561,
                     "endColumn": 129,
-                    "endOffset": 770
+                    "endOffset": 5686
                 },
                 "from": {
                     "file": "C:\\Users\\jek40\\Desktop\\ICEMANv0.5\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\22.2.1\\res\\values-fr-rCA\\values-fr-rCA.xml",
@@ -118,11 +517,11 @@
             },
             {
                 "to": {
-                    "startLine": 8,
+                    "startLine": 84,
                     "startColumn": 4,
-                    "startOffset": 775,
+                    "startOffset": 5691,
                     "endColumn": 109,
-                    "endOffset": 880
+                    "endOffset": 5796
                 },
                 "from": {
                     "file": "C:\\Users\\jek40\\Desktop\\ICEMANv0.5\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\22.2.1\\res\\values-fr-rCA\\values-fr-rCA.xml",
@@ -137,11 +536,11 @@
             },
             {
                 "to": {
-                    "startLine": 9,
+                    "startLine": 85,
                     "startColumn": 4,
-                    "startOffset": 885,
+                    "startOffset": 5801,
                     "endColumn": 111,
-                    "endOffset": 992
+                    "endOffset": 5908
                 },
                 "from": {
                     "file": "C:\\Users\\jek40\\Desktop\\ICEMANv0.5\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\22.2.1\\res\\values-fr-rCA\\values-fr-rCA.xml",
@@ -156,11 +555,11 @@
             },
             {
                 "to": {
-                    "startLine": 10,
+                    "startLine": 86,
                     "startColumn": 4,
-                    "startOffset": 997,
+                    "startOffset": 5913,
                     "endColumn": 102,
-                    "endOffset": 1095
+                    "endOffset": 6011
                 },
                 "from": {
                     "file": "C:\\Users\\jek40\\Desktop\\ICEMANv0.5\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\22.2.1\\res\\values-fr-rCA\\values-fr-rCA.xml",
@@ -175,11 +574,11 @@
             },
             {
                 "to": {
-                    "startLine": 11,
+                    "startLine": 87,
                     "startColumn": 4,
-                    "startOffset": 1100,
+                    "startOffset": 6016,
                     "endColumn": 110,
-                    "endOffset": 1206
+                    "endOffset": 6122
                 },
                 "from": {
                     "file": "C:\\Users\\jek40\\Desktop\\ICEMANv0.5\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\22.2.1\\res\\values-fr-rCA\\values-fr-rCA.xml",
@@ -194,11 +593,11 @@
             },
             {
                 "to": {
-                    "startLine": 12,
+                    "startLine": 88,
                     "startColumn": 4,
-                    "startOffset": 1211,
+                    "startOffset": 6127,
                     "endColumn": 106,
-                    "endOffset": 1313
+                    "endOffset": 6229
                 },
                 "from": {
                     "file": "C:\\Users\\jek40\\Desktop\\ICEMANv0.5\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\22.2.1\\res\\values-fr-rCA\\values-fr-rCA.xml",
@@ -213,11 +612,11 @@
             },
             {
                 "to": {
-                    "startLine": 13,
+                    "startLine": 89,
                     "startColumn": 4,
-                    "startOffset": 1318,
+                    "startOffset": 6234,
                     "endColumn": 106,
-                    "endOffset": 1420
+                    "endOffset": 6336
                 },
                 "from": {
                     "file": "C:\\Users\\jek40\\Desktop\\ICEMANv0.5\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\22.2.1\\res\\values-fr-rCA\\values-fr-rCA.xml",
@@ -232,11 +631,11 @@
             },
             {
                 "to": {
-                    "startLine": 14,
+                    "startLine": 90,
                     "startColumn": 4,
-                    "startOffset": 1425,
+                    "startOffset": 6341,
                     "endColumn": 121,
-                    "endOffset": 1542
+                    "endOffset": 6458
                 },
                 "from": {
                     "file": "C:\\Users\\jek40\\Desktop\\ICEMANv0.5\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\22.2.1\\res\\values-fr-rCA\\values-fr-rCA.xml",
@@ -251,11 +650,11 @@
             },
             {
                 "to": {
-                    "startLine": 15,
+                    "startLine": 91,
                     "startColumn": 4,
-                    "startOffset": 1547,
+                    "startOffset": 6463,
                     "endColumn": 200,
-                    "endOffset": 1743
+                    "endOffset": 6659
                 },
                 "from": {
                     "file": "C:\\Users\\jek40\\Desktop\\ICEMANv0.5\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\exploded-aar\\com.google.android.gms\\play-services-basement\\8.3.0\\res\\values-fr-rCA\\common_strings.xml",
@@ -270,11 +669,11 @@
             },
             {
                 "to": {
-                    "startLine": 16,
+                    "startLine": 92,
                     "startColumn": 4,
-                    "startOffset": 1748,
+                    "startOffset": 6664,
                     "endColumn": 210,
-                    "endOffset": 1954
+                    "endOffset": 6870
                 },
                 "from": {
                     "file": "C:\\Users\\jek40\\Desktop\\ICEMANv0.5\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\exploded-aar\\com.google.android.gms\\play-services-basement\\8.3.0\\res\\values-fr-rCA\\common_strings.xml",
@@ -289,11 +688,11 @@
             },
             {
                 "to": {
-                    "startLine": 17,
+                    "startLine": 93,
                     "startColumn": 4,
-                    "startOffset": 1959,
+                    "startOffset": 6875,
                     "endColumn": 117,
-                    "endOffset": 2072
+                    "endOffset": 6988
                 },
                 "from": {
                     "file": "C:\\Users\\jek40\\Desktop\\ICEMANv0.5\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\exploded-aar\\com.google.android.gms\\play-services-basement\\8.3.0\\res\\values-fr-rCA\\common_strings.xml",
@@ -308,11 +707,11 @@
             },
             {
                 "to": {
-                    "startLine": 18,
+                    "startLine": 94,
                     "startColumn": 4,
-                    "startOffset": 2077,
+                    "startOffset": 6993,
                     "endColumn": 295,
-                    "endOffset": 2368
+                    "endOffset": 7284
                 },
                 "from": {
                     "file": "C:\\Users\\jek40\\Desktop\\ICEMANv0.5\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\exploded-aar\\com.google.android.gms\\play-services-basement\\8.3.0\\res\\values-fr-rCA\\common_strings.xml",
@@ -327,11 +726,11 @@
             },
             {
                 "to": {
-                    "startLine": 19,
+                    "startLine": 95,
                     "startColumn": 4,
-                    "startOffset": 2373,
+                    "startOffset": 7289,
                     "endColumn": 132,
-                    "endOffset": 2501
+                    "endOffset": 7417
                 },
                 "from": {
                     "file": "C:\\Users\\jek40\\Desktop\\ICEMANv0.5\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\exploded-aar\\com.google.android.gms\\play-services-basement\\8.3.0\\res\\values-fr-rCA\\common_strings.xml",
@@ -346,11 +745,11 @@
             },
             {
                 "to": {
-                    "startLine": 20,
+                    "startLine": 96,
                     "startColumn": 4,
-                    "startOffset": 2506,
+                    "startOffset": 7422,
                     "endColumn": 211,
-                    "endOffset": 2713
+                    "endOffset": 7629
                 },
                 "from": {
                     "file": "C:\\Users\\jek40\\Desktop\\ICEMANv0.5\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\exploded-aar\\com.google.android.gms\\play-services-basement\\8.3.0\\res\\values-fr-rCA\\common_strings.xml",
@@ -365,11 +764,11 @@
             },
             {
                 "to": {
-                    "startLine": 21,
+                    "startLine": 97,
                     "startColumn": 4,
-                    "startOffset": 2718,
+                    "startOffset": 7634,
                     "endColumn": 130,
-                    "endOffset": 2844
+                    "endOffset": 7760
                 },
                 "from": {
                     "file": "C:\\Users\\jek40\\Desktop\\ICEMANv0.5\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\exploded-aar\\com.google.android.gms\\play-services-basement\\8.3.0\\res\\values-fr-rCA\\common_strings.xml",
@@ -384,11 +783,11 @@
             },
             {
                 "to": {
-                    "startLine": 22,
+                    "startLine": 98,
                     "startColumn": 4,
-                    "startOffset": 2849,
+                    "startOffset": 7765,
                     "endColumn": 168,
-                    "endOffset": 3013
+                    "endOffset": 7929
                 },
                 "from": {
                     "file": "C:\\Users\\jek40\\Desktop\\ICEMANv0.5\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\exploded-aar\\com.google.android.gms\\play-services-basement\\8.3.0\\res\\values-fr-rCA\\common_strings.xml",
@@ -403,11 +802,11 @@
             },
             {
                 "to": {
-                    "startLine": 23,
+                    "startLine": 99,
                     "startColumn": 4,
-                    "startOffset": 3018,
+                    "startOffset": 7934,
                     "endColumn": 135,
-                    "endOffset": 3149
+                    "endOffset": 8065
                 },
                 "from": {
                     "file": "C:\\Users\\jek40\\Desktop\\ICEMANv0.5\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\exploded-aar\\com.google.android.gms\\play-services-basement\\8.3.0\\res\\values-fr-rCA\\common_strings.xml",
@@ -422,11 +821,11 @@
             },
             {
                 "to": {
-                    "startLine": 24,
+                    "startLine": 100,
                     "startColumn": 4,
-                    "startOffset": 3154,
+                    "startOffset": 8070,
                     "endColumn": 236,
-                    "endOffset": 3386
+                    "endOffset": 8302
                 },
                 "from": {
                     "file": "C:\\Users\\jek40\\Desktop\\ICEMANv0.5\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\exploded-aar\\com.google.android.gms\\play-services-basement\\8.3.0\\res\\values-fr-rCA\\common_strings.xml",
@@ -441,11 +840,11 @@
             },
             {
                 "to": {
-                    "startLine": 25,
+                    "startLine": 101,
                     "startColumn": 4,
-                    "startOffset": 3391,
+                    "startOffset": 8307,
                     "endColumn": 235,
-                    "endOffset": 3622
+                    "endOffset": 8538
                 },
                 "from": {
                     "file": "C:\\Users\\jek40\\Desktop\\ICEMANv0.5\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\exploded-aar\\com.google.android.gms\\play-services-basement\\8.3.0\\res\\values-fr-rCA\\common_strings.xml",
@@ -460,11 +859,11 @@
             },
             {
                 "to": {
-                    "startLine": 26,
+                    "startLine": 102,
                     "startColumn": 4,
-                    "startOffset": 3627,
+                    "startOffset": 8543,
                     "endColumn": 132,
-                    "endOffset": 3755
+                    "endOffset": 8671
                 },
                 "from": {
                     "file": "C:\\Users\\jek40\\Desktop\\ICEMANv0.5\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\exploded-aar\\com.google.android.gms\\play-services-basement\\8.3.0\\res\\values-fr-rCA\\common_strings.xml",
@@ -479,11 +878,11 @@
             },
             {
                 "to": {
-                    "startLine": 27,
+                    "startLine": 103,
                     "startColumn": 4,
-                    "startOffset": 3760,
+                    "startOffset": 8676,
                     "endColumn": 195,
-                    "endOffset": 3951
+                    "endOffset": 8867
                 },
                 "from": {
                     "file": "C:\\Users\\jek40\\Desktop\\ICEMANv0.5\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\exploded-aar\\com.google.android.gms\\play-services-basement\\8.3.0\\res\\values-fr-rCA\\common_strings.xml",
@@ -498,11 +897,11 @@
             },
             {
                 "to": {
-                    "startLine": 28,
+                    "startLine": 104,
                     "startColumn": 4,
-                    "startOffset": 3956,
+                    "startOffset": 8872,
                     "endColumn": 121,
-                    "endOffset": 4073
+                    "endOffset": 8989
                 },
                 "from": {
                     "file": "C:\\Users\\jek40\\Desktop\\ICEMANv0.5\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\exploded-aar\\com.google.android.gms\\play-services-basement\\8.3.0\\res\\values-fr-rCA\\common_strings.xml",
@@ -517,11 +916,11 @@
             },
             {
                 "to": {
-                    "startLine": 29,
+                    "startLine": 105,
                     "startColumn": 4,
-                    "startOffset": 4078,
+                    "startOffset": 8994,
                     "endColumn": 171,
-                    "endOffset": 4245
+                    "endOffset": 9161
                 },
                 "from": {
                     "file": "C:\\Users\\jek40\\Desktop\\ICEMANv0.5\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\exploded-aar\\com.google.android.gms\\play-services-basement\\8.3.0\\res\\values-fr-rCA\\common_strings.xml",
@@ -536,11 +935,11 @@
             },
             {
                 "to": {
-                    "startLine": 30,
+                    "startLine": 106,
                     "startColumn": 4,
-                    "startOffset": 4250,
+                    "startOffset": 9166,
                     "endColumn": 192,
-                    "endOffset": 4438
+                    "endOffset": 9354
                 },
                 "from": {
                     "file": "C:\\Users\\jek40\\Desktop\\ICEMANv0.5\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\exploded-aar\\com.google.android.gms\\play-services-basement\\8.3.0\\res\\values-fr-rCA\\common_strings.xml",
@@ -555,11 +954,11 @@
             },
             {
                 "to": {
-                    "startLine": 31,
+                    "startLine": 107,
                     "startColumn": 4,
-                    "startOffset": 4443,
+                    "startOffset": 9359,
                     "endColumn": 119,
-                    "endOffset": 4558
+                    "endOffset": 9474
                 },
                 "from": {
                     "file": "C:\\Users\\jek40\\Desktop\\ICEMANv0.5\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\exploded-aar\\com.google.android.gms\\play-services-basement\\8.3.0\\res\\values-fr-rCA\\common_strings.xml",
@@ -574,11 +973,11 @@
             },
             {
                 "to": {
-                    "startLine": 32,
+                    "startLine": 108,
                     "startColumn": 4,
-                    "startOffset": 4563,
+                    "startOffset": 9479,
                     "endColumn": 183,
-                    "endOffset": 4742
+                    "endOffset": 9658
                 },
                 "from": {
                     "file": "C:\\Users\\jek40\\Desktop\\ICEMANv0.5\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\exploded-aar\\com.google.android.gms\\play-services-basement\\8.3.0\\res\\values-fr-rCA\\common_strings.xml",
@@ -593,11 +992,11 @@
             },
             {
                 "to": {
-                    "startLine": 33,
+                    "startLine": 109,
                     "startColumn": 4,
-                    "startOffset": 4747,
+                    "startOffset": 9663,
                     "endColumn": 142,
-                    "endOffset": 4885
+                    "endOffset": 9801
                 },
                 "from": {
                     "file": "C:\\Users\\jek40\\Desktop\\ICEMANv0.5\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\exploded-aar\\com.google.android.gms\\play-services-basement\\8.3.0\\res\\values-fr-rCA\\common_strings.xml",
@@ -612,11 +1011,11 @@
             },
             {
                 "to": {
-                    "startLine": 34,
+                    "startLine": 110,
                     "startColumn": 4,
-                    "startOffset": 4890,
+                    "startOffset": 9806,
                     "endColumn": 187,
-                    "endOffset": 5073
+                    "endOffset": 9989
                 },
                 "from": {
                     "file": "C:\\Users\\jek40\\Desktop\\ICEMANv0.5\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\exploded-aar\\com.google.android.gms\\play-services-basement\\8.3.0\\res\\values-fr-rCA\\common_strings.xml",
@@ -631,11 +1030,11 @@
             },
             {
                 "to": {
-                    "startLine": 35,
+                    "startLine": 111,
                     "startColumn": 4,
-                    "startOffset": 5078,
+                    "startOffset": 9994,
                     "endColumn": 126,
-                    "endOffset": 5200
+                    "endOffset": 10116
                 },
                 "from": {
                     "file": "C:\\Users\\jek40\\Desktop\\ICEMANv0.5\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\exploded-aar\\com.google.android.gms\\play-services-basement\\8.3.0\\res\\values-fr-rCA\\common_strings.xml",
@@ -650,11 +1049,11 @@
             },
             {
                 "to": {
-                    "startLine": 36,
+                    "startLine": 112,
                     "startColumn": 4,
-                    "startOffset": 5205,
+                    "startOffset": 10121,
                     "endColumn": 147,
-                    "endOffset": 5348
+                    "endOffset": 10264
                 },
                 "from": {
                     "file": "C:\\Users\\jek40\\Desktop\\ICEMANv0.5\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\exploded-aar\\com.google.android.gms\\play-services-basement\\8.3.0\\res\\values-fr-rCA\\common_strings.xml",
@@ -669,11 +1068,11 @@
             },
             {
                 "to": {
-                    "startLine": 37,
+                    "startLine": 113,
                     "startColumn": 4,
-                    "startOffset": 5353,
+                    "startOffset": 10269,
                     "endColumn": 282,
-                    "endOffset": 5631
+                    "endOffset": 10547
                 },
                 "from": {
                     "file": "C:\\Users\\jek40\\Desktop\\ICEMANv0.5\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\exploded-aar\\com.google.android.gms\\play-services-basement\\8.3.0\\res\\values-fr-rCA\\common_strings.xml",
@@ -688,11 +1087,11 @@
             },
             {
                 "to": {
-                    "startLine": 38,
+                    "startLine": 114,
                     "startColumn": 4,
-                    "startOffset": 5636,
+                    "startOffset": 10552,
                     "endColumn": 124,
-                    "endOffset": 5756
+                    "endOffset": 10672
                 },
                 "from": {
                     "file": "C:\\Users\\jek40\\Desktop\\ICEMANv0.5\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\exploded-aar\\com.google.android.gms\\play-services-basement\\8.3.0\\res\\values-fr-rCA\\common_strings.xml",
@@ -707,11 +1106,11 @@
             },
             {
                 "to": {
-                    "startLine": 39,
+                    "startLine": 115,
                     "startColumn": 4,
-                    "startOffset": 5761,
+                    "startOffset": 10677,
                     "endColumn": 113,
-                    "endOffset": 5870
+                    "endOffset": 10786
                 },
                 "from": {
                     "file": "C:\\Users\\jek40\\Desktop\\ICEMANv0.5\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\exploded-aar\\com.google.android.gms\\play-services-basement\\8.3.0\\res\\values-fr-rCA\\common_strings.xml",
@@ -726,11 +1125,11 @@
             },
             {
                 "to": {
-                    "startLine": 40,
+                    "startLine": 116,
                     "startColumn": 4,
-                    "startOffset": 5875,
+                    "startOffset": 10791,
                     "endColumn": 215,
-                    "endOffset": 6086
+                    "endOffset": 11002
                 },
                 "from": {
                     "file": "C:\\Users\\jek40\\Desktop\\ICEMANv0.5\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\exploded-aar\\com.google.android.gms\\play-services-basement\\8.3.0\\res\\values-fr-rCA\\common_strings.xml",
@@ -745,11 +1144,11 @@
             },
             {
                 "to": {
-                    "startLine": 41,
+                    "startLine": 117,
                     "startColumn": 4,
-                    "startOffset": 6091,
+                    "startOffset": 11007,
                     "endColumn": 137,
-                    "endOffset": 6224
+                    "endOffset": 11140
                 },
                 "from": {
                     "file": "C:\\Users\\jek40\\Desktop\\ICEMANv0.5\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\exploded-aar\\com.google.android.gms\\play-services-basement\\8.3.0\\res\\values-fr-rCA\\common_strings.xml",
@@ -764,11 +1163,11 @@
             },
             {
                 "to": {
-                    "startLine": 42,
+                    "startLine": 118,
                     "startColumn": 4,
-                    "startOffset": 6229,
+                    "startOffset": 11145,
                     "endColumn": 218,
-                    "endOffset": 6443
+                    "endOffset": 11359
                 },
                 "from": {
                     "file": "C:\\Users\\jek40\\Desktop\\ICEMANv0.5\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\exploded-aar\\com.google.android.gms\\play-services-basement\\8.3.0\\res\\values-fr-rCA\\common_strings.xml",
@@ -783,11 +1182,11 @@
             },
             {
                 "to": {
-                    "startLine": 43,
+                    "startLine": 119,
                     "startColumn": 4,
-                    "startOffset": 6448,
+                    "startOffset": 11364,
                     "endColumn": 136,
-                    "endOffset": 6580
+                    "endOffset": 11496
                 },
                 "from": {
                     "file": "C:\\Users\\jek40\\Desktop\\ICEMANv0.5\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\exploded-aar\\com.google.android.gms\\play-services-basement\\8.3.0\\res\\values-fr-rCA\\common_strings.xml",
@@ -802,11 +1201,11 @@
             },
             {
                 "to": {
-                    "startLine": 44,
+                    "startLine": 120,
                     "startColumn": 4,
-                    "startOffset": 6585,
+                    "startOffset": 11501,
                     "endColumn": 101,
-                    "endOffset": 6682
+                    "endOffset": 11598
                 },
                 "from": {
                     "file": "C:\\Users\\jek40\\Desktop\\ICEMANv0.5\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\exploded-aar\\com.google.android.gms\\play-services-basement\\8.3.0\\res\\values-fr-rCA\\common_strings.xml",
@@ -821,11 +1220,11 @@
             },
             {
                 "to": {
-                    "startLine": 45,
+                    "startLine": 121,
                     "startColumn": 4,
-                    "startOffset": 6687,
+                    "startOffset": 11603,
                     "endColumn": 93,
-                    "endOffset": 6776
+                    "endOffset": 11692
                 },
                 "from": {
                     "file": "C:\\Users\\jek40\\Desktop\\ICEMANv0.5\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\exploded-aar\\com.google.android.gms\\play-services-base\\8.3.0\\res\\values-fr-rCA\\base_strings.xml",
@@ -840,11 +1239,11 @@
             },
             {
                 "to": {
-                    "startLine": 46,
+                    "startLine": 122,
                     "startColumn": 4,
-                    "startOffset": 6781,
+                    "startOffset": 11697,
                     "endColumn": 113,
-                    "endOffset": 6890
+                    "endOffset": 11806
                 },
                 "from": {
                     "file": "C:\\Users\\jek40\\Desktop\\ICEMANv0.5\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\exploded-aar\\com.google.android.gms\\play-services-base\\8.3.0\\res\\values-fr-rCA\\base_strings.xml",
@@ -854,6 +1253,63 @@
                         "startOffset": 264,
                         "endColumn": 113,
                         "endOffset": 373
+                    }
+                }
+            },
+            {
+                "to": {
+                    "startLine": 123,
+                    "startColumn": 4,
+                    "startOffset": 11811,
+                    "endColumn": 127,
+                    "endOffset": 11934
+                },
+                "from": {
+                    "file": "C:\\Users\\jek40\\Desktop\\ICEMANv0.5\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\exploded-aar\\net.danlew\\android.joda\\2.9.2\\res\\values-fr-rCA\\values-fr-rCA.xml",
+                    "position": {
+                        "startLine": 78,
+                        "startColumn": 4,
+                        "startOffset": 5021,
+                        "endColumn": 127,
+                        "endOffset": 5144
+                    }
+                }
+            },
+            {
+                "to": {
+                    "startLine": 124,
+                    "startColumn": 4,
+                    "startOffset": 11939,
+                    "endColumn": 126,
+                    "endOffset": 12061
+                },
+                "from": {
+                    "file": "C:\\Users\\jek40\\Desktop\\ICEMANv0.5\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\exploded-aar\\net.danlew\\android.joda\\2.9.2\\res\\values-fr-rCA\\values-fr-rCA.xml",
+                    "position": {
+                        "startLine": 79,
+                        "startColumn": 4,
+                        "startOffset": 5149,
+                        "endColumn": 126,
+                        "endOffset": 5271
+                    }
+                }
+            },
+            {
+                "to": {
+                    "startLine": 125,
+                    "startColumn": 4,
+                    "startOffset": 12066,
+                    "endColumn": 150,
+                    "endOffset": 12212
+                },
+                "from": {
+                    "file": "C:\\Users\\jek40\\Desktop\\ICEMANv0.5\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\exploded-aar\\net.danlew\\android.joda\\2.9.2\\res\\values-fr-rCA\\values-fr-rCA.xml",
+                    "position": {
+                        "startLine": 80,
+                        "startColumn": 4,
+                        "startOffset": 5276,
+                        "endColumn": 150,
+                        "endOffset": 5422
                     }
                 }
             }

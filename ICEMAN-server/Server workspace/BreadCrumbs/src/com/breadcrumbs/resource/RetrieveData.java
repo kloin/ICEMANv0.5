@@ -60,9 +60,9 @@ import com.sun.jersey.multipart.impl.MultiPartReaderServerSide;
 @Path("/login")
 public class RetrieveData {
 	
-	private DBMaster dbMaster;
-	
-	// Basic "is the service running" test
+    private DBMaster dbMaster;
+
+    // Basic "is the service running" test
     @GET
     @Produces(MediaType.TEXT_PLAIN)
     public String respondAsReady() {
@@ -81,7 +81,7 @@ public class RetrieveData {
     @Path("getAllCrumbsForATrail/{id}")
     public String GetAllCrumbsForATrail(@PathParam("id") String id) {
     	NodeController nc = new NodeController();
-		return nc.GetAllRelatedNodes(id, myLabels.Crumb, "TrailId", "Title");	
+        return nc.GetAllRelatedNodes(id, myLabels.Crumb, "TrailId", "Title");	
     }
     
     @GET
@@ -91,7 +91,7 @@ public class RetrieveData {
     
     	NodeController nc = new NodeController();
     	System.out.println("working");
-		return nc.GetAllRelatedNodesIds(id, myLabels.Crumb, "UserId", "Title").toString();	
+        return nc.GetAllRelatedNodesIds(id, myLabels.Crumb, "UserId", "Title").toString();	
     }
     @GET
     @Produces(MediaType.APPLICATION_JSON)
@@ -170,7 +170,7 @@ public class RetrieveData {
     
     @GET
     @Path("GetAllCrumbCardDetailsForATrail/{TrailId}")
-    public String GetAllCrumbCardDetailsForATrail(@PathParam("TrailId")String TrailId) {
+    public String GetAllCrumbCardDetailsForATrail(@PathParam("TrailId") String TrailId) {
         Trail trail = new Trail();
         return trail.GetAllCrumbCardDetailsForATrail(TrailId);
     }
@@ -216,7 +216,6 @@ public class RetrieveData {
 									@PathParam("FacebookLoginId") String FacebookLoginId) {
     	// Create a node with these fields
     	DBMaster db = DBMaster.GetAnInstanceOfDBMaster();
-    	
     	Hashtable<String, Object> keysAndItems = new Hashtable<String, Object>();
     	keysAndItems.put("Username", UserName);
     	keysAndItems.put("Pin", Pin);
@@ -341,7 +340,7 @@ public class RetrieveData {
 	   DBMaster dbMaster = DBMaster.GetAnInstanceOfDBMaster();
 	   return dbMaster.GetStringPropertyFromNode(nodeId, property).toString();
    }
-   
+
    @GET
    @Path("/SaveStringPropertyToNode/{NodeId}/{Property}/{PropertyValue}")
    public String SaveStringPropertyToNode(@PathParam("NodeId") String nodeId, @PathParam("Property") String property, @PathParam("PropertyValue") String propertyValue) {
@@ -350,18 +349,22 @@ public class RetrieveData {
 	   return "200 - ok";
    }
     
+   @GET
+   @Path("GetMultipleParametersForNode/{NodeId}/{Paramaters}")
+   public String GetMultipleParametersForNode(@PathParam("NodeId") String NodeId, @PathParam("Parameters") String Parameters) {
+	   NodeManager nodeManager = new NodeManager();
+	   String[] params = Parameters.split(",");
+	   return nodeManager.GetMutipleParametersFromANode(NodeId, params);
+   }
    
- /*  @GET
+   @GET
    @Path("/GetPropertiesForNode/{NodeId}/{Properties}")
    public String GetPropertiesForANode(@PathParam("NodeId") String nodeId,
 									   @PathParam("Properties") String properties) {
-	   JSONObject jsonResponse = new JSONObject();
-	   String[] propertiesArray = properties.split(",");
-	   DBMaster dbm = DBMaster.GetAnInstanceOfDBMaster();
-	   for (int index =0; index < propertiesArray.length-1; index += 1) {
-		   
-	   }
-   }*/
+	   
+	   DBMaster dbMaster = DBMaster.GetAnInstanceOfDBMaster();
+	   return "";
+   }
     
  
 }

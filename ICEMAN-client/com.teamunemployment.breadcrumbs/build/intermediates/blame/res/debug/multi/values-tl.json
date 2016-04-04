@@ -7,8 +7,407 @@
                     "startLine": 2,
                     "startColumn": 4,
                     "startOffset": 105,
+                    "endLine": 5,
+                    "endColumn": 14,
+                    "endOffset": 355
+                },
+                "from": {
+                    "file": "C:\\Users\\jek40\\Desktop\\ICEMANv0.5\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\exploded-aar\\net.danlew\\android.joda\\2.9.2\\res\\values-tl\\values-tl.xml",
+                    "position": {
+                        "startLine": 2,
+                        "startColumn": 4,
+                        "startOffset": 105,
+                        "endLine": 5,
+                        "endColumn": 14,
+                        "endOffset": 355
+                    }
+                }
+            },
+            {
+                "to": {
+                    "startLine": 6,
+                    "startColumn": 4,
+                    "startOffset": 360,
+                    "endLine": 9,
+                    "endColumn": 14,
+                    "endOffset": 615
+                },
+                "from": {
+                    "file": "C:\\Users\\jek40\\Desktop\\ICEMANv0.5\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\exploded-aar\\net.danlew\\android.joda\\2.9.2\\res\\values-tl\\values-tl.xml",
+                    "position": {
+                        "startLine": 6,
+                        "startColumn": 4,
+                        "startOffset": 360,
+                        "endLine": 9,
+                        "endColumn": 14,
+                        "endOffset": 615
+                    }
+                }
+            },
+            {
+                "to": {
+                    "startLine": 10,
+                    "startColumn": 4,
+                    "startOffset": 620,
+                    "endLine": 13,
+                    "endColumn": 14,
+                    "endOffset": 877
+                },
+                "from": {
+                    "file": "C:\\Users\\jek40\\Desktop\\ICEMANv0.5\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\exploded-aar\\net.danlew\\android.joda\\2.9.2\\res\\values-tl\\values-tl.xml",
+                    "position": {
+                        "startLine": 10,
+                        "startColumn": 4,
+                        "startOffset": 620,
+                        "endLine": 13,
+                        "endColumn": 14,
+                        "endOffset": 877
+                    }
+                }
+            },
+            {
+                "to": {
+                    "startLine": 14,
+                    "startColumn": 4,
+                    "startOffset": 882,
+                    "endLine": 17,
+                    "endColumn": 14,
+                    "endOffset": 1141
+                },
+                "from": {
+                    "file": "C:\\Users\\jek40\\Desktop\\ICEMANv0.5\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\exploded-aar\\net.danlew\\android.joda\\2.9.2\\res\\values-tl\\values-tl.xml",
+                    "position": {
+                        "startLine": 14,
+                        "startColumn": 4,
+                        "startOffset": 882,
+                        "endLine": 17,
+                        "endColumn": 14,
+                        "endOffset": 1141
+                    }
+                }
+            },
+            {
+                "to": {
+                    "startLine": 18,
+                    "startColumn": 4,
+                    "startOffset": 1146,
+                    "endLine": 21,
+                    "endColumn": 14,
+                    "endOffset": 1410
+                },
+                "from": {
+                    "file": "C:\\Users\\jek40\\Desktop\\ICEMANv0.5\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\exploded-aar\\net.danlew\\android.joda\\2.9.2\\res\\values-tl\\values-tl.xml",
+                    "position": {
+                        "startLine": 18,
+                        "startColumn": 4,
+                        "startOffset": 1146,
+                        "endLine": 21,
+                        "endColumn": 14,
+                        "endOffset": 1410
+                    }
+                }
+            },
+            {
+                "to": {
+                    "startLine": 22,
+                    "startColumn": 4,
+                    "startOffset": 1415,
+                    "endLine": 25,
+                    "endColumn": 14,
+                    "endOffset": 1693
+                },
+                "from": {
+                    "file": "C:\\Users\\jek40\\Desktop\\ICEMANv0.5\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\exploded-aar\\net.danlew\\android.joda\\2.9.2\\res\\values-tl\\values-tl.xml",
+                    "position": {
+                        "startLine": 22,
+                        "startColumn": 4,
+                        "startOffset": 1415,
+                        "endLine": 25,
+                        "endColumn": 14,
+                        "endOffset": 1693
+                    }
+                }
+            },
+            {
+                "to": {
+                    "startLine": 26,
+                    "startColumn": 4,
+                    "startOffset": 1698,
+                    "endLine": 29,
+                    "endColumn": 14,
+                    "endOffset": 1981
+                },
+                "from": {
+                    "file": "C:\\Users\\jek40\\Desktop\\ICEMANv0.5\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\exploded-aar\\net.danlew\\android.joda\\2.9.2\\res\\values-tl\\values-tl.xml",
+                    "position": {
+                        "startLine": 26,
+                        "startColumn": 4,
+                        "startOffset": 1698,
+                        "endLine": 29,
+                        "endColumn": 14,
+                        "endOffset": 1981
+                    }
+                }
+            },
+            {
+                "to": {
+                    "startLine": 30,
+                    "startColumn": 4,
+                    "startOffset": 1986,
+                    "endLine": 33,
+                    "endColumn": 14,
+                    "endOffset": 2272
+                },
+                "from": {
+                    "file": "C:\\Users\\jek40\\Desktop\\ICEMANv0.5\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\exploded-aar\\net.danlew\\android.joda\\2.9.2\\res\\values-tl\\values-tl.xml",
+                    "position": {
+                        "startLine": 30,
+                        "startColumn": 4,
+                        "startOffset": 1986,
+                        "endLine": 33,
+                        "endColumn": 14,
+                        "endOffset": 2272
+                    }
+                }
+            },
+            {
+                "to": {
+                    "startLine": 34,
+                    "startColumn": 4,
+                    "startOffset": 2277,
+                    "endLine": 37,
+                    "endColumn": 14,
+                    "endOffset": 2521
+                },
+                "from": {
+                    "file": "C:\\Users\\jek40\\Desktop\\ICEMANv0.5\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\exploded-aar\\net.danlew\\android.joda\\2.9.2\\res\\values-tl\\values-tl.xml",
+                    "position": {
+                        "startLine": 34,
+                        "startColumn": 4,
+                        "startOffset": 2277,
+                        "endLine": 37,
+                        "endColumn": 14,
+                        "endOffset": 2521
+                    }
+                }
+            },
+            {
+                "to": {
+                    "startLine": 38,
+                    "startColumn": 4,
+                    "startOffset": 2526,
+                    "endLine": 41,
+                    "endColumn": 14,
+                    "endOffset": 2776
+                },
+                "from": {
+                    "file": "C:\\Users\\jek40\\Desktop\\ICEMANv0.5\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\exploded-aar\\net.danlew\\android.joda\\2.9.2\\res\\values-tl\\values-tl.xml",
+                    "position": {
+                        "startLine": 38,
+                        "startColumn": 4,
+                        "startOffset": 2526,
+                        "endLine": 41,
+                        "endColumn": 14,
+                        "endOffset": 2776
+                    }
+                }
+            },
+            {
+                "to": {
+                    "startLine": 42,
+                    "startColumn": 4,
+                    "startOffset": 2781,
+                    "endLine": 45,
+                    "endColumn": 14,
+                    "endOffset": 3033
+                },
+                "from": {
+                    "file": "C:\\Users\\jek40\\Desktop\\ICEMANv0.5\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\exploded-aar\\net.danlew\\android.joda\\2.9.2\\res\\values-tl\\values-tl.xml",
+                    "position": {
+                        "startLine": 42,
+                        "startColumn": 4,
+                        "startOffset": 2781,
+                        "endLine": 45,
+                        "endColumn": 14,
+                        "endOffset": 3033
+                    }
+                }
+            },
+            {
+                "to": {
+                    "startLine": 46,
+                    "startColumn": 4,
+                    "startOffset": 3038,
+                    "endLine": 49,
+                    "endColumn": 14,
+                    "endOffset": 3281
+                },
+                "from": {
+                    "file": "C:\\Users\\jek40\\Desktop\\ICEMANv0.5\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\exploded-aar\\net.danlew\\android.joda\\2.9.2\\res\\values-tl\\values-tl.xml",
+                    "position": {
+                        "startLine": 46,
+                        "startColumn": 4,
+                        "startOffset": 3038,
+                        "endLine": 49,
+                        "endColumn": 14,
+                        "endOffset": 3281
+                    }
+                }
+            },
+            {
+                "to": {
+                    "startLine": 50,
+                    "startColumn": 4,
+                    "startOffset": 3286,
+                    "endLine": 53,
+                    "endColumn": 14,
+                    "endOffset": 3533
+                },
+                "from": {
+                    "file": "C:\\Users\\jek40\\Desktop\\ICEMANv0.5\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\exploded-aar\\net.danlew\\android.joda\\2.9.2\\res\\values-tl\\values-tl.xml",
+                    "position": {
+                        "startLine": 50,
+                        "startColumn": 4,
+                        "startOffset": 3286,
+                        "endLine": 53,
+                        "endColumn": 14,
+                        "endOffset": 3533
+                    }
+                }
+            },
+            {
+                "to": {
+                    "startLine": 54,
+                    "startColumn": 4,
+                    "startOffset": 3538,
+                    "endLine": 57,
+                    "endColumn": 14,
+                    "endOffset": 3792
+                },
+                "from": {
+                    "file": "C:\\Users\\jek40\\Desktop\\ICEMANv0.5\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\exploded-aar\\net.danlew\\android.joda\\2.9.2\\res\\values-tl\\values-tl.xml",
+                    "position": {
+                        "startLine": 54,
+                        "startColumn": 4,
+                        "startOffset": 3538,
+                        "endLine": 57,
+                        "endColumn": 14,
+                        "endOffset": 3792
+                    }
+                }
+            },
+            {
+                "to": {
+                    "startLine": 58,
+                    "startColumn": 4,
+                    "startOffset": 3797,
+                    "endLine": 61,
+                    "endColumn": 14,
+                    "endOffset": 4053
+                },
+                "from": {
+                    "file": "C:\\Users\\jek40\\Desktop\\ICEMANv0.5\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\exploded-aar\\net.danlew\\android.joda\\2.9.2\\res\\values-tl\\values-tl.xml",
+                    "position": {
+                        "startLine": 58,
+                        "startColumn": 4,
+                        "startOffset": 3797,
+                        "endLine": 61,
+                        "endColumn": 14,
+                        "endOffset": 4053
+                    }
+                }
+            },
+            {
+                "to": {
+                    "startLine": 62,
+                    "startColumn": 4,
+                    "startOffset": 4058,
+                    "endLine": 65,
+                    "endColumn": 14,
+                    "endOffset": 4314
+                },
+                "from": {
+                    "file": "C:\\Users\\jek40\\Desktop\\ICEMANv0.5\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\exploded-aar\\net.danlew\\android.joda\\2.9.2\\res\\values-tl\\values-tl.xml",
+                    "position": {
+                        "startLine": 62,
+                        "startColumn": 4,
+                        "startOffset": 4058,
+                        "endLine": 65,
+                        "endColumn": 14,
+                        "endOffset": 4314
+                    }
+                }
+            },
+            {
+                "to": {
+                    "startLine": 66,
+                    "startColumn": 4,
+                    "startOffset": 4319,
+                    "endLine": 69,
+                    "endColumn": 14,
+                    "endOffset": 4590
+                },
+                "from": {
+                    "file": "C:\\Users\\jek40\\Desktop\\ICEMANv0.5\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\exploded-aar\\net.danlew\\android.joda\\2.9.2\\res\\values-tl\\values-tl.xml",
+                    "position": {
+                        "startLine": 66,
+                        "startColumn": 4,
+                        "startOffset": 4319,
+                        "endLine": 69,
+                        "endColumn": 14,
+                        "endOffset": 4590
+                    }
+                }
+            },
+            {
+                "to": {
+                    "startLine": 70,
+                    "startColumn": 4,
+                    "startOffset": 4595,
+                    "endLine": 73,
+                    "endColumn": 14,
+                    "endOffset": 4872
+                },
+                "from": {
+                    "file": "C:\\Users\\jek40\\Desktop\\ICEMANv0.5\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\exploded-aar\\net.danlew\\android.joda\\2.9.2\\res\\values-tl\\values-tl.xml",
+                    "position": {
+                        "startLine": 70,
+                        "startColumn": 4,
+                        "startOffset": 4595,
+                        "endLine": 73,
+                        "endColumn": 14,
+                        "endOffset": 4872
+                    }
+                }
+            },
+            {
+                "to": {
+                    "startLine": 74,
+                    "startColumn": 4,
+                    "startOffset": 4877,
+                    "endLine": 77,
+                    "endColumn": 14,
+                    "endOffset": 5158
+                },
+                "from": {
+                    "file": "C:\\Users\\jek40\\Desktop\\ICEMANv0.5\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\exploded-aar\\net.danlew\\android.joda\\2.9.2\\res\\values-tl\\values-tl.xml",
+                    "position": {
+                        "startLine": 74,
+                        "startColumn": 4,
+                        "startOffset": 4877,
+                        "endLine": 77,
+                        "endColumn": 14,
+                        "endOffset": 5158
+                    }
+                }
+            },
+            {
+                "to": {
+                    "startLine": 78,
+                    "startColumn": 4,
+                    "startOffset": 5163,
                     "endColumn": 118,
-                    "endOffset": 219
+                    "endOffset": 5277
                 },
                 "from": {
                     "file": "C:\\Users\\jek40\\Desktop\\ICEMANv0.5\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\22.2.1\\res\\values-tl\\values-tl.xml",
@@ -23,11 +422,11 @@
             },
             {
                 "to": {
-                    "startLine": 3,
+                    "startLine": 79,
                     "startColumn": 4,
-                    "startOffset": 224,
+                    "startOffset": 5282,
                     "endColumn": 107,
-                    "endOffset": 327
+                    "endOffset": 5385
                 },
                 "from": {
                     "file": "C:\\Users\\jek40\\Desktop\\ICEMANv0.5\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\22.2.1\\res\\values-tl\\values-tl.xml",
@@ -42,11 +441,11 @@
             },
             {
                 "to": {
-                    "startLine": 4,
+                    "startLine": 80,
                     "startColumn": 4,
-                    "startOffset": 332,
+                    "startOffset": 5390,
                     "endColumn": 116,
-                    "endOffset": 444
+                    "endOffset": 5502
                 },
                 "from": {
                     "file": "C:\\Users\\jek40\\Desktop\\ICEMANv0.5\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\22.2.1\\res\\values-tl\\values-tl.xml",
@@ -61,11 +460,11 @@
             },
             {
                 "to": {
-                    "startLine": 5,
+                    "startLine": 81,
                     "startColumn": 4,
-                    "startOffset": 449,
+                    "startOffset": 5507,
                     "endColumn": 87,
-                    "endOffset": 532
+                    "endOffset": 5590
                 },
                 "from": {
                     "file": "C:\\Users\\jek40\\Desktop\\ICEMANv0.5\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\22.2.1\\res\\values-tl\\values-tl.xml",
@@ -80,11 +479,11 @@
             },
             {
                 "to": {
-                    "startLine": 6,
+                    "startLine": 82,
                     "startColumn": 4,
-                    "startOffset": 537,
+                    "startOffset": 5595,
                     "endColumn": 105,
-                    "endOffset": 638
+                    "endOffset": 5696
                 },
                 "from": {
                     "file": "C:\\Users\\jek40\\Desktop\\ICEMANv0.5\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\22.2.1\\res\\values-tl\\values-tl.xml",
@@ -99,11 +498,11 @@
             },
             {
                 "to": {
-                    "startLine": 7,
+                    "startLine": 83,
                     "startColumn": 4,
-                    "startOffset": 643,
+                    "startOffset": 5701,
                     "endColumn": 120,
-                    "endOffset": 759
+                    "endOffset": 5817
                 },
                 "from": {
                     "file": "C:\\Users\\jek40\\Desktop\\ICEMANv0.5\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\22.2.1\\res\\values-tl\\values-tl.xml",
@@ -118,11 +517,11 @@
             },
             {
                 "to": {
-                    "startLine": 8,
+                    "startLine": 84,
                     "startColumn": 4,
-                    "startOffset": 764,
+                    "startOffset": 5822,
                     "endColumn": 108,
-                    "endOffset": 868
+                    "endOffset": 5926
                 },
                 "from": {
                     "file": "C:\\Users\\jek40\\Desktop\\ICEMANv0.5\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\22.2.1\\res\\values-tl\\values-tl.xml",
@@ -137,11 +536,11 @@
             },
             {
                 "to": {
-                    "startLine": 9,
+                    "startLine": 85,
                     "startColumn": 4,
-                    "startOffset": 873,
+                    "startOffset": 5931,
                     "endColumn": 110,
-                    "endOffset": 979
+                    "endOffset": 6037
                 },
                 "from": {
                     "file": "C:\\Users\\jek40\\Desktop\\ICEMANv0.5\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\22.2.1\\res\\values-tl\\values-tl.xml",
@@ -156,11 +555,11 @@
             },
             {
                 "to": {
-                    "startLine": 10,
+                    "startLine": 86,
                     "startColumn": 4,
-                    "startOffset": 984,
+                    "startOffset": 6042,
                     "endColumn": 100,
-                    "endOffset": 1080
+                    "endOffset": 6138
                 },
                 "from": {
                     "file": "C:\\Users\\jek40\\Desktop\\ICEMANv0.5\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\22.2.1\\res\\values-tl\\values-tl.xml",
@@ -175,11 +574,11 @@
             },
             {
                 "to": {
-                    "startLine": 11,
+                    "startLine": 87,
                     "startColumn": 4,
-                    "startOffset": 1085,
+                    "startOffset": 6143,
                     "endColumn": 109,
-                    "endOffset": 1190
+                    "endOffset": 6248
                 },
                 "from": {
                     "file": "C:\\Users\\jek40\\Desktop\\ICEMANv0.5\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\22.2.1\\res\\values-tl\\values-tl.xml",
@@ -194,11 +593,11 @@
             },
             {
                 "to": {
-                    "startLine": 12,
+                    "startLine": 88,
                     "startColumn": 4,
-                    "startOffset": 1195,
+                    "startOffset": 6253,
                     "endColumn": 116,
-                    "endOffset": 1307
+                    "endOffset": 6365
                 },
                 "from": {
                     "file": "C:\\Users\\jek40\\Desktop\\ICEMANv0.5\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\22.2.1\\res\\values-tl\\values-tl.xml",
@@ -213,11 +612,11 @@
             },
             {
                 "to": {
-                    "startLine": 13,
+                    "startLine": 89,
                     "startColumn": 4,
-                    "startOffset": 1312,
+                    "startOffset": 6370,
                     "endColumn": 107,
-                    "endOffset": 1415
+                    "endOffset": 6473
                 },
                 "from": {
                     "file": "C:\\Users\\jek40\\Desktop\\ICEMANv0.5\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\22.2.1\\res\\values-tl\\values-tl.xml",
@@ -232,11 +631,11 @@
             },
             {
                 "to": {
-                    "startLine": 14,
+                    "startLine": 90,
                     "startColumn": 4,
-                    "startOffset": 1420,
+                    "startOffset": 6478,
                     "endColumn": 122,
-                    "endOffset": 1538
+                    "endOffset": 6596
                 },
                 "from": {
                     "file": "C:\\Users\\jek40\\Desktop\\ICEMANv0.5\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\22.2.1\\res\\values-tl\\values-tl.xml",
@@ -251,11 +650,11 @@
             },
             {
                 "to": {
-                    "startLine": 15,
+                    "startLine": 91,
                     "startColumn": 4,
-                    "startOffset": 1543,
+                    "startOffset": 6601,
                     "endColumn": 124,
-                    "endOffset": 1663
+                    "endOffset": 6721
                 },
                 "from": {
                     "file": "C:\\Users\\jek40\\Desktop\\ICEMANv0.5\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\exploded-aar\\com.facebook.android\\facebook-android-sdk\\4.8.0\\res\\values-tl\\values-tl.xml",
@@ -270,11 +669,11 @@
             },
             {
                 "to": {
-                    "startLine": 16,
+                    "startLine": 92,
                     "startColumn": 4,
-                    "startOffset": 1668,
+                    "startOffset": 6726,
                     "endColumn": 141,
-                    "endOffset": 1805
+                    "endOffset": 6863
                 },
                 "from": {
                     "file": "C:\\Users\\jek40\\Desktop\\ICEMANv0.5\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\exploded-aar\\com.facebook.android\\facebook-android-sdk\\4.8.0\\res\\values-tl\\values-tl.xml",
@@ -289,11 +688,11 @@
             },
             {
                 "to": {
-                    "startLine": 17,
+                    "startLine": 93,
                     "startColumn": 4,
-                    "startOffset": 1810,
+                    "startOffset": 6868,
                     "endColumn": 97,
-                    "endOffset": 1903
+                    "endOffset": 6961
                 },
                 "from": {
                     "file": "C:\\Users\\jek40\\Desktop\\ICEMANv0.5\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\exploded-aar\\com.facebook.android\\facebook-android-sdk\\4.8.0\\res\\values-tl\\values-tl.xml",
@@ -308,11 +707,11 @@
             },
             {
                 "to": {
-                    "startLine": 18,
+                    "startLine": 94,
                     "startColumn": 4,
-                    "startOffset": 1908,
+                    "startOffset": 6966,
                     "endColumn": 69,
-                    "endOffset": 1973
+                    "endOffset": 7031
                 },
                 "from": {
                     "file": "C:\\Users\\jek40\\Desktop\\ICEMANv0.5\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\exploded-aar\\com.facebook.android\\facebook-android-sdk\\4.8.0\\res\\values-tl\\values-tl.xml",
@@ -327,11 +726,11 @@
             },
             {
                 "to": {
-                    "startLine": 19,
+                    "startLine": 95,
                     "startColumn": 4,
-                    "startOffset": 1978,
+                    "startOffset": 7036,
                     "endColumn": 71,
-                    "endOffset": 2045
+                    "endOffset": 7103
                 },
                 "from": {
                     "file": "C:\\Users\\jek40\\Desktop\\ICEMANv0.5\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\exploded-aar\\com.facebook.android\\facebook-android-sdk\\4.8.0\\res\\values-tl\\values-tl.xml",
@@ -346,11 +745,11 @@
             },
             {
                 "to": {
-                    "startLine": 20,
+                    "startLine": 96,
                     "startColumn": 4,
-                    "startOffset": 2050,
+                    "startOffset": 7108,
                     "endColumn": 62,
-                    "endOffset": 2108
+                    "endOffset": 7166
                 },
                 "from": {
                     "file": "C:\\Users\\jek40\\Desktop\\ICEMANv0.5\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\exploded-aar\\com.facebook.android\\facebook-android-sdk\\4.8.0\\res\\values-tl\\values-tl.xml",
@@ -365,11 +764,11 @@
             },
             {
                 "to": {
-                    "startLine": 21,
+                    "startLine": 97,
                     "startColumn": 4,
-                    "startOffset": 2113,
+                    "startOffset": 7171,
                     "endColumn": 75,
-                    "endOffset": 2184
+                    "endOffset": 7242
                 },
                 "from": {
                     "file": "C:\\Users\\jek40\\Desktop\\ICEMANv0.5\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\exploded-aar\\com.facebook.android\\facebook-android-sdk\\4.8.0\\res\\values-tl\\values-tl.xml",
@@ -384,11 +783,11 @@
             },
             {
                 "to": {
-                    "startLine": 22,
+                    "startLine": 98,
                     "startColumn": 4,
-                    "startOffset": 2189,
+                    "startOffset": 7247,
                     "endColumn": 75,
-                    "endOffset": 2260
+                    "endOffset": 7318
                 },
                 "from": {
                     "file": "C:\\Users\\jek40\\Desktop\\ICEMANv0.5\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\exploded-aar\\com.facebook.android\\facebook-android-sdk\\4.8.0\\res\\values-tl\\values-tl.xml",
@@ -403,11 +802,11 @@
             },
             {
                 "to": {
-                    "startLine": 23,
+                    "startLine": 99,
                     "startColumn": 4,
-                    "startOffset": 2265,
+                    "startOffset": 7323,
                     "endColumn": 107,
-                    "endOffset": 2368
+                    "endOffset": 7426
                 },
                 "from": {
                     "file": "C:\\Users\\jek40\\Desktop\\ICEMANv0.5\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\exploded-aar\\com.facebook.android\\facebook-android-sdk\\4.8.0\\res\\values-tl\\values-tl.xml",
@@ -422,11 +821,11 @@
             },
             {
                 "to": {
-                    "startLine": 24,
+                    "startLine": 100,
                     "startColumn": 4,
-                    "startOffset": 2373,
+                    "startOffset": 7431,
                     "endColumn": 77,
-                    "endOffset": 2446
+                    "endOffset": 7504
                 },
                 "from": {
                     "file": "C:\\Users\\jek40\\Desktop\\ICEMANv0.5\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\exploded-aar\\com.facebook.android\\facebook-android-sdk\\4.8.0\\res\\values-tl\\values-tl.xml",
@@ -441,11 +840,11 @@
             },
             {
                 "to": {
-                    "startLine": 25,
+                    "startLine": 101,
                     "startColumn": 4,
-                    "startOffset": 2451,
+                    "startOffset": 7509,
                     "endColumn": 77,
-                    "endOffset": 2524
+                    "endOffset": 7582
                 },
                 "from": {
                     "file": "C:\\Users\\jek40\\Desktop\\ICEMANv0.5\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\exploded-aar\\com.facebook.android\\facebook-android-sdk\\4.8.0\\res\\values-tl\\values-tl.xml",
@@ -460,11 +859,11 @@
             },
             {
                 "to": {
-                    "startLine": 26,
+                    "startLine": 102,
                     "startColumn": 4,
-                    "startOffset": 2529,
+                    "startOffset": 7587,
                     "endColumn": 91,
-                    "endOffset": 2616
+                    "endOffset": 7674
                 },
                 "from": {
                     "file": "C:\\Users\\jek40\\Desktop\\ICEMANv0.5\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\exploded-aar\\com.facebook.android\\facebook-android-sdk\\4.8.0\\res\\values-tl\\values-tl.xml",
@@ -479,11 +878,11 @@
             },
             {
                 "to": {
-                    "startLine": 27,
+                    "startLine": 103,
                     "startColumn": 4,
-                    "startOffset": 2621,
+                    "startOffset": 7679,
                     "endColumn": 106,
-                    "endOffset": 2723
+                    "endOffset": 7781
                 },
                 "from": {
                     "file": "C:\\Users\\jek40\\Desktop\\ICEMANv0.5\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\exploded-aar\\com.facebook.android\\facebook-android-sdk\\4.8.0\\res\\values-tl\\values-tl.xml",
@@ -498,11 +897,11 @@
             },
             {
                 "to": {
-                    "startLine": 28,
+                    "startLine": 104,
                     "startColumn": 4,
-                    "startOffset": 2728,
+                    "startOffset": 7786,
                     "endColumn": 65,
-                    "endOffset": 2789
+                    "endOffset": 7847
                 },
                 "from": {
                     "file": "C:\\Users\\jek40\\Desktop\\ICEMANv0.5\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\exploded-aar\\com.facebook.android\\facebook-android-sdk\\4.8.0\\res\\values-tl\\values-tl.xml",
@@ -517,11 +916,11 @@
             },
             {
                 "to": {
-                    "startLine": 29,
+                    "startLine": 105,
                     "startColumn": 4,
-                    "startOffset": 2794,
+                    "startOffset": 7852,
                     "endColumn": 66,
-                    "endOffset": 2856
+                    "endOffset": 7914
                 },
                 "from": {
                     "file": "C:\\Users\\jek40\\Desktop\\ICEMANv0.5\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\exploded-aar\\com.facebook.android\\facebook-android-sdk\\4.8.0\\res\\values-tl\\values-tl.xml",
@@ -536,11 +935,11 @@
             },
             {
                 "to": {
-                    "startLine": 30,
+                    "startLine": 106,
                     "startColumn": 4,
-                    "startOffset": 2861,
+                    "startOffset": 7919,
                     "endColumn": 150,
-                    "endOffset": 3007
+                    "endOffset": 8065
                 },
                 "from": {
                     "file": "C:\\Users\\jek40\\Desktop\\ICEMANv0.5\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\exploded-aar\\com.facebook.android\\facebook-android-sdk\\4.8.0\\res\\values-tl\\values-tl.xml",
@@ -555,11 +954,11 @@
             },
             {
                 "to": {
-                    "startLine": 31,
+                    "startLine": 107,
                     "startColumn": 4,
-                    "startOffset": 3012,
+                    "startOffset": 8070,
                     "endColumn": 196,
-                    "endOffset": 3204
+                    "endOffset": 8262
                 },
                 "from": {
                     "file": "C:\\Users\\jek40\\Desktop\\ICEMANv0.5\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\exploded-aar\\com.google.android.gms\\play-services-basement\\8.3.0\\res\\values-tl\\common_strings.xml",
@@ -574,11 +973,11 @@
             },
             {
                 "to": {
-                    "startLine": 32,
+                    "startLine": 108,
                     "startColumn": 4,
-                    "startOffset": 3209,
+                    "startOffset": 8267,
                     "endColumn": 189,
-                    "endOffset": 3394
+                    "endOffset": 8452
                 },
                 "from": {
                     "file": "C:\\Users\\jek40\\Desktop\\ICEMANv0.5\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\exploded-aar\\com.google.android.gms\\play-services-basement\\8.3.0\\res\\values-tl\\common_strings.xml",
@@ -593,11 +992,11 @@
             },
             {
                 "to": {
-                    "startLine": 33,
+                    "startLine": 109,
                     "startColumn": 4,
-                    "startOffset": 3399,
+                    "startOffset": 8457,
                     "endColumn": 116,
-                    "endOffset": 3511
+                    "endOffset": 8569
                 },
                 "from": {
                     "file": "C:\\Users\\jek40\\Desktop\\ICEMANv0.5\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\exploded-aar\\com.google.android.gms\\play-services-basement\\8.3.0\\res\\values-tl\\common_strings.xml",
@@ -612,11 +1011,11 @@
             },
             {
                 "to": {
-                    "startLine": 34,
+                    "startLine": 110,
                     "startColumn": 4,
-                    "startOffset": 3516,
+                    "startOffset": 8574,
                     "endColumn": 290,
-                    "endOffset": 3802
+                    "endOffset": 8860
                 },
                 "from": {
                     "file": "C:\\Users\\jek40\\Desktop\\ICEMANv0.5\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\exploded-aar\\com.google.android.gms\\play-services-basement\\8.3.0\\res\\values-tl\\common_strings.xml",
@@ -631,11 +1030,11 @@
             },
             {
                 "to": {
-                    "startLine": 35,
+                    "startLine": 111,
                     "startColumn": 4,
-                    "startOffset": 3807,
+                    "startOffset": 8865,
                     "endColumn": 127,
-                    "endOffset": 3930
+                    "endOffset": 8988
                 },
                 "from": {
                     "file": "C:\\Users\\jek40\\Desktop\\ICEMANv0.5\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\exploded-aar\\com.google.android.gms\\play-services-basement\\8.3.0\\res\\values-tl\\common_strings.xml",
@@ -650,11 +1049,11 @@
             },
             {
                 "to": {
-                    "startLine": 36,
+                    "startLine": 112,
                     "startColumn": 4,
-                    "startOffset": 3935,
+                    "startOffset": 8993,
                     "endColumn": 208,
-                    "endOffset": 4139
+                    "endOffset": 9197
                 },
                 "from": {
                     "file": "C:\\Users\\jek40\\Desktop\\ICEMANv0.5\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\exploded-aar\\com.google.android.gms\\play-services-basement\\8.3.0\\res\\values-tl\\common_strings.xml",
@@ -669,11 +1068,11 @@
             },
             {
                 "to": {
-                    "startLine": 37,
+                    "startLine": 113,
                     "startColumn": 4,
-                    "startOffset": 4144,
+                    "startOffset": 9202,
                     "endColumn": 132,
-                    "endOffset": 4272
+                    "endOffset": 9330
                 },
                 "from": {
                     "file": "C:\\Users\\jek40\\Desktop\\ICEMANv0.5\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\exploded-aar\\com.google.android.gms\\play-services-basement\\8.3.0\\res\\values-tl\\common_strings.xml",
@@ -688,11 +1087,11 @@
             },
             {
                 "to": {
-                    "startLine": 38,
+                    "startLine": 114,
                     "startColumn": 4,
-                    "startOffset": 4277,
+                    "startOffset": 9335,
                     "endColumn": 167,
-                    "endOffset": 4440
+                    "endOffset": 9498
                 },
                 "from": {
                     "file": "C:\\Users\\jek40\\Desktop\\ICEMANv0.5\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\exploded-aar\\com.google.android.gms\\play-services-basement\\8.3.0\\res\\values-tl\\common_strings.xml",
@@ -707,11 +1106,11 @@
             },
             {
                 "to": {
-                    "startLine": 39,
+                    "startLine": 115,
                     "startColumn": 4,
-                    "startOffset": 4445,
+                    "startOffset": 9503,
                     "endColumn": 131,
-                    "endOffset": 4572
+                    "endOffset": 9630
                 },
                 "from": {
                     "file": "C:\\Users\\jek40\\Desktop\\ICEMANv0.5\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\exploded-aar\\com.google.android.gms\\play-services-basement\\8.3.0\\res\\values-tl\\common_strings.xml",
@@ -726,11 +1125,11 @@
             },
             {
                 "to": {
-                    "startLine": 40,
+                    "startLine": 116,
                     "startColumn": 4,
-                    "startOffset": 4577,
+                    "startOffset": 9635,
                     "endColumn": 224,
-                    "endOffset": 4797
+                    "endOffset": 9855
                 },
                 "from": {
                     "file": "C:\\Users\\jek40\\Desktop\\ICEMANv0.5\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\exploded-aar\\com.google.android.gms\\play-services-basement\\8.3.0\\res\\values-tl\\common_strings.xml",
@@ -745,11 +1144,11 @@
             },
             {
                 "to": {
-                    "startLine": 41,
+                    "startLine": 117,
                     "startColumn": 4,
-                    "startOffset": 4802,
+                    "startOffset": 9860,
                     "endColumn": 222,
-                    "endOffset": 5020
+                    "endOffset": 10078
                 },
                 "from": {
                     "file": "C:\\Users\\jek40\\Desktop\\ICEMANv0.5\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\exploded-aar\\com.google.android.gms\\play-services-basement\\8.3.0\\res\\values-tl\\common_strings.xml",
@@ -764,11 +1163,11 @@
             },
             {
                 "to": {
-                    "startLine": 42,
+                    "startLine": 118,
                     "startColumn": 4,
-                    "startOffset": 5025,
+                    "startOffset": 10083,
                     "endColumn": 135,
-                    "endOffset": 5156
+                    "endOffset": 10214
                 },
                 "from": {
                     "file": "C:\\Users\\jek40\\Desktop\\ICEMANv0.5\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\exploded-aar\\com.google.android.gms\\play-services-basement\\8.3.0\\res\\values-tl\\common_strings.xml",
@@ -783,11 +1182,11 @@
             },
             {
                 "to": {
-                    "startLine": 43,
+                    "startLine": 119,
                     "startColumn": 4,
-                    "startOffset": 5161,
+                    "startOffset": 10219,
                     "endColumn": 197,
-                    "endOffset": 5354
+                    "endOffset": 10412
                 },
                 "from": {
                     "file": "C:\\Users\\jek40\\Desktop\\ICEMANv0.5\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\exploded-aar\\com.google.android.gms\\play-services-basement\\8.3.0\\res\\values-tl\\common_strings.xml",
@@ -802,11 +1201,11 @@
             },
             {
                 "to": {
-                    "startLine": 44,
+                    "startLine": 120,
                     "startColumn": 4,
-                    "startOffset": 5359,
+                    "startOffset": 10417,
                     "endColumn": 128,
-                    "endOffset": 5483
+                    "endOffset": 10541
                 },
                 "from": {
                     "file": "C:\\Users\\jek40\\Desktop\\ICEMANv0.5\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\exploded-aar\\com.google.android.gms\\play-services-basement\\8.3.0\\res\\values-tl\\common_strings.xml",
@@ -821,11 +1220,11 @@
             },
             {
                 "to": {
-                    "startLine": 45,
+                    "startLine": 121,
                     "startColumn": 4,
-                    "startOffset": 5488,
+                    "startOffset": 10546,
                     "endColumn": 177,
-                    "endOffset": 5661
+                    "endOffset": 10719
                 },
                 "from": {
                     "file": "C:\\Users\\jek40\\Desktop\\ICEMANv0.5\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\exploded-aar\\com.google.android.gms\\play-services-basement\\8.3.0\\res\\values-tl\\common_strings.xml",
@@ -840,11 +1239,11 @@
             },
             {
                 "to": {
-                    "startLine": 46,
+                    "startLine": 122,
                     "startColumn": 4,
-                    "startOffset": 5666,
+                    "startOffset": 10724,
                     "endColumn": 185,
-                    "endOffset": 5847
+                    "endOffset": 10905
                 },
                 "from": {
                     "file": "C:\\Users\\jek40\\Desktop\\ICEMANv0.5\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\exploded-aar\\com.google.android.gms\\play-services-basement\\8.3.0\\res\\values-tl\\common_strings.xml",
@@ -859,11 +1258,11 @@
             },
             {
                 "to": {
-                    "startLine": 47,
+                    "startLine": 123,
                     "startColumn": 4,
-                    "startOffset": 5852,
+                    "startOffset": 10910,
                     "endColumn": 126,
-                    "endOffset": 5974
+                    "endOffset": 11032
                 },
                 "from": {
                     "file": "C:\\Users\\jek40\\Desktop\\ICEMANv0.5\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\exploded-aar\\com.google.android.gms\\play-services-basement\\8.3.0\\res\\values-tl\\common_strings.xml",
@@ -878,11 +1277,11 @@
             },
             {
                 "to": {
-                    "startLine": 48,
+                    "startLine": 124,
                     "startColumn": 4,
-                    "startOffset": 5979,
+                    "startOffset": 11037,
                     "endColumn": 184,
-                    "endOffset": 6159
+                    "endOffset": 11217
                 },
                 "from": {
                     "file": "C:\\Users\\jek40\\Desktop\\ICEMANv0.5\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\exploded-aar\\com.google.android.gms\\play-services-basement\\8.3.0\\res\\values-tl\\common_strings.xml",
@@ -897,11 +1296,11 @@
             },
             {
                 "to": {
-                    "startLine": 49,
+                    "startLine": 125,
                     "startColumn": 4,
-                    "startOffset": 6164,
+                    "startOffset": 11222,
                     "endColumn": 142,
-                    "endOffset": 6302
+                    "endOffset": 11360
                 },
                 "from": {
                     "file": "C:\\Users\\jek40\\Desktop\\ICEMANv0.5\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\exploded-aar\\com.google.android.gms\\play-services-basement\\8.3.0\\res\\values-tl\\common_strings.xml",
@@ -916,11 +1315,11 @@
             },
             {
                 "to": {
-                    "startLine": 50,
+                    "startLine": 126,
                     "startColumn": 4,
-                    "startOffset": 6307,
+                    "startOffset": 11365,
                     "endColumn": 178,
-                    "endOffset": 6481
+                    "endOffset": 11539
                 },
                 "from": {
                     "file": "C:\\Users\\jek40\\Desktop\\ICEMANv0.5\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\exploded-aar\\com.google.android.gms\\play-services-basement\\8.3.0\\res\\values-tl\\common_strings.xml",
@@ -935,11 +1334,11 @@
             },
             {
                 "to": {
-                    "startLine": 51,
+                    "startLine": 127,
                     "startColumn": 4,
-                    "startOffset": 6486,
+                    "startOffset": 11544,
                     "endColumn": 128,
-                    "endOffset": 6610
+                    "endOffset": 11668
                 },
                 "from": {
                     "file": "C:\\Users\\jek40\\Desktop\\ICEMANv0.5\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\exploded-aar\\com.google.android.gms\\play-services-basement\\8.3.0\\res\\values-tl\\common_strings.xml",
@@ -954,11 +1353,11 @@
             },
             {
                 "to": {
-                    "startLine": 52,
+                    "startLine": 128,
                     "startColumn": 4,
-                    "startOffset": 6615,
+                    "startOffset": 11673,
                     "endColumn": 154,
-                    "endOffset": 6765
+                    "endOffset": 11823
                 },
                 "from": {
                     "file": "C:\\Users\\jek40\\Desktop\\ICEMANv0.5\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\exploded-aar\\com.google.android.gms\\play-services-basement\\8.3.0\\res\\values-tl\\common_strings.xml",
@@ -973,11 +1372,11 @@
             },
             {
                 "to": {
-                    "startLine": 53,
+                    "startLine": 129,
                     "startColumn": 4,
-                    "startOffset": 6770,
+                    "startOffset": 11828,
                     "endColumn": 272,
-                    "endOffset": 7038
+                    "endOffset": 12096
                 },
                 "from": {
                     "file": "C:\\Users\\jek40\\Desktop\\ICEMANv0.5\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\exploded-aar\\com.google.android.gms\\play-services-basement\\8.3.0\\res\\values-tl\\common_strings.xml",
@@ -992,11 +1391,11 @@
             },
             {
                 "to": {
-                    "startLine": 54,
+                    "startLine": 130,
                     "startColumn": 4,
-                    "startOffset": 7043,
+                    "startOffset": 12101,
                     "endColumn": 131,
-                    "endOffset": 7170
+                    "endOffset": 12228
                 },
                 "from": {
                     "file": "C:\\Users\\jek40\\Desktop\\ICEMANv0.5\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\exploded-aar\\com.google.android.gms\\play-services-basement\\8.3.0\\res\\values-tl\\common_strings.xml",
@@ -1011,11 +1410,11 @@
             },
             {
                 "to": {
-                    "startLine": 55,
+                    "startLine": 131,
                     "startColumn": 4,
-                    "startOffset": 7175,
+                    "startOffset": 12233,
                     "endColumn": 108,
-                    "endOffset": 7279
+                    "endOffset": 12337
                 },
                 "from": {
                     "file": "C:\\Users\\jek40\\Desktop\\ICEMANv0.5\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\exploded-aar\\com.google.android.gms\\play-services-basement\\8.3.0\\res\\values-tl\\common_strings.xml",
@@ -1030,11 +1429,11 @@
             },
             {
                 "to": {
-                    "startLine": 56,
+                    "startLine": 132,
                     "startColumn": 4,
-                    "startOffset": 7284,
+                    "startOffset": 12342,
                     "endColumn": 208,
-                    "endOffset": 7488
+                    "endOffset": 12546
                 },
                 "from": {
                     "file": "C:\\Users\\jek40\\Desktop\\ICEMANv0.5\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\exploded-aar\\com.google.android.gms\\play-services-basement\\8.3.0\\res\\values-tl\\common_strings.xml",
@@ -1049,11 +1448,11 @@
             },
             {
                 "to": {
-                    "startLine": 57,
+                    "startLine": 133,
                     "startColumn": 4,
-                    "startOffset": 7493,
+                    "startOffset": 12551,
                     "endColumn": 139,
-                    "endOffset": 7628
+                    "endOffset": 12686
                 },
                 "from": {
                     "file": "C:\\Users\\jek40\\Desktop\\ICEMANv0.5\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\exploded-aar\\com.google.android.gms\\play-services-basement\\8.3.0\\res\\values-tl\\common_strings.xml",
@@ -1068,11 +1467,11 @@
             },
             {
                 "to": {
-                    "startLine": 58,
+                    "startLine": 134,
                     "startColumn": 4,
-                    "startOffset": 7633,
+                    "startOffset": 12691,
                     "endColumn": 220,
-                    "endOffset": 7849
+                    "endOffset": 12907
                 },
                 "from": {
                     "file": "C:\\Users\\jek40\\Desktop\\ICEMANv0.5\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\exploded-aar\\com.google.android.gms\\play-services-basement\\8.3.0\\res\\values-tl\\common_strings.xml",
@@ -1087,11 +1486,11 @@
             },
             {
                 "to": {
-                    "startLine": 59,
+                    "startLine": 135,
                     "startColumn": 4,
-                    "startOffset": 7854,
+                    "startOffset": 12912,
                     "endColumn": 138,
-                    "endOffset": 7988
+                    "endOffset": 13046
                 },
                 "from": {
                     "file": "C:\\Users\\jek40\\Desktop\\ICEMANv0.5\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\exploded-aar\\com.google.android.gms\\play-services-basement\\8.3.0\\res\\values-tl\\common_strings.xml",
@@ -1106,11 +1505,11 @@
             },
             {
                 "to": {
-                    "startLine": 60,
+                    "startLine": 136,
                     "startColumn": 4,
-                    "startOffset": 7993,
+                    "startOffset": 13051,
                     "endColumn": 96,
-                    "endOffset": 8085
+                    "endOffset": 13143
                 },
                 "from": {
                     "file": "C:\\Users\\jek40\\Desktop\\ICEMANv0.5\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\exploded-aar\\com.google.android.gms\\play-services-basement\\8.3.0\\res\\values-tl\\common_strings.xml",
@@ -1125,11 +1524,11 @@
             },
             {
                 "to": {
-                    "startLine": 61,
+                    "startLine": 137,
                     "startColumn": 4,
-                    "startOffset": 8090,
+                    "startOffset": 13148,
                     "endColumn": 95,
-                    "endOffset": 8181
+                    "endOffset": 13239
                 },
                 "from": {
                     "file": "C:\\Users\\jek40\\Desktop\\ICEMANv0.5\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\exploded-aar\\com.google.android.gms\\play-services-base\\8.3.0\\res\\values-tl\\base_strings.xml",
@@ -1144,11 +1543,11 @@
             },
             {
                 "to": {
-                    "startLine": 62,
+                    "startLine": 138,
                     "startColumn": 4,
-                    "startOffset": 8186,
+                    "startOffset": 13244,
                     "endColumn": 110,
-                    "endOffset": 8292
+                    "endOffset": 13350
                 },
                 "from": {
                     "file": "C:\\Users\\jek40\\Desktop\\ICEMANv0.5\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\exploded-aar\\com.google.android.gms\\play-services-base\\8.3.0\\res\\values-tl\\base_strings.xml",
@@ -1163,11 +1562,87 @@
             },
             {
                 "to": {
-                    "startLine": 63,
+                    "startLine": 139,
                     "startColumn": 4,
-                    "startOffset": 8297,
+                    "startOffset": 13355,
+                    "endColumn": 65,
+                    "endOffset": 13416
+                },
+                "from": {
+                    "file": "C:\\Users\\jek40\\Desktop\\ICEMANv0.5\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\exploded-aar\\net.danlew\\android.joda\\2.9.2\\res\\values-tl\\values-tl.xml",
+                    "position": {
+                        "startLine": 78,
+                        "startColumn": 4,
+                        "startOffset": 5163,
+                        "endColumn": 65,
+                        "endOffset": 5224
+                    }
+                }
+            },
+            {
+                "to": {
+                    "startLine": 140,
+                    "startColumn": 4,
+                    "startOffset": 13421,
+                    "endColumn": 127,
+                    "endOffset": 13544
+                },
+                "from": {
+                    "file": "C:\\Users\\jek40\\Desktop\\ICEMANv0.5\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\exploded-aar\\net.danlew\\android.joda\\2.9.2\\res\\values-tl\\values-tl.xml",
+                    "position": {
+                        "startLine": 79,
+                        "startColumn": 4,
+                        "startOffset": 5229,
+                        "endColumn": 127,
+                        "endOffset": 5352
+                    }
+                }
+            },
+            {
+                "to": {
+                    "startLine": 141,
+                    "startColumn": 4,
+                    "startOffset": 13549,
+                    "endColumn": 129,
+                    "endOffset": 13674
+                },
+                "from": {
+                    "file": "C:\\Users\\jek40\\Desktop\\ICEMANv0.5\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\exploded-aar\\net.danlew\\android.joda\\2.9.2\\res\\values-tl\\values-tl.xml",
+                    "position": {
+                        "startLine": 80,
+                        "startColumn": 4,
+                        "startOffset": 5357,
+                        "endColumn": 129,
+                        "endOffset": 5482
+                    }
+                }
+            },
+            {
+                "to": {
+                    "startLine": 142,
+                    "startColumn": 4,
+                    "startOffset": 13679,
+                    "endColumn": 150,
+                    "endOffset": 13825
+                },
+                "from": {
+                    "file": "C:\\Users\\jek40\\Desktop\\ICEMANv0.5\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\exploded-aar\\net.danlew\\android.joda\\2.9.2\\res\\values-tl\\values-tl.xml",
+                    "position": {
+                        "startLine": 81,
+                        "startColumn": 4,
+                        "startOffset": 5487,
+                        "endColumn": 150,
+                        "endOffset": 5633
+                    }
+                }
+            },
+            {
+                "to": {
+                    "startLine": 143,
+                    "startColumn": 4,
+                    "startOffset": 13830,
                     "endColumn": 62,
-                    "endOffset": 8355
+                    "endOffset": 13888
                 },
                 "from": {
                     "file": "C:\\Users\\jek40\\Desktop\\ICEMANv0.5\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\exploded-aar\\com.facebook.android\\facebook-android-sdk\\4.8.0\\res\\values-tl\\values-tl.xml",

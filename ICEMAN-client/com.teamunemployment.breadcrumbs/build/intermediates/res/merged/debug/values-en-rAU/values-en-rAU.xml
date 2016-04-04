@@ -32,4 +32,5 @@
     <string msgid="411506735369601515" name="common_open_on_phone">"Open on phone"</string>
     <string msgid="3156914698180786012" name="common_signin_button_text">"Sign In"</string>
     <string msgid="1483290677806110088" name="common_signin_button_text_long">"Sign in with Google"</string>
+    <string name="joda_time_android_date_time">%1$s, %2$s</string>
 </resources>

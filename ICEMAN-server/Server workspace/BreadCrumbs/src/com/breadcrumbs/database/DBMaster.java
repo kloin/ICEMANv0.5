@@ -36,6 +36,7 @@ public class DBMaster {
 	//Our database instance
 	private static GraphDatabaseService _db;
 	private static DBMaster singletonDBMaster;
+	public static String serverAddress = "/var/lib/tomcat7/webapps/images/";
 	
 	/*
 	 * Straight up constructing. This needs to be a singleton because the db can only be shared,
@@ -68,6 +69,12 @@ public class DBMaster {
 		Has_Pinned,
 		Likes
 	 }
+        
+        public enum myActivities {
+            Driving,
+            Walking,
+            Flying
+        }
 
 	public enum myLabels implements Label
 	{
@@ -76,7 +83,8 @@ public class DBMaster {
 		Trail,
 		Crumb,
 		Point,
-		Comment
+		Comment,
+                Event
 	}
 	//Return an a reference to the instance of the database
 	public GraphDatabaseService GetDatabaseInstance() {
@@ -327,6 +335,13 @@ public class DBMaster {
 		}
 	}
 	
+	public String GetAllFieldsOnANode(String nodeId) {
+		
+		Node node = RetrieveNode(Integer.parseInt(nodeId));
+		
+		return "";
+	}
+	
 	/*
 	 * This currently does not return anything. It would probably be better to return a boolean if successful etc..
 	 */
@@ -485,7 +500,6 @@ public class DBMaster {
 		finally {
 			tx.finish();
 		}
-		
 	}
 	/*
 	 * @depreciated
@@ -530,7 +544,7 @@ public class DBMaster {
 		    Object userIdObject = map.get("trail.UserId");
 		    Object trailNameObject = map.get("trail.TrailName");
 		    Object coverIdObject = map.get("trail.CoverPhotoId");	
-		    
+		    System.out.print("Fetched objects from map");
 		    String description = "";
 		    String views = "";
 		    String userId = "";
@@ -574,7 +588,7 @@ public class DBMaster {
 			System.out.print("issues with fetching node and its relations");
 			tx.failure();
 		} finally {
-			tx.close();
+			tx.finish();
 		}		
 		return nodeString;
 	}

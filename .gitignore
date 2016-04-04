@@ -1,4 +1,4 @@
-dir_to_ignore/ICEMAN-client/com.breadcrumbs/build
+dir_to_ignore/ICEMAN-client/com.breadcrumbs/build/*
 dir_to_ignore/ICEMAN-client/com.breadcrumbs/gen
 dir_to_ignore/ICEMAN-client/com.breadcrumbs/gradle
 dir_to_igonre/ICEMAN-server/Server workspace/.metadata
@@ -10,3 +10,4 @@ dir_to_igonre/ICEMAN-server/Server workspace/BreadCrumbs/target
 dir_to_igonre/ICEMAN-server/Server workspace/BreadCrumbs/.classpath
 dir_to_igonre/ICEMAN-server/Server workspace/BreadCrumbs/.pom
 dir_to_igonre/ICEMAN-server/Server workspace/BreadCrumbs/.project
+dir_to_ignore

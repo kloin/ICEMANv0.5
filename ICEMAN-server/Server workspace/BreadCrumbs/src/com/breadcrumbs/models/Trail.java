@@ -286,12 +286,10 @@ public class Trail {
 		Iterator<String> it = trailPointsJSON.keys();
 		// Get the first one, then loop through as long as "next" != null
 		while (it.hasNext()) {
-
-			Object nextObj = null;		
+			//Object nextObj = null;		
 			try {
 				//previousNode = tempNode;
 				tempNode = trailPointsJSON.getJSONObject(it.next()); // This is our first point
-				
 				if (trailId == null) {
 					trailId = tempNode.getString("trailId");
 				}	
@@ -299,10 +297,9 @@ public class Trail {
 					updateDistance(trailId, previousNode.getString("latitude"), previousNode.getString("longitude"), tempNode.getString("latitude"), tempNode.getString("longitude"));
 				}*/
 				
-				SavePointFromJSON(tempNode, trailId);
-						
-				int x = tempNode.getInt("next");
-				nextObj = tempNode.get("next");
+				SavePointFromJSON(tempNode, trailId);		
+				//int x = tempNode.getInt("next");
+				//nextObj = tempNode.get("next");
 			} catch (JSONException ex) {
 				// Not really alot to do here. Will happen every time at the end, but thats not really a big deal i dont think... if it is we can set a -1 by default client side
 				System.out.println("failed to save JSONPoints");
@@ -312,6 +309,17 @@ public class Trail {
 		// Return the last trail so when we carry on it works all good. we wil store this in shared preferences
 		return "200";
 	}
+	
+	/*
+	 * Add points to the trail that alkready exists
+	 */
+	public String SaveTrailPoints(JSONObject jsonOfPoints, String trailId) {
+		
+            
+		
+		return "200";
+	}
+	
 	
 	private double calculateDistance(double lat1, double lat2, double lon1,
 	        double lon2, double el1, double el2) {
@@ -467,7 +475,6 @@ public class Trail {
 		return dbMaster.ExecuteCypherQueryJSONStringReturnJustIds(cypherQuery);
 	}
        
-
 	public String GetSimpleDetailsForATrail(String trailId) {
 		DBMaster dbMaster = DBMaster.GetAnInstanceOfDBMaster();
 		String cypherQuery = "start trail = node("+trailId+") return trail.UserId, trail.TrailName, trail.Description, trail.Views, trail.CoverPhotoId";		

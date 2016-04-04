@@ -336,6 +336,82 @@
     <integer name="google_play_services_version">8298000</integer>
     <integer name="snackbar_text_max_lines">2</integer>
     <integer name="status_bar_notification_info_maxnum">999</integer>
+    <plurals name="joda_time_android_abbrev_in_num_days">
+        <item quantity="one">tomorrow</item>
+        <item quantity="other">in <ns1:g id="count">%d</ns1:g> days</item>
+    </plurals>
+    <plurals name="joda_time_android_abbrev_in_num_hours">
+        <item quantity="one">in 1 hour</item>
+        <item quantity="other">in <ns1:g id="count">%d</ns1:g> hours</item>
+    </plurals>
+    <plurals name="joda_time_android_abbrev_in_num_minutes">
+        <item quantity="one">in 1 min</item>
+        <item quantity="other">in <ns1:g id="count">%d</ns1:g> mins</item>
+    </plurals>
+    <plurals name="joda_time_android_abbrev_in_num_seconds">
+        <item quantity="one">in 1 sec</item>
+        <item quantity="other">in <ns1:g id="count">%d</ns1:g> secs</item>
+    </plurals>
+    <plurals name="joda_time_android_abbrev_num_days_ago">
+        <item quantity="one">yesterday</item>
+        <item quantity="other"><ns1:g id="count">%d</ns1:g> days ago</item>
+    </plurals>
+    <plurals name="joda_time_android_abbrev_num_hours_ago">
+        <item quantity="one">1 hour ago</item>
+        <item quantity="other"><ns1:g id="count">%d</ns1:g> hours ago</item>
+    </plurals>
+    <plurals name="joda_time_android_abbrev_num_minutes_ago">
+        <item quantity="one">1 min ago</item>
+        <item quantity="other"><ns1:g id="count">%d</ns1:g> mins ago</item>
+    </plurals>
+    <plurals name="joda_time_android_abbrev_num_seconds_ago">
+        <item quantity="one">1 sec ago</item>
+        <item quantity="other"><ns1:g id="count">%d</ns1:g> secs ago</item>
+    </plurals>
+    <plurals name="joda_time_android_duration_hours">
+        <item quantity="one">1 hour</item>
+        <item quantity="other"><ns1:g id="count">%d</ns1:g> hours</item>
+    </plurals>
+    <plurals name="joda_time_android_duration_minutes">
+        <item quantity="one">1 minute</item>
+        <item quantity="other"><ns1:g id="count">%d</ns1:g> minutes</item>
+    </plurals>
+    <plurals name="joda_time_android_duration_seconds">
+        <item quantity="one">1 second</item>
+        <item quantity="other"><ns1:g id="count">%d</ns1:g> seconds</item>
+    </plurals>
+    <plurals name="joda_time_android_in_num_days">
+        <item quantity="one">tomorrow</item>
+        <item quantity="other">in <ns1:g id="count">%d</ns1:g> days</item>
+    </plurals>
+    <plurals name="joda_time_android_in_num_hours">
+        <item quantity="one">in 1 hour</item>
+        <item quantity="other">in <ns1:g id="count">%d</ns1:g> hours</item>
+    </plurals>
+    <plurals name="joda_time_android_in_num_minutes">
+        <item quantity="one">in 1 minute</item>
+        <item quantity="other">in <ns1:g id="count">%d</ns1:g> minutes</item>
+    </plurals>
+    <plurals name="joda_time_android_in_num_seconds">
+        <item quantity="one">in 1 second</item>
+        <item quantity="other">in <ns1:g id="count">%d</ns1:g> seconds</item>
+    </plurals>
+    <plurals name="joda_time_android_num_days_ago">
+        <item quantity="one">yesterday</item>
+        <item quantity="other"><ns1:g id="count">%d</ns1:g> days ago</item>
+    </plurals>
+    <plurals name="joda_time_android_num_hours_ago">
+        <item quantity="one">1 hour ago</item>
+        <item quantity="other"><ns1:g id="count">%d</ns1:g> hours ago</item>
+    </plurals>
+    <plurals name="joda_time_android_num_minutes_ago">
+        <item quantity="one">1 minute ago</item>
+        <item quantity="other"><ns1:g id="count">%d</ns1:g> minutes ago</item>
+    </plurals>
+    <plurals name="joda_time_android_num_seconds_ago">
+        <item quantity="one">1 second ago</item>
+        <item quantity="other"><ns1:g id="count">%d</ns1:g> seconds ago</item>
+    </plurals>
     <string name="abc_action_bar_home_description">Navigate home</string>
     <string name="abc_action_bar_home_description_format">%1$s, %2$s</string>
     <string name="abc_action_bar_home_subtitle_description_format">%1$s, %2$s, %3$s</string>
@@ -413,12 +489,64 @@
     <string name="facebook_app_id">668335369892920</string>
     <string name="gcm_defaultSenderId" translatable="false">738222294197</string>
     <string name="hello_world">Hello world!</string>
+    <string name="joda_time_android_date_time">%1$s, %2$s</string>
+    <string name="joda_time_android_preposition_for_date">on <ns1:g example="May 29" id="date">%s</ns1:g></string>
+    <string name="joda_time_android_preposition_for_time">at <ns1:g example="2:33 am" id="time">%s</ns1:g></string>
+    <string name="joda_time_android_relative_time">"<ns1:g example="4 hours ago" id="date">%1$s</ns1:g>, <ns1:g example="11:00 am" id="time">%2$s</ns1:g>"</string>
     <item name="mapboxAndroidSDKVersion" type="string">0.7.3</item>
     <string name="messenger_send_button_text">Send</string>
     <string name="status_bar_notification_info_overflow">999+</string>
     <string name="toolTipAddress">Address</string>
     <string name="toolTipDescription">Description</string>
     <string name="toolTipTitle">Title</string>
+    <string name="weather_text_000">Tornado</string>
+    <string name="weather_text_001">Tropical storm</string>
+    <string name="weather_text_002">Hurricane</string>
+    <string name="weather_text_003">Severe thunder storms</string>
+    <string name="weather_text_004">Thunderstorms</string>
+    <string name="weather_text_005">Mixed rain snow</string>
+    <string name="weather_text_006">Mixed rain sleet</string>
+    <string name="weather_text_007">Mixed snow sleet</string>
+    <string name="weather_text_008">Freezing drizzle</string>
+    <string name="weather_text_009">Drizzle</string>
+    <string name="weather_text_010">Freezing rain</string>
+    <string name="weather_text_011">Showers</string>
+    <string name="weather_text_012">Heavy showers</string>
+    <string name="weather_text_013">Snow flurries</string>
+    <string name="weather_text_014">Light snow showers</string>
+    <string name="weather_text_015">Blowing snow</string>
+    <string name="weather_text_016">Snow</string>
+    <string name="weather_text_017">Hail</string>
+    <string name="weather_text_018">Sleet</string>
+    <string name="weather_text_019">Dust</string>
+    <string name="weather_text_020">Foggy</string>
+    <string name="weather_text_021">Haze</string>
+    <string name="weather_text_022">Smoky</string>
+    <string name="weather_text_023">Blustery</string>
+    <string name="weather_text_024">Windy</string>
+    <string name="weather_text_025">Cold</string>
+    <string name="weather_text_026">Cloudy</string>
+    <string name="weather_text_027">Mostly cloudy at night</string>
+    <string name="weather_text_028">Mostly cloudy at day</string>
+    <string name="weather_text_029">Partly cloudy night</string>
+    <string name="weather_text_030">Partly cloudy day</string>
+    <string name="weather_text_031">Cleat at night</string>
+    <string name="weather_text_032">Sunny</string>
+    <string name="weather_text_033">Fair night</string>
+    <string name="weather_text_034">Fair day</string>
+    <string name="weather_text_035">Mixed rain and hail</string>
+    <string name="weather_text_036">Hot</string>
+    <string name="weather_text_037">Isolated thunderstorms</string>
+    <string name="weather_text_038">Scattered thunderstorms</string>
+    <string name="weather_text_039">Scattered thunderstorms</string>
+    <string name="weather_text_040">Scattered showers</string>
+    <string name="weather_text_041">Heavy snow</string>
+    <string name="weather_text_042">Scattered snow showers</string>
+    <string name="weather_text_044">Partly cloud</string>
+    <string name="weather_text_045">Thundershowers</string>
+    <string name="weather_text_046">Snow showers</string>
+    <string name="weather_text_047">Isolated thunder showers</string>
+    <string name="weather_text_1000">Not available</string>
     <style name="AlertDialog.AppCompat" parent="Base.AlertDialog.AppCompat"/>
     <style name="AlertDialog.AppCompat.Light" parent="Base.AlertDialog.AppCompat.Light"/>
     <style name="Animation.AppCompat.Dialog" parent="Base.Animation.AppCompat.Dialog"/>

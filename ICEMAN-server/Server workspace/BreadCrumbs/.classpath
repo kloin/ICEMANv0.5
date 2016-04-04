@@ -23,6 +23,6 @@
 			<attribute name="maven.pomderived" value="true"/>
 		</attributes>
 	</classpathentry>
-	<classpathentry kind="lib" path="C:/Users/jek40/Downloads/jdk-8u60-windows-x64.exe"/>
+	<classpathentry kind="lib" path="C:/Users/jek40/Downloads/jdk-8u77-windows-x64.exe"/>
 	<classpathentry kind="output" path="target/classes"/>
 </classpath>

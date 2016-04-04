@@ -80,7 +80,7 @@
     <init>();
 }
 
--keep class com.teamunemployment.breadcrumbs.client.ProfilePageViewer {
+-keep class com.teamunemployment.breadcrumbs.client.NavMenu.Profile.ProfilePageViewer {
     <init>();
 }
 
@@ -136,11 +136,7 @@
     <init>();
 }
 
--keep class com.teamunemployment.breadcrumbs.client.ProfilePicChooser {
-    <init>();
-}
-
--keep class com.teamunemployment.breadcrumbs.client.OverflowNavigationDrawer {
+-keep class com.teamunemployment.breadcrumbs.client.NavMenu.Profile.ProfilePicChooser {
     <init>();
 }
 
@@ -148,7 +144,7 @@
     <init>();
 }
 
--keep class com.teamunemployment.breadcrumbs.client.About {
+-keep class com.teamunemployment.breadcrumbs.client.NavMenu.About {
     <init>();
 }
 
@@ -161,6 +157,10 @@
 }
 
 -keep class com.teamunemployment.breadcrumbs.Location.LocationService {
+    <init>();
+}
+
+-keep class com.teamunemployment.breadcrumbs.BackgroundServices.BackgroundService {
     <init>();
 }
 

@@ -15,7 +15,7 @@
 -keep class com.teamunemployment.breadcrumbs.Trails.CreateTrail { <init>(); }
 -keep class com.teamunemployment.breadcrumbs.Trails.EditMyTrail { <init>(); }
 -keep class com.teamunemployment.breadcrumbs.client.TrailActivity { <init>(); }
--keep class com.teamunemployment.breadcrumbs.client.ProfilePageViewer { <init>(); }
+-keep class com.teamunemployment.breadcrumbs.client.NavMenu.Profile.ProfilePageViewer { <init>(); }
 -keep class com.teamunemployment.breadcrumbs.client.SelectedEventViewerBase { <init>(); }
 -keep class com.teamunemployment.breadcrumbs.client.ImageViewer { <init>(); }
 -keep class com.teamunemployment.breadcrumbs.client.Camera.CameraCapture { <init>(); }
@@ -29,13 +29,13 @@
 -keep class com.teamunemployment.breadcrumbs.client.Settings { <init>(); }
 -keep class com.teamunemployment.breadcrumbs.client.tabs.SaveVideoActivity { <init>(); }
 -keep class com.teamunemployment.breadcrumbs.client.Maps.MapViewController { <init>(); }
--keep class com.teamunemployment.breadcrumbs.client.ProfilePicChooser { <init>(); }
--keep class com.teamunemployment.breadcrumbs.client.OverflowNavigationDrawer { <init>(); }
+-keep class com.teamunemployment.breadcrumbs.client.NavMenu.Profile.ProfilePicChooser { <init>(); }
 -keep class com.teamunemployment.breadcrumbs.client.EditExistingTrail { <init>(); }
--keep class com.teamunemployment.breadcrumbs.client.About { <init>(); }
+-keep class com.teamunemployment.breadcrumbs.client.NavMenu.About { <init>(); }
 -keep class com.teamunemployment.breadcrumbs.client.ImageChooser.TrailCoverImageSelector { <init>(); }
 -keep class com.facebook.FacebookContentProvider { <init>(); }
 -keep class com.teamunemployment.breadcrumbs.Location.LocationService { <init>(); }
+-keep class com.teamunemployment.breadcrumbs.BackgroundServices.BackgroundService { <init>(); }
 -keep class com.google.android.gms.measurement.AppMeasurementContentProvider { <init>(); }
 -keep class com.google.android.gms.measurement.AppMeasurementReceiver { <init>(); }
 -keep class com.google.android.gms.measurement.AppMeasurementService { <init>(); }

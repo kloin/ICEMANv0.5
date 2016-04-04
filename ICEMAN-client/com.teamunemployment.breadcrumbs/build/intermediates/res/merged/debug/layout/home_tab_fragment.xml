@@ -2,7 +2,7 @@
 <android.support.design.widget.CoordinatorLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/test"
+    android:id="@+id/com.teamunemployment.breadcrumbs.test"
     android:layout_width="match_parent"
     android:layout_height="fill_parent"
     android:fitsSystemWindows="false">

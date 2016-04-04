@@ -6,6 +6,8 @@ import javax.ws.rs.PathParam;
 
 import org.json.JSONObject;
 
+import com.breadcrumbs.database.DBMaster;
+import com.breadcrumbs.gcm.GcmMessages;
 import com.breadcrumbs.models.Trail;
 import com.breadcrumbs.models.UserService;
 
@@ -25,6 +27,10 @@ public class RESTUser {
 								@PathParam("TrailId") String TrailId) {
 		Trail trail = new Trail();
 		trail.PinTrailForUser(UserId, TrailId);
+		DBMaster dbMaster = DBMaster.GetAnInstanceOfDBMaster();
+		String ownerId = dbMaster.GetStringPropertyFromNode(TrailId, "UserId");
+		GcmMessages messageSender = new GcmMessages();
+		messageSender.SendUserNotificationOfTrailBeingFollowed(TrailId, ownerId, UserId);
 		return "Success";
 	}
 	
@@ -86,6 +92,8 @@ public class RESTUser {
 			@PathParam("FollowedUser") String UserIdB) {
 		UserService user = new UserService();
 		user.PinUserForUser(UserIdA, UserIdB);
+		GcmMessages gcm = new GcmMessages();
+		gcm.SendUserNoficationWhenFollowed(UserIdB, UserIdA);
 		return "200";
 	}
 	

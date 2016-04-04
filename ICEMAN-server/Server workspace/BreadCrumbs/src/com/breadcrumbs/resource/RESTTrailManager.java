@@ -1,5 +1,8 @@
 package com.breadcrumbs.resource;
 
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.PrintWriter;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -16,7 +19,9 @@ import org.joda.time.LocalDate;
 import org.json.JSONObject;
 
 import com.breadcrumbs.database.DBMaster;
+import com.breadcrumbs.heavylifting.TrailManager20;
 import com.breadcrumbs.models.Trail;
+import com.breadcrumbs.models.TrailMetadata;
 import com.breadcrumbs.models.UserService;
 
 @Path("/TrailManager")
@@ -50,7 +55,6 @@ public class RESTTrailManager {
 		   LocalDate startLocalDate = new LocalDate(startDate);
 		   int days = Days.daysBetween(startLocalDate, currentLocalDate).getDays();
 		   return Integer.toString(days);
-	
 	}
 	
 	@GET
@@ -178,4 +182,37 @@ public class RESTTrailManager {
          Trail trail = new Trail();
          return trail.GetNumberOfFollowersForATrail(trailId);
     }
+    
+    @GET
+    @Path("/SaveMetaData/{metadata}/{trailId}")
+    public String SaveMetadataForTrail(@PathParam("metadata") String metadataJSON, @PathParam("trailId") String trailId) {
+    	// I think every time that we need the metadata, we will be fetching all of it, so I may just save the file to disk and when it is requested
+    	// I can retrieve that file, and respond with the string.
+    	TrailManager20 trailManager = new TrailManager20();
+        JSONObject jsonObject = new JSONObject(metadataJSON);
+    	TrailMetadata metadata = trailManager.ProcessMetadata(jsonObject.getJSONObject("Events"));
+        
+        trailManager.SaveMetadata(metadata, Integer.parseInt(trailId));
+     	return "200";
+    }
+    
+    @GET
+    @Path("/FetchMetadata/{TrailId}")
+    public String FetchMetadata(@PathParam("TrailId") String trailId) {
+    
+            TrailManager20 tm = new TrailManager20();
+            return tm.FetchMetadataFromTrail(trailId);
+    }
+    
+    
+    @GET
+    @Path("/SaveRestZones/{zones}/{trailId}")
+    public String SaveRestZonesForTrail(@PathParam("zones") String zones, @PathParam("trailId") String trailId) {
+    	
+        
+    	
+    	return "200";
+    }
+    
+    
 }

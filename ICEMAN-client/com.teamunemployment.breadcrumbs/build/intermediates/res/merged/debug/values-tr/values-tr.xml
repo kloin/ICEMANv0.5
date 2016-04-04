@@ -1,5 +1,81 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:ns1="urn:oasis:names:tc:xliff:document:1.2">
+    <plurals name="joda_time_android_abbrev_in_num_days">
+        <item msgid="2178576254385739855" quantity="one">"yarın"</item>
+        <item msgid="2973062968038355991" quantity="other">"<ns1:g id="COUNT">%d</ns1:g> gün içinde"</item>
+    </plurals>
+    <plurals name="joda_time_android_abbrev_in_num_hours">
+        <item msgid="3274708118124045246" quantity="one">"1 saat içinde"</item>
+        <item msgid="3705373766798013406" quantity="other">"<ns1:g id="COUNT">%d</ns1:g> saat içinde"</item>
+    </plurals>
+    <plurals name="joda_time_android_abbrev_in_num_minutes">
+        <item msgid="562786149928284878" quantity="one">"1 dak. içinde"</item>
+        <item msgid="4216113292706568726" quantity="other">"<ns1:g id="COUNT">%d</ns1:g> dakika içinde"</item>
+    </plurals>
+    <plurals name="joda_time_android_abbrev_in_num_seconds">
+        <item msgid="5842225370795066299" quantity="one">"1 san. içinde"</item>
+        <item msgid="5495880108825805108" quantity="other">"<ns1:g id="COUNT">%d</ns1:g> saniye içinde"</item>
+    </plurals>
+    <plurals name="joda_time_android_abbrev_num_days_ago">
+        <item msgid="8463161711492680309" quantity="one">"dün"</item>
+        <item msgid="3453342639616481191" quantity="other">"<ns1:g id="COUNT">%d</ns1:g> gün önce"</item>
+    </plurals>
+    <plurals name="joda_time_android_abbrev_num_hours_ago">
+        <item msgid="4796212039724722116" quantity="one">"1 saat önce"</item>
+        <item msgid="6889970745748538901" quantity="other">"<ns1:g id="COUNT">%d</ns1:g> saat önce"</item>
+    </plurals>
+    <plurals name="joda_time_android_abbrev_num_minutes_ago">
+        <item msgid="6361490147113871545" quantity="one">"1 dak. önce"</item>
+        <item msgid="851164968597150710" quantity="other">"<ns1:g id="COUNT">%d</ns1:g> dakika önce"</item>
+    </plurals>
+    <plurals name="joda_time_android_abbrev_num_seconds_ago">
+        <item msgid="1849036840200069118" quantity="one">"1 saniye önce"</item>
+        <item msgid="3699169366650930415" quantity="other">"<ns1:g id="COUNT">%d</ns1:g> saniye önce"</item>
+    </plurals>
+    <plurals name="joda_time_android_duration_hours">
+        <item msgid="8917467491248809972" quantity="one">"1 saat"</item>
+        <item msgid="3863962854246773930" quantity="other">"<ns1:g id="COUNT">%d</ns1:g> saat"</item>
+    </plurals>
+    <plurals name="joda_time_android_duration_minutes">
+        <item msgid="4915414002546085617" quantity="one">"1 dakika"</item>
+        <item msgid="3165187169224908775" quantity="other">"<ns1:g id="COUNT">%d</ns1:g> dakika"</item>
+    </plurals>
+    <plurals name="joda_time_android_duration_seconds">
+        <item msgid="6962015528372969481" quantity="one">"1 saniye"</item>
+        <item msgid="1886107766577166786" quantity="other">"<ns1:g id="COUNT">%d</ns1:g> saniye"</item>
+    </plurals>
+    <plurals name="joda_time_android_in_num_days">
+        <item msgid="5413088743009839518" quantity="one">"yarın"</item>
+        <item msgid="5109449375100953247" quantity="other">"<ns1:g id="COUNT">%d</ns1:g> gün içinde"</item>
+    </plurals>
+    <plurals name="joda_time_android_in_num_hours">
+        <item msgid="7164353342477769999" quantity="one">"1 saat içinde"</item>
+        <item msgid="547290677353727389" quantity="other">"<ns1:g id="COUNT">%d</ns1:g> saat içinde"</item>
+    </plurals>
+    <plurals name="joda_time_android_in_num_minutes">
+        <item msgid="8793095251325200395" quantity="one">"1 dakika içinde"</item>
+        <item msgid="3330713936399448749" quantity="other">"<ns1:g id="COUNT">%d</ns1:g> dakika içinde"</item>
+    </plurals>
+    <plurals name="joda_time_android_in_num_seconds">
+        <item msgid="2729745560954905102" quantity="one">"1 saniye içinde"</item>
+        <item msgid="1241926116443974687" quantity="other">"<ns1:g id="COUNT">%d</ns1:g> saniye içinde"</item>
+    </plurals>
+    <plurals name="joda_time_android_num_days_ago">
+        <item msgid="861358534398115820" quantity="one">"dün"</item>
+        <item msgid="2479586466153314633" quantity="other">"<ns1:g id="COUNT">%d</ns1:g> gün önce"</item>
+    </plurals>
+    <plurals name="joda_time_android_num_hours_ago">
+        <item msgid="9150797944610821849" quantity="one">"1 saat önce"</item>
+        <item msgid="2467273239587587569" quantity="other">"<ns1:g id="COUNT">%d</ns1:g> saat önce"</item>
+    </plurals>
+    <plurals name="joda_time_android_num_minutes_ago">
+        <item msgid="3306787433088810191" quantity="one">"1 dakika önce"</item>
+        <item msgid="2176942008915455116" quantity="other">"<ns1:g id="COUNT">%d</ns1:g> dakika önce"</item>
+    </plurals>
+    <plurals name="joda_time_android_num_seconds_ago">
+        <item msgid="4869870056547896011" quantity="one">"1 saniye önce"</item>
+        <item msgid="3903706804349556379" quantity="other">"<ns1:g id="COUNT">%d</ns1:g> saniye önce"</item>
+    </plurals>
     <string msgid="4600421777120114993" name="abc_action_bar_home_description">"Ana ekrana git"</string>
     <string msgid="1594238315039666878" name="abc_action_bar_up_description">"Yukarı git"</string>
     <string msgid="3588849162933574182" name="abc_action_menu_overflow_description">"Diğer seçenekler"</string>
@@ -13,6 +89,7 @@
     <string msgid="893419373245838918" name="abc_searchview_description_voice">"Sesli arama"</string>
     <string msgid="3421042268587513524" name="abc_shareactionprovider_share_with">"Şununla paylaş"</string>
     <string msgid="7165123711973476752" name="abc_shareactionprovider_share_with_application">"%s ile paylaş"</string>
+    <string name="app_name">Kütüphane</string>
     <string name="com_facebook_image_download_unknown_error">Görsel indirilirken beklenmeyen hata.</string>
     <string name="com_facebook_internet_permission_error_message">WebView girişi için İNTERNET izni gerekir</string>
     <string name="com_facebook_internet_permission_error_title">AndroidManifest Hatası</string>
@@ -61,5 +138,57 @@
     <string msgid="411506735369601515" name="common_open_on_phone">"Telefonda aç"</string>
     <string msgid="3156914698180786012" name="common_signin_button_text">"Oturum aç"</string>
     <string msgid="1483290677806110088" name="common_signin_button_text_long">"Google\'da oturum aç"</string>
+    <string name="joda_time_android_date_time">%1$s %2$s</string>
+    <string msgid="9093949757757445117" name="joda_time_android_preposition_for_date">"<ns1:g id="DATE">%s</ns1:g> tarihinde"</string>
+    <string msgid="5506831244263083793" name="joda_time_android_preposition_for_time">"<ns1:g id="TIME">%s</ns1:g> saatinde"</string>
+    <string msgid="1818557177829411417" name="joda_time_android_relative_time">"<ns1:g id="DATE">%1$s</ns1:g>, <ns1:g id="TIME">%2$s</ns1:g>"</string>
     <string name="messenger_send_button_text">Gönder</string>
+    <string name="weather_text_000">Kasırga</string>
+    <string name="weather_text_001">Şiddetli Fırtına</string>
+    <string name="weather_text_002">Hortum</string>
+    <string name="weather_text_003">Şiddetli gök gürültülü fırtına</string>
+    <string name="weather_text_004">Gök gürültülü fırtına</string>
+    <string name="weather_text_005">Karla karışık yağmurlu</string>
+    <string name="weather_text_006">Mixed rain sleet</string>
+    <string name="weather_text_007">Karla karışık yağmurlu</string>
+    <string name="weather_text_008">Freezing drizzle</string>
+    <string name="weather_text_009">Drizzle</string>
+    <string name="weather_text_010">Freezing rain</string>
+    <string name="weather_text_011">Showers</string>
+    <string name="weather_text_012">Heavy showers</string>
+    <string name="weather_text_013">Snow flurries</string>
+    <string name="weather_text_014">Hafif kar yağışı</string>
+    <string name="weather_text_015">Karlı tipi</string>
+    <string name="weather_text_016">Karlı</string>
+    <string name="weather_text_017">Dolu</string>
+    <string name="weather_text_018">Sleet</string>
+    <string name="weather_text_019">Tozlu</string>
+    <string name="weather_text_020">Sisli</string>
+    <string name="weather_text_021">Puslu</string>
+    <string name="weather_text_022">Dumanlı</string>
+    <string name="weather_text_023">Sert Rüzgâr</string>
+    <string name="weather_text_024">Rüzgârlı</string>
+    <string name="weather_text_025">Soğuk</string>
+    <string name="weather_text_026">Bulutlu</string>
+    <string name="weather_text_027">Gece çok bulutlu</string>
+    <string name="weather_text_028">Gündüz çok bulutlu</string>
+    <string name="weather_text_029">Gece parçalı bulutlu</string>
+    <string name="weather_text_030">Gündüz parçalı bulutlu</string>
+    <string name="weather_text_031">Gece açık</string>
+    <string name="weather_text_032">Güneşli</string>
+    <string name="weather_text_033">Fair night</string>
+    <string name="weather_text_034">Fair day</string>
+    <string name="weather_text_035">Doluyla karışık yağmur</string>
+    <string name="weather_text_036">Sıcak</string>
+    <string name="weather_text_037">Isolated thunderstorms</string>
+    <string name="weather_text_038">Scattered thunderstorms</string>
+    <string name="weather_text_039">Scattered thunderstorms</string>
+    <string name="weather_text_040">Scattered showers</string>
+    <string name="weather_text_041">Ağır kar yağışı</string>
+    <string name="weather_text_042">Scattered snow showers</string>
+    <string name="weather_text_044">Parçalı bulutlu</string>
+    <string name="weather_text_045">Gök gürültülü fırtına</string>
+    <string name="weather_text_046">Kar fırtınası</string>
+    <string name="weather_text_047">Isolated thunder showers</string>
+    <string name="weather_text_1000">Not available</string>
 </resources>

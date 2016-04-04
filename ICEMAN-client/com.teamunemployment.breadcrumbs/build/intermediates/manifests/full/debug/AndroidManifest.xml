@@ -135,7 +135,7 @@
             android:screenOrientation="portrait" >
         </activity>
         <activity
-            android:name="com.teamunemployment.breadcrumbs.client.ProfilePageViewer"
+            android:name="com.teamunemployment.breadcrumbs.client.NavMenu.Profile.ProfilePageViewer"
             android:screenOrientation="portrait" />
         <activity
             android:name="com.teamunemployment.breadcrumbs.client.SelectedEventViewerBase"
@@ -188,11 +188,7 @@
             android:screenOrientation="portrait" >
         </activity>
         <activity
-            android:name="com.teamunemployment.breadcrumbs.client.ProfilePicChooser"
-            android:screenOrientation="portrait" >
-        </activity>
-        <activity
-            android:name="com.teamunemployment.breadcrumbs.client.OverflowNavigationDrawer"
+            android:name="com.teamunemployment.breadcrumbs.client.NavMenu.Profile.ProfilePicChooser"
             android:screenOrientation="portrait" >
         </activity>
         <activity
@@ -200,7 +196,7 @@
             android:screenOrientation="portrait" >
         </activity>
         <activity
-            android:name="com.teamunemployment.breadcrumbs.client.About"
+            android:name="com.teamunemployment.breadcrumbs.client.NavMenu.About"
             android:screenOrientation="portrait" >
         </activity>
         <activity
@@ -213,6 +209,7 @@
             android:exported="true" />
 
         <service android:name="com.teamunemployment.breadcrumbs.Location.LocationService" />
+        <service android:name="com.teamunemployment.breadcrumbs.BackgroundServices.BackgroundService" />
 
         <!-- AIzaSyBQ9w6VrGGquOHwERNrc_jAx_jcm8mrKQw  - this is the legit release one -->
         <!-- AIzaSyBmkUW1b2c3cXhz-Sw7cfWtK41Qz-0aaww -->
