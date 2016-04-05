@@ -1,0 +1,30 @@
+package com.breadcrumbs.heavylifting;
+
+import java.util.Iterator;
+
+import org.json.JSONObject;
+
+public class TrailManager20 {
+	
+	/*
+	 * Purpose of this method is to process the meta data that we recieve. We want to sort out the bad/unnessesary gps points.
+	 * We want to use this method to "clean" the data that we get.
+	 * 
+	 * @param metadata 
+	 * This is basically the description of the entire trail. It contains all the gps points, as well as latitude/longitude of 
+	 * every place of interest (where we stay etc), as well as activity at the time etc. This should hopefully not be too much chatter.
+	 * 
+	 * We want to change this information into the road plots (as based on google maps directions) as well as 
+	 */
+	public JSONObject ProcessMetadata(String metadata) {
+		// At the moment I am just converting each gps point into a trail point, but I want to change that later
+		
+		
+		JSONObject metadataObject = new JSONObject(metadata);
+		Iterator keys = metadataObject.keys();
+		while (keys.hasNext()) {
+			String next = keys.next();
+		}
+		return null;
+	}
+}

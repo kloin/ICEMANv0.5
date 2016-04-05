@@ -1,0 +1,55 @@
+<android.support.design.widget.CoordinatorLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/edit_trail_cl"
+    android:layout_height="match_parent"
+    android:layout_width="match_parent">
+    <android.support.design.widget.AppBarLayout
+        android:layout_height="192dp"
+        android:layout_width="match_parent">
+        <android.support.design.widget.CollapsingToolbarLayout
+            android:id="@+id/edit_trail_collapsable_toolbar_holder"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:contentScrim="?attr/colorPrimary"
+            app:layout_scrollFlags="scroll|exitUntilCollapsed">
+            <ImageView
+                android:id="@+id/edit_trail_backdrop"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:src="@drawable/googlenow"
+                android:fitsSystemWindows="true"
+                android:scaleType="centerCrop"
+                app:layout_collapseMode="parallax" />
+            <android.support.v7.widget.Toolbar
+                android:id="@+id/edit_trail_toolbar"
+                android:layout_height="?attr/actionBarSize"
+                android:layout_width="match_parent"
+                app:layout_collapseMode="pin">
+                <ImageButton
+                    android:id="@+id/edit_trail_back_button"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="-10dp"
+                    android:background="@null"
+                    android:src="@drawable/ic_action_back"/>
+            </android.support.v7.widget.Toolbar>
+        </android.support.design.widget.CollapsingToolbarLayout>
+    </android.support.design.widget.AppBarLayout>
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/edit_trail_recycler"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior"
+        android:background="#e5e5e5">
+
+        <CardView
+            android:layout_width="match_parent"
+            android:layout_height="600dp">
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:text="com.teamunemployment.breadcrumbs.test"/>
+        </CardView>
+    </android.support.v7.widget.RecyclerView>
+</android.support.design.widget.CoordinatorLayout>

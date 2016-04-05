@@ -1,0 +1,6 @@
+127.0.0.1 - - [17/Mar/2016:10:25:32 +1300] "GET / HTTP/1.1" 404 951
+0:0:0:0:0:0:0:1 - - [17/Mar/2016:10:47:32 +1300] "GET /BreadCrumbs/login HTTP/1.1" 404 985
+0:0:0:0:0:0:0:1 - - [17/Mar/2016:10:47:32 +1300] "GET /favicon.ico HTTP/1.1" 404 973
+0:0:0:0:0:0:0:1 - - [17/Mar/2016:10:47:38 +1300] "GET /BreadCrumbs/rest/login HTTP/1.1" 200 34
+0:0:0:0:0:0:0:1 - - [17/Mar/2016:10:48:36 +1300] "GET /BreadCrumbs/rest/login/josn HTTP/1.1" 404 967
+0:0:0:0:0:0:0:1 - - [17/Mar/2016:10:48:43 +1300] "GET /BreadCrumbs/rest/login/json HTTP/1.1" 200 30

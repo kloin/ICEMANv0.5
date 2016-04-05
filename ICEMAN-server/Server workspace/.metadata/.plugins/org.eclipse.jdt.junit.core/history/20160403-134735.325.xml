@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?><testrun name="Rerun testShit.GETtest.TestEncodedPolylineWorks" project="BreadCrumbs" tests="1" started="1" failures="0" errors="1" ignored="0">
+  <testcase name="TestEncodedPolylineWorks" classname="testShit.GETtest" time="0.754">
+    <error>java.lang.RuntimeException: Error starting org.neo4j.kernel.EmbeddedGraphDatabase, C:\etc\neo4j\default.graphdb&#13;
+	at org.neo4j.kernel.InternalAbstractGraphDatabase.run(InternalAbstractGraphDatabase.java:369)&#13;
+	at org.neo4j.kernel.EmbeddedGraphDatabase.&lt;init&gt;(EmbeddedGraphDatabase.java:59)&#13;
+	at org.neo4j.graphdb.factory.GraphDatabaseFactory$1.newDatabase(GraphDatabaseFactory.java:91)&#13;
+	at org.neo4j.graphdb.factory.GraphDatabaseBuilder.newGraphDatabase(GraphDatabaseBuilder.java:181)&#13;
+	at org.neo4j.graphdb.factory.GraphDatabaseFactory.newEmbeddedDatabase(GraphDatabaseFactory.java:71)&#13;
+	at com.breadcrumbs.database.DBMaster.&lt;init&gt;(DBMaster.java:47)&#13;
+	at com.breadcrumbs.database.DBMaster.GetAnInstanceOfDBMaster(DBMaster.java:56)&#13;
+	at testShit.GETtest.setUp(GETtest.java:56)&#13;
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)&#13;
+	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:57)&#13;
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)&#13;
+	at java.lang.reflect.Method.invoke(Method.java:606)&#13;
+	at org.junit.runners.model.FrameworkMethod$1.runReflectiveCall(FrameworkMethod.java:47)&#13;
+	at org.junit.internal.runners.model.ReflectiveCallable.run(ReflectiveCallable.java:12)&#13;
+	at org.junit.runners.model.FrameworkMethod.invokeExplosively(FrameworkMethod.java:44)&#13;
+	at org.junit.internal.runners.statements.RunBefores.evaluate(RunBefores.java:24)&#13;
+	at org.junit.internal.runners.statements.RunAfters.evaluate(RunAfters.java:27)&#13;
+	at org.junit.runners.ParentRunner.runLeaf(ParentRunner.java:271)&#13;
+	at org.junit.runners.BlockJUnit4ClassRunner.runChild(BlockJUnit4ClassRunner.java:70)&#13;
+	at org.junit.runners.BlockJUnit4ClassRunner.runChild(BlockJUnit4ClassRunner.java:50)&#13;
+	at org.junit.runners.ParentRunner$3.run(ParentRunner.java:238)&#13;
+	at org.junit.runners.ParentRunner$1.schedule(ParentRunner.java:63)&#13;
+	at org.junit.runners.ParentRunner.runChildren(ParentRunner.java:236)&#13;
+	at org.junit.runners.ParentRunner.access$000(ParentRunner.java:53)&#13;
+	at org.junit.runners.ParentRunner$2.evaluate(ParentRunner.java:229)&#13;
+	at org.junit.runners.ParentRunner.run(ParentRunner.java:309)&#13;
+	at org.eclipse.jdt.internal.junit4.runner.JUnit4TestReference.run(JUnit4TestReference.java:50)&#13;
+	at org.eclipse.jdt.internal.junit.runner.TestExecution.run(TestExecution.java:38)&#13;
+	at org.eclipse.jdt.internal.junit.runner.RemoteTestRunner.runTests(RemoteTestRunner.java:467)&#13;
+	at org.eclipse.jdt.internal.junit.runner.RemoteTestRunner.runTests(RemoteTestRunner.java:683)&#13;
+	at org.eclipse.jdt.internal.junit.runner.RemoteTestRunner.run(RemoteTestRunner.java:390)&#13;
+	at org.eclipse.jdt.internal.junit.runner.RemoteTestRunner.main(RemoteTestRunner.java:197)&#13;
+Caused by: org.neo4j.kernel.lifecycle.LifecycleException: Component 'org.neo4j.kernel.StoreLockerLifecycleAdapter@3d23b070' was successfully initialized, but failed to start. Please see attached cause exception.&#13;
+	at org.neo4j.kernel.lifecycle.LifeSupport$LifecycleInstance.start(LifeSupport.java:513)&#13;
+	at org.neo4j.kernel.lifecycle.LifeSupport.start(LifeSupport.java:115)&#13;
+	at org.neo4j.kernel.InternalAbstractGraphDatabase.run(InternalAbstractGraphDatabase.java:346)&#13;
+	... 31 more&#13;
+Caused by: org.neo4j.kernel.StoreLockException: Unable to obtain lock on store lock file: \etc\neo4j\default.graphdb\store_lock. Please ensure no other process is using this database, and that the directory is writable (required even for read-only access)&#13;
+	at org.neo4j.kernel.StoreLocker.checkLock(StoreLocker.java:82)&#13;
+	at org.neo4j.kernel.StoreLockerLifecycleAdapter.start(StoreLockerLifecycleAdapter.java:44)&#13;
+	at org.neo4j.kernel.lifecycle.LifeSupport$LifecycleInstance.start(LifeSupport.java:507)&#13;
+	... 33 more&#13;
+Caused by: java.io.IOException: Couldn't lock lock file C:\etc\neo4j\default.graphdb\lock because another process already holds the lock.&#13;
+	at org.neo4j.kernel.impl.nioneo.store.FileLock.getLockFileBasedFileLock(FileLock.java:120)&#13;
+	at org.neo4j.kernel.impl.nioneo.store.FileLock.getOsSpecificFileLock(FileLock.java:64)&#13;
+	at org.neo4j.kernel.DefaultFileSystemAbstraction.tryLock(DefaultFileSystemAbstraction.java:93)&#13;
+	at org.neo4j.kernel.StoreLocker.checkLock(StoreLocker.java:74)&#13;
+	... 35 more&#13;
+&#13;
+</error>
+  </testcase>
+</testrun>

@@ -1,0 +1,232 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.teamunemployment.breadcrumbs"
+    android:versionCode="5"
+    android:versionName="5" >
+
+    <uses-sdk
+        android:minSdkVersion="16"
+        android:targetSdkVersion="22" />
+
+    <permission
+        android:name="com.teamunemployment.breadcrumbs.permission.C2D_MESSAGE"
+        android:protectionLevel="signature" />
+
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="com.google.android.providers.gsf.permission.READ_GSERVICES" />
+    <uses-permission android:name="com.teamunemployment.breadcrumbs.permission.C2D_MESSAGE" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.CAMERA" />
+    <uses-permission android:name="android.permission.RECORD_AUDIO" />
+    <uses-permission android:name="com.google.android.c2dm.permission.SEND" />
+    <uses-permission android:name="com.google.android.c2dm.permission.RECEIVE" />
+
+    <uses-feature android:name="android.hardware.camera" />
+
+    <!-- Ensure that the map renders -->
+    <uses-feature
+        android:glEsVersion="0x00020000"
+        android:required="true" />
+
+    <application
+        android:allowBackup="true"
+        android:icon="@drawable/bc64"
+        android:label="@string/app_name"
+        android:theme="@style/AppTheme" >
+        <activity
+            android:name="com.teamunemployment.breadcrumbs.client.Main"
+            android:exported="true"
+            android:label="@string/app_name"
+            android:screenOrientation="portrait" >
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+
+        <!-- BOOT RECIEVER -->
+        <receiver android:name="com.teamunemployment.breadcrumbs.BootReciever.BootReceiver" >
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
+            </intent-filter>
+        </receiver>
+
+        <!-- [START gcm_receiver] -->
+        <receiver
+            android:name="com.google.android.gms.gcm.GcmReceiver"
+            android:exported="true"
+            android:permission="com.google.android.c2dm.permission.SEND" >
+            <intent-filter>
+                <action android:name="com.google.android.c2dm.intent.RECEIVE" />
+
+                <category android:name="com.breadcrumbs.GCM" />
+            </intent-filter>
+        </receiver>
+        <!-- [END gcm_receiver] -->
+
+
+        <!-- Path sense shit -->
+        <receiver android:name="com.teamunemployment.breadcrumbs.Location.PathSense.Geofence.BreadCrumbsPathSenseGeofenceEventReceiver" />
+        <receiver android:name="com.teamunemployment.breadcrumbs.Location.PathSense.Activity.PathsenseActivityChangeBroadcastReceiver" />
+        <receiver android:name="com.teamunemployment.breadcrumbs.Location.PathSense.Activity.PathsenseActivityUpdateBroadcastReceiver" />
+        <receiver android:name="com.teamunemployment.breadcrumbs.Location.PathSense.Activity.PathsenseDeviceHoldingBroadcastReceiver" />
+
+        <!-- [START gcm_listener] -->
+        <service
+            android:name="com.teamunemployment.breadcrumbs.GCM.BreadcrumbsGcmReceiver"
+            android:exported="false" >
+            <intent-filter>
+                <action android:name="com.google.android.c2dm.intent.RECEIVE" />
+            </intent-filter>
+        </service>
+        <!-- [END gcm_listener] -->
+
+
+        <!-- [START instanceId_listener] -->
+        <service
+            android:name="com.teamunemployment.breadcrumbs.GCM.BreadcrumbsInstanceIdListenerService"
+            android:exported="false" >
+            <intent-filter>
+                <action android:name="com.google.android.gms.iid.InstanceID" />
+            </intent-filter>
+        </service>
+        <!-- [END instanceId_listener] -->
+        <service
+            android:name="com.teamunemployment.breadcrumbs.GCM.RegistrationIntentService"
+            android:exported="false" >
+        </service>
+        <service
+            android:name="com.teamunemployment.breadcrumbs.BootReciever.BootloaderService"
+            android:exported="false" />
+
+        <activity
+            android:name="com.teamunemployment.breadcrumbs.client.TrailManager"
+            android:screenOrientation="portrait" >
+        </activity>
+        <activity
+            android:name="com.teamunemployment.breadcrumbs.client.BaseViewModel"
+            android:screenOrientation="portrait" >
+        </activity>
+        <activity
+            android:name="com.teamunemployment.breadcrumbs.client.CrumbViewer.CommentViewer"
+            android:screenOrientation="portrait" >
+        </activity>
+        <activity
+            android:name="com.teamunemployment.breadcrumbs.Trails.CreateTrail"
+            android:screenOrientation="portrait" >
+        </activity>
+        <activity
+            android:name="com.teamunemployment.breadcrumbs.Trails.EditMyTrail"
+            android:screenOrientation="portrait" >
+        </activity>
+        <activity
+            android:name="com.teamunemployment.breadcrumbs.client.TrailActivity"
+            android:screenOrientation="portrait" >
+        </activity>
+        <activity
+            android:name="com.teamunemployment.breadcrumbs.client.NavMenu.Profile.ProfilePageViewer"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name="com.teamunemployment.breadcrumbs.client.SelectedEventViewerBase"
+            android:screenOrientation="portrait" >
+        </activity>
+        <activity
+            android:name="com.teamunemployment.breadcrumbs.client.ImageViewer"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateHidden" >
+ <!-- hide keyboard by default -->
+        </activity>
+        <activity
+            android:name="com.teamunemployment.breadcrumbs.client.Camera.CameraCapture"
+            android:screenOrientation="portrait" >
+        </activity>
+        <activity
+            android:name="com.teamunemployment.breadcrumbs.client.BreadCrumbsImageSelector"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name="com.teamunemployment.breadcrumbs.client.CrumbViewer.CrumbsHolder"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name="com.teamunemployment.breadcrumbs.client.tabs.SaveEventFragment"
+            android:screenOrientation="portrait" >
+        </activity>
+        <activity
+            android:name="com.teamunemployment.breadcrumbs.client.Maps.MapViewer"
+            android:screenOrientation="portrait" >
+        </activity>
+        <activity
+            android:name="com.teamunemployment.breadcrumbs.client.SplashScreen"
+            android:screenOrientation="portrait" >
+        </activity>
+        <activity
+            android:name="com.teamunemployment.breadcrumbs.client.ImageChooser.ImageChooserTabWrapper"
+            android:screenOrientation="portrait" >
+        </activity>
+        <activity
+            android:name="com.facebook.FacebookActivity"
+            android:configChanges="keyboard|keyboardHidden|screenLayout|screenSize|orientation"
+            android:label="@string/app_name"
+            android:theme="@android:style/Theme.Translucent.NoTitleBar" />
+        <activity android:name="com.teamunemployment.breadcrumbs.client.Settings" />
+        <activity
+            android:name="com.teamunemployment.breadcrumbs.client.tabs.SaveVideoActivity"
+            android:screenOrientation="portrait" >
+        </activity>
+        <activity
+            android:name="com.teamunemployment.breadcrumbs.client.Maps.MapViewController"
+            android:screenOrientation="portrait" >
+        </activity>
+        <activity
+            android:name="com.teamunemployment.breadcrumbs.client.NavMenu.Profile.ProfilePicChooser"
+            android:screenOrientation="portrait" >
+        </activity>
+        <activity
+            android:name="com.teamunemployment.breadcrumbs.client.EditExistingTrail"
+            android:screenOrientation="portrait" >
+        </activity>
+        <activity
+            android:name="com.teamunemployment.breadcrumbs.client.NavMenu.About"
+            android:screenOrientation="portrait" >
+        </activity>
+        <activity
+            android:name="com.teamunemployment.breadcrumbs.client.ImageChooser.TrailCoverImageSelector"
+            android:screenOrientation="portrait" />
+
+        <provider
+            android:name="com.facebook.FacebookContentProvider"
+            android:authorities="com.facebook.app.FacebookContentProvider668335369892920"
+            android:exported="true" />
+
+        <service android:name="com.teamunemployment.breadcrumbs.Location.LocationService" />
+        <service android:name="com.teamunemployment.breadcrumbs.BackgroundServices.BackgroundService" />
+
+        <!-- AIzaSyBQ9w6VrGGquOHwERNrc_jAx_jcm8mrKQw  - this is the legit release one -->
+        <!-- AIzaSyBmkUW1b2c3cXhz-Sw7cfWtK41Qz-0aaww -->
+        <!--
+      AIzaSyCy82ucudMrzKRtUsF0S3v_DSVyNL5m9n8
+      A4:0B:0E:F1:E0:AB:A0:FF:3B:E4:C2:8E:D3:71:CA:93:6B:CB:84:70
+      AIzaSyCfkLHIJIAnKKwd5S4nLMN5apRtWj28rwc- debug key
+        -->
+        <meta-data
+            android:name="com.google.android.geo.API_KEY"
+            android:value="AIzaSyD1tXj_z3zgxB-5tPG8H9sXS4NCBWAJosA" />
+        <meta-data
+            android:name="com.facebook.sdk.ApplicationId"
+            android:value="@string/facebook_app_id" />
+        <!-- Pathsense APIs -->
+        <meta-data
+            android:name="com.pathsense.android.sdk.CLIENT_ID"
+            android:value="eokdbRz3bSp5pnKIeclvscXZ4LxtTOc8JfNy0r9h" />
+        <meta-data
+            android:name="com.pathsense.android.sdk.API_KEY"
+            android:value="3sLBJDvIB97xvzeAF6VJD3UqFIQExqRJ2jnmp3JN" />
+ -->
+    </application>
+
+</manifest>

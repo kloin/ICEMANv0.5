@@ -1,0 +1,12 @@
+<component name="libraryTable">
+  <library name="fancybuttons-1.6">
+    <CLASSES>
+      <root url="file://$PROJECT_DIR$/build/intermediates/exploded-aar/com.github.medyo/fancybuttons/1.6/res" />
+      <root url="jar://$PROJECT_DIR$/build/intermediates/exploded-aar/com.github.medyo/fancybuttons/1.6/jars/classes.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.github.medyo/fancybuttons/1.6/f6737f6d12b28414300428ccbea4ebd8ab1bf55e/fancybuttons-1.6-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>

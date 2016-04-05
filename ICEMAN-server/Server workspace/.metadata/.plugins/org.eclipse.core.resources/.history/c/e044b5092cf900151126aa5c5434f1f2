@@ -1,0 +1,28 @@
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
+package com.breadcrumbs.models;
+
+/**
+ *
+ * @author jek40
+ * 
+ * Class to hold the details of a polyline, such as start, stop, base event, 
+ * head event, distance and transport method etc
+ */
+public class Polyline {
+    // Finals are public now cos fuck you. No seriously I will only be fetching them. These should really be private but I may change that at a later date because I will probably also want to edit them. This is just done for speed
+    public final String mEncodedPolyline;
+    public final int mBaseNodeId;
+    public final int mHeadNodeId;
+    public final int mTransportMethod;
+    
+    public Polyline(String encodedPolyline, int baseNodeId, int headNodeId, int transportMethod) {
+        mEncodedPolyline = encodedPolyline;
+        mBaseNodeId = baseNodeId;
+        mHeadNodeId = headNodeId;
+        mTransportMethod = transportMethod;
+    }
+}

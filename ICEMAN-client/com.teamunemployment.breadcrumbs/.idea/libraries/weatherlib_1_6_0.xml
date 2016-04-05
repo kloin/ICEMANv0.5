@@ -1,0 +1,12 @@
+<component name="libraryTable">
+  <library name="weatherlib-1.6.0">
+    <CLASSES>
+      <root url="file://$PROJECT_DIR$/build/intermediates/exploded-aar/com.survivingwithandroid/weatherlib/1.6.0/res" />
+      <root url="jar://$PROJECT_DIR$/build/intermediates/exploded-aar/com.survivingwithandroid/weatherlib/1.6.0/jars/classes.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.survivingwithandroid/weatherlib/1.6.0/39ebc657de96bcd3f1b2613c0ebbadbdcb91b129/weatherlib-1.6.0-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>
