@@ -24,7 +24,7 @@ import java.util.ArrayList;
  * Written by Josiah Kendall on 22/01/2016.
  */
 public class TrailCoverImageSelector  extends Activity{
-    private TextView emptyGridInfo;
+    public TextView emptyGridInfo;
     public ArrayList<String> idsArray;
     private Context context;
 

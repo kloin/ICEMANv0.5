@@ -31,10 +31,10 @@
                     android:textSize="16sp"
                     android:gravity="center"
                     android:layout_gravity="right"
-                    android:textColor="@color/accent"
+                    android:textColor="@color/white"
                     android:textStyle="italic"
                     android:layout_marginRight="20dp"
-                    android:text="Beta v6"/>
+                    android:text="CLOSED BETA"/>
             </android.support.v7.widget.Toolbar>
                 <android.support.design.widget.TabLayout
                     android:id="@+id/tabs"
@@ -58,7 +58,7 @@
             android:layout_height="wrap_content"
             app:backgroundTint="@color/accent"
             android:layout_margin="12dp"
-            android:src="@drawable/ic_action_camera"
+            android:src="@drawable/ic_action_new"
             android:layout_gravity="bottom|end"
             app:elevation="6dp"
             app:borderWidth="0dp"
@@ -162,6 +162,7 @@
             </View>
             <RelativeLayout
                 android:layout_width="match_parent"
+                android:visibility="gone"
                 android:id="@+id/tracking_toggle_wrapper"
                 android:layout_height="wrap_content"
                 android:padding="10dp">
@@ -187,6 +188,42 @@
                     android:textAppearance="?android:attr/textAppearanceListItemSmall"
                     android:textColor="#67000000"
                     android:text="Enable Tracking" />
+
+            </RelativeLayout>
+            <View
+                android:visibility="gone"
+                android:layout_width="match_parent"
+                android:background="@color/my_divider"
+                android:alpha="0.45"
+                android:layout_height="1sp"></View>
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:id="@+id/upload"
+                android:layout_height="wrap_content"
+                android:visibility="gone"
+                android:padding="10dp">
+                <ImageView
+                    android:id="@+id/upload_icon"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentLeft="true"
+                    android:layout_alignParentTop="true"
+                    android:paddingRight="8dp"
+                    android:src="@drawable/ic_backup_black_24dp"
+                    android:alpha="0.5" />
+
+                <TextView
+                    android:id="@+id/upload_text"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:shadowRadius="2"
+                    style="@style/CodeFontDevider"
+                    android:layout_centerVertical="true"
+                    android:layout_toRightOf="@+id/upload_icon"
+                    android:paddingRight="10dp"
+                    android:textAppearance="?android:attr/textAppearanceListItemSmall"
+                    android:textColor="#67000000"
+                    android:text="Upload Trail" />
 
             </RelativeLayout>
 

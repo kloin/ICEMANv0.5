@@ -69,7 +69,6 @@ public class GridImageSelector extends Fragment {
 
     public void setUpGridAndListeners() {
         final String userId = PreferenceManager.getDefaultSharedPreferences(activityContext).getString("USERID", "-1");
-
         final GridView gridview = (GridView) rootView.findViewById(R.id.gridView1);
         String allImagesUrl = LoadBalancer.RequestServerAddress() + "/rest/login/getallCrumbIdsForAUser/"+userId;
         AsyncDataRetrieval asyncDataRetrieval = new AsyncDataRetrieval(allImagesUrl, new AsyncDataRetrieval.RequestListener() {

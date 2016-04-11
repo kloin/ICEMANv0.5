@@ -3,11 +3,24 @@
     android:orientation="vertical" android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:id="@+id/image_view_container">
-    <ImageView
-        android:paddingTop="3dp"
-        android:paddingLeft="3dp"
-        android:paddingRight="3dp"
-        android:id="@+id/grid_image"
+    <RelativeLayout
+        android:id="@+id/image_select_wrapper"
         android:layout_width="200dp"
-        android:layout_height="200dp" />
+        android:layout_height="200dp"
+        android:layout_margin="0dp">
+        <ImageView
+            android:id="@+id/grid_image"
+            android:layout_margin="2dp"
+            android:scaleType="centerCrop"
+            android:adjustViewBounds="true"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+    <ImageView
+        android:id="@+id/tick_for_image_select"
+        android:visibility="gone"
+        android:background="@drawable/ic_action_accept"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+    </RelativeLayout>
+
 </LinearLayout>

@@ -12,6 +12,9 @@ import com.breadcrumbs.models.Crumb;
 import com.breadcrumbs.search.Search;
 
 import Statics.StaticValues;
+import com.breadcrumbs.models.Trail;
+import java.util.Hashtable;
+import org.neo4j.graphdb.Node;
 
 @Path("/Crumb")
 public class RESTCrumb {
@@ -46,6 +49,23 @@ public class RESTCrumb {
 		return "success";
 	}
 	
+        @GET
+        @Path("UploadProfileImage/{UserId}")
+        public String UploadProfileImage(@PathParam("UserId") String userId) {
+            Hashtable<String, Object> keysAndItems = new Hashtable<String, Object>();
+            keysAndItems.put("UserId", userId);
+            keysAndItems.put("public", false);
+            
+            Trail trailManager = new Trail();
+            dbm = DBMaster.GetAnInstanceOfDBMaster();
+            int crumbId = dbm.SaveNode(keysAndItems, com.breadcrumbs.database.DBMaster.myLabels.Image);	
+            Node crumb = dbm.RetrieveNode(crumbId);
+            Node trail = dbm.RetrieveNode(Integer.parseInt(userId));
+
+            dbm.CreateRelationship(crumb, trail, DBMaster.myRelationships.Part_Of);	
+            return String.valueOf(crumbId);
+        }
+        
 	@GET
 	@Path("GetPropertyFromCrumb/{CrumbId}/{Property}") 
 	public String GetPropertyFromCrumb(@PathParam("CrumbId") String CrumbId,

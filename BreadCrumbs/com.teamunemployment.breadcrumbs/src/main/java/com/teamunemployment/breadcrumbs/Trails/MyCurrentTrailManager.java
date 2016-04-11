@@ -16,6 +16,8 @@ import android.location.Location;
 import android.preference.PreferenceManager;
 import android.util.Log;
 
+import com.google.android.gms.maps.model.Circle;
+import com.google.android.gms.maps.model.CircleOptions;
 import com.google.maps.android.PolyUtil;
 import com.teamunemployment.breadcrumbs.Network.LoadBalancer;
 import com.teamunemployment.breadcrumbs.Network.ServiceProxy.AsyncDataRetrieval;
@@ -44,6 +46,7 @@ import org.json.JSONObject;
 import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.List;
 
 /**
@@ -55,6 +58,7 @@ public class MyCurrentTrailManager extends Activity {
     private AsyncDataRetrieval clientRequestProxy;
     private MyCurrentTrailManager mapContext;
     private Activity context;
+    private LinkedList<String> linkedList = new LinkedList<>();
     // Location shit.
     private Location lastCheckedLocation;
     private GoogleApiClient locationclient;
@@ -72,6 +76,7 @@ public class MyCurrentTrailManager extends Activity {
         this.context = context;
         mapContext=this;
         currentTrailManager = this;
+        linkedList.add(0, "#2196F3");
     }
 
     // Use with caution
@@ -123,19 +128,28 @@ public class MyCurrentTrailManager extends Activity {
         setOnMapCameraChangedListener();
         // First construct our url that we want:
         mapDisplayManager = new MapDisplayManager(map, context, trailId);
+
+        // fetch metadata first
         String fetchMetadataUrl = LoadBalancer.RequestServerAddress() + "/rest/TrailManager/FetchMetadata/" + trailId;
         clientRequestProxy = new AsyncDataRetrieval(fetchMetadataUrl, new AsyncDataRetrieval.RequestListener() {
             @Override
             public void onFinished(String result) throws JSONException {
                 Log.d("RESULT", result);
                 JSONObject jsonResult = new JSONObject(result);
+
+                // Get an iterator of all the event nodes.
                 Iterator<String> keys = jsonResult.keys();
                 while (keys.hasNext()) {
-                    drawOnMap(jsonResult.getString(keys.next()));
+
+                    String nodeString = jsonResult.getString(keys.next());
+                    JSONObject node = new JSONObject(nodeString);
+                    drawOnMap(node);
+                    drawNodeOnMap(node);
                 }
             }
         });
         clientRequestProxy.execute();
+
 //        String fetchTrailsUrl = MessageFormat.format("{0}/rest/TrailManager/GetAllTrailPoints/{1}",
 //                LoadBalancer.RequestServerAddress(),
 //                trailId);
@@ -158,35 +172,60 @@ public class MyCurrentTrailManager extends Activity {
         // Draw trailPoints onto the map
     }
 
-    private void drawOnMap(String test) throws JSONException {
-        JSONObject node = new JSONObject(test);
+    private void drawNodeOnMap(JSONObject node) throws JSONException {
+        String type = node.getString("EventType");
+        int eventType = Integer.parseInt(type);
+
+        // If we have a rest zone we want to draw a little circle on the map.
+        if (eventType == TrailManager.REST_ZONE) {
+            String latitude = node.getString("Latitude");
+            String longitude = node.getString("Longitude");
+            LatLng latLng = new LatLng(Double.parseDouble(latitude), Double.parseDouble(longitude));
+            Circle circle = map.addCircle(new CircleOptions()
+                    .center(latLng)
+                    .radius(500)
+                    .strokeColor(Color.parseColor("#E57373"))
+                    .fillColor(Color.parseColor("#E57373")));
+        }
+    }
+
+    private void drawOnMap(JSONObject node) throws JSONException {
+        List<LatLng> listOfPoints;
         if (node.has("PolylineString")) {
             String polyLineString = node.getString("PolylineString");
             if (node.getString("PolylineIsEncoded").equals("0")) {
-                List<LatLng> listOfPoints = PolyUtil.decode(polyLineString);
-                //ArrayList<LatLng> list = new ArrayList<>();
-                //int counter = 0;
-                /*while (counter < length) {
-
-                    String key = "Node" + Integer.toString(counter);
-                    if (trailJSON.has(key)) {
-                        JSONObject pointNodeBase = trailJSON.getJSONObject(key);
-                        Double baseLatitude = pointNodeBase.getDouble("latitude");
-                        Double baseLongitude = pointNodeBase.getDouble("longitude");
-                        list.add(new LatLng(baseLatitude, baseLongitude));
-                        counter += 1;
-                    } else {
-                        counter += 2;
-                    } //#E57373 , #00796B, #B71C1C #004D40
-                }*/
-                PolylineOptions options = new PolylineOptions().width(15).color(Color.parseColor("#E57373")).geodesic(true);
-                for (int z = 0; z < listOfPoints.size(); z++) {
-                    LatLng point = listOfPoints.get(z);
-                    options.add(point);
-                }
-                map.addPolyline(options);
+                listOfPoints = PolyUtil.decode(polyLineString);
+            } else {
+                listOfPoints = parseNonEncodedPolyline(polyLineString);
             }
+            drawPolyline(listOfPoints);
         }
+    }
+
+    private List<LatLng> parseNonEncodedPolyline(String polylineString) {
+        ArrayList<LatLng> listOfPoints = new ArrayList<>();
+        String[] pointsString = polylineString.split("\\|");
+        for (int index = 0; index < pointsString.length; index += 1 ) {
+            try {
+                // Points are store in string array like lat,long so we need to spit it again for each point.
+                String[] latAndLong = pointsString[index].split(",");
+                LatLng latLng = new LatLng(Double.parseDouble(latAndLong[0]), Double.parseDouble(latAndLong[1]));
+                listOfPoints.add(latLng);
+            } catch(NumberFormatException ex) {
+                ex.printStackTrace();
+            }
+
+        }
+        return listOfPoints;
+    }
+
+    private void drawPolyline(List<LatLng> listOfPoints) {
+        PolylineOptions options = new PolylineOptions().width(25).color(Color.parseColor("#E57373")).geodesic(true);
+        for (int z = 0; z < listOfPoints.size(); z++) {
+            LatLng point = listOfPoints.get(z);
+            options.add(point);
+        }
+        map.addPolyline(options);
     }
 
     public void DisplayTrailOnMap(String trailsJSONString) {

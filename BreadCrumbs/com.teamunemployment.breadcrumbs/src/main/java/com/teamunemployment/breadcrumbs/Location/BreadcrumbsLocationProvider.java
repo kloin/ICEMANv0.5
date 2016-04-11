@@ -525,19 +525,15 @@ public class BreadcrumbsLocationProvider implements LocationListener {
                 String userId = PreferenceManager.getDefaultSharedPreferences(mContext).getString("USERID", "-1");
                 if (!trailId.equals("-1") || !userId.equals("-1")) {
                     // Save our trail point to the db.
-                    dbc.saveTrailPoint(trailId, location, userId);
                     int eventId = PreferenceManager.getDefaultSharedPreferences(mContext).getInt("EVENTID", 0);
-                    dbc.AddMetadata(eventId,DateTime.now().toString(),location.getLatitude(), location.getLongitude(),trailId, TrailManager.GPS);
                     NotificationManager notificationManager = (NotificationManager) mContext.getSystemService(mContext.NOTIFICATION_SERVICE);
                     NotificationCompat.Builder noti = new NotificationCompat.Builder(mContext);
                     noti.setContentTitle("BreadCrumbs");
                     noti.setContentText("Provided by " + location.getProvider());
                     noti.setSmallIcon(R.drawable.bc64);
                     notificationManager.notify(1234, noti.build());
-
-                    // We also want to trigger updates to pathsense.
-                    // BreadcrumbsLocationProvider breadcrumbsLocationProvider = BreadcrumbsLocationProvider.getInstance(this.getApplicationContext());
-                    //breadcrumbsLocationProvider.AddGeofences(location);
+                    // Save our event metadata
+                    dbc.AddMetadata(eventId,DateTime.now().toString(),location.getLatitude(), location.getLongitude(),trailId, TrailManager.GPS);
                 }
             }
         }

@@ -21,7 +21,9 @@ import com.google.maps.android.clustering.Cluster;
 import com.google.maps.android.clustering.ClusterManager;
 import com.google.maps.android.clustering.view.DefaultClusterRenderer;
 import com.google.maps.android.ui.IconGenerator;
-import com.pkmmte.view.CircularImageView;
+
+import de.hdodenhof.circleimageview.CircleImageView;
+
 
 /**
  * Written By Josiah Kendall.
@@ -33,7 +35,7 @@ public class CustomCrumbCluster extends DefaultClusterRenderer<DisplayCrumb> {
     private ImageView mImageView;
     private final IconGenerator mIconGenerator;
     private final IconGenerator mClusterIconGenerator;
-    private CircularImageView circularImageView;
+    private CircleImageView circularImageView;
     private Context context;
     private GoogleMap map;
     private View multiProfile;
@@ -46,7 +48,7 @@ public class CustomCrumbCluster extends DefaultClusterRenderer<DisplayCrumb> {
         mClusterIconGenerator = new IconGenerator(context);
         multiProfile = context.getLayoutInflater().inflate(R.layout.crumb_cluster_layout, null);
         mImageView = new ImageView(context);
-        circularImageView = (CircularImageView) multiProfile.findViewById(R.id.crumb_cluster_image);
+        circularImageView = (CircleImageView) multiProfile.findViewById(R.id.crumb_cluster_image);
         mIconGenerator.setContentView(multiProfile);
         Drawable drawable = ContextCompat.getDrawable(context.getApplicationContext(),R.drawable.background);
         mIconGenerator.setBackground(makeClusterBackground());

@@ -11,9 +11,10 @@ import android.widget.TextView;
 
 import com.teamunemployment.breadcrumbs.Network.LoadBalancer;
 import com.bumptech.glide.Glide;
-import com.pkmmte.view.CircularImageView;
 
 import java.util.ArrayList;
+
+import de.hdodenhof.circleimageview.CircleImageView;
 
 /**
  * Created by aDirtyCanvas on 7/26/2015.
@@ -136,7 +137,7 @@ public class UpdateViewElementWithProperty {
     }
 
 
-    public void UpdateCircularViewWithUrl(final CircularImageView imageView, String url) {
+    public void UpdateCircularViewWithUrl(final CircleImageView imageView, String url) {
         AsyncRetrieveImage fetchDescription = new AsyncRetrieveImage(url, new AsyncRetrieveImage.RequestListener() {
             @Override
             public void onFinished(Bitmap result) {

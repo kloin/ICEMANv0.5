@@ -15,6 +15,8 @@ import android.widget.TextView;
 
 import com.sromku.simple.fb.SimpleFacebook;
 import com.sromku.simple.fb.listeners.OnLogoutListener;
+import com.teamunemployment.breadcrumbs.BreadcrumbsActivityAPI;
+import com.teamunemployment.breadcrumbs.BreadcrumbsLocationAPI;
 import com.teamunemployment.breadcrumbs.Location.BreadCrumbsFusedLocationProvider;
 import com.teamunemployment.breadcrumbs.Network.LoadBalancer;
 import com.teamunemployment.breadcrumbs.Network.ServiceProxy.HTTPRequestHandler;
@@ -65,12 +67,14 @@ public class Settings extends Activity {
             PreferenceManager.getDefaultSharedPreferences(context).edit().remove("COVERPHOTOID").commit();
             PreferenceManager.getDefaultSharedPreferences(context).edit().remove("TRACKING").commit();
 
-            BreadCrumbsFusedLocationProvider provider = GlobalContainer.GetContainerInstance().GetBreadCrumbsFusedLocationProvider();
-            if (provider != null) {
-                provider.StopBackgroundGPSSerivce();
-            }
+            //BreadCrumbsFusedLocationProvider provider = GlobalContainer.GetContainerInstance().GetBreadCrumbsFusedLocationProvider();
+           // if (provider != null) {
+         //       provider.StopBackgroundGPSSerivce();
+           // }
             //Stop Tracking
-
+            BreadcrumbsLocationAPI locationAPI = new BreadcrumbsLocationAPI();
+            locationAPI.StopLocationService();
+            // Need to destroy service here
 
             SimpleFacebook simpleFacebook = SimpleFacebook.getInstance();
             if (simpleFacebook != null) {

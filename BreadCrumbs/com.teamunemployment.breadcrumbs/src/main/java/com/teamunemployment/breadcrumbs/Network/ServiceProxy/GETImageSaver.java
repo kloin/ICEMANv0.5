@@ -57,7 +57,6 @@ public class GETImageSaver extends AsyncTask<String, Integer, String> {
      * Send an image to the server
      */
     public String PostImage() {
-
         HttpURLConnection connection = null;
         try {
             ByteArrayOutputStream baos = new ByteArrayOutputStream();
@@ -99,7 +98,6 @@ public class GETImageSaver extends AsyncTask<String, Integer, String> {
             rd.close();
             return response.toString();
         } catch (Exception e) {
-
             e.printStackTrace();
 
         } finally {

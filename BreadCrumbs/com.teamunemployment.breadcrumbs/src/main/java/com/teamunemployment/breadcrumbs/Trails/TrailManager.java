@@ -22,6 +22,7 @@ import org.joda.time.DateTime;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.net.URLEncoder;
 import java.sql.Blob;
 import java.text.MessageFormat;
 import java.util.Iterator;
@@ -51,47 +52,54 @@ public class TrailManager {
     // This is the method that extracts all our saved data about the server and saves it to the server.
     public void SaveEntireTrail(String trailId) {
         DatabaseController dbc = new DatabaseController(mContext);
+        try {
+            // Fetch metadata
+            JSONObject metadataJson = dbc.fetchMetadataFromDB(trailId);
+            JSONObject metadataPackage = new JSONObject();
 
-        // Fetch metadata
-        JSONObject metadataJson = dbc.fetchMetadataFromDB(trailId);
-        // fetch crumb data
-        JSONObject crumbsWithMedia = dbc.GetCrumbsWithMedia(trailId);
+            metadataPackage.put("Events", metadataJson);
+            metadataPackage.put("TrailId", trailId);
+            // fetch crumb data
+            JSONObject crumbsWithMedia = dbc.GetCrumbsWithMedia(trailId);
 
-        // fetch weather
-        // Fetch RestZones
-        JSONObject restZones = dbc.GetAllRestZonesForATrail(trailId);
+            // fetch weather
+            // Fetch RestZones
+            JSONObject restZones = dbc.GetAllRestZonesForATrail(trailId);
 
-        saveMetadata(metadataJson, trailId);
-        // save the crumbs one by one. Their id matters for loading the crumb, so save them with that AND
-        // the metadata id, so i can link the tables together if need be
-        Iterator iterator = crumbsWithMedia.keys();
-        Log.d("TRAIL_SAVE_TEST", "saving " + iterator.toString());
-        while (iterator.hasNext()) {
-            try {
-                String key = iterator.next().toString();
-                JSONObject crumb = crumbsWithMedia.getJSONObject(key);
-                String eventId = crumb.getString("eventId");
-                double latitude = crumb.getDouble("latitude");
-                double longitude = crumb.getDouble("longitude");
-                String timeStamp = crumb.getString("timeStamp");
-                String description = crumb.getString("description");
-                String userId = crumb.getString("userId");
-                String icon = crumb.getString("icon");
-                String media = crumb.getString("media");
-                String placeId = crumb.getString("placeId");
-                String suburb = crumb.getString("suburb");
-                String city = crumb.getString("city");
-                String country = "";//crumb.getString("country");
-                String mime = crumb.getString("mime");
+            saveMetadata(metadataPackage, trailId);
+            // save the crumbs one by one. Their id matters for loading the crumb, so save them with that AND
+            // the metadata id, so i can link the tables together if need be
+            Iterator iterator = crumbsWithMedia.keys();
+            Log.d("TRAIL_SAVE_TEST", "saving " + iterator.toString());
+            while (iterator.hasNext()) {
+                try {
+                    String key = iterator.next().toString();
+                    JSONObject crumb = crumbsWithMedia.getJSONObject(key);
+                    String eventId = crumb.getString("eventId");
+                    double latitude = crumb.getDouble("latitude");
+                    double longitude = crumb.getDouble("longitude");
+                    String timeStamp = crumb.getString("timeStamp");
+                    String description = crumb.getString("description");
+                    String userId = crumb.getString("userId");
+                    String icon = " ";//crumb.getString("icon");
+                    String media = crumb.getString("media");
+                    String placeId = crumb.getString("placeId");
+                    String suburb = crumb.getString("suburb");
+                    String city = crumb.getString("city");
+                    String country = " ";//crumb.getString("country");
+                    String mime = crumb.getString("mime");
 
-                byte[] mediaBytes = Base64.decode(media, Base64.DEFAULT);
-                Bitmap bitmap = BitmapFactory.decodeByteArray(mediaBytes, 0, mediaBytes.length);
-                Log.d("TRAIL_TEST", "bitmap height " +  bitmap.getHeight());
+                    byte[] mediaBytes = Base64.decode(media, Base64.DEFAULT);
+                    Bitmap bitmap = BitmapFactory.decodeByteArray(mediaBytes, 0, mediaBytes.length);
+                    Log.d("TRAIL_TEST", "bitmap height " + bitmap.getHeight());
 
-                createNewCrumb(description, userId, trailId, Double.toString(latitude), Double.toString(longitude), icon, mime, placeId, suburb, city, country, mime, bitmap);
-            } catch (JSONException e) {
-                e.printStackTrace();
+                    createNewCrumb(description, userId, trailId, Double.toString(latitude), Double.toString(longitude), icon, mime, placeId, suburb, city, country, mime, bitmap);
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
             }
+        }catch(JSONException e) {
+            e.printStackTrace();
         }
     }
 
@@ -99,8 +107,9 @@ public class TrailManager {
     public void saveMetadata(JSONObject metadata, String trailId) {
         String url = MessageFormat.format("{0}/rest/TrailManager/SaveMetaData/{1}/{2}",
                 LoadBalancer.RequestServerAddress(),
-                metadata.toString(),
+                URLEncoder.encode(metadata.toString()),
                 trailId);
+        url = url.replaceAll(" ", "%20");
         AsyncDataRetrieval asyncDataRetrieval  = new AsyncDataRetrieval(url, new AsyncDataRetrieval.RequestListener() {
 
             /*
@@ -111,7 +120,6 @@ public class TrailManager {
                 Log.d("TRAIL_SAVE", "saved metadata");
             }
         });
-
         asyncDataRetrieval.execute();
     }
 

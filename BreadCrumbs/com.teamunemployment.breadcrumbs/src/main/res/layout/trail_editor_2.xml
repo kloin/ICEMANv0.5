@@ -87,4 +87,11 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="200dp"
         android:layout_gravity="center"/>
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/upload_trail"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_gravity="bottom|right"
+        android:layout_margin="20dp"
+        android:src="@drawable/ic_backup_white_24dp"/>
 </android.support.design.widget.CoordinatorLayout>

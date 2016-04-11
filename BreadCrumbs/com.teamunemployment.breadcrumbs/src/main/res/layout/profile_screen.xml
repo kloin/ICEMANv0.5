@@ -171,7 +171,7 @@
                     android:id="@+id/about_uneditable"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="60dp"
+                    android:layout_marginTop="70dp"
                     android:layout_marginLeft="20dp"
                     android:layout_marginRight="20dp"
                     android:layout_marginBottom="20dp"
@@ -181,7 +181,7 @@
                     android:id="@+id/bio_edit_text"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="100dp"
+                    android:layout_marginTop="70dp"
                     android:inputType="textCapSentences"
                     android:layout_marginLeft="20dp"
                     android:visibility="gone"
@@ -274,6 +274,8 @@
                         android:orientation="vertical">
 
                         <View
+                            android:id="@+id/devider1"
+                            android:visibility="gone"
                             android:layout_width="match_parent"
                             android:layout_height="1dp"
                             android:layout_marginTop="15dp"
@@ -313,9 +315,11 @@
                                 android:text="secondary"/>
                         </RelativeLayout>
                         <View
+                            android:id="@+id/devider2"
                             android:layout_width="match_parent"
                             android:layout_height="1dp"
                             android:tag="divider"
+                            android:visibility="gone"
                             android:background="@color/my_divider"></View>
                         <RelativeLayout
                             android:id="@+id/chip_sub_wrapper2"
@@ -348,6 +352,8 @@
                                 android:text="secondary"/>
                         </RelativeLayout>
                         <View
+                            android:id="@+id/devider3"
+                            android:visibility="gone"
                             android:layout_width="match_parent"
                             android:layout_height="1dp"
                             android:tag="divider"

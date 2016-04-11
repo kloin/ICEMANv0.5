@@ -4,12 +4,15 @@ import android.app.Dialog;
 import android.app.Service;
 import android.content.Intent;
 import android.content.res.Configuration;
+import android.database.Cursor;
 import android.graphics.Color;
 import android.location.Location;
 import android.location.LocationListener;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.preference.PreferenceManager;
+import android.provider.MediaStore;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -39,6 +42,7 @@ import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.teamunemployment.breadcrumbs.BackgroundServices.BackgroundService;
 import com.teamunemployment.breadcrumbs.BackgroundServices.GPSStartEvent;
@@ -48,6 +52,7 @@ import com.teamunemployment.breadcrumbs.Facebook.AccountManager;
 import com.teamunemployment.breadcrumbs.Location.BreadCrumbsFusedLocationProvider;
 import com.teamunemployment.breadcrumbs.Location.BreadcrumbsLocationProvider;
 import com.teamunemployment.breadcrumbs.Network.LoadBalancer;
+import com.teamunemployment.breadcrumbs.Network.NetworkConnectivityManager;
 import com.teamunemployment.breadcrumbs.R;
 import com.teamunemployment.breadcrumbs.Network.ServiceProxy.AsyncDataRetrieval;
 import com.teamunemployment.breadcrumbs.Network.ServiceProxy.HomelessNetworkTools;
@@ -55,6 +60,8 @@ import com.teamunemployment.breadcrumbs.Network.ServiceProxy.UpdateViewElementWi
 import com.teamunemployment.breadcrumbs.Weather.WeatherManager;
 import com.teamunemployment.breadcrumbs.caching.GlobalContainer;
 import com.teamunemployment.breadcrumbs.client.Cards.HomeCardAdapter;
+import com.teamunemployment.breadcrumbs.client.ImageChooser.GalleryFolder;
+import com.teamunemployment.breadcrumbs.client.ImageChooser.GalleryManager;
 import com.teamunemployment.breadcrumbs.client.NavigationDrawer.DrawerItemCustomAdapter;
 import com.teamunemployment.breadcrumbs.client.NavigationDrawer.ObjectDrawerItem;
 import com.bumptech.glide.Glide;
@@ -182,13 +189,12 @@ public class BaseViewModel extends AppCompatActivity {
 
     private void testDB() {
         DatabaseController dbc = new DatabaseController(context);
-        String trailId = PreferenceManager.getDefaultSharedPreferences(context).getString("TRAILID", null);
-        JSONObject json = dbc.fetchMetadataFromDB(trailId);
-        Log.d("TESTD", json.toString());
+        String userId = PreferenceManager.getDefaultSharedPreferences(context).getString("TRAILID", null);
+        JSONObject json = dbc.fetchMetadataFromDB(userId);
+        Log.d("JSON", json.toString());
+       // GalleryManager manager = new GalleryManager(context);
+       // manager.GetGalleryFolders();
     }
-
-
-
 
     private void setupViewPager(ViewPager viewPager) {
         ViewPagerAdapter adapter = new ViewPagerAdapter(getSupportFragmentManager());
@@ -300,7 +306,7 @@ public class BaseViewModel extends AppCompatActivity {
             // Hide shit
             layout.setVisibility(View.GONE);
         } else {
-            layout.setVisibility(View.VISIBLE);
+           // layout.setVisibility(View.VISIBLE);
         }
     }
 
@@ -347,14 +353,30 @@ public class BaseViewModel extends AppCompatActivity {
 
         final SwitchCompat trackingButton = (SwitchCompat) findViewById(R.id.tracking_toggle);
         final RelativeLayout trackingWrapper = (RelativeLayout) findViewById(R.id.tracking_toggle_wrapper);
+        RelativeLayout uploadButton = (RelativeLayout) findViewById(R.id.upload);
 
         // If we do not yet have a trail, we need to set this as ivisible.
-        if (PreferenceManager.getDefaultSharedPreferences(this).getString("TRAILID", "0").equals("0")) {
+        final String trailId = PreferenceManager.getDefaultSharedPreferences(this).getString("TRAILID", null);
+        if (trailId == null) {
             trackingWrapper.setVisibility(View.GONE);
             return;
         } else {
             // Set visibility true and continue on.
-            trackingWrapper.setVisibility(View.VISIBLE);
+            //trackingWrapper.setVisibility(View.VISIBLE);
+            uploadButton.setVisibility(View.VISIBLE);
+            uploadButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (NetworkConnectivityManager.IsNetworkAvailable(context)) {
+                        com.teamunemployment.breadcrumbs.Trails.TrailManager trailManager = new com.teamunemployment.breadcrumbs.Trails.TrailManager(context);
+                        trailManager.SaveEntireTrail(trailId);
+                        Toast.makeText(context, "Uploaded Trail Successfully", Toast.LENGTH_LONG).show();
+                    } else {
+                        Toast.makeText(context, "Cannot upload - No internet Connection available", Toast.LENGTH_LONG).show();
+                    }
+
+                }
+            });
         }
 
         // Grab a fused location provider from our user class so we can track.
@@ -364,6 +386,7 @@ public class BaseViewModel extends AppCompatActivity {
         // Check if we were already tracking.
         isTracking = PreferenceManager.getDefaultSharedPreferences(this).getBoolean("TRACKING", false);
         // Our listner for this button. Toggles tracking using fused service, and updates flag.
+        assert trackingButton != null;
         trackingButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -437,7 +460,7 @@ public class BaseViewModel extends AppCompatActivity {
             // Set image to be a + to indicate creating a new trail.
             addCrumb.setVisibility(View.GONE);
         } else {
-            addCrumb.setImageResource(R.drawable.ic_action_camera);
+           // addCrumb.setImageResource(R.drawable.ic_action_camera);
             addCrumb.setVisibility(View.VISIBLE);
             addCrumb.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -665,7 +688,6 @@ public class BaseViewModel extends AppCompatActivity {
                         startActivity(newIntent);
                     }
                 }, 250);
-
                 break;
             case 1:
                 new Handler().postDelayed(new Runnable() {

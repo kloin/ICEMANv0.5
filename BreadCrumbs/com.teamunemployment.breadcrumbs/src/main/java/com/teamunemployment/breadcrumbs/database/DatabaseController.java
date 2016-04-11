@@ -68,13 +68,13 @@ public class DatabaseController extends SQLiteOpenHelper {
         SQLiteDatabase localdb = getWritableDatabase();
         localdb.insert("users", null, cv);
         localdb.close();
-
 	}
 
     public boolean CheckUserExists(String userId) {
+        Cursor cursor = db.rawQuery("Select * from "+DATABASE_NAME+" where userid="+userId, null);
         try {
             db = getReadableDatabase();
-            Cursor cursor = db.rawQuery("Select * from "+DATABASE_NAME+" where userid="+userId, null);
+
             if (cursor.getCount() > 0) {
                 return true;
             }
@@ -82,7 +82,7 @@ public class DatabaseController extends SQLiteOpenHelper {
             Log.d("DB", "Checking for user failed, most likely due to database not existing.");
             ex.printStackTrace();
         }
-
+        cursor.close();
         return false;
     }
 

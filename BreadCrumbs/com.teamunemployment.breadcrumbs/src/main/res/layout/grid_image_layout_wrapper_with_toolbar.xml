@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent">
+    <RelativeLayout
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:background="@color/ColorPrimary">
+        <ImageButton
+            android:id="@+id/back_button"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:src="@drawable/ic_action_cancel_light"
+            android:background="@null"/>
+        <TextView
+            android:id="@+id/image_chooser_header"
+            android:text="Instagram photos"
+            style="@style/CodeFont"
+            android:textColor="@color/white"
+            android:textSize="22sp"
+            android:gravity="center"
+            android:layout_toRightOf="@+id/back_button"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent" />
+        <TextView
+            android:id="@+id/select_button"
+            android:text="SELECT"
+            android:visibility="gone"
+            android:layout_alignParentRight="true"
+            android:layout_marginRight="10dp"
+            android:layout_width="wrap_content"
+            android:gravity="center"
+            style="@style/CodeFont"
+            android:textColor="@color/white"
+            android:textSize="18sp"
+            android:layout_height="match_parent" />
+    </RelativeLayout>
+    <TextView
+        android:id="@+id/empty_grid_placeholder"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:text="No uploaded images found."
+        android:visibility="gone"
+        android:gravity="center"/>
+    <GridView
+        android:id="@+id/gridView1"
+        android:numColumns="2"
+        android:layout_below="@+id/toolbar"
+        android:stretchMode="columnWidth"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content" >
+
+    </GridView>
+</RelativeLayout>

@@ -8,7 +8,6 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.design.widget.CoordinatorLayout;
-import android.support.design.widget.Snackbar;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -17,9 +16,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.teamunemployment.breadcrumbs.CustomElements.FancyFollow;
 import com.teamunemployment.breadcrumbs.Network.ServiceProxy.AsyncFetchThumbnail;
 import com.teamunemployment.breadcrumbs.caching.TextCachingInterface;
 import com.teamunemployment.breadcrumbs.Network.LoadBalancer;
@@ -27,7 +26,7 @@ import com.teamunemployment.breadcrumbs.Network.ServiceProxy.AsyncDataRetrieval;
 import com.teamunemployment.breadcrumbs.R;
 import com.teamunemployment.breadcrumbs.caching.TextCaching;
 import com.bumptech.glide.Glide;
-import com.pkmmte.view.CircularImageView;
+import com.teamunemployment.breadcrumbs.client.ElementLoadingManager.TextViewLoadingManager;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -35,6 +34,7 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.Calendar;
 
+import de.hdodenhof.circleimageview.CircleImageView;
 import mehdi.sakout.fancybuttons.FancyButton;
 
 /**
@@ -46,6 +46,7 @@ public class HomeCardAdapter extends RecyclerView.Adapter<HomeCardAdapter.ViewHo
     private String userId;
     private String LAST_CACHED_TIME = "LAST_CACHED_TIME";
     private final String TAG = "HOME_CARD";
+    private TextCaching mTextCaching;
     // Provide a reference to the views for each data item
     // Complex data items may need more than one view per item, and
     // you provide access to all the views for a data item in a view holder
@@ -72,9 +73,7 @@ public class HomeCardAdapter extends RecyclerView.Adapter<HomeCardAdapter.ViewHo
                                                    int viewType) {
         // create a new view
         View v = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.story_board_item_light, parent, false);
-        // Set the name, user, views etc for a trail and go about loading its image
-       // setTextAndHandlers(v);
+                .inflate(R.layout.home_base_card_base_view, parent, false);
         CardView card = (CardView) v.findViewById(R.id.card_view);
         card.setPreventCornerOverlap(false);
         ViewHolder vh = new ViewHolder(v);
@@ -166,17 +165,7 @@ public class HomeCardAdapter extends RecyclerView.Adapter<HomeCardAdapter.ViewHo
         final String cacheDescription = textRetriever.FetchDataInStringFormat(key);
 
         if (cacheDescription == null) {
-           /* AsyncDataRetrieval fetchDescription = new AsyncDataRetrieval(descriptionUrl, new AsyncDataRetrieval.RequestListener() {
-                @Override
-                public void onFinished(String result) {
-                    TextView description = (TextView) card.findViewById(R.id.trail_description);
-                    description.setText(result);
-                    if (result != null) {
-                        textRetriever.CacheText(key, result);
-                    }
-                }
-            });
-            fetchDescription.execute();*/
+
         } else {
            // TextView description = (TextView) card.findViewById(R.id.trail_description);
            // description.setText(cacheDescription);
@@ -249,38 +238,9 @@ public class HomeCardAdapter extends RecyclerView.Adapter<HomeCardAdapter.ViewHo
                 }
             });
 
-            followButton.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    if (followButton.getTag() != null && followButton.getTag().toString().equals("0")) {
-                        followButton.setTextColor(Color.parseColor("#8a000000"));
-                        followButton.setTag("1");
-
-                        Snackbar snackbar = Snackbar
-                                .make(coordinatorLayout, "Unfollowed trail", Snackbar.LENGTH_LONG)
-                                .setAction("Undo", null);
-                        snackbar.setActionTextColor(Color.RED);
-                        View snackbarView = snackbar.getView();
-                        snackbarView.setBackgroundColor(Color.DKGRAY);
-                        TextView textView = (TextView) snackbarView.findViewById(android.support.design.R.id.snackbar_text);
-                        textView.setTextColor(act.getResources().getColor(R.color.accent));
-                        snackbar.show();
-                    }   else {
-                        followButton.setTextColor(Color.parseColor("#FF4081"));
-                        followButton.setTag("0");
-                        Snackbar snackbar = Snackbar
-                                .make(coordinatorLayout, "Following trail", Snackbar.LENGTH_LONG)
-                                .setAction("Undo", null);
-                        snackbar.setActionTextColor(Color.RED);
-                        View snackbarView = snackbar.getView();
-                        snackbarView.setBackgroundColor(Color.DKGRAY);
-                        TextView textView = (TextView) snackbarView.findViewById(android.support.design.R.id.snackbar_text);
-                        textView.setTextColor(act.getResources().getColor(R.color.accent));
-                        snackbar.show();
-                    }
-
-                }
-            });
+            String currentUserId = PreferenceManager.getDefaultSharedPreferences(mContext).getString("USERID", null);
+            FancyFollow customFollowButton = new FancyFollow(currentUserId, trailsUserId, followButton, mContext);
+            customFollowButton.init();
             // Load cover photo here and set it
             if (resultJSON.has("coverPhotoId")) {
                 String coverId = resultJSON.getString("coverPhotoId");
@@ -298,7 +258,7 @@ public class HomeCardAdapter extends RecyclerView.Adapter<HomeCardAdapter.ViewHo
             titleTextView.setText(title);
             belongsTo.setText(userName);
             viewsTextView.setText(views);
-            CircularImageView profilePic = (CircularImageView) card.findViewById(R.id.profilePicture);
+            CircleImageView profilePic = (CircleImageView) card.findViewById(R.id.profilePicture);
             setProfilePic(profilePic, trailsUserId);
             profilePic.setOnClickListener(getProfilePicClickListener(trailsUserId, userName));
 
@@ -326,41 +286,10 @@ public class HomeCardAdapter extends RecyclerView.Adapter<HomeCardAdapter.ViewHo
         };
     }
 
-    private void setProfilePic(final CircularImageView profilePic, String trailUserId) {
+    private void setProfilePic(final CircleImageView profilePic, String trailUserId) {
         //Try load
-        final String keyId = trailUserId+"CoverPhotoId";
-        final TextCachingInterface textCachingInterface = new TextCachingInterface(mContext);
-
         String imageIdUrl = LoadBalancer.RequestServerAddress() + "/rest/login/GetPropertyFromNode/"+trailUserId+"/CoverPhotoId";
-
-//        String photoId = textCachingInterface.FetchDataInStringFormat(keyId);
-     //   if (photoId == null|| photoId.equals("error")) {
-            AsyncDataRetrieval asyncDataRetrieval = new AsyncDataRetrieval(imageIdUrl, new AsyncDataRetrieval.RequestListener() {
-                @Override
-                public void onFinished(String result) {
-                   // Glide.with(mContext).load(LoadBalancer.RequestCurrentDataAddress() + "/images/"+result + ".jpg").centerCrop().crossFade().into(profilePic);
-                    AsyncFetchThumbnail fetchThumbnail = new AsyncFetchThumbnail(result, new AsyncFetchThumbnail.RequestListener() {
-                        @Override
-                        public void onFinished(Bitmap result) {
-                            if (result != null) {
-                                profilePic.setImageBitmap(result);
-                            }
-                        }
-                    });
-                    fetchThumbnail.execute();
-                    textCachingInterface.CacheText(keyId, result);
-                }
-            });
-            asyncDataRetrieval.execute();
-//      //  } else {
-//            AsyncFetchThumbnail fetchThumbnail = new AsyncFetchThumbnail(photoId, new AsyncFetchThumbnail.RequestListener() {
-//                @Override
-//                public void onFinished(Bitmap result) {
-//                    profilePic.setImageBitmap(result);
-//                }
-//            });
-//            fetchThumbnail.execute();
-//        }
+        TextViewLoadingManager.LoadCircularImageView(imageIdUrl, profilePic, mContext);
     }
 
     // Return the size of your dataset (invoked by the layout manager)
@@ -382,7 +311,7 @@ public class HomeCardAdapter extends RecyclerView.Adapter<HomeCardAdapter.ViewHo
         userName.setText("...");
         TextView views = (TextView) card.findViewById(R.id.trail_views);
         views.setText("...");
-        CircularImageView profilePic = (CircularImageView) card.findViewById(R.id.profilePicture);
+        CircleImageView profilePic = (CircleImageView) card.findViewById(R.id.profilePicture);
         profilePic.setImageResource(R.drawable.profileblank);
 
     }

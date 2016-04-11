@@ -13,6 +13,7 @@ import android.preference.PreferenceManager;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.CoordinatorLayout;
+import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
@@ -29,6 +30,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.teamunemployment.breadcrumbs.BackgroundServices.BackgroundService;
 import com.teamunemployment.breadcrumbs.BreadcrumbsLocationAPI;
 import com.teamunemployment.breadcrumbs.Location.BreadCrumbsFusedLocationProvider;
 import com.teamunemployment.breadcrumbs.Network.LoadBalancer;
@@ -41,9 +43,12 @@ import com.teamunemployment.breadcrumbs.client.Cards.CrumbCardAdapter;
 import com.teamunemployment.breadcrumbs.client.Cards.CrumbCardDataObject;
 import com.teamunemployment.breadcrumbs.client.DialogWindows.DatePickerDialog;
 import com.bumptech.glide.Glide;
+import com.teamunemployment.breadcrumbs.client.ElementLoadingManager.TextViewLoadingManager;
 
 import java.text.MessageFormat;
 import java.util.ArrayList;
+
+import de.hdodenhof.circleimageview.CircleImageView;
 
 /**
  * Created by aDirtyCanvas on 6/28/2015.
@@ -65,7 +70,7 @@ public class CreateTrail extends AppCompatActivity implements DatePickerDialog.D
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.trail_editor_window);
+        setContentView(R.layout.create_trail);
         context = this;
         setUpButtonListeners();
         Bundle extras = getIntent().getExtras();
@@ -74,27 +79,6 @@ public class CreateTrail extends AppCompatActivity implements DatePickerDialog.D
             coverId = extras.getString("CoverId");
             setUpFields();
         }
-        setUpHeaderPhoto();
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
-        crumbsArray = getIntent().getParcelableArrayListExtra("CrumbArray");
-        String trailId = getIntent().getStringExtra("TrailId");
-        setUpCollapsableToolbar("Create Trail");
-        //mRecyclerView = (RecyclerView) findViewById(R.id.crumb_recycler);
-
-        // use this setting to improve performance if you know that changes
-        // in content do not change the layout size of the RecyclerView
-       // mRecyclerView.setHasFixedSize(true);
-        // use a linear layout manager
-        //mLayoutManager = new LinearLayoutManager(this);
-       // mRecyclerView.setLayoutManager(mLayoutManager);
-        mAdapter = new CrumbCardAdapter(crumbsArray, this);
-        //mRecyclerView.setAdapter(mAdapter);
-        CollapsingToolbarLayout collapsingToolbarLayout = (CollapsingToolbarLayout) findViewById(R.id.collapsable_toolbar_holder);
-        //setBackButtonListener();
-        //setToolbarTitle(collapsingToolbarLayout, trailId);
-        collapsingToolbarLayout.setExpandedTitleTextAppearance(R.style.CodeFontWhite);
-        collapsingToolbarLayout.setCollapsedTitleTextAppearance(R.style.HeaderFont);
 
     }
 
@@ -140,26 +124,6 @@ public class CreateTrail extends AppCompatActivity implements DatePickerDialog.D
         snackbar.show();
     }
 
-    private void setUpCollapsableToolbar(String name) {
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
-        // mRecyclerView = (RecyclerView) findViewById(R.id.crumb_recycler);
-        //  mRecyclerView.setHasFixedSize(true);
-        CollapsingToolbarLayout collapsingToolbarLayout = (CollapsingToolbarLayout) findViewById(R.id.collapsable_toolbar_holder);
-        collapsingToolbarLayout.setExpandedTitleTextAppearance(R.style.HeaderFont);
-        collapsingToolbarLayout.setCollapsedTitleTextColor(Color.WHITE);
-        collapsingToolbarLayout.setTitle(name);
-
-        AppBarLayout appBarLayout = (AppBarLayout) findViewById(R.id.app_bar_layout_profile);
-        ViewGroup.LayoutParams layoutParams = appBarLayout.getLayoutParams();
-        DisplayMetrics displaymetrics = new DisplayMetrics();
-        getWindowManager().getDefaultDisplay().getMetrics(displaymetrics);
-        int widthDouble = displaymetrics.widthPixels;
-        layoutParams.height = widthDouble;
-        appBarLayout.setLayoutParams(layoutParams);
-        //setUpToggleEditModeListener();
-    }
-
     @Override
     public void onResume() {  // After a pause OR at startup
         super.onResume();
@@ -171,48 +135,27 @@ public class CreateTrail extends AppCompatActivity implements DatePickerDialog.D
         EditText trailTitleEdit = (EditText) findViewById(R.id.title_edit);
         updater.UpdateEditTextElement(trailTitleEdit, trailId, "TrailName");
 
-        EditText about = (EditText) findViewById(R.id.countries_edit);
-        updater.UpdateEditTextElement(about, trailId, "Description");
+        // Not using description at the moment
+      //  EditText about = (EditText) findViewById(R.id.countries_edit);
+        //updater.UpdateEditTextElement(about, trailId, "Description");
     }
 
-    private void setUpHeaderPhoto() {
-        ImageView header = (ImageView) findViewById(R.id.headerPicture);
-       // header.setLayoutParams(layoutParams);
-        //header.setBackgroundResource(R.color.ColorPrimary);
-        if (coverId != null && !coverId.equals("0")) {
-            Glide.with(context).load(LoadBalancer.RequestCurrentDataAddress() + "/images/"+coverId+".jpg").centerCrop().crossFade().into(header);
-            TextView textView = (TextView) findViewById(R.id.profile_select_prompt);
-            textView.setVisibility(View.GONE);
-        }
-
-        header.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                //click handler here for loading up a profile selection page
-                Intent intent = new Intent();
-                intent.setClassName("com.teamunemployment.breadcrumbs", "com.teamunemployment.breadcrumbs.client.ImageChooser.TrailCoverImageSelector");
-                startActivityForResult(intent, PICK_PROFILE_REQUEST);
-            }
-        });
-    }
     // Handler to create the trail based on the data we have been given
-    private void setUpButtonListeners() {
-       TextView saveTrail = (TextView) findViewById(R.id.trail_save);
-        saveTrail.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (trailId.equals("0")) {
-                    createNewTrail();
-                } else {
-                    updateProperties();
-                }
-
-
+            private void setUpButtonListeners() {
+                TextView saveTrail = (TextView) findViewById(R.id.save_trail_button);
+                saveTrail.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        if (trailId.equals("0")) {
+                            createNewTrail();
+                        } else {
+                            updateProperties();
+                        }
             }
         });
 
 
-        ImageButton backButton = (ImageButton) findViewById(R.id.profile_back_button);
+        ImageView backButton = (ImageView) findViewById(R.id.back_button);
         backButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -341,9 +284,12 @@ public class CreateTrail extends AppCompatActivity implements DatePickerDialog.D
 
                 // Begin tracking
                 PreferenceManager.getDefaultSharedPreferences(context).edit().putBoolean("TRACKING", true).commit();
-                BreadCrumbsFusedLocationProvider breadCrumbsFusedLocationProvider = new BreadCrumbsFusedLocationProvider(context);
-                breadCrumbsFusedLocationProvider.StartBackgroundGPSService();
-                GlobalContainer.GetContainerInstance().SetBreadCrumbsFusedLocationProvider(breadCrumbsFusedLocationProvider);
+               // BreadCrumbsFusedLocationProvider breadCrumbsFusedLocationProvider = new BreadCrumbsFusedLocationProvider(context);
+               // breadCrumbsFusedLocationProvider.StartBackgroundGPSService();
+
+                BreadcrumbsLocationAPI locationAPI = new BreadcrumbsLocationAPI();
+                locationAPI.StartLocationService();
+               // GlobalContainer.GetContainerInstance().SetBreadCrumbsFusedLocationProvider(breadCrumbsFusedLocationProvider);
                 finish();
             }
         });

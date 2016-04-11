@@ -2,6 +2,7 @@ package com.teamunemployment.breadcrumbs.client.NavMenu.Profile;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
@@ -25,6 +26,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.exoplayer.C;
+import com.teamunemployment.breadcrumbs.CustomElements.FancyFollow;
 import com.teamunemployment.breadcrumbs.Network.LoadBalancer;
 import com.teamunemployment.breadcrumbs.R;
 import com.teamunemployment.breadcrumbs.Network.ServiceProxy.AsyncDataRetrieval;
@@ -178,28 +180,10 @@ public class ProfilePageViewer extends AppCompatActivity  implements DatePickerD
 
     private void setUpFollowing() {
         FancyButton followButton = (FancyButton) findViewById(R.id.follow_button);
-        if (isOwnProfile) {
-            Log.d(TAG, "Is own profile - hiding follow button");
-            followButton.setVisibility(View.GONE);
+        final String currentUser = PreferenceManager.getDefaultSharedPreferences(myContext).getString("USERID", "-1");
 
-        } else {
-            /*
-             Check if we are following. If we are, make unfollow an option. If we are not,. make follow the option.
-             Need seperate click handlers for each.
-             If we are going to save the follower, it would be faster to add it to the cache. Then ONLY
-             if it is not in the cache we need to fetch it from the network
-             */
-            followButton.setVisibility(View.VISIBLE);
-            final String currentUser = PreferenceManager.getDefaultSharedPreferences(myContext).getString("USERID", "-1");
-            followKey = currentUser + "FOLLOW" + userId;
-
-            String alreadyFollowed = textCaching.FetchCachedText(followKey);
-            if (alreadyFollowed == null || alreadyFollowed.equals("N")) {
-                setUpFollowButton(currentUser, followButton);
-            } else{
-                setUpUnfollowButton(currentUser, followButton);
-            }
-        }
+        FancyFollow customFollowButton = new FancyFollow(currentUser, userId, followButton, myContext);
+        customFollowButton.init();
     }
 
     // Toolbar button listeners - save and back
@@ -298,8 +282,6 @@ public class ProfilePageViewer extends AppCompatActivity  implements DatePickerD
                 }
             }
         });
-
-
     }
     private void openDatePicker() {
         DatePickerDialog datePickerDialog = new DatePickerDialog();
@@ -321,12 +303,8 @@ public class ProfilePageViewer extends AppCompatActivity  implements DatePickerD
 
         // Do the saving
         HTTPRequestHandler simpleSaver = new HTTPRequestHandler();
-    //    simpleSaver.SendSimpleHttpRequestAndReturnString(saveNameUrl);
         simpleSaver.SendSimpleHttpRequestAndReturnString(ageUrl);
         simpleSaver.SendSimpleHttpRequestAndReturnString(aboutInfoUrl);
-
-     //   simpleSaver.SendSimpleHttpRequestAndReturnString(genderInfoUrl);
-
     }
 
     private void setIsDirtyListener() {
@@ -371,30 +349,48 @@ public class ProfilePageViewer extends AppCompatActivity  implements DatePickerD
     }
 
     @Override
+    protected void onRestart() {
+        super.onRestart();
+
+    }
+
+    @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
         // This is the check for when we return with no data. Usually when the user hits the back button
         if (requestCode == 1) {
             if(resultCode == Activity.RESULT_OK){
+                Bitmap bitmap = GlobalContainer.GetContainerInstance().GetBitMap();
+                ImageView header = (ImageView) findViewById(R.id.headerPicture);
+                header.setImageBitmap(bitmap);
                 // Load our new image
                 Toast.makeText(myContext, "Update profile", Toast.LENGTH_SHORT).show();
-                final ImageView header = (ImageView) findViewById(R.id.headerPicture);
+                //final ImageView header = (ImageView) findViewById(R.id.headerPicture);
                 String id = PreferenceManager.getDefaultSharedPreferences(myContext).getString("COVERPHOTOID", "-1");
-                Glide.with(myContext).load(LoadBalancer.RequestCurrentDataAddress() + "/images/"+id + ".jpg").centerCrop().crossFade().into(header);
-                String saveUrl = LoadBalancer.RequestServerAddress() + "/rest/login/SaveStringPropertyToNode/"+ userId + "/CoverPhotoId/" + id;
-                HTTPRequestHandler simpleHttpRequest = new HTTPRequestHandler();
-                simpleHttpRequest.SendSimpleHttpRequest(saveUrl);
+            //    Glide.with(myContext).load(LoadBalancer.RequestCurrentDataAddress() + "/images/"+id + ".jpg").centerCrop().crossFade().into(header);
+            //    String saveUrl = LoadBalancer.RequestServerAddress() + "/rest/login/SaveStringPropertyToNode/"+ userId + "/CoverPhotoId/" + id;
+              //  HTTPRequestHandler simpleHttpRequest = new HTTPRequestHandler();
+              //  simpleHttpRequest.SendSimpleHttpRequest(saveUrl);
             }
             if (resultCode == Activity.RESULT_CANCELED) {
                 //Write your code if there's no result
             }
         }
+
+        if (resultCode == 5) {
+
+        }
+
+
     }
 
     // Try to set the profile picture for a user
     private void setHeaderPic() {
-        // Set hieght
+        Bitmap bitmap = GlobalContainer.GetContainerInstance().GetBitMap();
+
+        // Need to wipe that bitmap after use.
+        GlobalContainer.GetContainerInstance().SetBitMap(null);
         final ImageView header = (ImageView) findViewById(R.id.headerPicture);
         ViewGroup.LayoutParams layoutParams = header.getLayoutParams();
         DisplayMetrics displaymetrics = new DisplayMetrics();
@@ -403,7 +399,9 @@ public class ProfilePageViewer extends AppCompatActivity  implements DatePickerD
         layoutParams.height = width;
         header.setLayoutParams(layoutParams);
         String coverPhotoId = PreferenceManager.getDefaultSharedPreferences(myContext).getString("COVERPHOTOID", "-1");
-        if (!userId.equals(PreferenceManager.getDefaultSharedPreferences(myContext).getString("USERID", "-1"))) {
+        if (bitmap != null) {
+            header.setImageBitmap(bitmap);
+        } else if (!userId.equals(PreferenceManager.getDefaultSharedPreferences(myContext).getString("USERID", "-1"))) {
             TextView textView = (TextView) myContext.findViewById(R.id.profile_select_prompt);
             textView.setVisibility(View.GONE);
             String imageIdUrl = LoadBalancer.RequestServerAddress() + "/rest/login/GetPropertyFromNode/" + userId + "/CoverPhotoId";
@@ -493,6 +491,12 @@ public class ProfilePageViewer extends AppCompatActivity  implements DatePickerD
         ageEditText.setText(day + "/" + month + "/" + year);
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        setHeaderPic();
+    }
+
     // Load the trail data to add chips to the
     private void loadTrailsIntoCard() {
         // Load all trail Ids
@@ -547,11 +551,6 @@ public class ProfilePageViewer extends AppCompatActivity  implements DatePickerD
         String coverId = resultJSON.get("CoverPhotoId").toString();
         final String id = resultJSON.get("Id").toString();
         try {
-            // While we have not added three things:
-            // For option 0, add it to the first
-            // For round 1, add it to the secondr
-            // for round 2 same as ...
-            // No reound three
             RelativeLayout parent = null;
             if (count == 1) {
                 parent = (RelativeLayout) findViewById(R.id.chip_sub_wrapper0);
@@ -561,29 +560,38 @@ public class ProfilePageViewer extends AppCompatActivity  implements DatePickerD
                 header.setText(title);
                 TextView description = (TextView) parent.findViewById(R.id.description0);
                 description.setText(desc);
-
+                // Devider
+                View view = findViewById(R.id.devider1);
+                view.setVisibility(View.VISIBLE);
                 ImageView imageView = (ImageView) parent.findViewById(R.id.trail_image1);
-                Glide.with(myContext).load(LoadBalancer.RequestCurrentDataAddress() + "/images/"+coverId+".jpg").centerCrop().crossFade().into(imageView);
+                Glide.with(myContext).load(LoadBalancer.RequestCurrentDataAddress() + "/images/" + coverId + ".jpg").centerCrop().placeholder(R.drawable.ic_landscape_black_24dp).crossFade().into(imageView);
                 parent.setOnTouchListener(fetchOpenTrailClickListener(id));
             } else if (count == 2) {
                 parent = (RelativeLayout) findViewById(R.id.chip_sub_wrapper);
                 parent.setVisibility(View.VISIBLE);
+                // Devider
+                View view = findViewById(R.id.devider2);
+                view.setVisibility(View.VISIBLE);
+
                 TextView header = (TextView) parent.findViewById(R.id.trail_chip_main_title);
                 header.setText(title);
                 TextView description = (TextView) parent.findViewById(R.id.trail_chip_secondary_title);
                 description.setText(desc);
                 ImageView imageView = (ImageView) parent.findViewById(R.id.trail_image);
-                Glide.with(myContext).load(LoadBalancer.RequestCurrentDataAddress() + "/images/"+coverId+".jpg").centerCrop().crossFade().into(imageView);
+                Glide.with(myContext).load(LoadBalancer.RequestCurrentDataAddress() + "/images/"+coverId+".jpg").centerCrop().placeholder(R.drawable.ic_landscape_black_24dp).crossFade().into(imageView);
                 parent.setOnTouchListener(fetchOpenTrailClickListener(id));
             } else {
                 parent = (RelativeLayout) findViewById(R.id.chip_sub_wrapper2);
                 parent.setVisibility(View.VISIBLE);
                 TextView header = (TextView) parent.findViewById(R.id.trail_chip_main_title2);
                 header.setText(title);
+                // Devider
+                View view = findViewById(R.id.devider3);
+                view.setVisibility(View.VISIBLE);
                 TextView description = (TextView) parent.findViewById(R.id.trail_chip_secondary_title2);
                 description.setText(desc);
                 ImageView imageView = (ImageView) parent.findViewById(R.id.trail_image2);
-                Glide.with(myContext).load(LoadBalancer.RequestCurrentDataAddress() + "/images/"+coverId+".jpg").centerCrop().crossFade().into(imageView);
+                Glide.with(myContext).load(LoadBalancer.RequestCurrentDataAddress() + "/images/" + coverId + ".jpg").centerCrop().placeholder(R.drawable.ic_landscape_black_24dp).crossFade().into(imageView);
                 parent.setOnTouchListener(new View.OnTouchListener() {
                     private float startX;
                     private float startY;
@@ -608,8 +616,8 @@ public class ProfilePageViewer extends AppCompatActivity  implements DatePickerD
                                 break;
                             }
                         }
-                        v.getParent().requestDisallowInterceptTouchEvent(true); //specific to my project
-                        return false; //specific to my project
+                        v.getParent().requestDisallowInterceptTouchEvent(true);
+                        return false;
                     }
                     private boolean isAClick(float startX, float endX, float startY, float endY) {
                         float differenceX = Math.abs(startX - endX);

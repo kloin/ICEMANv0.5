@@ -81,17 +81,17 @@ public class DatabaseUnitTests {
 
     @Test
     public void TestThatMetadataCanBeStoredAndRetrieved() {
-        db.AddMetadata("1", DateTime.now().toString(),123.000, -123.000, "0", TrailManager.GPS);
+        db.AddMetadata(1, DateTime.now().toString(),123.000, -123.000, "0", TrailManager.GPS);
         JSONObject jsonObject = db.fetchMetadataFromDB("0");
         assertTrue(jsonObject.length() > 0);
     }
 
     @Test
     public void TestThatMetadataGetsIdProperty() throws JSONException {
-        db.AddMetadata("1", DateTime.now().toString(),123.000, -123.000, "0", TrailManager.GPS);
-        db.AddMetadata("1", DateTime.now().toString(),123.000, -123.000, "0", TrailManager.GPS);
-        db.AddMetadata("1", DateTime.now().toString(),123.000, -123.000, "0", TrailManager.GPS);
-        db.AddMetadata("1", DateTime.now().toString(),123.000, -123.000, "0", TrailManager.GPS);
+        db.AddMetadata(1, DateTime.now().toString(),123.000, -123.000, "0", TrailManager.GPS);
+        db.AddMetadata(1, DateTime.now().toString(),123.000, -123.000, "0", TrailManager.GPS);
+        db.AddMetadata(1, DateTime.now().toString(),123.000, -123.000, "0", TrailManager.GPS);
+        db.AddMetadata(1, DateTime.now().toString(),123.000, -123.000, "0", TrailManager.GPS);
 
         JSONObject jsonObject = db.fetchMetadataFromDB("0");
         JSONObject jsonObject1 = jsonObject.getJSONObject("1");
@@ -102,9 +102,9 @@ public class DatabaseUnitTests {
 
     @Test
     public void TestThatRestZoneCanBeSaved() {
-        db.SaveRestZone("0", "1",123.000, -123.000, "123456789",DateTime.now().toString());
-        db.SaveRestZone("0", "2",123.000, -122.000, "123456",DateTime.now().toString());
-        db.SaveRestZone("0", "3",123.000, -121.000, "123454456",DateTime.now().toString());
+        db.SaveRestZone("0", 1,123.000, -123.000, "123456789",DateTime.now().toString());
+        db.SaveRestZone("0", 2,123.000, -122.000, "123456",DateTime.now().toString());
+        db.SaveRestZone("0",3,123.000, -121.000, "123454456",DateTime.now().toString());
 
         JSONObject jsonObject = db.GetAllRestZonesForATrail("0");
         Log.d("TEST", "REST Zones Count: " + jsonObject.length());

@@ -4,10 +4,13 @@ import android.app.Application;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.location.Location;
+import android.net.Uri;
 import android.preference.PreferenceManager;
+import android.provider.MediaStore;
 import android.support.test.InstrumentationRegistry;
 import android.support.test.runner.AndroidJUnit4;
 import android.test.AndroidTestCase;
@@ -22,7 +25,6 @@ import com.teamunemployment.breadcrumbs.Network.LoadBalancer;
 import com.teamunemployment.breadcrumbs.Network.ServiceProxy.AsyncDataRetrieval;
 import com.teamunemployment.breadcrumbs.Trails.MyCurrentTrailManager;
 import com.teamunemployment.breadcrumbs.Trails.TrailManager;
-import com.teamunemployment.breadcrumbs.client.TrailActivity;
 import com.teamunemployment.breadcrumbs.database.DatabaseController;
 
 import org.joda.time.DateTime;
@@ -88,7 +90,7 @@ public class ApplicationTest {
             String trailId = "99";
             String description = "test";
             String userId = "0";
-            String eventId = "0";
+            int eventId = 0;
             double latitude = 123;
             double longitude = -123;
             String mime = ".jpg";
@@ -111,7 +113,7 @@ public class ApplicationTest {
             assertTrue(media.length > 1);
 
             String eventId2 = jsonObject1.getString("eventId");
-            assertTrue(eventId.equals("0"));
+            assertTrue(eventId == 0);
 
         } catch (IOException ex) {
             fail();
@@ -154,10 +156,10 @@ public class ApplicationTest {
 
     @Test
     public void TestThatRestZoneCanBeSavedToDB() {
-        db.SaveRestZone("0", "1", 123.000, -123.000, "123456789", DateTime.now().toString());
-        db.SaveRestZone("0", "2", 123.000, -122.000, "123456", DateTime.now().toString());
-        db.SaveRestZone("0", "3", 123.000, -121.000, "123454456", DateTime.now().toString());
-        db.SaveRestZone("0", "4",123.000, -121.000, "123454456",DateTime.now().toString());
+        db.SaveRestZone("0", 1, 123.000, -123.000, "123456789", DateTime.now().toString());
+        db.SaveRestZone("0", 2, 123.000, -122.000, "123456", DateTime.now().toString());
+        db.SaveRestZone("0", 3, 123.000, -121.000, "123454456", DateTime.now().toString());
+        db.SaveRestZone("0", 4,123.000, -121.000, "123454456",DateTime.now().toString());
 
         JSONObject jsonObject = db.GetAllRestZonesForATrail("0");
         Log.d("TEST", "REST Zones Count: " + jsonObject.length());
@@ -181,9 +183,9 @@ public class ApplicationTest {
     public void IngegrationTestSimulateTrailBehaviour() throws IOException {
 
         // Create restZones
-        db.SaveRestZone("0", "1", 123.000, -123.000, "123456789", DateTime.now().toString());
-        db.SaveRestZone("0", "2", 123.000, -122.000, "123456", DateTime.now().toString());
-        db.SaveRestZone("0", "3",123.000, -121.000, "123454456",DateTime.now().toString());
+        db.SaveRestZone("0", 1, 123.000, -123.000, "123456789", DateTime.now().toString());
+        db.SaveRestZone("0", 2, 123.000, -122.000, "123456", DateTime.now().toString());
+        db.SaveRestZone("0", 3,123.000, -121.000, "123454456",DateTime.now().toString());
 
         // Create gps points
         URL url = new URL("http://104.199.132.109:8080/images/6504.jpg");
@@ -192,7 +194,7 @@ public class ApplicationTest {
         String trailId = "99";
         String description = "test";
         String userId = "0";
-        String eventId = "0";
+        int eventId = 0;
         double latitude = 123;
         double longitude = -123;
         String mime = ".jpg";
@@ -211,7 +213,7 @@ public class ApplicationTest {
         String trailId2 = "99";
         String description2 = "test";
         String userId2 = "0";
-        String eventId2 = "0";
+        int eventId2 = 0;
         double latitude2 = 123;
         double longitude2 = -123;
         String mime2 = ".jpg";
@@ -266,7 +268,7 @@ public class ApplicationTest {
 
     @Test
     public void TestThatSavingCrumbSavesMetadata() throws JSONException {
-        db.SaveCrumb("1234","test", "1", "2", 0.0, 0.0, ".jpg", DateTime.now().toString(), null, "", "", "", "", "");
+        db.SaveCrumb("1234","test", "1", 2, 0.0, 0.0, ".jpg", DateTime.now().toString(), null, "", "", "", "", "");
         JSONObject jsonObject = db.fetchMetadataFromDB("1234");
         jsonObject = jsonObject.getJSONObject("0");
         assertTrue(jsonObject.getDouble("latitude") == 0.0);
@@ -319,7 +321,6 @@ public class ApplicationTest {
         event.put("type", "0");
 
         JSONObject restZone1 = new JSONObject();//-43.287581, 170.222576
-
         restZone1.put("driving_method", "0");
         restZone1.put("latitude", "-43.287581");
         restZone1.put("longitude", "170.222576");
@@ -327,7 +328,6 @@ public class ApplicationTest {
         restZone1.put("type", "2");
 
         JSONObject restZone2 = new JSONObject();//-42.444079, 171.217216
-
         restZone1.put("driving_method", "0");
         restZone1.put("latitude", "-42.444079");
         restZone1.put("longitude", "171.217216");
@@ -336,6 +336,14 @@ public class ApplicationTest {
 
 
         return restZone1.toString();
+
+
+
+    }
+
+    @Test
+    public void TestGrabbingImagesAndFolders() {
+        // which image properties are we querying
 
 
 

@@ -53,6 +53,12 @@
                 <action android:name="android.intent.action.BOOT_COMPLETED"/>
             </intent-filter>
         </receiver>
+        <!-- upload Service receiver -->
+        <receiver android:name=".client.Image.ImageUploadReceiver">
+            <intent-filter>
+                <action android:name="com.teamunemployment.breadcrumbs.uploadservice.broadcast.status" />
+            </intent-filter>
+        </receiver>
 
         <!-- [START gcm_receiver] -->
         <receiver
@@ -96,6 +102,7 @@
             android:exported="false">
         </service>
         <service android:name=".BootReciever.BootloaderService" android:exported="false"></service>
+
         <activity android:name=".client.TrailManager"
             android:screenOrientation="portrait">
         </activity>
@@ -112,10 +119,7 @@
         <activity android:name=".Trails.EditMyTrail"
             android:screenOrientation="portrait">
         </activity>
-        <activity
-            android:name=".client.TrailActivity"
-            android:screenOrientation="portrait">
-        </activity>
+        <activity android:name=".client.ImageChooser.LocalPhotoImageSelector" android:screenOrientation="portrait"></activity>
         <activity android:name=".client.NavMenu.Profile.ProfilePageViewer"
             android:screenOrientation="portrait"></activity>
         <activity

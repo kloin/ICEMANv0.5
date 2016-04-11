@@ -13,6 +13,7 @@ import com.teamunemployment.breadcrumbs.R;
 import com.teamunemployment.breadcrumbs.client.ViewPagerAdapter;
 import com.teamunemployment.breadcrumbs.client.tabs.ExploreTabFragment;
 import com.teamunemployment.breadcrumbs.client.tabs.HomeTabFragment;
+import com.teamunemployment.breadcrumbs.client.tabs.LocalPhotos.LocalFoldersTab;
 import com.teamunemployment.breadcrumbs.client.tabs.LocalPhotosTab;
 import com.teamunemployment.breadcrumbs.client.tabs.TestFragment;
 
@@ -60,7 +61,7 @@ public class ImageChooserTabWrapper extends AppCompatActivity {
         ViewPagerAdapter adapter = new ViewPagerAdapter(getSupportFragmentManager());
         adapter.addFragment(new GridImageSelector(), "Uploaded");
       //  adapter.addFragment(new FacebookTab(), "Facebook");
-        adapter.addFragment(new LocalPhotosTab(), "Local");
+        adapter.addFragment(new LocalFoldersTab(), "Local");
         viewPager.setAdapter(adapter);
     }
 }

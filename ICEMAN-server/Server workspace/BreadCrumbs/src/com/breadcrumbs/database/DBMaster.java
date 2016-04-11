@@ -82,6 +82,7 @@ public class DBMaster {
 		User,
 		Trail,
 		Crumb,
+                Image,
 		Point,
 		Comment,
                 Event

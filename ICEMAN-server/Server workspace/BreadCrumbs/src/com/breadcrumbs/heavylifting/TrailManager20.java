@@ -29,6 +29,7 @@ public class TrailManager20 {
 
     private DBMaster dbm;
     
+    
     public TrailManager20() {
         dbm = DBMaster.GetAnInstanceOfDBMaster();
     }
@@ -98,8 +99,8 @@ public class TrailManager20 {
                         keys.next(); // Just to move through the list
 			String next = Integer.toString(count); //We cannot use next, because it seems to pull it out in some random order.
                         JSONObject node = metadataObject.getJSONObject(next);
-			String type = node.getString("type");
-                         if (type.equals("1")) {
+			int type = Integer.parseInt(node.getString("type"));
+                         if (type == StaticValues.GPS) {
                             String latitude = node.getString("latitude");
                             String longitude = node.getString("longitude");
                             Location location = new Location(latitude, longitude);
@@ -118,13 +119,14 @@ public class TrailManager20 {
                             currentLocation = new Location(Double.parseDouble(latitude), Double.parseDouble(longitude));
                             int transport_method = Integer.parseInt(transportMethod);
                             if (lastLocation != null) {
+                                
                                 eventPolyline = FetchPathBetweenEventsWithWaypoints(lastLocation, currentLocation, transport_method, gpsWaypoints);
                                 gpsWaypoints.clear();
                             }
 
                             // Create an event, and add it to our list of events
                             eventLocations.add(currentLocation);
-                            Event event = new Event(currentLocation, Integer.parseInt(type),eventPolyline, Integer.parseInt(eventId) ); 
+                            Event event = new Event(currentLocation, type,eventPolyline, Integer.parseInt(eventId) ); 
                             events.add(event);
                         }
                         count+= 1;
@@ -184,16 +186,40 @@ public class TrailManager20 {
                     encodedString = location1.toString() + "|" + location2.toString();
                 }
             } else if (transportMethod == StaticValues.WALKING) {
-                // Do simple 
-                isEncoded = 1;
-                // Build our own custom encoded polyline just by matching the points.
-                encodedString = location1.toString() + "|" + location2.toString();
+                
+                // Try do google first. It is unlikely that this will work most of the time but sometimes it will.
+                encodedString = null;//getGoogleWalkingDirections(location1, location2, waypoints);
+                if (encodedString == null) {
+                    // No path found, so we just add a simple polyline.
+                    isEncoded = 1;
+                    // Build our own custom encoded polyline just by matching the points.
+                    
+                    encodedString = location1.toString();// + "|" + location2.toString();
+                    for (int index = 0; index < waypoints.size(); index+=1) {
+                        encodedString = encodedString + "|" + waypoints.get(index).toString();
+                    }
+                    encodedString = encodedString + "|" + location2.toString();
+                }
+                
             }
             
             Polyline result = new Polyline(encodedString, 1,0, transportMethod, isEncoded);
             return result;
         }
-        
+        private String getGoogleWalkingDirections(Location location1, Location location2, List<Location> waypoints) {
+            String urlString = buildUrl(waypoints, location1, location2);
+            urlString = urlString.concat("&mode=walking");
+            JSONObject jsonResponse = fetchDirectionsFromGoogle(urlString);
+             if (jsonResponse.getJSONArray("routes").length() == 0) {
+                return null;
+            }
+            
+            JSONObject routes = jsonResponse.getJSONArray("routes").getJSONObject(0);
+            JSONObject overviewPolyline = routes.getJSONObject("overview_polyline");
+            String encodedPolyline = overviewPolyline.getString("points");
+            
+            return encodedPolyline;
+        } 
         private String getGoogleDirectionsWithNoWaypoints(Location location1, Location location2) {
             ArrayList<Location> locationList = new ArrayList();
             
@@ -267,6 +293,8 @@ public class TrailManager20 {
                     String longitudeString = Double.toString(longitude);
                     if (!first) {
                     	baseUrl = baseUrl.concat("|"+latitudeString + "," + longitudeString);
+                    } else {
+                        baseUrl = baseUrl.concat(latitudeString + "," + longitudeString);
                     }
                    
                     first = false;

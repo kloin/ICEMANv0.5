@@ -26,12 +26,14 @@ import com.teamunemployment.breadcrumbs.R;
 import com.teamunemployment.breadcrumbs.Network.ServiceProxy.UpdateViewElementWithProperty;
 import com.teamunemployment.breadcrumbs.caching.TextCaching;
 import com.bumptech.glide.Glide;
-import com.pkmmte.view.CircularImageView;
+import com.teamunemployment.breadcrumbs.client.ElementLoadingManager.TextViewLoadingManager;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+
+import de.hdodenhof.circleimageview.CircleImageView;
 
 /**
  * Created by aDirtyCanvas on 9/10/2015. This is the adapter for the edit trail cards. Pretty much just
@@ -100,12 +102,6 @@ public class EditTrailCardAdapter extends RecyclerView.Adapter<EditTrailCardAdap
         final String keyUrl = "TrailManagerGetBaseDetailsForATrail" + trailId;
         final String url = LoadBalancer.RequestServerAddress() + "/rest/TrailManager/GetBaseDetailsForATrail/" + trailId;
 
-        // Check cache for data that has this url
-        //final TextCachingInterface textRetriever = new TextCachingInterface(mContext);
-       //final String cacheData = textRetriever.FetchDataInStringFormat(keyUrl);
-        // Send our request
-        // If we dont have data we will need to fetch it. otherwise we can use the cache
-       // if (cacheData == null) {
             AsyncDataRetrieval fetchCardDetails = new AsyncDataRetrieval(url, new AsyncDataRetrieval.RequestListener() {
                 /*
                 ****** This is what an example data return should look like
@@ -128,9 +124,6 @@ public class EditTrailCardAdapter extends RecyclerView.Adapter<EditTrailCardAdap
                 }
             });
             fetchCardDetails.execute();
-       //}  // else {
-        //    BindObject(cacheData, card, trailId);
-        //}
 
         // Need to fetch description with the other data but icbf
         final String key = trailId + "Description";
@@ -150,10 +143,6 @@ public class EditTrailCardAdapter extends RecyclerView.Adapter<EditTrailCardAdap
                 }
             });
             fetchDescription.execute();
-        //} else {
-        //    TextView description = (TextView) card.findViewById(R.id.trail_description);
-        //    description.setText(cacheDescription);
-      //  }
 
         updateViews(trailId, card);
     }
@@ -262,7 +251,7 @@ public class EditTrailCardAdapter extends RecyclerView.Adapter<EditTrailCardAdap
             titleTextView.setText(title);
             belongsTo.setText(userName);
             viewsTextView.setText(views);
-            CircularImageView profilePic = (CircularImageView) card.findViewById(R.id.profilePicture);
+            CircleImageView profilePic = (CircleImageView) card.findViewById(R.id.profilePicture);
             setProfilePic(profilePic, trailsUserId);
             profilePic.setOnClickListener(getProfilePicClickListener(trailsUserId, userName));
 
@@ -290,39 +279,9 @@ public class EditTrailCardAdapter extends RecyclerView.Adapter<EditTrailCardAdap
         };
     }
 
-    private void setProfilePic(final CircularImageView profilePic, String trailUserId) {
-        //Try load
-        final String keyId = trailUserId+"CoverPhotoId";
-       // final TextCachingInterface textCachingInterface = new TextCachingInterface(mContext);
-
+    private void setProfilePic(final CircleImageView profilePic, String trailUserId) {
         String imageIdUrl = LoadBalancer.RequestServerAddress() + "/rest/login/GetPropertyFromNode/"+trailUserId+"/CoverPhotoId";
-
-       // String photoId = textCachingInterface.FetchDataInStringFormat(keyId);
-       // if (photoId == null|| photoId.equals("error")) {
-            AsyncDataRetrieval asyncDataRetrieval = new AsyncDataRetrieval(imageIdUrl, new AsyncDataRetrieval.RequestListener() {
-                @Override
-                public void onFinished(String result) {
-                    // Glide.with(mContext).load(LoadBalancer.RequestCurrentDataAddress() + "/images/"+result + ".jpg").centerCrop().crossFade().into(profilePic);
-                    AsyncFetchThumbnail fetchThumbnail = new AsyncFetchThumbnail(result, new AsyncFetchThumbnail.RequestListener() {
-                        @Override
-                        public void onFinished(Bitmap result) {
-                            profilePic.setImageBitmap(result);
-                        }
-                    });
-                    fetchThumbnail.execute();
-                   // textCachingInterface.CacheText(keyId, result);
-                }
-            });
-            asyncDataRetrieval.execute();
-       // } else {
-           // AsyncFetchThumbnail fetchThumbnail = new AsyncFetchThumbnail(photoId, new AsyncFetchThumbnail.RequestListener() {
-           //     @Override
-           //     public void onFinished(Bitmap result) {
-            //        profilePic.setImageBitmap(result);
-           //     }
-           // });
-           // fetchThumbnail.execute();
-        //}
+        TextViewLoadingManager.LoadCircularImageView(imageIdUrl, profilePic, mContext);
     }
 
     @Override

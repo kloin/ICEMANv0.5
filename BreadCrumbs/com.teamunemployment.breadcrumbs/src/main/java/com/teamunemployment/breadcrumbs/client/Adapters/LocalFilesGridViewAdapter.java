@@ -2,6 +2,7 @@ package com.teamunemployment.breadcrumbs.client.Adapters;
 
 import android.app.Activity;
 import android.content.Context;
+import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
@@ -25,7 +26,9 @@ import com.teamunemployment.breadcrumbs.client.Cards.ImageChooserGridViewAdapter
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
@@ -36,9 +39,10 @@ import java.util.Locale;
  * for things like trail cover photos and profile pictures.
  */
 public class LocalFilesGridViewAdapter extends ImageChooserGridViewAdapter {
-
+    private ArrayList<String> myDataSet;
     public LocalFilesGridViewAdapter(ArrayList<String> myDataset, Context context) {
         super(myDataset, context);
+        this.myDataSet = myDataset;
     }
 
     @Override
@@ -55,28 +59,13 @@ public class LocalFilesGridViewAdapter extends ImageChooserGridViewAdapter {
             final ImageView imageView = (ImageView) gridView
                     .findViewById(R.id.grid_image);
             imageView.setImageBitmap(null);
-            final Uri uri = Uri.parse("file://" + url);
 
-            // Need to do this shit in a thread
-            new Thread(new Runnable() {
-                public void run() {
+            Uri images = MediaStore.Images.Media.EXTERNAL_CONTENT_URI;
 
-                        final BitmapFactory.Options thumbOpts = new BitmapFactory.Options();
-                        thumbOpts.inSampleSize = 2;
+            final Uri uri = Uri.parse(images + "/" + myDataSet.get(position));
+            doImageWork(uri, imageView);
 
-                        final Bitmap adjustedBitmap = correctOrientation(url);
-                        // bm = Bitmap.createScaledBitmap(bm, 120, 120, false);
-                        Activity contextAct = (Activity) context;
-                        contextAct.runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                imageView.setImageBitmap(adjustedBitmap);
-                                imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
-                            }
-                        });
 
-                }
-            }).start();
 
             //Glide.with(context).load(url).centerCrop().placeholder(Color.GRAY).crossFade().into(imageView);
             // Glide.with(context).load("http://placehold.it/350x150").centerCrop().placeholder(Color.GRAY).crossFade().into(imageView);
@@ -87,24 +76,10 @@ public class LocalFilesGridViewAdapter extends ImageChooserGridViewAdapter {
                     .findViewById(R.id.grid_image);
             imageView.setImageBitmap(null);
 
-            final Uri uri = Uri.parse("file://" + url);
+            Uri images = MediaStore.Images.Media.EXTERNAL_CONTENT_URI;
 
-            new Thread(new Runnable() {
-                public void run() {
-                    BitmapFactory.Options thumbOpts = new BitmapFactory.Options();
-                    thumbOpts.inSampleSize = 5;
-                     final Bitmap bm2 = correctOrientation(url);
-                    Activity contextAct = (Activity) context;
-                    contextAct.runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            imageView.setImageBitmap(bm2);
-                            imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
-                        }
-                    });
-                }
-
-            }).start();
+            final Uri uri = Uri.parse(images + "/" + myDataSet.get(position));
+            doImageWork(uri, imageView);
 
             //Glide.with(context).load("http://placehold.it/350x150").centerCrop().placeholder(Color.GRAY).crossFade().into(imageView);
             //Glide.with(context).load(url).centerCrop().placeholder(Color.GRAY).crossFade().into(imageView);
@@ -112,18 +87,18 @@ public class LocalFilesGridViewAdapter extends ImageChooserGridViewAdapter {
         return gridView;
     }
 
-    private Bitmap correctOrientation(String url) {
+    private Bitmap correctOrientation(Uri uri) {
         try {
             final BitmapFactory.Options thumbOpts = new BitmapFactory.Options();
             thumbOpts.inSampleSize = 3;
-            Bitmap bm = BitmapFactory.decodeFile(url, thumbOpts);
-            ExifInterface exif = null;
-            exif = new ExifInterface(url);
-            int rotation = exif.getAttributeInt(ExifInterface.TAG_ORIENTATION, ExifInterface.ORIENTATION_NORMAL);
-            int rotationInDegrees = Utils.exifToDegrees(rotation);
+            Bitmap bm = getThumbnail(uri);
+
+            // NEED TO TEST THIS ON PRE V19
+            int rotation = getOrientation(context, uri);
+            //int rotationInDegrees = Utils.exifToDegrees(rotation);
             Matrix matrix = new Matrix();
-            if (rotation != 0f) {
-                matrix.preRotate(rotationInDegrees);
+            if (rotation != 0) {
+                matrix.preRotate(rotation);
             }
             final Bitmap adjustedBitmap = Bitmap.createBitmap(bm, 0, 0, bm.getWidth(), bm.getHeight(), matrix, true);
             return adjustedBitmap;
@@ -131,5 +106,76 @@ public class LocalFilesGridViewAdapter extends ImageChooserGridViewAdapter {
             e.printStackTrace();
         }
         return null;
+    }
+
+    public int getOrientation(Context context, Uri photoUri) {
+    /* it's on the external media. */
+        Cursor cursor = context.getContentResolver().query(photoUri,
+                new String[] { MediaStore.Images.ImageColumns.ORIENTATION }, null, null, null);
+
+        int result = -1;
+        if (null != cursor) {
+            if (cursor.moveToFirst()) {
+                result = cursor.getInt(0);
+            }
+            cursor.close();
+        }
+
+        return result;
+    }
+
+    private void doImageWork(final Uri uri, final ImageView imageView) {
+        // Need to do this shit in a thread
+        new Thread(new Runnable() {
+            public void run() {
+
+                final BitmapFactory.Options thumbOpts = new BitmapFactory.Options();
+                thumbOpts.inSampleSize = 2;
+
+                final Bitmap adjustedBitmap = correctOrientation(uri);
+                //final Bitmap bm= Bitmap.createScaledBitmap(adjustedBitmap, 120, 120, false);
+                Activity contextAct = (Activity) context;
+                contextAct.runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+
+                        imageView.setImageBitmap(adjustedBitmap);
+                        imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
+                    }
+                });
+            }
+        }).start();
+    }
+
+    private Bitmap getThumbnail(Uri uri) throws FileNotFoundException, IOException{
+        InputStream input = context.getContentResolver().openInputStream(uri);
+
+        BitmapFactory.Options onlyBoundsOptions = new BitmapFactory.Options();
+        onlyBoundsOptions.inJustDecodeBounds = true;
+        onlyBoundsOptions.inDither=true;//optional
+        onlyBoundsOptions.inPreferredConfig=Bitmap.Config.ARGB_8888;//optional
+        BitmapFactory.decodeStream(input, null, onlyBoundsOptions);
+        input.close();
+        if ((onlyBoundsOptions.outWidth == -1) || (onlyBoundsOptions.outHeight == -1))
+            return null;
+
+        int originalSize = (onlyBoundsOptions.outHeight > onlyBoundsOptions.outWidth) ? onlyBoundsOptions.outHeight : onlyBoundsOptions.outWidth;
+
+        double ratio = (originalSize > 240) ? (originalSize / 240) : 1.0;
+
+        BitmapFactory.Options bitmapOptions = new BitmapFactory.Options();
+        bitmapOptions.inSampleSize = getPowerOfTwoForSampleRatio(ratio);
+        bitmapOptions.inDither=true;//optional
+        bitmapOptions.inPreferredConfig=Bitmap.Config.ARGB_8888;//optional
+        input = context.getContentResolver().openInputStream(uri);
+        Bitmap bitmap = BitmapFactory.decodeStream(input, null, bitmapOptions);
+        input.close();
+        return bitmap;
+    }
+
+    private int getPowerOfTwoForSampleRatio(double ratio){
+        int k = Integer.highestOneBit((int)Math.floor(ratio));
+        if(k==0) return 1;
+        else return k;
     }
 }

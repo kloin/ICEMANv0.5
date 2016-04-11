@@ -131,7 +131,7 @@ public class PathSenseActivityManager {
     private static class InternalActivityUpdateReceiver extends BroadcastReceiver {
         PathSenseActivityManager mActivity;
 
-        //
+        // Recieve updataes on a users activity
         InternalActivityUpdateReceiver(PathSenseActivityManager activity) {
             mActivity = activity;
         }
@@ -175,10 +175,10 @@ public class PathSenseActivityManager {
         }
     }
 
+    // Handler for activity changes
     private static class InternalHandler extends Handler {
         PathSenseActivityManager mActivity;
 
-        //
         InternalHandler(PathSenseActivityManager activity) {
             mActivity = activity;
         }
@@ -315,7 +315,7 @@ public class PathSenseActivityManager {
 
     // Purpose of this method is to check whether we are at rest, and if so reduce battery consumption by pausing services.
     public boolean checkForRestZone(String activity, SharedPreferences preferences) {
-        final long minimumTimeInMillis = 180000;
+        final long minimumTimeInMillis = 180000; // 3 minitues
         LocalTime localTime = LocalTime.now();
 
         //if (localTime.getHourOfDay() > 0 || localTime.getHourOfDay() < 6) {
@@ -400,7 +400,6 @@ public class PathSenseActivityManager {
         String placeId = "0";
         String timeStamp = DateTime.now().toString();
         dbc.SaveRestZone(trailId, eventId, latitude, longitude, placeId, timeStamp);
-        // This is fucking stupid, but i dont want to go through everything and change it just yet.
 
         eventId += 1;
         preferences.edit().putInt("EVENTID", eventId);
@@ -412,13 +411,8 @@ public class PathSenseActivityManager {
         public void onLocationChanged(Location location) {
             SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(mContext);
             saveRestPoint(preferences, location);
+            mLocationProvider.RemoveGPSUpdates();
             createGeofence(location);
-            NotificationManager notificationManager = (NotificationManager) mContext.getSystemService(mContext.NOTIFICATION_SERVICE);
-            NotificationCompat.Builder noti = new NotificationCompat.Builder(mContext);
-            noti.setContentTitle("BreadCrumbs");
-            noti.setContentText("Saved rest Zone");
-            noti.setSmallIcon(R.drawable.bc64);
-            notificationManager.notify(1234, noti.build());
         }
 
         @Override

@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout  xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:card_view="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/my_divider">
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:background="@color/ColorPrimary"
+        android:layout_height="?attr/actionBarSize">
+
+    </RelativeLayout>
+    <ImageView
+        android:id="@+id/back_button"
+        android:src="@drawable/ic_action_back"
+        android:layout_margin="15dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+    <TextView
+        android:id="@+id/create_trail_header"
+        android:text="Create Trail"
+        android:layout_marginLeft="60dp"
+        android:textSize="24sp"
+        android:textColor="@color/white"
+        android:layout_width="wrap_content"
+        android:gravity="center"
+        android:layout_height="?attr/actionBarSize" />
+   <RelativeLayout
+       android:layout_marginTop="?attr/actionBarSize"
+       android:background="@color/white"
+       android:layout_width="match_parent"
+       android:layout_height="wrap_content">
+       <TextView
+           android:id="@+id/new_trail_prompt"
+           android:layout_width="match_parent"
+           android:layout_height="wrap_content"
+           android:textSize="14sp"
+           android:layout_margin="20dp"
+           android:text="Create a trail to record information about your journey as you travel."/>
+       <TextView
+           android:id="@+id/details_header"
+           android:layout_below="@+id/new_trail_prompt"
+           android:text="DETAILS"
+           android:textSize="16sp"
+           android:textColor="@color/ColorPrimary"
+           android:layout_margin="20dp"
+           android:layout_width="wrap_content"
+           android:layout_height="wrap_content" />
+       <EditText
+           android:layout_width="match_parent"
+           android:id="@+id/title_edit"
+           android:inputType="textCapSentences"
+           style="@style/CodeFont"
+           android:layout_below="@+id/details_header"
+           android:hint="Trail Title"
+           android:textSize="14sp"
+           android:layout_marginBottom="10dp"
+           android:layout_marginRight="20dp"
+           android:layout_marginLeft="17dp"
+           android:layout_height="wrap_content" />
+       <android.support.v7.widget.SwitchCompat
+           android:id="@+id/trail_privacy_switch"
+           android:layout_width="match_parent"
+           android:layout_height="wrap_content"
+           android:textColor="@color/my_secondary_text"
+           android:layout_marginRight="20dp"
+           android:textSize="14sp"
+           android:layout_marginLeft="20dp"
+           android:layout_marginBottom="20dp"
+           android:layout_below="@id/title_edit"
+           android:text="Private Trail"/>
+       <TextView
+           android:id="@+id/save_trail_button"
+           android:layout_below="@id/trail_privacy_switch"
+           android:layout_alignParentRight="true"
+           android:textColor="@color/ColorPrimary"
+           android:layout_margin="20dp"
+           android:textSize="16sp"
+           android:padding="10dp"
+           android:text="SAVE"
+           android:layout_width="wrap_content"
+           android:layout_height="wrap_content" />
+       <EditText
+           android:layout_width="match_parent"
+           android:hint="TAGS"
+           android:textSize="14sp"
+           android:visibility="gone"
+           android:textColor="@color/my_secondary_text"
+            android:layout_below="@+id/title_edit"
+           android:layout_marginRight="20dp"
+           android:layout_marginLeft="20dp"
+           android:layout_height="wrap_content" />
+   </RelativeLayout>
+</FrameLayout>

@@ -58,7 +58,7 @@ public class EditMyTrail extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.trail_editor_2);
         context = this;
-        // setUpButtonListeners();
+
         Bundle extras = getIntent().getExtras();
         if (extras != null) {
             trailId = extras.getString("TrailId");
@@ -67,12 +67,10 @@ public class EditMyTrail extends AppCompatActivity {
             trailId = PreferenceManager.getDefaultSharedPreferences(context).getString("TRAILID", "-1");
         }
 
-      //  setUpFields();
         setUpHeaderPhoto(trailId);
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-
         crumbsArray = getIntent().getStringArrayListExtra("IdArray");
         // Fetch the crumbs, then build the
         setUpCollapsableToolbar("Trail Editor");
@@ -91,7 +89,6 @@ public class EditMyTrail extends AppCompatActivity {
         //setToolbarTitle(collapsingToolbarLayout, trailId);
         collapsingToolbarLayout.setExpandedTitleTextAppearance(R.style.CodeFontWhite);
         collapsingToolbarLayout.setCollapsedTitleTextAppearance(R.style.HeaderFont);
-
     }
 
     private void setBackButtonListener() {
@@ -115,6 +112,7 @@ public class EditMyTrail extends AppCompatActivity {
             }
         });
     }
+
     private void loadCrumbs() {
         String url = LoadBalancer.RequestServerAddress() + "/rest/TrailManager/GetAllSavedCrumbIdsForATrail/"+trailId;
         url = url.replaceAll(" ", "%20");
@@ -128,8 +126,6 @@ public class EditMyTrail extends AppCompatActivity {
                     // Get our arrayList for the card adapter
                     JSONObject jsonResult = new JSONObject(result);
                     ArrayList<String> ids = convertJSONToArrayList(jsonResult);
-                    //globalContainer.SetTrailIdsCurrentlyDisplayed(ids);
-                    // Create the adapter, and set it to the recyclerView so that it displays
                     ids.add(0, trailId); // Add the trail Id to the base, so that we can load the trailDetails for the first card.
                     mAdapter = new CrumbCardEditAdapter(ids, context);
                     mRecyclerView.setAdapter(mAdapter);
@@ -253,6 +249,7 @@ public class EditMyTrail extends AppCompatActivity {
         UpdateViewElementWithProperty viewElementWithProperty = new UpdateViewElementWithProperty();
         TextView textView = (TextView) findViewById(R.id.profile_select_prompt);
         viewElementWithProperty.UpdateImageViewElementAndHidePlaceholder(header, crumbId, "CoverPhotoId", context, textView);
+        assert header != null;
         header.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

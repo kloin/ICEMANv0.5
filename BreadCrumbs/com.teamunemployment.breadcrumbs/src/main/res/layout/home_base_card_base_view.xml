@@ -11,7 +11,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="5dp"
-        card_view:cardCornerRadius="2dp"
+        card_view:cardCornerRadius="1dp"
         card_view:cardElevation="2dp">
         <LinearLayout
             android:orientation="vertical"
@@ -20,12 +20,14 @@
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="72dp">
-            <com.pkmmte.view.CircularImageView
+            <de.hdodenhof.circleimageview.CircleImageView
+                xmlns:app="http://schemas.android.com/apk/res-auto"
                 android:id="@+id/profilePicture"
                 android:layout_width="50dp"
                 android:layout_height="50dp"
                 android:layout_margin="12dp"
                 android:src="@drawable/profile"/>
+
 
             <TextView
                 android:id="@+id/belongs_to"
@@ -56,7 +58,7 @@
                 fancy:fb_focusColor="@color/ColorPrimaryLight"
                 fancy:fb_fontIconSize="1dp"
                 fancy:fb_iconPosition="right"
-                fancy:fb_radius="5dp"
+                fancy:fb_radius="1dp"
                 fancy:fb_text="FOLLOW"
                 fancy:fb_textSize="14sp"
                 fancy:fb_textColor="@color/ColorPrimary"/>

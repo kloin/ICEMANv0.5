@@ -247,7 +247,7 @@ public class SubscriptionManagerTab extends android.support.v4.app.Fragment {
         requestHandler = new HTTPRequestHandler();
 
         //Create a base object, which we will attatch to the storyboard, and later manipulate
-        final View sbo = inflater.inflate(R.layout.story_board_item_light, null);
+        final View sbo = inflater.inflate(R.layout.home_base_card_base_view, null);
         final TextView title = (TextView) sbo.findViewById(R.id.Title);
         title.setText(storyTitle);
         title.setTag(trailId);
