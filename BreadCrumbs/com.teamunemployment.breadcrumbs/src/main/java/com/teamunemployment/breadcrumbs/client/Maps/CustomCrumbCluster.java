@@ -11,6 +11,8 @@ import android.support.v4.content.ContextCompat;
 import android.view.View;
 import android.widget.ImageView;
 
+import com.google.maps.android.clustering.algo.Algorithm;
+import com.google.maps.android.clustering.algo.NonHierarchicalDistanceBasedAlgorithm;
 import com.teamunemployment.breadcrumbs.R;
 import com.teamunemployment.breadcrumbs.Network.ServiceProxy.UpdateViewElementWithProperty;
 import com.google.android.gms.maps.GoogleMap;
@@ -55,6 +57,7 @@ public class CustomCrumbCluster extends DefaultClusterRenderer<DisplayCrumb> {
         // Do more custom stuff here
     }
 
+
     @Override
     protected void onBeforeClusterItemRendered(DisplayCrumb crumb, MarkerOptions markerOptions) {
         // Draw a single person.
@@ -70,7 +73,7 @@ public class CustomCrumbCluster extends DefaultClusterRenderer<DisplayCrumb> {
     @Override
     protected void onBeforeClusterRendered(Cluster<DisplayCrumb> cluster, MarkerOptions markerOptions) {
         super.onBeforeClusterRendered(cluster, markerOptions);
-
+       // markerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_album_black_24dp));
         // create a background process that alternates showing the images
     }
 
@@ -78,15 +81,17 @@ public class CustomCrumbCluster extends DefaultClusterRenderer<DisplayCrumb> {
     protected void onClusterItemRendered(DisplayCrumb clusterItem, Marker marker) {
         super.onClusterItemRendered(clusterItem, marker);
         //circularImageView.setImageResource(R.drawable.background3);
+
     }
 
-    // Make the background white
+    // Make the background white (for the single images)
     private LayerDrawable makeClusterBackground() {
        // Drawable drawable = ContextCompat.getDrawable(context.getApplicationContext(),R.drawable.background);
        // drawable.setColorFilter(0x333 , PorterDuff.Mode.DARKEN);
         UpdateViewElementWithProperty updateViewElementWithProperty = new UpdateViewElementWithProperty();
         //circularImageView.setImageResource(R.drawable.background2);
         ShapeDrawable mColoredCircleBackground = new ShapeDrawable(new OvalShape());
+        mColoredCircleBackground.getPaint().setColor(0x009688);
         ShapeDrawable outline = new ShapeDrawable(new OvalShape());
         //updateViewElementWithProperty.UpdateCircularViewWithUrl(circularImageView, LoadBalancer.RequestCurrentDataAddress() + "/images/"+crumbId+".jpg");
        // circularImageView.setImageResource(R.drawable.background2);
@@ -102,5 +107,6 @@ public class CustomCrumbCluster extends DefaultClusterRenderer<DisplayCrumb> {
         // Always render clusters.
         return cluster.getSize() > 1;
     }
+
 
 }

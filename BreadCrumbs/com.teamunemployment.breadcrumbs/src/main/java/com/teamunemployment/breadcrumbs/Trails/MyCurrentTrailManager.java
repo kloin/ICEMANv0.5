@@ -68,6 +68,7 @@ public class MyCurrentTrailManager extends Activity {
     private static MyCurrentTrailManager currentTrailManager;
     private MapDisplayManager mapDisplayManager;
     private float currentZoom = -1;
+    private boolean alreadyFocused = false;
     /*
     Display a single trail and its crumbs
     */
@@ -140,36 +141,19 @@ public class MyCurrentTrailManager extends Activity {
                 // Get an iterator of all the event nodes.
                 Iterator<String> keys = jsonResult.keys();
                 while (keys.hasNext()) {
-
                     String nodeString = jsonResult.getString(keys.next());
                     JSONObject node = new JSONObject(nodeString);
                     drawOnMap(node);
                     drawNodeOnMap(node);
                 }
+                // Get fisrt object and display it when we are ready to animate over the photos.
             }
         });
         clientRequestProxy.execute();
+    }
 
-//        String fetchTrailsUrl = MessageFormat.format("{0}/rest/TrailManager/GetAllTrailPoints/{1}",
-//                LoadBalancer.RequestServerAddress(),
-//                trailId);
-//
-//        // Get trailPoints
-//        clientRequestProxy  = new AsyncDataRetrieval(fetchTrailsUrl, new AsyncDataRetrieval.RequestListener() {
-//            /*
-//             * Override for the
-//             */
-//            @Override
-//            public void onFinished(String result) {
-//                GlobalContainer.GetContainerInstance().SetTrailsJSON(result);
-//                DisplayTrailOnMap(result);
-//            }
-//        });
-//        clientRequestProxy.execute();
-       /* HTTPRequestHandler requestHandler = new HTTPRequestHandler();
-        String trailPointsJSONString = requestHandler.SendSimpleHttpRequestAndReturnString(fetchTrailsUrl);*/
-
-        // Draw trailPoints onto the map
+    private void setMapFocus(LatLng lastPoint) {
+        map.animateCamera(CameraUpdateFactory.newLatLngZoom(lastPoint, 10.0f));
     }
 
     private void drawNodeOnMap(JSONObject node) throws JSONException {
@@ -183,7 +167,7 @@ public class MyCurrentTrailManager extends Activity {
             LatLng latLng = new LatLng(Double.parseDouble(latitude), Double.parseDouble(longitude));
             Circle circle = map.addCircle(new CircleOptions()
                     .center(latLng)
-                    .radius(500)
+                    .radius(100)
                     .strokeColor(Color.parseColor("#E57373"))
                     .fillColor(Color.parseColor("#E57373")));
         }
@@ -214,7 +198,6 @@ public class MyCurrentTrailManager extends Activity {
             } catch(NumberFormatException ex) {
                 ex.printStackTrace();
             }
-
         }
         return listOfPoints;
     }
@@ -226,8 +209,11 @@ public class MyCurrentTrailManager extends Activity {
             options.add(point);
         }
         map.addPolyline(options);
+
+
     }
 
+    // DOnt think this is used anymroe.
     public void DisplayTrailOnMap(String trailsJSONString) {
         JSONObject trailJSON = null;
         try {
@@ -240,46 +226,7 @@ public class MyCurrentTrailManager extends Activity {
             int frontindex = 1;
             String backNode = "0";
             String frontNode = "1";
-            /*while (backindex < length) {
-                String key = nodeKeys.next();
-                // Get node 0
-                // Get node 1
-                // increase counters as we go
-                String base = "Node" + Integer.toString(backindex);
-                JSONObject pointNodeBase = trailJSON.getJSONObject(base);
-                // Get the next point in the trail.
-                String next = "Node"+pointNodeBase.getString("next");
-                // Draw base point on the map
-                // Get the node we are drawing to
-                JSONObject pointNodeHead = new JSONObject(trailJSON.getString(next));
-
-                // Get the variable for base
-                Double baseLatitude = pointNodeBase.getDouble("latitude");
-                Double baseLongitude =  pointNodeBase.getDouble("longitude");
-
-                // Get the variables for the head.
-                Double headLatitude = pointNodeHead.getDouble("latitude");
-                Double headLongitude = pointNodeHead.getDouble("longitude");
-
-                // Draw line from base to head
-                Bitmap bm = BitmapFactory.decodeResource(context.getResources(),
-                        R.drawable.pinksquare);
-
-                bm = getCircleBitmap(bm);
-                map.addMarker(new MarkerOptions()
-                        .position(new LatLng(headLatitude, headLongitude))
-                        .icon(BitmapDescriptorFactory.fromBitmap(bm)));
-
-                map.addPolyline(new PolylineOptions().add(new LatLng(baseLatitude, baseLongitude),
-                        new LatLng(headLatitude, headLongitude)).width(10).color(Color.parseColor("#808080"))).setZIndex(1);
-
-                // move to next pointers. This will throw an exception on the last one but it will be
-                // caught. Not too much we can do.
-                backindex += 1;
-                //frontNode = pointNodeHead.getString("next");
-            }*/
-            List<LatLng> listOfPoints = PolyUtil.decode("deiqGmeoe_@bJxGjAeUlnBsdAdpA~MhCy[bo@i_@lkBa|Bz\\qc@lKapAvRoiDvfBkmHtl@owDrd@ufBf^oiAnP{@|WhLfUySiGkiAehAlMw~@l\\}Wya@ge@_Fod@spAagBibAx@oy@fm@ep@leAsq@jw@skB`a@_w@`y@eWrp@q^|_@ebBoQefCoxAwbA}d@yiBdDcAwIvN{LaVcg@w[}bCweByeDqtBuaFstCucHquEaqAyg@avAsHkt@qfAkaB}hAuoAyq@uf@al@o_AeTqcAvo@ejE|_@g}@pu@ko@bsA{QngBzI`sAqM~y@ycBzpAmt@pyAcv@bpDc{@~zAs]zdAub@`~AydAgjBgsAch@ql@kc@ig@qwAujByzAmqAmy@apBum@}YxTkaAqh@_`C~w@qtAlS}aBw`@mfCwi@qyB~Ju~@vH{iAoLm}AlOqmAp{B_XxsBmcAp{AkVnp@od@nHmuAkKieDcFi_Dfp@wl@bw@yr@mNujAcy@{cAye@opA{i@}zCwo@{qAlKacAog@{p@udAgcBegAwt@oUaxB}vAoxAee@_|@shAaq@q_@asAss@yZalB}kBiiE}dA}|@yeAaVkqCekCqpAat@sf@_tAwtBrd@a`@Rcg@mWyo@tpAyPjn@gl@}B{m@qmA{h@wl@oMvR{a@yh@ePkk@mv@g}@io@c`Auq@gi@yQiEiJ~QmKl[Ubf@nHlqBaGrr@u~@~nAoi@b`Aw@nd@tMp|CoKbdBag@jw@_f@|s@{LdbBtz@jcDzfA~bAnc@pt@~f@tmAiD~y@{I~_CkLfnBmZlqAe|@d|@sd@xTwRyOmHnXggAxzEc^ht@cHlqAgiEhmFiwBpr@}j@{`@yf@hJkj@ynAyfBwHgqAq`@w}D}sHoP{`Agj@iJ_cCabC{i@an@kWikA}oAk_B}_@ugABmz@wP|ByL{ToTyHgJsk@pKsPiWFmg@mu@cBqO|i@yKzp@mlAiAc`@i`AyeBzdAkxCxZipAtqAsoArkAax@fm@}c@|C{g@zTm[pIegAei@maB{iBowCkd@wXk_CodBoFee@ms@a[sUqr@aB_cGlYugC}iB_}CqmCm~EsaBeiDe}A~J}v@we@__DkCcp@q`@_n@sxBegAcgB}AkvBvKiyAkm@wsAmr@mIgSofAjFgnDoJemEhZebDny@ayC}`@abAceCszB}t@iKcl@eAcv@cwBiy@slAy~AqLam@iC{`@sw@`GocCfMqjBjw@adH{d@_e@wz@uoBqe@uxB_e@ij@");
-            ArrayList<LatLng> list = new ArrayList<>();
+              ArrayList<LatLng> list = new ArrayList<>();
             int counter = 0;
             while (counter < length) {
 
@@ -295,14 +242,10 @@ public class MyCurrentTrailManager extends Activity {
                 } //#E57373 , #00796B, #B71C1C #004D40
             }
             PolylineOptions options = new PolylineOptions().width(15).color(Color.parseColor("#E57373")).geodesic(true);
-            for (int z = 0; z < listOfPoints.size(); z++) {
-                LatLng point = listOfPoints.get(z);
-                options.add(point);
-            }
+
             map.addPolyline(options);
 
-            //CameraPosition cameraPosition;
-            //cameraPosition = new CameraPosition.Builder().target(new LatLng(41.020811, 29.046113)).zoom(15).build();
+            // navigate to base of polyline.
 
             //map.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
         } catch (JSONException e) {
@@ -344,13 +287,16 @@ public class MyCurrentTrailManager extends Activity {
                     // Now that we are done, we want to set the focus to the last crumb added
                     Double Latitude = next.getDouble("Latitude");
                     Double Longitude = next.getDouble("Longitude");
+
+                    CameraPosition position = new CameraPosition(new LatLng(Latitude, Longitude), 10, 72, 0);
+                    CameraUpdate first = CameraUpdateFactory.newCameraPosition(position);
+
                     CameraUpdate center=
                             CameraUpdateFactory.newLatLng(new LatLng(Latitude,
                                     Longitude));
                     CameraUpdate zoom=CameraUpdateFactory.zoomTo(12);
                     // Move/animate camera to location
-
-                    map.moveCamera(center);
+                    map.moveCamera(first);
                     map.animateCamera(zoom);
 
                 } catch (JSONException e) {
@@ -377,10 +323,7 @@ public class MyCurrentTrailManager extends Activity {
         // I am doing this after rather than before because if a trail fails, and I want to retry in
         // the background.
         SendCreateTrailRequest(trailTitle);
-        // Start listening
-        //locationrequest = LocationRequest.create();
-        //locationrequest.setInterval(10000);
-       // locationclient.requestLocationUpdates(locationrequest, mPendingIntent);
+
         return true;
     }
 
@@ -466,6 +409,12 @@ public class MyCurrentTrailManager extends Activity {
         bitmap.recycle();
 
         return output;
+    }
+
+    public void DrawPersonalTrailOnMap() {
+        // Need to fetch all our metadata and save it to the server. Then we need to get all the
+        // photos on the database and display it on the map
+
     }
 
 

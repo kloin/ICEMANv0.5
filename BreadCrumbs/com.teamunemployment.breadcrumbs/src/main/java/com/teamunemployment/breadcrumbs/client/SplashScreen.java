@@ -33,6 +33,7 @@ public class SplashScreen extends Activity {
                 if (result == null) {
                     return; // not sure how this is happening, but fuck you anyway it will stop here.
                 }
+
                 if (!result.equals("0") && !result.equals("")) {
                     PreferenceManager.getDefaultSharedPreferences(context).edit().putString("TRAILID", result).commit();
                 }

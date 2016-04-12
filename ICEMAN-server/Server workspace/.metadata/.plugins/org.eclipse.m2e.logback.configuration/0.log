@@ -11897,3 +11897,16 @@ java.io.InvalidClassException: org.eclipse.m2e.core.internal.project.registry.Ba
 2016-04-04 20:45:02,201 [Worker-148] INFO  o.e.m.c.i.embedder.EclipseLogger - Copying 0 resource
 2016-04-04 20:45:02,204 [Worker-148] WARN  o.e.m.c.i.embedder.EclipseLogger - Using platform encoding (Cp1252 actually) to copy filtered resources, i.e. build is platform dependent!
 2016-04-04 20:45:02,217 [Worker-148] INFO  o.e.m.c.i.embedder.EclipseLogger - skip non existing resourceDirectory C:\Users\jek40\Desktop\ICEMANv0.5\ICEMAN-server\Server workspace\BreadCrumbs\src\test\resources
+2016-04-11 14:09:20,491 [Worker-1] INFO  o.e.m.c.i.l.LifecycleMappingFactory - Using org.maven.ide.eclipse.wtp.WarLifecycleMapping lifecycle mapping for MavenProject: BreadCrumbs:BreadCrumbs:1 @ C:\Users\jek40\Desktop\ICEMANv0.5\ICEMAN-server\Server workspace\BreadCrumbs\pom.xml.
+2016-04-11 14:09:24,878 [Worker-1] WARN  o.e.m.c.i.embedder.EclipseLogger - Using platform encoding (Cp1252 actually) to copy filtered resources, i.e. build is platform dependent!
+2016-04-11 14:09:24,891 [Worker-1] INFO  o.e.m.c.i.embedder.EclipseLogger - Copying 0 resource
+2016-04-11 14:09:24,894 [Worker-1] WARN  o.e.m.c.i.embedder.EclipseLogger - Using platform encoding (Cp1252 actually) to copy filtered resources, i.e. build is platform dependent!
+2016-04-11 14:09:24,899 [Worker-1] INFO  o.e.m.c.i.embedder.EclipseLogger - skip non existing resourceDirectory C:\Users\jek40\Desktop\ICEMANv0.5\ICEMAN-server\Server workspace\BreadCrumbs\src\test\resources
+2016-04-11 14:46:11,355 [Worker-2] WARN  o.e.m.c.i.embedder.EclipseLogger - Using platform encoding (Cp1252 actually) to copy filtered resources, i.e. build is platform dependent!
+2016-04-11 14:46:11,376 [Worker-2] INFO  o.e.m.c.i.embedder.EclipseLogger - Copying 0 resource
+2016-04-11 14:46:11,379 [Worker-2] WARN  o.e.m.c.i.embedder.EclipseLogger - Using platform encoding (Cp1252 actually) to copy filtered resources, i.e. build is platform dependent!
+2016-04-11 14:46:11,385 [Worker-2] INFO  o.e.m.c.i.embedder.EclipseLogger - skip non existing resourceDirectory C:\Users\jek40\Desktop\ICEMANv0.5\ICEMAN-server\Server workspace\BreadCrumbs\src\test\resources
+2016-04-12 11:39:19,061 [Worker-2] WARN  o.e.m.c.i.embedder.EclipseLogger - Using platform encoding (Cp1252 actually) to copy filtered resources, i.e. build is platform dependent!
+2016-04-12 11:39:19,080 [Worker-2] INFO  o.e.m.c.i.embedder.EclipseLogger - Copying 0 resource
+2016-04-12 11:39:19,083 [Worker-2] WARN  o.e.m.c.i.embedder.EclipseLogger - Using platform encoding (Cp1252 actually) to copy filtered resources, i.e. build is platform dependent!
+2016-04-12 11:39:19,088 [Worker-2] INFO  o.e.m.c.i.embedder.EclipseLogger - skip non existing resourceDirectory C:\Users\jek40\Desktop\ICEMANv0.5\ICEMAN-server\Server workspace\BreadCrumbs\src\test\resources

@@ -197,13 +197,21 @@ public class RESTTrailManager {
     }
     
     @GET
-    @Path("/FetchMetadata/{TrailId}")
-    public String FetchMetadata(@PathParam("TrailId") String trailId) {
-    
-            TrailManager20 tm = new TrailManager20();
-            return tm.FetchMetadataFromTrail(trailId);
+    @Path("/SaveMetadataAndReturnIt/{Metadata}/{TrailId}")
+    public String SaveMetadataAndReturnIt(@PathParam("Metadata") String metadataJSON, @PathParam("TrailId") String trailId) {
+        TrailManager20 trailManager = new TrailManager20();
+        JSONObject jsonObject = new JSONObject(metadataJSON);
+    	TrailMetadata metadata = trailManager.ProcessMetadata(jsonObject.getJSONObject("Events"));
+        trailManager.SaveMetadata(metadata, Integer.parseInt(trailId));
+        return trailManager.FetchMetadataFromTrail(trailId);
     }
     
+    @GET
+    @Path("/FetchMetadata/{TrailId}")
+    public String FetchMetadata(@PathParam("TrailId") String trailId) {
+        TrailManager20 tm = new TrailManager20();
+        return tm.FetchMetadataFromTrail(trailId);
+    }
     
     @GET
     @Path("/SaveRestZones/{zones}/{trailId}")

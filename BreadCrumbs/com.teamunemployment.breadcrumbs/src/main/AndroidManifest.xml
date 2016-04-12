@@ -149,6 +149,7 @@
         <activity android:name=".client.ImageChooser.ImageChooserTabWrapper"
             android:screenOrientation="portrait">
         </activity>
+        <activity android:name=".client.Maps.MapHostBase" android:screenOrientation="portrait"></activity>
         <activity android:name="com.facebook.FacebookActivity"
             android:configChanges=
                 "keyboard|keyboardHidden|screenLayout|screenSize|orientation"

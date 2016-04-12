@@ -242,10 +242,11 @@ public class CreateTrail extends AppCompatActivity implements DatePickerDialog.D
             return;
         }
 
-        String trailDescription = trailDescriptionEdit.getText().toString();
-        if (trailDescription.isEmpty()) {
-            trailDescription = " ";
-        }
+       // String trailDescription = trailDescriptionEdit.getText().toString();
+        //if (trailDescription.isEmpty()) {
+            //trailDescription = " ";
+       // }
+        String trailDescription = " ";
         // Not using preferences here seems risky but it also seems to be working. Maybe have a double check (i.e try both) if it is not working.
         final String userId = PreferenceManager.getDefaultSharedPreferences(this.getApplicationContext()).getString("USERID", "-1");//PreferenceManager.getDefaultSharedPreferences(this.getApplicationContext()).getString("USERID", "-1");
 

@@ -2,6 +2,7 @@ package com.teamunemployment.breadcrumbs.client.Adapters;
 
 import android.app.Activity;
 import android.app.Dialog;
+import android.content.Intent;
 import android.location.Address;
 import android.location.Geocoder;
 import android.support.v7.widget.RecyclerView;
@@ -106,10 +107,20 @@ public class CrumbCardEditAdapter extends RecyclerView.Adapter<CrumbCardEditAdap
             String crumbId = mDataset.get(position);
             FetchAndBindObject(holder.CardInner, crumbId, position);
             setSaveAndDeleteClickHandlers(holder.CardInner, crumbId, position);
+
         } else {
             // This means it equals 0 - so go through loading an populating the trail card.
             String trailId = mDataset.get(position);
             FetchAndBindTrailObject(holder.CardInner, trailId);
+            TextView openMap = (TextView) holder.CardInner.findViewById(R.id.view_my_map);
+            openMap.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent intent = new Intent();
+                    intent.setClassName("com.teamunemployment.breadcrumbs", "com.teamunemployment.breadcrumbs.client.Maps.MapHostBase");
+                    mContext.startActivity(intent);
+                }
+            });
         }
     }
 

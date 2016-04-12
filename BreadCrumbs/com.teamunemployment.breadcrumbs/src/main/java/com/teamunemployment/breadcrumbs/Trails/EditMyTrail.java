@@ -89,6 +89,11 @@ public class EditMyTrail extends AppCompatActivity {
         //setToolbarTitle(collapsingToolbarLayout, trailId);
         collapsingToolbarLayout.setExpandedTitleTextAppearance(R.style.CodeFontWhite);
         collapsingToolbarLayout.setCollapsedTitleTextAppearance(R.style.HeaderFont);
+        setUpMapViewer();
+    }
+
+    private void setUpMapViewer() {
+
     }
 
     private void setBackButtonListener() {
