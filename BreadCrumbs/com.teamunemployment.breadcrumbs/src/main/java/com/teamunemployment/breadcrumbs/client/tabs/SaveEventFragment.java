@@ -9,11 +9,12 @@ import android.graphics.Bitmap;
 import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
+import android.location.LocationListener;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v4.view.ViewPager;
-import android.support.v7.widget.CardView;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.util.LruCache;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -25,13 +26,15 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.getbase.floatingactionbutton.FloatingActionButton;
 import com.teamunemployment.breadcrumbs.Location.BreadCrumbsFusedLocationProvider;
+import com.teamunemployment.breadcrumbs.Location.BreadcrumbsLocationProvider;
 import com.teamunemployment.breadcrumbs.Network.LoadBalancer;
+import com.teamunemployment.breadcrumbs.Network.NetworkConnectivityManager;
 import com.teamunemployment.breadcrumbs.Network.ServiceProxy.AsyncDataRetrieval;
 import com.teamunemployment.breadcrumbs.Network.ServiceProxy.AsyncImageFetch;
-import com.teamunemployment.breadcrumbs.Trails.MyCurrentTrailManager;
-import com.teamunemployment.breadcrumbs.Trails.TrailManager;
+import com.teamunemployment.breadcrumbs.PreferencesAPI;
+import com.teamunemployment.breadcrumbs.Trails.MyCurrentTrailDisplayManager;
+import com.teamunemployment.breadcrumbs.Trails.TrailManagerWorker;
 import com.teamunemployment.breadcrumbs.caching.GlobalContainer;
 import com.teamunemployment.breadcrumbs.R;
 import com.google.android.gms.common.api.ResultCallback;
@@ -39,7 +42,6 @@ import com.google.android.gms.location.places.Place;
 import com.google.android.gms.location.places.PlaceLikelihood;
 import com.google.android.gms.location.places.PlaceLikelihoodBuffer;
 import com.teamunemployment.breadcrumbs.client.BaseViewModel;
-import com.teamunemployment.breadcrumbs.client.Main;
 import com.teamunemployment.breadcrumbs.database.DatabaseController;
 
 import org.json.JSONException;
@@ -68,8 +70,7 @@ public class SaveEventFragment extends Activity {
 	private Map<String, String> map = new HashMap<String, String>();
 	private static Bitmap media;
 	private ImageView iv;
-	//private CanvasLocationManager locationManager;
-    private MyCurrentTrailManager currentTrailManager;
+    private MyCurrentTrailDisplayManager currentTrailManager;
 	private static String crumbMedia;
 	private LruCache<String, Bitmap> mMemoryCache;
 	private String trailId;
@@ -78,7 +79,8 @@ public class SaveEventFragment extends Activity {
     private JSONObject editableTrails;
 	private HashMap<String, String> trailAndIdMap;
     private AsyncDataRetrieval asyncDataRetrieval;
-	BreadCrumbsFusedLocationProvider locationProvider;
+	private BreadcrumbsLocationProvider locationProvider;
+	private BreadCrumbsFusedLocationProvider fusedLocationProvider;
 	/*
 	 * Do as LITTLE as possible in the constructors. If possible, load at run-time
 	 */
@@ -91,10 +93,9 @@ public class SaveEventFragment extends Activity {
         //trailId = "15";
         context = this;
         ActionBar actionBar = getActionBar();
-//        actionBar.hide();
         SetMedia();
         // use with care.
-        currentTrailManager = MyCurrentTrailManager.GetCurrentTrailManagerInstance();
+        currentTrailManager = MyCurrentTrailDisplayManager.GetCurrentTrailManagerInstance();
 		// Set the height of the camera to be the same as the width so we get a square.
 		ImageView cardView = (ImageView) findViewById(R.id.media);
 		ViewGroup.LayoutParams layoutParams = cardView.getLayoutParams();
@@ -103,7 +104,8 @@ public class SaveEventFragment extends Activity {
 		layoutParams.height = displaymetrics.widthPixels;
 		cardView.setLayoutParams(layoutParams);
 		setBackButtonListener();
-		locationProvider = new BreadCrumbsFusedLocationProvider(this);
+		locationProvider = BreadcrumbsLocationProvider.getInstance(this);
+		fusedLocationProvider = new BreadCrumbsFusedLocationProvider(this);
 	}
 
 
@@ -191,7 +193,7 @@ public class SaveEventFragment extends Activity {
                     e.printStackTrace();
                 }
             }
-        });
+        }, context);
         asyncDataRetrieval.execute();
     }
 	private void loadTrailsIntoHashMap(JSONObject trailsToLoad) {
@@ -229,45 +231,73 @@ public class SaveEventFragment extends Activity {
 	private void createNewEvent() {
 		//Currently we will only be creating a crumb. In the future we will be able to create both.
         EditText chatTextView = (EditText) findViewById(R.id.crumb_description);
-		final String TrailId = PreferenceManager.getDefaultSharedPreferences(this.getApplicationContext()).getString("TRAILID", "-1");
-        if (TrailId.equals("-1")) {
+		trailId = Integer.toString(PreferencesAPI.GetInstance(context).GetLocalTrailId());
+        if (trailId.equals("-1")) {
 			Toast.makeText(this, "No current active trail. Create a trail from the main menu.", Toast.LENGTH_LONG).show();
             return;
         }
 
-        final Location location = locationProvider.GetLastKnownLocation();
+        final Location location = locationProvider.GetBestRecentLocation();
 		if (location == null) {
 			// Need to display and error to the user
-			Toast.makeText(this, "Failed to find location. Please ensure you have location services enabled", Toast.LENGTH_SHORT).show();
+			Log.d("SAVE_EVENT", "Failed to find a satisfactory recent location, fetching location now");
+			LocationListener locationListener = new LocationListener() {
+				@Override
+				public void onLocationChanged(Location location) {
+					processAndSaveEvent(location, trailId);
+				}
+
+				@Override
+				public void onStatusChanged(String provider, int status, Bundle extras) {
+
+				}
+
+				@Override
+				public void onProviderEnabled(String provider) {
+
+				}
+
+				@Override
+				public void onProviderDisabled(String provider) {
+
+				}
+			};
+			locationProvider.requestLocationUpdate(locationListener);
+
 			return;
 		}
+		processAndSaveEvent(location, trailId);
 
-		final String chat;
-		String chat2 = chatTextView.getText().toString();
-		if (chat2.isEmpty()) {
-			chat = " ";
-		} else {
-			chat = chat2;
-		}
+	}
 
+
+
+	private void processAndSaveEvent(final Location location, final String trailId) {
 		final double lat = location.getLatitude();
 		final double longit = location.getLongitude();
 		String suburb = "";
 		String city = "";
 		String country = "";
-		Geocoder gcd = new Geocoder(context, Locale.getDefault());
-		try {
-			final List<Address> addresses = gcd.getFromLocation(lat, longit, 1);
-			addresses.get(0);
-			if (addresses.size() > 0) {
-				Address address = addresses.get(0);
-				suburb = address.getSubLocality();
-				city = address.getLocality();
-				country = address.getCountryName();
+		if (NetworkConnectivityManager.IsNetworkAvailable(context)) {
+			Geocoder gcd = new Geocoder(context, Locale.getDefault());
+			try {
+				final List<Address> addresses = gcd.getFromLocation(lat, longit, 1);
+				if (addresses.size() > 0) {
+					Address address = addresses.get(0);
+					suburb = address.getSubLocality();
+					city = address.getLocality();
+					country = address.getCountryName();
+				}
+			} catch (IOException e) {
+				e.printStackTrace();
+			} catch(IllegalArgumentException ex) {
+				// Happens when we have a Latitude of more than 90 or less than -90
+				// Happens when we have a longitude of more than 180/-180
+			} catch (IndexOutOfBoundsException outOfBounds) {
+				// WE dont have any addresses, so get fails.
 			}
-		} catch (IOException e) {
-			e.printStackTrace();
 		}
+
 		final String latitude = String.valueOf(lat);
 		final String longitude = String.valueOf(longit);
 
@@ -280,7 +310,7 @@ public class SaveEventFragment extends Activity {
 		final String finalSuburb = suburb;
 		final String finalCity = city;
 		final String finalCountry = country;
-		locationProvider.GetCurrentPlace(new ResultCallback<PlaceLikelihoodBuffer>() {
+		fusedLocationProvider.GetCurrentPlace(new ResultCallback<PlaceLikelihoodBuffer>() {
 			@Override
 			public void onResult(PlaceLikelihoodBuffer likelyPlaces) {
 				String placeId = " ";
@@ -324,11 +354,10 @@ public class SaveEventFragment extends Activity {
 					throw new NullPointerException("User id was null.");
 				}
 
-
 				// save our crumb to the db. It will be saved to the server when we publish
-				dbc.SaveCrumb(TrailId, chat, userId, eventId, lat, longit, ".jpg", timeStamp, getBitmapAsByteArray(media), "", placeId, finalSuburb, finalCity, finalCountry);
-				TrailManager trailManager = new TrailManager(context);
-				trailManager.CreateEventMetadata(TrailManager.CRUMB, location);
+				dbc.SaveCrumb(trailId, " ", userId, eventId, lat, longit, ".jpg", timeStamp, getBitmapAsByteArray(media), "", placeId, finalSuburb, finalCity, finalCountry);
+				TrailManagerWorker trailManagerWorker = new TrailManagerWorker(context);
+				trailManagerWorker.CreateEventMetadata(TrailManagerWorker.CRUMB, location);
 				Intent myIntent = new Intent(context, BaseViewModel.class);
 				myIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 				context.startActivity(myIntent);
@@ -402,7 +431,7 @@ public class SaveEventFragment extends Activity {
                 SavedCrumbId = result;
                 saveImage();
 			}
-		});
+		}, context);
 		
 		asyncDataRetrieval.execute();	
 		System.out.println("Sending save request to : " + url);	
@@ -430,7 +459,7 @@ public class SaveEventFragment extends Activity {
 			//Trail Created
 				trailId = result;
 			}
-		});
+		}, context);
 		
 		asyncDataRetrieval.execute();	
 

@@ -80,7 +80,7 @@ public class CommentViewer extends Activity {
                 // expense for caching this much text???. Doing nothing for the moment.
                // CommentId = result;
             }
-        });
+        }, getApplicationContext());
         clientRequestProxy.execute();
     }
 
@@ -101,7 +101,7 @@ public class CommentViewer extends Activity {
                 // Begin comment construction.
                 ConstructCommentsFromJSON();
             }
-        });
+        }, getApplicationContext());
         clientRequestProxy.execute();
     }
 

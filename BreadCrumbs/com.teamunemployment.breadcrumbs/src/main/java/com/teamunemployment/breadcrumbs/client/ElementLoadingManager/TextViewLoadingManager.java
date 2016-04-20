@@ -39,7 +39,7 @@ public class TextViewLoadingManager {
                     // Here we need to cache
                     textCaching.CacheText(url, result);
                 }
-            });
+            }, context);
             asyncDataRetrieval.execute();
         } else {
             // Fetch the latest value from the db. This will replace the cache so next time we will be updated.
@@ -51,7 +51,7 @@ public class TextViewLoadingManager {
                     textView.setText(result);
 
                 }
-            });
+            }, context);
             asyncDataRetrieval.execute();
         }
     }
@@ -80,7 +80,7 @@ public class TextViewLoadingManager {
                     // Here we need to cache
                     textCaching.CacheText(key, result);
                 }
-            });
+            }, context);
             asyncDataRetrieval.execute();
         } else {
             // Fetch the latest value from the db. This will replace the cache so next time we will be updated.
@@ -92,7 +92,7 @@ public class TextViewLoadingManager {
                     String imageUrl = LoadBalancer.RequestCurrentDataAddress() + "/images/"+result+"T.jpg";
                     Picasso.with(context).load(imageUrl).placeholder(R.drawable.profileblank).into(imageView);
                 }
-            });
+            },context);
             asyncDataRetrieval.execute();
         }
 

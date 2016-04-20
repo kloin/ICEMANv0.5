@@ -23,7 +23,7 @@ public class HomelessNetworkTools {
                     throw new Resources.NotFoundException("Failed to find the requested resource.");
                 }
             }
-        });
+        }, context);
         fetchDescription.execute();
     }
 }

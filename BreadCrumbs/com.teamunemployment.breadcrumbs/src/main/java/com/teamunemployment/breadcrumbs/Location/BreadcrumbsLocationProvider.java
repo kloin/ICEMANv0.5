@@ -1,9 +1,7 @@
 package com.teamunemployment.breadcrumbs.Location;
 
 import android.Manifest;
-import android.app.Activity;
 import android.app.NotificationManager;
-import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -23,21 +21,19 @@ import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 import android.widget.Toast;
 
-import com.google.android.gms.common.api.PendingResult;
 import com.google.android.gms.common.api.ResultCallback;
 import com.google.android.gms.location.places.Place;
 import com.google.android.gms.location.places.PlaceLikelihood;
 import com.google.android.gms.location.places.PlaceLikelihoodBuffer;
-import com.google.android.gms.location.places.Places;
 import com.google.android.gms.maps.model.Circle;
 import com.pathsense.android.sdk.location.PathsenseGeofenceEvent;
 import com.pathsense.android.sdk.location.PathsenseLocationProviderApi;
 import com.teamunemployment.breadcrumbs.Location.PathSense.Activity.PathSenseActivityManager;
 import com.teamunemployment.breadcrumbs.Location.PathSense.Geofence.BreadCrumbsPathSenseGeofenceEventReceiver;
+import com.teamunemployment.breadcrumbs.PreferencesAPI;
 import com.teamunemployment.breadcrumbs.R;
-import com.teamunemployment.breadcrumbs.Trails.TrailManager;
+import com.teamunemployment.breadcrumbs.Trails.TrailManagerWorker;
 import com.teamunemployment.breadcrumbs.caching.TextCaching;
-import com.teamunemployment.breadcrumbs.client.BaseViewModel;
 import com.teamunemployment.breadcrumbs.database.DatabaseController;
 
 import org.joda.time.DateTime;
@@ -102,6 +98,8 @@ public class BreadcrumbsLocationProvider implements LocationListener {
     private DatabaseController dbc;
     // debug shit
     private TextCaching gpsHardLoggin;
+
+    private int mGpsInterval;
 
     /*
         Singleton Entry point
@@ -174,9 +172,13 @@ public class BreadcrumbsLocationProvider implements LocationListener {
     public void StartListeningToPathSense() {
         cleanUp();
         //requestLocationUpdate(this);
-        startListeningToActivityChangesForUser(12);
+        startListeningToActivityChangesForUser();
         BreadCrumbsFusedLocationProvider provider = new BreadCrumbsFusedLocationProvider(mContext);
         provider.StartBackgroundGPSService();
+    }
+
+    public void RemoveGeofences() {
+        mApi.removeGeofences();
     }
 
     // Just sort shit out before we start listening to the pathsense, incase of previous instances.
@@ -195,20 +197,15 @@ public class BreadcrumbsLocationProvider implements LocationListener {
         }
     }
 
-    public void StartFusedBackGroundService() {
-
-    }
-
-    public void StopListeningToPathSense() {
-
-        // Set up the first geofence with the location request now.
-        mApi.removeGeofences();
+    public void StopListeningToPathsenseActivityUpdates() {
+        mApi.removeDeviceHolding();
+        mApi.removeActivityUpdates();
+        mApi.removeActivityChanges();
     }
 
     // Purpose of this method is to put a getfence for pathSense around a given location.
     private void triggerPathSenseGeofenceAtLocation(Location location) {
         mApi.addGeofence("MYGEOFENCE", location.getLatitude(), location.getLongitude(), 100, BreadCrumbsPathSenseGeofenceEventReceiver.class);
-
     }
 
 
@@ -218,6 +215,7 @@ public class BreadcrumbsLocationProvider implements LocationListener {
         LocationListener mListener;
         List<InternalLocationListenerFilter> mFilterList;
     }
+
 
     /*
         The InternalLocalGeoFenceEventReviever. This recieves the event that is thrown when
@@ -272,22 +270,16 @@ public class BreadcrumbsLocationProvider implements LocationListener {
                 switch (msg.what) {
                     case MESSAGE_ON_GEOFENCE_EVENT: {
                         localCaching.CacheText("Handler", "Case correct. Now doing geofence work: ");
-                        PathsenseGeofenceEvent geofenceEvent = (PathsenseGeofenceEvent) msg.obj;
-                        Location location = geofenceEvent.getLocation();
-                        // Fetch event Id
-                        int eventId = PreferenceManager.getDefaultSharedPreferences(mActivity.mContext).getInt("EVENTID", 0);
-                        String trailId = PreferenceManager.getDefaultSharedPreferences(mActivity.mContext).getString("TRAILID", null);
-                        DateTime timeStamp = new DateTime();
-
-                        // Geofence is broken - start up gps again
-                        activity.ListenPassivelyForGPSUpdatesInBackground(0);
+                        // Geofence is broken - start up gps again, and start listening to activities too.
+                        activity.StartGPS(1, 0);
+                        activity.startListeningToActivityChangesForUser();
 
                         NotificationManager notificationManager = (NotificationManager) mActivity.mContext.getSystemService(mActivity.mContext.NOTIFICATION_SERVICE);
                         NotificationCompat.Builder noti = new NotificationCompat.Builder(mActivity.mContext);
                         noti.setContentTitle("GEOFENCE");
-                        noti.setContentText("Saved s");
+                        noti.setContentText("brooken");
                         noti.setSmallIcon(R.drawable.bc64);
-                        notificationManager.notify(1234567, noti.build());
+                        notificationManager.notify(123456789, noti.build());
                         // Save break point to metadata
                         // mActivity.dbc.AddMetadata(eventId, timeStamp.toString(), location.getLatitude(), location.getLongitude(), trailId, "GPS");
                     }
@@ -334,11 +326,13 @@ public class BreadcrumbsLocationProvider implements LocationListener {
         }
     }
 
+    public void stopListeningToGPSUpdates() {
+        removeUpdates(locationListener);
+    }
 
     boolean removeUpdates(LocationListener listener) {
         final Queue<InternalHolder> holders = mHolders;
         final LocationManager locationManager = androidLocationManager;
-
         if (holders != null && locationManager != null) {
             synchronized (holders) {
                 for (Iterator<InternalHolder> q = holders.iterator(); q.hasNext(); ) {
@@ -370,9 +364,45 @@ public class BreadcrumbsLocationProvider implements LocationListener {
     }
 
     // Start listening for activity changes from a user (walking driving, rest etc)
-    public void startListeningToActivityChangesForUser(int durationInSeconds) {
+    public void startListeningToActivityChangesForUser() {
         PathSenseActivityManager pathSenseActivityManager = new PathSenseActivityManager(mContext);
         pathSenseActivityManager.StartPathSenseActivityManager();
+    }
+
+    // Changes the monitoring factors depending on activity
+    public void ChangeActivity(int newActivity) {
+        if (newActivity == TrailManagerWorker.DRIVING) {
+            RemoveGPSUpdates();
+        } else if (newActivity == TrailManagerWorker.ON_FOOT) {
+            StartListening(locationListener, 600/*seconds*/, 200);
+        }
+    }
+
+    public Location GetBestRecentLocation() {
+        List<String> matchingProviders = androidLocationManager.getAllProviders();
+        int minTime = 300000;
+        long bestTime = 0;
+        float bestAccuracy = 10000000;
+        Location bestResult= null;
+        for (String provider: matchingProviders) {
+            Location location = androidLocationManager.getLastKnownLocation(provider);
+            if (location != null) {
+                float accuracy = location.getAccuracy();
+                long time = location.getTime();
+
+                if ((time > bestTime && accuracy < bestAccuracy)) {
+                    bestResult = location;
+                    bestAccuracy = accuracy;
+                    bestTime = time;
+                }
+                else if (time < minTime &&
+                        bestAccuracy == Float.MAX_VALUE && time > bestTime){
+                    bestResult = location;
+                    bestTime = time;
+                }
+            }
+        }
+        return bestResult;
     }
 
     /*
@@ -442,10 +472,11 @@ public class BreadcrumbsLocationProvider implements LocationListener {
     /*
         Listen to gps requests from other apps in the background.
      */
-    public boolean ListenPassivelyForGPSUpdatesInBackground(int seconds) {
-        StartListening(locationListener);
+    public boolean StartGPS(int seconds, int minDistance) {
+        StartListening(locationListener, seconds * 1000, minDistance);
         return true;
     }
+
 
 
     public void AddGeofences(Location location) {
@@ -475,7 +506,8 @@ public class BreadcrumbsLocationProvider implements LocationListener {
     //************************* END overrides *****************************************
     // Usually the app will call at startup (unless battery is really low) and then start or stop when required.
     // as soon as we fetch one update we stop listening
-    private void StartListening(LocationListener listener) {
+    private void StartListening(LocationListener listener, int duration, int minDistance) {
+        PreferenceManager.getDefaultSharedPreferences(mContext).edit().putBoolean("TRACKING", true).commit();
         // Acquire a reference to the system Location Manager
         androidLocationManager = (LocationManager) mContext.getSystemService(Context.LOCATION_SERVICE);
         // Define a listener that responds to location updates
@@ -490,7 +522,17 @@ public class BreadcrumbsLocationProvider implements LocationListener {
             // for ActivityCompat#requestPermissions for more details.
             return;
         }
-        androidLocationManager.requestLocationUpdates(androidLocationManager.GPS_PROVIDER, 90000, 500, listener);
+        if (androidLocationManager.isProviderEnabled(androidLocationManager.GPS_PROVIDER)) {
+            androidLocationManager.requestLocationUpdates(androidLocationManager.GPS_PROVIDER, duration, minDistance, listener);
+        } else if(androidLocationManager.isProviderEnabled(androidLocationManager.NETWORK_PROVIDER)) {
+            // Deccay to network. This is pretty shit
+            Log.d("LOCATION", "GPS is not enabled - decaying to network");
+            androidLocationManager.requestLocationUpdates(androidLocationManager.NETWORK_PROVIDER, duration, minDistance, listener);
+        } else {
+            // Here we have someone not letting us use Location services. We need to notify them that it will not work.
+            Toast.makeText(mContext, "Location services are disabled. Path may not work as intended", Toast.LENGTH_LONG).show();
+            androidLocationManager.requestLocationUpdates(androidLocationManager.GPS_PROVIDER, duration, minDistance, listener);
+        }
     }
 
     public void getCurrentPlaceId() {
@@ -521,19 +563,14 @@ public class BreadcrumbsLocationProvider implements LocationListener {
         public void onLocationChanged(Location location) {
             DatabaseController dbc = new DatabaseController(mContext);
             if (location.getAccuracy() <= 60) {
-                String trailId = PreferenceManager.getDefaultSharedPreferences(mContext).getString("TRAILID", "-1");
+                String localTrailId = Integer.toString(PreferencesAPI.GetInstance(mContext).GetLocalTrailId());
                 String userId = PreferenceManager.getDefaultSharedPreferences(mContext).getString("USERID", "-1");
-                if (!trailId.equals("-1") || !userId.equals("-1")) {
+                if (!localTrailId.equals("-1") || !userId.equals("-1")) {
                     // Save our trail point to the db.
                     int eventId = PreferenceManager.getDefaultSharedPreferences(mContext).getInt("EVENTID", 0);
-                    NotificationManager notificationManager = (NotificationManager) mContext.getSystemService(mContext.NOTIFICATION_SERVICE);
-                    NotificationCompat.Builder noti = new NotificationCompat.Builder(mContext);
-                    noti.setContentTitle("BreadCrumbs");
-                    noti.setContentText("Provided by " + location.getProvider());
-                    noti.setSmallIcon(R.drawable.bc64);
-                    notificationManager.notify(1234, noti.build());
+                    int transportMethod = PreferencesAPI.GetInstance(mContext).GetTransportMethod();
                     // Save our event metadata
-                    dbc.AddMetadata(eventId,DateTime.now().toString(),location.getLatitude(), location.getLongitude(),trailId, TrailManager.GPS);
+                    dbc.AddMetadata(eventId,DateTime.now().toString(),location.getLatitude(), location.getLongitude(),localTrailId, TrailManagerWorker.GPS, transportMethod);
                 }
             }
         }
@@ -545,12 +582,12 @@ public class BreadcrumbsLocationProvider implements LocationListener {
 
         @Override
         public void onProviderEnabled(String provider) {
-
+            Toast.makeText(mContext, provider + " was enabled", Toast.LENGTH_LONG).show();
         }
 
         @Override
         public void onProviderDisabled(String provider) {
-
+            Toast.makeText(mContext, provider + " was disabled", Toast.LENGTH_LONG).show();
         }
     };
 }

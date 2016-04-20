@@ -5,6 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#e5e5e5">
+
     <android.support.design.widget.CoordinatorLayout
         android:id="@+id/home_wrapper"
         android:layout_width="match_parent"
@@ -52,31 +53,22 @@
             android:layout_height="fill_parent"
             app:layout_behavior="@string/appbar_scrolling_view_behavior"  />
 
-        <android.support.design.widget.FloatingActionButton
-            android:id="@+id/new_content"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            app:backgroundTint="@color/accent"
-            android:layout_margin="12dp"
-            android:src="@drawable/ic_action_new"
-            android:layout_gravity="bottom|end"
-            app:elevation="6dp"
-            app:borderWidth="0dp"
-            app:pressedTranslationZ="12dp"/>
-
-        <!--  <com.getbase.floatingactionbutton.FloatingActionButton
-              android:id="@+id/new_content"
+          <android.support.design.widget.FloatingActionButton
+              android:id="@+id/create_new_trail"
               android:tag="0"
               android:layout_width="wrap_content"
               android:layout_height="wrap_content"
+              android:src="@drawable/bc_add_trail"
               android:layout_gravity="bottom|right"
-              android:layout_margin="15dp"
-              fab:fab_icon="@drawable/ic_action_camera"
-              app:fab_colorNormal="@color/accent"
-              app:fab_title="Content"
-              app:fab_size="normal"
-              app:fab_colorPressed="@color/home_pressed"/> -->
+              android:layout_margin="15dp" />
     </android.support.design.widget.CoordinatorLayout>
+    <View
+        android:id="@+id/overlay"
+        android:layout_width="match_parent"
+        android:visibility="gone"
+        android:layout_height="match_parent"
+        android:alpha="0.8"
+        android:background="@color/black"></View>
     <!--
 
     This is the linear layout that holds the fragments - Im not sure I will do it this way,

@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.app.PendingIntent;
 import android.content.Intent;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
@@ -16,17 +15,18 @@ import android.location.Location;
 import android.preference.PreferenceManager;
 import android.util.Log;
 
+import com.google.android.gms.maps.UiSettings;
 import com.google.android.gms.maps.model.Circle;
 import com.google.android.gms.maps.model.CircleOptions;
 import com.google.maps.android.PolyUtil;
+import com.google.maps.android.ui.IconGenerator;
 import com.teamunemployment.breadcrumbs.Network.LoadBalancer;
 import com.teamunemployment.breadcrumbs.Network.ServiceProxy.AsyncDataRetrieval;
-import com.teamunemployment.breadcrumbs.Network.ServiceProxy.AsyncImageFetch;
 import com.teamunemployment.breadcrumbs.Network.ServiceProxy.AsyncPost;
 import com.teamunemployment.breadcrumbs.Network.ServiceProxy.HTTPRequestHandler;
+import com.teamunemployment.breadcrumbs.PreferencesAPI;
 import com.teamunemployment.breadcrumbs.caching.GlobalContainer;
 import com.teamunemployment.breadcrumbs.client.Maps.MapDisplayManager;
-import com.teamunemployment.breadcrumbs.R;
 import com.teamunemployment.breadcrumbs.database.DatabaseController;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationRequest;
@@ -39,6 +39,7 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.PolylineOptions;
 
+import org.joda.time.DateTime;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -53,10 +54,10 @@ import java.util.List;
  * Created by aDirtyCanvas on 5/20/2015.
  * Created to manage and display a users current class.
  */
-public class MyCurrentTrailManager extends Activity {
+public class MyCurrentTrailDisplayManager {
     private GoogleMap map;
     private AsyncDataRetrieval clientRequestProxy;
-    private MyCurrentTrailManager mapContext;
+    private MyCurrentTrailDisplayManager mapContext;
     private Activity context;
     private LinkedList<String> linkedList = new LinkedList<>();
     // Location shit.
@@ -65,42 +66,41 @@ public class MyCurrentTrailManager extends Activity {
     private LocationRequest locationrequest;
     private Intent mIntentService;
     private PendingIntent mPendingIntent;
-    private static MyCurrentTrailManager currentTrailManager;
+    private static MyCurrentTrailDisplayManager currentTrailManager;
     private MapDisplayManager mapDisplayManager;
     private float currentZoom = -1;
     private boolean alreadyFocused = false;
+    private int mDayOfYear = 0;
     /*
     Display a single trail and its crumbs
     */
-    public MyCurrentTrailManager(GoogleMap map , Activity context) {
+    public MyCurrentTrailDisplayManager(GoogleMap map, Activity context) {
         this.map = map;
         this.context = context;
         mapContext=this;
         currentTrailManager = this;
+        mapDisplayManager = new MapDisplayManager(map, context,Integer.toString(PreferencesAPI.GetInstance(context).GetLocalTrailId()));
+
         linkedList.add(0, "#2196F3");
+        UiSettings uiSettings = map.getUiSettings();
+        uiSettings.setCompassEnabled(false);
+        uiSettings.setMapToolbarEnabled(false);
     }
 
     // Use with caution
-    public MyCurrentTrailManager(Activity context) {
+    public MyCurrentTrailDisplayManager(Activity context) {
         this.context = context;
         mapContext = this;
         currentTrailManager = this;
     }
 
-    public MyCurrentTrailManager() {
-
-    }
-
     private void setOnMapCameraChangedListener() {
         map.setOnCameraChangeListener(new GoogleMap.OnCameraChangeListener() {
-
-
-
             @Override
             public void onCameraChange(CameraPosition position) {
                 if (position.zoom != currentZoom){
                     currentZoom = position.zoom;  // here you get zoom level
-                    redraw();
+                    //redraw();
                 }
             }
         });
@@ -113,7 +113,7 @@ public class MyCurrentTrailManager extends Activity {
     want to change this at a later date tho. - seperate the drawing and the recording of shit.
 
      */
-    public static MyCurrentTrailManager GetCurrentTrailManagerInstance() {
+    public static MyCurrentTrailDisplayManager GetCurrentTrailManagerInstance() {
         if (currentTrailManager == null) {
             return null;
         }
@@ -131,25 +131,56 @@ public class MyCurrentTrailManager extends Activity {
         mapDisplayManager = new MapDisplayManager(map, context, trailId);
 
         // fetch metadata first
-        String fetchMetadataUrl = LoadBalancer.RequestServerAddress() + "/rest/TrailManager/FetchMetadata/" + trailId;
+        final String fetchMetadataUrl = LoadBalancer.RequestServerAddress() + "/rest/TrailManager/FetchMetadata/" + trailId;
         clientRequestProxy = new AsyncDataRetrieval(fetchMetadataUrl, new AsyncDataRetrieval.RequestListener() {
             @Override
             public void onFinished(String result) throws JSONException {
-                Log.d("RESULT", result);
-                JSONObject jsonResult = new JSONObject(result);
-
-                // Get an iterator of all the event nodes.
-                Iterator<String> keys = jsonResult.keys();
-                while (keys.hasNext()) {
-                    String nodeString = jsonResult.getString(keys.next());
-                    JSONObject node = new JSONObject(nodeString);
-                    drawOnMap(node);
-                    drawNodeOnMap(node);
-                }
-                // Get fisrt object and display it when we are ready to animate over the photos.
+                JSONObject jsonObject = new JSONObject(result);
+                displayMetadata(jsonObject);
             }
-        });
+        }, context);
         clientRequestProxy.execute();
+    }
+
+    public void displayMetadata(JSONObject metadata) throws JSONException {
+        // Get an iterator of all the event nodes.
+        Iterator<String> keys = metadata.keys();
+        while (keys.hasNext()) {
+            String nodeString = metadata.getString(keys.next());
+            JSONObject node = new JSONObject(nodeString);
+           // testIfNeedToDrawDay(nodeString);
+            drawOnMap(node);
+            drawNodeOnMap(node);
+        }
+
+        // Get fisrt object and display it when we are ready to animate over the photos.
+    }
+
+    private void testIfNeedToDrawDay(String node) {
+        try {
+            JSONObject jsonObject = new JSONObject(node);
+            String timestamp = jsonObject.getString("TimeStamp");
+            DateTime dateTime = new DateTime(timestamp);
+            if (dateTime.getDayOfYear() > mDayOfYear) {
+                double latitude = Double.parseDouble(jsonObject.getString("Latitude"));
+                double longitude = Double.parseDouble(jsonObject.getString("Longitude"));
+                IconGenerator iconFactory = new IconGenerator(context);
+                iconFactory.setColor(Color.CYAN);
+                addIcon(iconFactory, "Custom color", new LatLng(latitude, longitude));
+                mDayOfYear = dateTime.getDayOfYear();
+            }
+        } catch (JSONException exception) {
+            exception.printStackTrace();
+        }
+    }
+
+    private void addIcon(IconGenerator iconFactory, CharSequence text, LatLng position) {
+        MarkerOptions markerOptions = new MarkerOptions().
+                icon(BitmapDescriptorFactory.fromBitmap(iconFactory.makeIcon("Day 1"))).
+                position(position).
+                anchor(iconFactory.getAnchorU(), iconFactory.getAnchorV());
+
+        map.addMarker(markerOptions);
     }
 
     private void setMapFocus(LatLng lastPoint) {
@@ -161,15 +192,19 @@ public class MyCurrentTrailManager extends Activity {
         int eventType = Integer.parseInt(type);
 
         // If we have a rest zone we want to draw a little circle on the map.
-        if (eventType == TrailManager.REST_ZONE) {
+        if (eventType == TrailManagerWorker.REST_ZONE) {
             String latitude = node.getString("Latitude");
             String longitude = node.getString("Longitude");
             LatLng latLng = new LatLng(Double.parseDouble(latitude), Double.parseDouble(longitude));
             Circle circle = map.addCircle(new CircleOptions()
                     .center(latLng)
-                    .radius(100)
+                    .radius(20)
                     .strokeColor(Color.parseColor("#E57373"))
-                    .fillColor(Color.parseColor("#E57373")));
+                    .fillColor(Color.parseColor("#03A9F4")));
+        }
+        else if (eventType == TrailManagerWorker.CRUMB) {
+            // Draw crumb type on the map.
+
         }
     }
 
@@ -181,9 +216,15 @@ public class MyCurrentTrailManager extends Activity {
                 listOfPoints = PolyUtil.decode(polyLineString);
             } else {
                 listOfPoints = parseNonEncodedPolyline(polyLineString);
+                drawDashedPoly(listOfPoints);
+                //return;
             }
             drawPolyline(listOfPoints);
         }
+    }
+
+    private void drawDashedPoly(List<LatLng> list) {
+
     }
 
     private List<LatLng> parseNonEncodedPolyline(String polylineString) {
@@ -209,8 +250,6 @@ public class MyCurrentTrailManager extends Activity {
             options.add(point);
         }
         map.addPolyline(options);
-
-
     }
 
     // DOnt think this is used anymroe.
@@ -229,7 +268,6 @@ public class MyCurrentTrailManager extends Activity {
               ArrayList<LatLng> list = new ArrayList<>();
             int counter = 0;
             while (counter < length) {
-
                 String key = "Node" + Integer.toString(counter);
                 if (trailJSON.has(key)) {
                     JSONObject pointNodeBase = trailJSON.getJSONObject(key);
@@ -256,10 +294,7 @@ public class MyCurrentTrailManager extends Activity {
     /*
      Take a trail Id and use this to find the crumbs and trailPoints.
      */
-    public void DisplayTrailAndCrumbs(String trailId) {
-
-        // Draw the actual trail.
-        GetAndDisplayTrailOnMap(trailId);
+    public void DisplayCrumbs(String trailId) {
 
         String url = MessageFormat.format("{0}/rest/login/getAllCrumbsForATrail/{1}",
                 LoadBalancer.RequestServerAddress(),
@@ -282,7 +317,7 @@ public class MyCurrentTrailManager extends Activity {
                     for (int index=0; index<crumbListJSON.length(); index += 1 ) {
                         // The next node to get data from and Draw.
                          next =  crumbListJSON.getJSONObject(index);
-                        mapDisplayManager.DrawCrumbFromJson(next);
+                        mapDisplayManager.DrawCrumbFromJson(next, false);
                     }
                     // Now that we are done, we want to set the focus to the last crumb added
                     Double Latitude = next.getDouble("Latitude");
@@ -306,12 +341,52 @@ public class MyCurrentTrailManager extends Activity {
                     e.printStackTrace();
                 }
             }
-        });
+        }, context);
 
         clientRequestProxy.execute();
         Log.i("MAP", "Finished Loading crumbs and displaying them on the map");
     }
 
+    public void DisplayCrumbsFromLocalDatabase(JSONObject crumbs) {
+
+
+        // This creates the async request with a callback method of what I want completed when the
+
+                try {
+                    // Get the crumb title ??? why do i do this? last crumb?
+                    Iterator<String> keys = crumbs.keys();
+                    JSONObject next = null;
+                    while (keys.hasNext()) {
+                        // The next node to get data from and Draw.
+                        //next = crumbs.get
+                        next = crumbs.getJSONObject(keys.next());
+                        mapDisplayManager.DrawCrumbFromJson(next, true);
+                    }
+                    // Now that we are done, we want to set the focus to the last crumb added
+                    Double Latitude = next.getDouble("Latitude");
+                    Double Longitude = next.getDouble("Longitude");
+
+                    CameraPosition position = new CameraPosition(new LatLng(Latitude, Longitude), 10, 72, 0);
+                    CameraUpdate first = CameraUpdateFactory.newCameraPosition(position);
+
+                    CameraUpdate center=
+                            CameraUpdateFactory.newLatLng(new LatLng(Latitude,
+                                    Longitude));
+                    CameraUpdate zoom=CameraUpdateFactory.zoomTo(12);
+                    // Move/animate camera to location
+                    map.moveCamera(first);
+                    map.animateCamera(zoom);
+
+                } catch (JSONException e) {
+                    // TODO Auto-generated catch block
+                    Log.e("BC.MAP", "A JsonException was thrown during the display process for a crumb." +
+                            "This probably means that you are missing a field on your json. Stacktrace follows");
+                    e.printStackTrace();
+                }
+
+
+        Log.i("MAP", "Finished Loading crumbs and displaying them on the map");
+    }
 
     /*
     Method that begins the background tracking of a users trail.
@@ -360,10 +435,11 @@ public class MyCurrentTrailManager extends Activity {
         // HACZ - cos im just testing.
         final DatabaseController dbc = new DatabaseController(context);
         // But how will I actually know this?
-        final String trailId = PreferenceManager.getDefaultSharedPreferences(context).getString("TRAILID", "-1");
+        final String localTrailId = Integer.toString(PreferencesAPI.GetInstance(context).GetLocalTrailId());
+
         // Dont want to be saving a non existent trail - I will do other shit with it first
-        if (!trailId.equals("-1")) {
-            JSONObject jsonObject = dbc.getAllSavedTrailPoints(trailId);
+        if (!localTrailId.equals("-1")) {
+            JSONObject jsonObject = dbc.getAllSavedTrailPoints(localTrailId);
             HTTPRequestHandler saver = new HTTPRequestHandler();
 
             // Save our trails.
@@ -371,7 +447,7 @@ public class MyCurrentTrailManager extends Activity {
             AsyncPost post = new AsyncPost(url, new AsyncPost.RequestListener() {
                 @Override
                 public void onFinished(String result) {
-                    dbc.DeleteAllSavedTrailPoints(trailId);
+                    dbc.DeleteAllSavedTrailPoints(localTrailId);
                 }
             }, jsonObject);
 

@@ -7,6 +7,8 @@ import android.content.Intent;
 
 import com.teamunemployment.breadcrumbs.Weather.WeatherAlarmReceiver;
 
+import org.joda.time.DateTime;
+
 import java.util.Random;
 
 /**
@@ -23,12 +25,12 @@ public class FetchWeatherForTheDayService {
     private Context mContext;
 
     private FetchWeatherForTheDayService(Context context) {
-        setLaunchTimeForWeatherRequest();
         mContext = context;
+        setLaunchTimeForWeatherRequest();
     }
 
-    public static void setLaunchTimeForWeatherRequest(Context mContext) {
-        new FetchWeatherForTheDayService(mContext);
+    public static void setLaunchTimeForWeatherRequest(Context context) {
+        new FetchWeatherForTheDayService(context);
     }
 
     private void setLaunchTimeForWeatherRequest() {
@@ -39,7 +41,9 @@ public class FetchWeatherForTheDayService {
         // We thrown an alarm intent, so the recievr in the Weather package does the service sending and saving.
         alarmMgr = (AlarmManager)mContext.getSystemService(Context.ALARM_SERVICE);
         Intent intent = new Intent(mContext, WeatherAlarmReceiver.class);
+
         alarmIntent = PendingIntent.getBroadcast(mContext, 0, intent, 0);
+
 
         // We only fire when the user is using their phone
         alarmMgr.setInexactRepeating(AlarmManager.RTC, launchTimeForWeatherRequest, AlarmManager.INTERVAL_DAY, alarmIntent);

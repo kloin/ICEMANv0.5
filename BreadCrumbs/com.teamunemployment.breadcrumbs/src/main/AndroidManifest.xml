@@ -33,7 +33,7 @@
 
     <application
         android:allowBackup="true"
-        android:icon="@drawable/bc64"
+        android:icon="@drawable/ic_launcher"
         android:label="@string/app_name"
         android:theme="@style/AppTheme">
         <activity
@@ -162,6 +162,7 @@
         <activity android:name=".client.Maps.MapViewController"
             android:screenOrientation="portrait">
         </activity>
+        <activity android:name=".client.UploadTrail" android:screenOrientation="portrait"></activity>
         <activity android:name=".client.NavMenu.Profile.ProfilePicChooser"
             android:screenOrientation="portrait">
         </activity>
@@ -177,7 +178,8 @@
             android:name="com.facebook.FacebookContentProvider"
             android:authorities="com.facebook.app.FacebookContentProvider668335369892920"
             android:exported="true" />
-        <service android:name="com.teamunemployment.breadcrumbs.Location.LocationService"></service>
+        <receiver android:name="com.teamunemployment.breadcrumbs.Weather.WeatherAlarmReceiver"></receiver>
+        <service android:name="com.teamunemployment.breadcrumbs.BackgroundServices.BackgroundService"></service>
         <service android:name="com.teamunemployment.breadcrumbs.BackgroundServices.BackgroundService"></service>
 
         <!--AIzaSyBQ9w6VrGGquOHwERNrc_jAx_jcm8mrKQw  - this is the legit release one-->

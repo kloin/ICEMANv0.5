@@ -84,7 +84,7 @@ public class TrailCoverImageSelector  extends Activity{
                     }
                 });
             }
-        });
+        }, context);
         asyncDataRetrieval.execute();
     }
 }

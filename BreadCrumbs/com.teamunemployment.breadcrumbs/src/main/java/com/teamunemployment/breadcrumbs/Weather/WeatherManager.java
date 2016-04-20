@@ -49,7 +49,7 @@ public class WeatherManager {
             public void onCityListRetrieved(List<City> cities) {
                 // The data is ready
                 Log.d(TAG, "Found city(s): " + cities);
-                String id = cities.get(0).getId();
+                String id = cities.get(cities.size()-1).getId();
                 getWeatherForCity(id, listener);
             }
 

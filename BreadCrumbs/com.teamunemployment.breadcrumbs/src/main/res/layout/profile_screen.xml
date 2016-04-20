@@ -21,7 +21,10 @@
             <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent">
-
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="#60333333"></View>
                 <ImageView
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
@@ -30,6 +33,7 @@
                     android:scaleType="centerCrop"
                     android:background="@drawable/profileblank"
                     android:layout_alignParentStart="true" />
+
                 <TextView
                     android:id="@+id/profile_select_prompt"
                     android:layout_width="match_parent"

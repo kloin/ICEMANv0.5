@@ -128,7 +128,7 @@ public class TrailManager extends AppCompatActivity {
                 }
                 return ids;
             }
-        });
+        }, context);
         clientRequestProxy.execute();
         Log.i("BASE", "Sending request to construct the cards");
     }

@@ -102,7 +102,7 @@ public class ExploreTabFragment extends HomeTabFragment {
                 }
                 return ids;
             }
-        });
+        }, context);
         clientRequestProxy.execute();
     }
     // Need this code but for now I am going to comment it out.
@@ -146,7 +146,7 @@ public class ExploreTabFragment extends HomeTabFragment {
                 }
                 return ids;
             }
-        });
+        }, context);
         clientRequestProxy.execute();
         Log.i("BASE", "Sending request to construct the cards");
     }

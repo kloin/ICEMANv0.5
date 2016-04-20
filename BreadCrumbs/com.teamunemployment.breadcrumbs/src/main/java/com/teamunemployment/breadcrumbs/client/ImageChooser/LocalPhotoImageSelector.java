@@ -131,12 +131,12 @@ public class LocalPhotoImageSelector extends Activity {
                     // Save our cover photo for opening a few activities later. When we return to profile page.
                     PreferenceManager.getDefaultSharedPreferences(mContext).edit().putString("COVERPHOTOID",result).commit();
                     HTTPRequestHandler simpleHttp = new HTTPRequestHandler();
-                    simpleHttp.SaveNodeProperty(userId, "CoverPhotoId", result);
+                    simpleHttp.SaveNodeProperty(userId, "CoverPhotoId", result, mContext);
                     Intent returnIntent = new Intent();
                     mContext.setResult(5, returnIntent);
                     mContext.finish();
                 }
-            });
+            }, mContext);
             asyncDataRetrieval.execute();
         } catch (IOException e) {
             e.printStackTrace();
@@ -199,13 +199,13 @@ public class LocalPhotoImageSelector extends Activity {
                     // Save our cover photo for opening a few activities later. When we return to profile page.
                     PreferenceManager.getDefaultSharedPreferences(mContext).edit().putString("COVERPHOTOID",result).commit();
                     HTTPRequestHandler simpleHttp = new HTTPRequestHandler();
-                    simpleHttp.SaveNodeProperty(userId, "CoverPhotoId", result);
+                    simpleHttp.SaveNodeProperty(userId, "CoverPhotoId", result, mContext);
                     Intent returnIntent = new Intent();
                     mContext.setResult(5, returnIntent);
                     // Quiting on select for now.
                    // mContext.finish();
                 }
-            });
+            }, mContext);
             asyncDataRetrieval.execute();
         } catch (IOException e) {
             e.printStackTrace();

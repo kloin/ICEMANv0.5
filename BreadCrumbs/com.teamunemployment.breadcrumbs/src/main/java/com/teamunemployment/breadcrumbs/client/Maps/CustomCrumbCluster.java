@@ -52,7 +52,6 @@ public class CustomCrumbCluster extends DefaultClusterRenderer<DisplayCrumb> {
         mImageView = new ImageView(context);
         circularImageView = (CircleImageView) multiProfile.findViewById(R.id.crumb_cluster_image);
         mIconGenerator.setContentView(multiProfile);
-        Drawable drawable = ContextCompat.getDrawable(context.getApplicationContext(),R.drawable.background);
         mIconGenerator.setBackground(makeClusterBackground());
         // Do more custom stuff here
     }
@@ -64,7 +63,6 @@ public class CustomCrumbCluster extends DefaultClusterRenderer<DisplayCrumb> {
         // Set the info window to show their name.
         // mImageView.setImageResource(R.drawable.background);
         circularImageView.setImageBitmap(crumb.getThumbNail());
-
         Bitmap icon = mIconGenerator.makeIcon();
         crumbId = crumb.getId();
         markerOptions.icon(BitmapDescriptorFactory.fromBitmap(icon));

@@ -18,6 +18,11 @@ android {
         versionName "1.0"
         multiDexEnabled true
         testInstrumentationRunner 'android.support.test.runner.AndroidJUnitRunner'
+        generatedDensities = []
+    }
+
+    aaptOptions {
+        additionalParameters "--no-version-vectors"
     }
 
     signingConfigs {
@@ -79,6 +84,8 @@ dependencies {
     compile 'com.survivingwithandroid:weatherlib:1.6.0'
     compile 'com.survivingwithandroid:weatherlib_okhttpclient:1.6.0'
     compile 'com.squareup.okhttp:okhttp:2.0.+'
+    compile 'com.txusballesteros:AutoscaleEditText:1.0'
+    compile 'com.oguzdev:CircularFloatingActionMenu:1.0.2'
     testCompile 'junit:junit:4.12'
     // Set this dependency if you want to use the Hamcrest matcher library
     testCompile 'org.hamcrest:hamcrest-library:1.3'

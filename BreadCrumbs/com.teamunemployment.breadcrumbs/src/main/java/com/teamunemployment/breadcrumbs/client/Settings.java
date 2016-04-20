@@ -62,7 +62,7 @@ public class Settings extends Activity {
         public void onClick(View v) {
             // Remove UserId from preferences so that Main knows we are logged out.
             PreferenceManager.getDefaultSharedPreferences(context).edit().remove("USERID").commit();
-            PreferenceManager.getDefaultSharedPreferences(context).edit().remove("TRAILID").commit();
+            PreferenceManager.getDefaultSharedPreferences(context).edit().remove("LOCAL_TRAIL").commit();
             PreferenceManager.getDefaultSharedPreferences(context).edit().remove("FACEBOOK_REGISTRATION_ID").commit();
             PreferenceManager.getDefaultSharedPreferences(context).edit().remove("COVERPHOTOID").commit();
             PreferenceManager.getDefaultSharedPreferences(context).edit().remove("TRACKING").commit();
@@ -139,14 +139,14 @@ public class Settings extends Activity {
     }
 
     private void deleteUser() {
-        String userId = PreferenceManager.getDefaultSharedPreferences(context).getString("TRAILID", "-1");
+        String userId = PreferenceManager.getDefaultSharedPreferences(context).getString("USERID", "-1");
         String url = LoadBalancer.RequestServerAddress() + "/rest/login/DeleteNode/" + userId;
         HTTPRequestHandler requestHandler = new HTTPRequestHandler();
-        requestHandler.SendSimpleHttpRequest(url);
+        requestHandler.SendSimpleHttpRequest(url, context);
 
         // Hopefully that is all I need to do. May need to return something here if it fails.
         PreferenceManager.getDefaultSharedPreferences(context).edit().remove("USERID").commit();
-        PreferenceManager.getDefaultSharedPreferences(context).edit().remove("TRAILID").commit();
+        PreferenceManager.getDefaultSharedPreferences(context).edit().remove("LOCAL_TRAIL").commit();
         PreferenceManager.getDefaultSharedPreferences(context).edit().remove("FACEBOOK_REGISTRATION_ID").commit();
         PreferenceManager.getDefaultSharedPreferences(context).edit().remove("COVERPHOTOID").commit();
         PreferenceManager.getDefaultSharedPreferences(context).edit().remove("TRACKING").commit();

@@ -20,6 +20,7 @@ import com.teamunemployment.breadcrumbs.database.DatabaseController;
 //import com.google.android.gms.location.LocationClient;
 import com.google.android.gms.location.FusedLocationProviderApi;
 
+@Deprecated
 public class LocationService extends IntentService {
 
     private double MIN_SPEED = 0.233;

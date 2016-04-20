@@ -8,7 +8,7 @@ import android.test.RenamingDelegatingContext;
 import android.test.suitebuilder.annotation.SmallTest;
 import android.util.Log;
 
-import com.teamunemployment.breadcrumbs.Trails.TrailManager;
+import com.teamunemployment.breadcrumbs.Trails.TrailManagerWorker;
 import com.teamunemployment.breadcrumbs.database.DatabaseController;
 
 import org.joda.time.DateTime;
@@ -81,17 +81,17 @@ public class DatabaseUnitTests {
 
     @Test
     public void TestThatMetadataCanBeStoredAndRetrieved() {
-        db.AddMetadata(1, DateTime.now().toString(),123.000, -123.000, "0", TrailManager.GPS);
+        db.AddMetadata(1, DateTime.now().toString(),123.000, -123.000, "0", TrailManagerWorker.GPS, 0);
         JSONObject jsonObject = db.fetchMetadataFromDB("0");
         assertTrue(jsonObject.length() > 0);
     }
 
     @Test
     public void TestThatMetadataGetsIdProperty() throws JSONException {
-        db.AddMetadata(1, DateTime.now().toString(),123.000, -123.000, "0", TrailManager.GPS);
-        db.AddMetadata(1, DateTime.now().toString(),123.000, -123.000, "0", TrailManager.GPS);
-        db.AddMetadata(1, DateTime.now().toString(),123.000, -123.000, "0", TrailManager.GPS);
-        db.AddMetadata(1, DateTime.now().toString(),123.000, -123.000, "0", TrailManager.GPS);
+        db.AddMetadata(1, DateTime.now().toString(),123.000, -123.000, "0", TrailManagerWorker.GPS, 0);
+        db.AddMetadata(1, DateTime.now().toString(),123.000, -123.000, "0", TrailManagerWorker.GPS, 0);
+        db.AddMetadata(1, DateTime.now().toString(),123.000, -123.000, "0", TrailManagerWorker.GPS, 0);
+        db.AddMetadata(1, DateTime.now().toString(),123.000, -123.000, "0", TrailManagerWorker.GPS, 0);
 
         JSONObject jsonObject = db.fetchMetadataFromDB("0");
         JSONObject jsonObject1 = jsonObject.getJSONObject("1");

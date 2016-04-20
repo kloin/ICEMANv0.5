@@ -100,7 +100,7 @@ public class GridImageSelector extends Fragment {
                     }
                 });
             }
-        });
+        }, context);
         asyncDataRetrieval.execute();
     }
 }

@@ -6,8 +6,12 @@ package com.teamunemployment.breadcrumbs.BackgroundServices;
 public class GPSStartEvent {
 
     public final int duration;
+    public final int minDistance;
 
     public GPSStartEvent(int duration) {
         this.duration = duration;
+        this.minDistance = 0; // by default atm.
     }
+
+
 }

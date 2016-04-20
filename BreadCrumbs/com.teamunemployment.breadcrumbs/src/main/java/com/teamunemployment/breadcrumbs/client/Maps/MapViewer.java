@@ -1,10 +1,14 @@
 package com.teamunemployment.breadcrumbs.client.Maps;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.v7.widget.CardView;
+import android.text.SpannableStringBuilder;
+import android.text.style.StyleSpan;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
@@ -12,11 +16,15 @@ import android.widget.LinearLayout;
 import android.widget.PopupWindow;
 import android.widget.TextView;
 
+import com.google.android.gms.maps.CameraUpdateFactory;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
+import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.maps.android.ui.IconGenerator;
 import com.teamunemployment.breadcrumbs.Framework.JsonHandler;
 import com.teamunemployment.breadcrumbs.Network.LoadBalancer;
 import com.teamunemployment.breadcrumbs.Network.ServiceProxy.AsyncDataRetrieval;
 import com.teamunemployment.breadcrumbs.Network.ServiceProxy.UpdateViewElementWithProperty;
-import com.teamunemployment.breadcrumbs.Trails.MyCurrentTrailManager;
+import com.teamunemployment.breadcrumbs.Trails.MyCurrentTrailDisplayManager;
 import com.teamunemployment.breadcrumbs.R;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.GoogleMap.OnMapClickListener;
@@ -26,6 +34,9 @@ import com.google.android.gms.maps.MapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.sothree.slidinguppanel.SlidingUpPanelLayout;
+import static android.graphics.Typeface.BOLD;
+import static android.graphics.Typeface.ITALIC;
+import static android.text.Spannable.SPAN_EXCLUSIVE_EXCLUSIVE;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -43,7 +54,8 @@ public class MapViewer extends Activity implements
 	private String TAG = "MapViewer";
 	private AsyncDataRetrieval clientRequestProxy;
 	private boolean requestingImage = false;
-    private MyCurrentTrailManager myCurrentTrailManager;
+    private MyCurrentTrailDisplayManager myCurrentTrailManager;
+	private Context mContext;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -51,14 +63,15 @@ public class MapViewer extends Activity implements
 		setContentView(R.layout.home_map);
         mMap = ((MapFragment) getFragmentManager().findFragmentById(R.id.map)).getMap();
 		setListenersAndLoaders();
+		mContext = this;
+
 	}
 
 	@Override
 	protected void onStart() {
 		super.onStart();
 		Log.d(TAG, "Begining onStart");
-		// TrailManager is used for drawing trails and shit on the map.
-
+		// TrailManagerWorker is used for drawing trails and shit on the map.
 	}
 
 	// This is a method that wraps up all the startup shit done in onStart() and
@@ -72,7 +85,8 @@ public class MapViewer extends Activity implements
 		/* Grab the trail Id, which is used to load the details of the map and */
 		String trailId = this.getIntent().getStringExtra("TrailId");
 		getBaseDetailsForATrail(trailId);
-		myCurrentTrailManager.DisplayTrailAndCrumbs(trailId);
+		myCurrentTrailManager.DisplayCrumbs(trailId);
+		myCurrentTrailManager.GetAndDisplayTrailOnMap(trailId);
 		addViewToTrail(trailId);
 	}
 
@@ -85,12 +99,12 @@ public class MapViewer extends Activity implements
 				// Dont actually need to do anything with this result, so I just log it.
 				Log.i("MapViewer.ViewUpdate", "Successfully added view to map. Status : " + result);
 			}
-		});
+		}, this);
 		clientRequestProxy.execute();
 	}
 
 	private void createCurrentTrailManager(GoogleMap map) {
-		myCurrentTrailManager = new MyCurrentTrailManager(map, this);
+		myCurrentTrailManager = new MyCurrentTrailDisplayManager(map, this);
 	}
 
 	private void setTrailClickHandlers(final String userId) {
@@ -108,6 +122,7 @@ public class MapViewer extends Activity implements
 			}
 		});
 	}
+
 	private void getBaseDetailsForATrail(final String trailId) {
 		String url = LoadBalancer.RequestServerAddress() + "/rest/TrailManager/GetBaseDetailsForATrail/"+trailId;
 		AsyncDataRetrieval asyncDataRetrieval = new AsyncDataRetrieval(url, new AsyncDataRetrieval.RequestListener() {
@@ -128,7 +143,7 @@ public class MapViewer extends Activity implements
 					}
 				}
 			}
-		});
+		}, this);
 		asyncDataRetrieval.execute();
 	}
 
@@ -142,9 +157,9 @@ public class MapViewer extends Activity implements
 		TextView followers = (TextView) findViewById(R.id.followers_details);
 		String followerCountUrl = LoadBalancer.RequestServerAddress() + "/rest/TrailManager/GetNumberOfFollowersForATrail/"+trailId;
 		String durationUrl = LoadBalancer.RequestServerAddress() + "/rest/TrailManager/GetDurationOfTrailInDays/"+ trailId;
-		updateViewElementWithProperty.UpdateTextViewWithElementAndExtraString(distance, trailId, "Distance", " km");
-		updateViewElementWithProperty.UpdateTextElementWithUrlAndAdditionalString(duration, durationUrl, "Days");
-		updateViewElementWithProperty.UpdateTextElementWithUrlAndAdditionalString(followers, followerCountUrl, "Followers");
+		updateViewElementWithProperty.UpdateTextViewWithElementAndExtraString(distance, trailId, "Distance", " km",mContext );
+		updateViewElementWithProperty.UpdateTextElementWithUrlAndAdditionalString(duration, durationUrl, "Days", mContext);
+		updateViewElementWithProperty.UpdateTextElementWithUrlAndAdditionalString(followers, followerCountUrl, "Followers", mContext);
 	}
 
 	private void setTrailDescription(String trailDescription) {
@@ -157,6 +172,55 @@ public class MapViewer extends Activity implements
 		}
 	}
 
+	private void SetUpMapTests() {
+		mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(-33.8696, 151.2094), 10));
+
+		IconGenerator iconFactory = new IconGenerator(this);
+		addIcon(iconFactory, "Default", new LatLng(-33.8696, 151.2094));
+
+		iconFactory.setColor(Color.CYAN);
+		addIcon(iconFactory, "Custom color", new LatLng(-33.9360, 151.2070));
+
+		iconFactory.setRotation(90);
+		iconFactory.setStyle(IconGenerator.STYLE_RED);
+		addIcon(iconFactory, "Rotated 90 degrees", new LatLng(-33.8858, 151.096));
+
+		iconFactory.setContentRotation(-90);
+		iconFactory.setStyle(IconGenerator.STYLE_PURPLE);
+		addIcon(iconFactory, "Rotate=90, ContentRotate=-90", new LatLng(-33.9992, 151.098));
+
+		iconFactory.setRotation(0);
+		iconFactory.setContentRotation(90);
+		iconFactory.setStyle(IconGenerator.STYLE_GREEN);
+		addIcon(iconFactory, "ContentRotate=90", new LatLng(-33.7677, 151.244));
+
+		iconFactory.setRotation(0);
+		iconFactory.setContentRotation(0);
+		iconFactory.setStyle(IconGenerator.STYLE_ORANGE);
+		addIcon(iconFactory, makeCharSequence(), new LatLng(-33.77720, 151.12412));
+	}
+
+
+
+	private void addIcon(IconGenerator iconFactory, CharSequence text, LatLng position) {
+		MarkerOptions markerOptions = new MarkerOptions().
+				icon(BitmapDescriptorFactory.fromBitmap(iconFactory.makeIcon("Day 1"))).
+				position(position).
+				anchor(iconFactory.getAnchorU(), iconFactory.getAnchorV());
+
+		mMap.addMarker(markerOptions);
+	}
+
+	private CharSequence makeCharSequence() {
+		String prefix = "Mixing ";
+		String suffix = "different fonts";
+		String sequence = prefix + suffix;
+		SpannableStringBuilder ssb = new SpannableStringBuilder(sequence);
+		ssb.setSpan(new StyleSpan(ITALIC), 0, prefix.length(), SPAN_EXCLUSIVE_EXCLUSIVE);
+		ssb.setSpan(new StyleSpan(BOLD), prefix.length(), sequence.length(), SPAN_EXCLUSIVE_EXCLUSIVE);
+		return ssb;
+	}
+
 	private void setUserNames(String userId) {
 		TextView userName = (TextView) findViewById(R.id.username_map_overlay);
 		TextView author = (TextView) findViewById(R.id.author_overlay);
@@ -164,7 +228,7 @@ public class MapViewer extends Activity implements
 		arrayList.add(userName);
 		arrayList.add(author);
 		UpdateViewElementWithProperty updateViewElementWithProperty = new UpdateViewElementWithProperty();
-		updateViewElementWithProperty.UpdateMultipleViews(arrayList, userId, "Username");
+		updateViewElementWithProperty.UpdateMultipleViews(arrayList, userId, "Username", mContext);
 	}
 
 	private void setTrailHeader(String trailName) {

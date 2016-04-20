@@ -19,28 +19,24 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.content.LocalBroadcastManager;
-import android.text.Html;
 import android.util.Log;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.pathsense.android.sdk.location.PathsenseDetectedActivities;
 import com.pathsense.android.sdk.location.PathsenseDetectedActivity;
 import com.pathsense.android.sdk.location.PathsenseDeviceHolding;
 import com.pathsense.android.sdk.location.PathsenseLocationProviderApi;
-import com.teamunemployment.breadcrumbs.BreadcrumbsActivityAPI;
 import com.teamunemployment.breadcrumbs.Location.BreadcrumbsLocationProvider;
+import com.teamunemployment.breadcrumbs.PreferencesAPI;
 import com.teamunemployment.breadcrumbs.R;
-import com.teamunemployment.breadcrumbs.Trails.TrailManager;
+import com.teamunemployment.breadcrumbs.Trails.TrailManagerWorker;
+import com.teamunemployment.breadcrumbs.client.TrailManager;
 import com.teamunemployment.breadcrumbs.database.DatabaseController;
 
 import net.danlew.android.joda.JodaTimeAndroid;
 
 import org.joda.time.DateTime;
 import org.joda.time.LocalTime;
-import org.joda.time.format.DateTimeFormatter;
-
-import java.util.List;
 
 /**
  * Written by Josiah Kendall 2016.
@@ -56,8 +52,12 @@ public class PathSenseActivityManager {
     private static final int MESSAGE_ON_ACTIVITY_UPDATE = 2;
     private static final int MESSAGE_ON_DEVICE_HOLDING = 3;
 
-    private static final String DRIVING = "IN_VEHICLE";
-    private static final String WALKING = "ON_FOOT";
+    public static final String DRIVING = "IN_VEHICLE";
+    public static final String WALKING = "ON_FOOT";
+
+    private static final String SAVED_ACTIVITY_KEY = "RECORDING_ACTIVITY";
+    private static final String PENDING_ACTIVITY_KEY = "PENDING_ACTIVITY";
+    private static final String PENDING_ACTIVITY_COUNT_KEY = "PENDING_ACTIVITY_COUNT";
     //
     private InternalActivityChangeReceiver mActivityChangeReceiver;
     private InternalActivityUpdateReceiver mActivityUpdateReceiver;
@@ -72,13 +72,17 @@ public class PathSenseActivityManager {
     private DatabaseController dbc;
     private int eventId;
     private String trailId;
+    private SharedPreferences mPreferences;
 
+    private PreferencesAPI mPreferencesApi;
     // Public constructor for now.
     public PathSenseActivityManager(Context context) {
         mContext = context;
+
         JodaTimeAndroid.init(context);
         mLocationProvider = BreadcrumbsLocationProvider.getInstance(mContext);
         dbc = new DatabaseController(context);
+        mPreferences = PreferenceManager.getDefaultSharedPreferences(mContext);
     }
 
     /*
@@ -103,12 +107,19 @@ public class PathSenseActivityManager {
         mApi.requestActivityChanges(PathsenseActivityChangeBroadcastReceiver.class);
         mApi.requestActivityUpdates(PathsenseActivityUpdateBroadcastReceiver.class);
         mApi.requestDeviceHolding(PathsenseDeviceHoldingBroadcastReceiver.class);
+
+    }
+
+    // Stop listening to updates from activities.
+    public void RemoveActivityUpdates() {
+        mApi.removeActivityChanges();
+        mApi.removeActivityUpdates();
+        mApi.removeDeviceHolding();
     }
 
     private static class InternalActivityChangeReceiver extends BroadcastReceiver {
         PathSenseActivityManager mActivity;
 
-        //
         InternalActivityChangeReceiver(PathSenseActivityManager activity) {
             mActivity = activity;
         }
@@ -117,7 +128,6 @@ public class PathSenseActivityManager {
         public void onReceive(Context context, Intent intent) {
             final PathSenseActivityManager activity = mActivity;
             final InternalHandler handler = activity != null ? activity.mHandler : null;
-            //
             if (activity != null && handler != null) {
                 PathsenseDetectedActivities detectedActivities = (PathsenseDetectedActivities) intent.getSerializableExtra("detectedActivities");
                 Message msg = Message.obtain();
@@ -217,84 +227,101 @@ public class PathSenseActivityManager {
 
     // This basically validates the activity from pathsense, by making sure that it checks it 3 times. pathsense is sometimes wrong.
     private void updateCurrentActivityStatus(String currentActivity) {
-        final String SAVED_ACTIVITY_KEY = "RECORDING_ACTIVITY";
-        final String PENDING_ACTIVITY_KEY = "PENDING_ACTIVITY";
-        final String PENDING_ACTIVITY_COUNT_KEY = "PENDING_ACTIVITY_COUNT";
 
-        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(mContext);
+        Log.d("PS_Activity", "Starting processing of activity of type: " + currentActivity);
         // This is the activity we are currently recording against.
-        String savedActivity = preferences.getString(SAVED_ACTIVITY_KEY, null);
+        String savedActivity = mPreferences.getString(SAVED_ACTIVITY_KEY, null);
+        Log.d("PS_Activity", "Found savedActivity of type activity of type: " + savedActivity);
 
         // First time use case for the app. We just set something so that we get going.
         if (savedActivity == null) {
-            preferences.edit().putString(SAVED_ACTIVITY_KEY, currentActivity).commit();
+            mPreferences.edit().putString(SAVED_ACTIVITY_KEY, currentActivity).commit();
             return;
         }
         // Basically : If we have the saved activity is curently still or tilting, and so is the detected one, then we want to check for a rest zone.
         if ((savedActivity.equals("TILTING") || savedActivity.equals("STILL")) && (currentActivity.equals("TILTING") || currentActivity.equals("STILL"))) {
             // This checks to see if we are resting. We currently
-            String state = preferences.getString("STATE", " ");
+            String state = mPreferences.getString("STATE", " ");
+            Log.d("PS_Activity", "Current state = " + state);
             if (!state.equals("REST")) {
-                checkForRestZone(currentActivity, preferences);
+                Log.d("PS_Activity", "Checking for restzone");
+                checkForRestZone(currentActivity, mPreferences);
             }
         }
 
-
-        // If we already have that as our pending activity, don't bother doing anything.
+        // If we already have that as our saved activity, don't bother doing anything.
         if (!currentActivity.equals(savedActivity)) {
+            // This is our event change
             // In this case we need to do some work to figure out if we should update
-            String pendingActivity = preferences.getString(PENDING_ACTIVITY_KEY, null);
+            String pendingActivity = mPreferences.getString(PENDING_ACTIVITY_KEY, null);
 
             if (pendingActivity == null) {
-                preferences.edit().putString(PENDING_ACTIVITY_KEY, currentActivity).commit();
-                preferences.edit().putInt(PENDING_ACTIVITY_COUNT_KEY, 0).commit();
+                mPreferences.edit().putString(PENDING_ACTIVITY_KEY, currentActivity).commit();
+                mPreferences.edit().putInt(PENDING_ACTIVITY_COUNT_KEY, 0).commit();
                 return;
             }
 
             // If the current pending activity is different from the last one, we need to wipe the pending stuff and start again
             if (!pendingActivity.equals(currentActivity)) {
-                preferences.edit().putInt(PENDING_ACTIVITY_COUNT_KEY, 0).commit();
-                preferences.edit().putString(PENDING_ACTIVITY_KEY, currentActivity).commit();
+                mPreferences.edit().putInt(PENDING_ACTIVITY_COUNT_KEY, 0).commit();
+                mPreferences.edit().putString(PENDING_ACTIVITY_KEY, currentActivity).commit();
                 return;
             }
 
             // If our pending has been pending last update, we need to check if we need to update our activity that we are recording against
             if (pendingActivity.equals(currentActivity)) {
-                int numberOfChecks = preferences.getInt(PENDING_ACTIVITY_COUNT_KEY, 0);
-                // If we have checked on 2 previous occasions, we need to update our activity.
-                if (numberOfChecks >= 1) {
-                    preferences.edit().remove(PENDING_ACTIVITY_KEY).commit();
-                    preferences.edit().remove(PENDING_ACTIVITY_COUNT_KEY).commit();
-                    preferences.edit().putString(SAVED_ACTIVITY_KEY, currentActivity).commit();
-                    //Check to seee if we are changeing from driving to walking or vice versa.
-                    checkForEvent(savedActivity, currentActivity);
+                int numberOfChecks = mPreferences.getInt(PENDING_ACTIVITY_COUNT_KEY, 0);
+                // Currently using quite a few checks to grab a definitive result. Would possibly be better
+                // To add filters on the server side as well to not grab events if we just briefly change.
+                if (numberOfChecks >= 5) {
+                    mPreferences.edit().remove(PENDING_ACTIVITY_KEY).commit();
+                    mPreferences.edit().remove(PENDING_ACTIVITY_COUNT_KEY).commit();
+
+                    if (currentActivity == null) {
+                        mPreferences.edit().putString(SAVED_ACTIVITY_KEY, "UNKNOWN").commit();
+                    }
+                    mPreferences.edit().putString(SAVED_ACTIVITY_KEY, currentActivity).commit();
+                    //Check to seee if we are changing from driving to walking or vice versa.
+                    checkForDrivingEvent(savedActivity, currentActivity);
                 } else {
                     numberOfChecks += 1;
-                    preferences.edit().putInt(PENDING_ACTIVITY_COUNT_KEY, numberOfChecks).commit();
+                    mPreferences.edit().putInt(PENDING_ACTIVITY_COUNT_KEY, numberOfChecks).commit();
                 }
             }
         }
     }
 
-    private void checkForEvent(String savedActivity, String currentActivity) {
-        if (savedActivity.equals(WALKING) && currentActivity.equals(DRIVING)) {
-            // save event.
-            eventId = PreferenceManager.getDefaultSharedPreferences(mContext).getInt("EVENTID", 0);
-            trailId = PreferenceManager.getDefaultSharedPreferences(mContext).getString("TRAILID", null);
-            mLocationProvider.requestLocationUpdate(activityChangeEventLocationListener);
-        } else if (savedActivity.equals(DRIVING) && currentActivity.equals(WALKING)) {
-            eventId = PreferenceManager.getDefaultSharedPreferences(mContext).getInt("EVENTID", 0);
-
-            trailId = PreferenceManager.getDefaultSharedPreferences(mContext).getString("TRAILID", null);
-            mLocationProvider.requestLocationUpdate(activityChangeEventLocationListener);
+    // Check to see if we are needing to save an event
+    private void checkForDrivingEvent(String savedActivity, String currentActivity) {
+        // This means we have started driving.
+        if (mPreferencesApi == null) {
+            mPreferencesApi = PreferencesAPI.GetInstance(mContext);
+        }
+        if (mPreferencesApi.isTrackingEnabledByUser()) {
+            if (currentActivity.equals(DRIVING) && !savedActivity.equals(DRIVING)) {
+                // we Are now driving
+                mPreferencesApi.SetTransportMethod(TrailManagerWorker.DRIVING);
+                mLocationProvider.requestLocationUpdate(activityChangeAndStopEventLocationListener);
+                // Driving to not driving use case. We are no longer driving, so we need to start requesting location updates again
+            } else if (currentActivity != DRIVING && savedActivity.equals(DRIVING)) { // We were driving but now wer are not
+                mPreferencesApi.SetTransportMethod(TrailManagerWorker.ON_FOOT);
+                mLocationProvider.StartGPS(600, 200);
+            }
         }
     }
 
-    LocationListener activityChangeEventLocationListener = new LocationListener() {
+    LocationListener activityChangeAndStopEventLocationListener = new LocationListener() {
         @Override
         public void onLocationChanged(Location location) {
-            dbc.AddMetadata(eventId, DateTime.now().toString(), location.getLatitude(), location.getLongitude(), trailId, TrailManager.REST_ZONE);
+            eventId = mPreferences.getInt("EVENTID", 0);
+            trailId = Integer.toString(PreferencesAPI.GetInstance(mContext).GetLocalTrailId());
+            // When we save
+            dbc.AddMetadata(eventId, DateTime.now().toString(), location.getLatitude(), location.getLongitude(), trailId, TrailManagerWorker.ACTIVITY_CHANGE, TrailManagerWorker.DRIVING);
             eventId += 1;
+            mPreferences.edit().putInt("EVENTID",eventId).commit();
+            // This was our last location update, so now we stop.
+            mLocationProvider.RemoveGPSUpdates();
+
         }
 
         @Override
@@ -313,12 +340,16 @@ public class PathSenseActivityManager {
         }
     };
 
-    // Purpose of this method is to check whether we are at rest, and if so reduce battery consumption by pausing services.
-    public boolean checkForRestZone(String activity, SharedPreferences preferences) {
-        final long minimumTimeInMillis = 180000; // 3 minitues
-        LocalTime localTime = LocalTime.now();
 
-        //if (localTime.getHourOfDay() > 0 || localTime.getHourOfDay() < 6) {
+
+    // Purpose of this method is to check whether we are at rest, and if so reduce battery consumption by pausing services.
+    // This may occur quite a few times throughout the day.
+    public boolean checkForRestZone(String activity, SharedPreferences preferences) {
+        final long minimumTimeInMillis = 300000; // 5 min
+        LocalTime localTime = LocalTime.now();
+        Log.d("PS_Activity", "Checking for restZone.  ");
+
+        //if (localTime.getHourOfDay() > 0 || ) {
         int timeOfFirstRest = preferences.getInt("FIRST_REST_MILLIS", 0);
 
         // This occurs when its our first time resting
@@ -341,21 +372,27 @@ public class PathSenseActivityManager {
                 // for ActivityCompat#requestPermissions for more details.
                 return false;
             }
-            Location location = mLocationProvider.androidLocationManager.getLastKnownLocation("fused");
+
+//            Location location = fetchBestRecentLocation(); TODO:NEED TO MOVE TO THIS
+
+            Location location = mLocationProvider.GetBestRecentLocation();
                 if (location == null || System.currentTimeMillis() - location.getTime() < minimumTimeInMillis) {
                     singleGpsUpdateWrapper();
                 } else {
                     saveRestPoint(preferences, location);
-                    // Remove repeating updates, because we are at rest now
-                    mLocationProvider.RemoveGPSUpdates();
-                    // At this point we have successfully recorded a rest zone. We need to post up and wait for geofence to be broken.
-                    createGeofence(location);
+                    preferences.edit().remove("STATE").commit();
                     NotificationManager notificationManager = (NotificationManager) mContext.getSystemService(mContext.NOTIFICATION_SERVICE);
                     NotificationCompat.Builder noti = new NotificationCompat.Builder(mContext);
-                    noti.setContentTitle("BreadCrumbs");
-                    noti.setContentText("Saved rest Zone");
+                    noti.setContentTitle("RestZone");
+                    noti.setContentText("saved");
                     noti.setSmallIcon(R.drawable.bc64);
-                    notificationManager.notify(1234, noti.build());
+                    notificationManager.notify(123456789, noti.build());
+                    getAndSavePlaceId(location);
+                    // Remove repeating updates, because we are at rest now
+                    mLocationProvider.RemoveGPSUpdates();
+                    mLocationProvider.StopListeningToPathsenseActivityUpdates();
+                    // At this point we have successfully recorded a rest zone. We need to post up and wait for geofence to be broken.
+                    createGeofence(location);
                     return true;
                 }
             }
@@ -363,9 +400,13 @@ public class PathSenseActivityManager {
         return false;
     }
 
+
+    private void getAndSavePlaceId(Location location) {
+
+    }
+
     private void singleGpsUpdateWrapper() {
         Criteria criteria = new Criteria();
-        criteria.setAccuracy(1);
         // We need to check what permissions we have before we can start getting any locations. If we cant get the right permissions, we need to just can it
         int fineLocation = ContextCompat.checkSelfPermission(mContext,
                 Manifest.permission.ACCESS_FINE_LOCATION);
@@ -380,7 +421,7 @@ public class PathSenseActivityManager {
             // cant do shit.
             return;
         }
-        mLocationProvider.androidLocationManager.requestSingleUpdate(criteria, locationListener, null);
+        mLocationProvider.requestLocationUpdate(locationListener);
     }
 
     private void createGeofence(Location location) {
@@ -388,9 +429,10 @@ public class PathSenseActivityManager {
     }
 
     private void saveRestPoint(SharedPreferences preferences, Location location) {
+
         DatabaseController dbc = new DatabaseController(mContext);
-        String trailId = preferences.getString("TRAILID", null);
-        if (trailId == null) {
+        int trailId = PreferencesAPI.GetInstance(mContext).GetLocalTrailId();
+        if (trailId == -1) {
             throw new NullPointerException("Fatal: Trail Id was Null");
         }
         int eventId = preferences.getInt("EVENTID", 0); // BAD IDEA - WE NEED TO SAVE PREFERENCES
@@ -399,7 +441,7 @@ public class PathSenseActivityManager {
         double longitude = location.getLongitude();
         String placeId = "0";
         String timeStamp = DateTime.now().toString();
-        dbc.SaveRestZone(trailId, eventId, latitude, longitude, placeId, timeStamp);
+        dbc.SaveRestZone(Integer.toString(trailId), eventId, latitude, longitude, placeId, timeStamp);
 
         eventId += 1;
         preferences.edit().putInt("EVENTID", eventId);
@@ -409,8 +451,7 @@ public class PathSenseActivityManager {
     private LocationListener locationListener = new LocationListener() {
         @Override
         public void onLocationChanged(Location location) {
-            SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(mContext);
-            saveRestPoint(preferences, location);
+            saveRestPoint(mPreferences, location);
             mLocationProvider.RemoveGPSUpdates();
             createGeofence(location);
         }

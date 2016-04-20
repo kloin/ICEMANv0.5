@@ -213,7 +213,7 @@ import java.util.Locale;
                     BindCard(result, card);
                     textCachingInterface.CacheText(latLongKey, result);
                 }
-            });
+            }, mContext);
             fetchCardDetails.execute();
         } else {
             BindCard(cachedLatLon, card);
@@ -232,7 +232,7 @@ import java.util.Locale;
                     crumbDescription.setText(result);
                     textCachingInterface.CacheText(descriptionKey, result);
                 }
-            });
+            }, mContext);
             fetchCrumbDescription.execute();
         } else {
             TextView crumbDescription = (TextView) card.findViewById(R.id.crumb_description);
@@ -251,7 +251,7 @@ import java.util.Locale;
                     likesCountTextView.setText(" ("+result + ")");
                 }
             }
-        });
+        }, mContext);
         asyncDataRetrieval.execute();
     }
 
@@ -350,9 +350,8 @@ import java.util.Locale;
                     textCachingInterface.CacheText(crumbId+userId, "y");
                     String url = LoadBalancer.RequestServerAddress() + "/rest/Crumb/UserLikesCrumb/"+crumbId +"/"+userId;
                     HTTPRequestHandler httpRequestHandler = new HTTPRequestHandler();
-                    httpRequestHandler.SendSimpleHttpRequest(url);
+                    httpRequestHandler.SendSimpleHttpRequest(url, mContext);
                 }
-
             }
         });
     }
@@ -375,7 +374,7 @@ import java.util.Locale;
                 // Begin comment construction.
                 ConstructCommentsFromJSON(JSONcomments, card);
             }
-        });
+        }, mContext);
         clientRequestProxy.execute();
     }
 
@@ -431,7 +430,7 @@ import java.util.Locale;
                 // expense for caching this much text???. Doing nothing for the moment.
                 // CommentId = result;
             }
-        });
+        }, mContext);
         clientRequestProxy.execute();
     }
 
@@ -446,7 +445,7 @@ import java.util.Locale;
         commentText.setText(CommentText);
 
         TextView commenter = (TextView) comment.findViewById(R.id.user_name);
-        viewUpdater.UpdateTextViewElement(commenter, UserId, "Username");
+        viewUpdater.UpdateTextViewElement(commenter, UserId, "Username", mContext);
         LinearLayout commentHolder = (LinearLayout) card.findViewById(R.id.comments_holder);
         commentHolder.addView(comment);
     }

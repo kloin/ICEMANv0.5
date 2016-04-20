@@ -14,6 +14,7 @@ public class StaticValues {
         public static final int CRUMB = 2;
         public static final int REST_ZONE = 3;
         public static final int GPS = 4;
+        public static final int ACTIVITY_CHANGE = 5;
 
 
 }

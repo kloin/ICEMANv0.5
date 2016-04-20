@@ -9,6 +9,7 @@ import android.preference.PreferenceManager;
 import com.facebook.CallbackManager;
 import com.teamunemployment.breadcrumbs.Network.LoadBalancer;
 import com.teamunemployment.breadcrumbs.Network.ServiceProxy.AsyncDataRetrieval;
+import com.teamunemployment.breadcrumbs.PreferencesAPI;
 import com.teamunemployment.breadcrumbs.R;
 
 /**
@@ -35,7 +36,8 @@ public class SplashScreen extends Activity {
                 }
 
                 if (!result.equals("0") && !result.equals("")) {
-                    PreferenceManager.getDefaultSharedPreferences(context).edit().putString("TRAILID", result).commit();
+                    PreferencesAPI.GetInstance(context).SaveCurrentLocalTrailId(Integer.parseInt(result));
+
                 }
 
                 // Start up home page.
@@ -43,7 +45,7 @@ public class SplashScreen extends Activity {
                 myIntent.setClassName("com.teamunemployment.breadcrumbs", "com.teamunemployment.breadcrumbs.client.BaseViewModel");
                 startActivity(myIntent);
             }
-        });
+        }, context);
         asyncDataRetrieval.execute();
     }
 }

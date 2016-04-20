@@ -47,7 +47,7 @@ public class SelectedEventViewerBase extends AppCompatActivity {
     private JsonHandler jsonHandler;
     private String EntityId;
     private String UserId;
-    private Context context;
+    private Context mContext;
     private GlobalContainer globalContainer;
     private String CommentId;
     private String extension; // 0 = image, 1 = vid.
@@ -64,6 +64,7 @@ public class SelectedEventViewerBase extends AppCompatActivity {
         //Set our view.
 
         setContentView(R.layout.crumbs_holder);
+        mContext = this;
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         crumbsArray = getIntent().getParcelableArrayListExtra("CrumbArray");
@@ -108,14 +109,12 @@ public class SelectedEventViewerBase extends AppCompatActivity {
             public void onFinished(String result) {
                 toolbar.setTitle(result);
             }
-        });
+        }, mContext);
         asyncDataRetrieval.execute();
-
     }
 
-        // I do this check here to see if there is only one crumb. If there is, I will load just the one,
-        // Else I will load a whole bunch.
-
+    // I do this check here to see if there is only one crumb. If there is, I will load just the one,
+    // Else I will load a whole bunch.
     private void BeginLoad() {
         try {
             String crumbId = (String) this.getIntent().getExtras().get("crumbId");
@@ -132,7 +131,6 @@ public class SelectedEventViewerBase extends AppCompatActivity {
 
     // Load a single crumb as opposed to a bunch
     private void LoadSingleCrumb(String crumbId, String ext) {
-
         if (ext.equals(".jpg")) {
             LoadImage(crumbId);
         } else {
@@ -156,25 +154,25 @@ public class SelectedEventViewerBase extends AppCompatActivity {
                 // expense for caching this much text???. Doing nothing for the moment.
                 CommentId = result;
             }
-        });
+        }, mContext);
         clientRequestProxy.execute();
     }
 
-        // Send the async request for the image. Needs an image id for url
-        private void LoadAndDisplayMedia(Cluster<DisplayCrumb> cluster) {
-            Object[] crumbCollection = globalContainer.GetCluster().getItems().toArray();
+    // Send the async request for the image. Needs an image id for url
+    private void LoadAndDisplayMedia(Cluster<DisplayCrumb> cluster) {
+        Object[] crumbCollection = globalContainer.GetCluster().getItems().toArray();
 
-            // Get all the ids for the crumbs that we need to display
-            for (int index = 0; index < cluster.getSize(); index+=1) {
-                DisplayCrumb crumb = (DisplayCrumb) crumbCollection[index];
-                final String trailId = crumb.getId();
-                String extension = crumb.getExtension();
-                if (extension.equals(".jpg")) {
-                    LoadImage(trailId);
-                } else {
-                    LoadVideo(trailId);
-                }
+        // Get all the ids for the crumbs that we need to display
+        for (int index = 0; index < cluster.getSize(); index+=1) {
+            DisplayCrumb crumb = (DisplayCrumb) crumbCollection[index];
+            final String trailId = crumb.getId();
+            String extension = crumb.getExtension();
+            if (extension.equals(".jpg")) {
+                LoadImage(trailId);
+            } else {
+                LoadVideo(trailId);
             }
+        }
     }
 
     private void LoadVideo(final String trailId) {

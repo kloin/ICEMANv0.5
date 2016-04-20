@@ -3,7 +3,9 @@ package com.teamunemployment.breadcrumbs.client.Maps;
 import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.support.v7.widget.RecyclerView;
+import android.util.Base64;
 import android.util.Log;
 
 import com.google.android.gms.maps.CameraUpdate;
@@ -178,35 +180,11 @@ public class MapDisplayManager implements GoogleMap.OnMarkerClickListener, Googl
                     }
                 });
 
-                //TextView mapOverLayTitle = (TextView) context.findViewById(R.id.map_overlay_title);
-                //TextView description = (TextView) context.findViewById(R.id.map_overlay_description);
-                //description.setText(clusterItem.getDescription());
-
-
-//                TextView timestamp = (TextView) context.findViewById(R.id.map_overlay_content_count);
-//                String time = clusterItem.getTimeStamp();
-//                String s = time.substring(0, Math.min(timestamp.length(), 16));
-//                timestamp.setText(s);
-//                TextView viewCrumbsButton = (TextView) slidingUpPanelLayout.findViewById(R.id.map_overlay_view_button);
-//                viewCrumbsButton.setOnClickListener(new View.OnClickListener() {
-//                    @Override
-//                    public void onClick(View v) {
-//                        Intent viewCrumbsIntent = new Intent(context, SelectedEventViewerBase.class);
-//                        ArrayList<String> crumbs = new ArrayList<>();
-//                        crumbs.add(clusterItem.getId());
-//                        viewCrumbsIntent.putStringArrayListExtra("IdArray", crumbs);
-//                        viewCrumbsIntent.putExtra("TrailId", trailId);
-//                        context.startActivity(viewCrumbsIntent);
-//                    }
-//                });
-               /* */
-
                 // Consumes it?
                 return false;
             }
         });
 
-       // clusterManager.setOnClusterItemClickListener();
     }
 
     private void loadCrumbs(Cluster<DisplayCrumb> cluster) {
@@ -238,7 +216,7 @@ public class MapDisplayManager implements GoogleMap.OnMarkerClickListener, Googl
      *
      * @Throws a JSONException, because the crumb should always have the fields we are asking of it.
      */
-    public void DrawCrumbFromJson(JSONObject crumb) throws JSONException {
+    public void DrawCrumbFromJson(JSONObject crumb, boolean local) throws JSONException {
         //We need to test that we have a map instance
         mapInstance = PassTheMapPlease(); // Shit code
 
@@ -255,21 +233,36 @@ public class MapDisplayManager implements GoogleMap.OnMarkerClickListener, Googl
         final String timeStamp = crumb.getString("TimeStamp");
         final String description = crumb.getString("Chat");
 
-        AsyncFetchThumbnail asyncDataRetrieval = new AsyncFetchThumbnail(id, new AsyncFetchThumbnail.RequestListener() {
-            @Override
-            public void onFinished(Bitmap result) {
-                mapInstance.setMyLocationEnabled(true);
-                DisplayCrumb displayCrumb = new DisplayCrumb(Latitude, Longitude, mediaType, id, R.drawable.wine_glass, placeId,suburb, city, country, timeStamp, description, result);
-                clusterManager.addItem(displayCrumb);
-                //mapInstance.setMapType(GoogleMap.MAP_TYPE_SATELLITE);
-              //  mapInstance.animateCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(Latitude, Longitude), 10.0f));
-                // Need to adjust the screen so the rendering updates?
-            }
-        });
-        asyncDataRetrieval.execute();
+        if (!local) {
+            AsyncFetchThumbnail asyncDataRetrieval = new AsyncFetchThumbnail(id, new AsyncFetchThumbnail.RequestListener() {
+                @Override
+                public void onFinished(Bitmap result) {
+                    //mapInstance.setMyLocationEnabled(false);
+                    DisplayCrumb displayCrumb = new DisplayCrumb(Latitude, Longitude, mediaType, id, R.drawable.wine_glass, placeId,suburb, city, country, timeStamp, description, result);
+                    clusterManager.addItem(displayCrumb);
+                    //mapInstance.setMapType(GoogleMap.MAP_TYPE_SATELLITE);
+                    //  mapInstance.animateCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(Latitude, Longitude), 10.0f));
+                    // Need to adjust the screen so the rendering updates?
+                }
+            });
+            asyncDataRetrieval.execute();
+        }
+        else {
+            String media = crumb.getString("media");
+            byte[] mediaBytes = Base64.decode(media, Base64.DEFAULT);
+            Bitmap bitmap = BitmapFactory.decodeByteArray(mediaBytes, 0, mediaBytes.length);
+
+            DisplayCrumb displayCrumb = new DisplayCrumb(Latitude, Longitude, mediaType, id, R.drawable.wine_glass, placeId,suburb, city, country, timeStamp, description, bitmap);
+            clusterManager.addItem(displayCrumb);
+
+        }
         // Construct the location, set our clickListener (handled in here).
 
         // Show the shit on the map
+
+    }
+
+    public void DrawLocalCrumbFromJSON(JSONObject crumb) {
 
     }
 

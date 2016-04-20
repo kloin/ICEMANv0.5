@@ -1,6 +1,7 @@
 package com.teamunemployment.breadcrumbs.client;
 
 import android.app.Activity;
+import android.content.Context;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
@@ -27,11 +28,13 @@ public class BreadCrumbsImageSelector extends Activity {
     private String trailId;
     private String jsonResponseString;
     private LinearLayout imageHolder;
+    private Context mContext;
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.image_chooser);
         trailId = this.getIntent().getExtras().getString("TrailId");
         SetUpImages();
+        mContext = this;
     }
 
     private void SetUpImages() {
@@ -47,7 +50,7 @@ public class BreadCrumbsImageSelector extends Activity {
                     setUpGridView(imageIds);
                 }
             }
-        });
+        }, mContext);
         asyncDataRetrieval.execute();
     }
 
@@ -62,11 +65,12 @@ public class BreadCrumbsImageSelector extends Activity {
                 String selectedId = ids.get(position);
                 String url = LoadBalancer.RequestServerAddress() + "/rest/TrailManager/SetCoverPhotoForTrail/"+trailId+"/"+selectedId;
                 HTTPRequestHandler requestHandler = new HTTPRequestHandler();
-                requestHandler.SendSimpleHttpRequest(url);
+                requestHandler.SendSimpleHttpRequest(url, mContext);
                 finish();
             }
         });
     }
+
     // load the first three images into our options
     private ArrayList<String> convertJsonToStringArray(String jsonResult) {
         ArrayList<String> idsToReturn = new ArrayList<String>(); //What is going to happen when we have more than 1000

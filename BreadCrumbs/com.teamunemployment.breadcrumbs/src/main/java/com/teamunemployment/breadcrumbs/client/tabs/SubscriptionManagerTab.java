@@ -90,7 +90,7 @@ public class SubscriptionManagerTab extends android.support.v4.app.Fragment {
                 storyBoard = (LinearLayout) rootView.findViewById(R.id.storyBoard);
 
             }
-        });
+        }, myContext);
 
         clientRequestProxy.execute();
         System.out.println("Sending save request to : " + url);
@@ -133,7 +133,7 @@ public class SubscriptionManagerTab extends android.support.v4.app.Fragment {
                 String tit = node.getString("TrailName");
                 String trailId = node.getString("Id"); // wont work until reset of db
                 createStoryObject(i, tit, desc, trailId);
-                //MyCurrentTrailManager manager = new MyCurrentTrailManager(mMap, getActivity());
+                //MyCurrentTrailDisplayManager manager = new MyCurrentTrailDisplayManager(mMap, getActivity());
                // manager.DisplayTrailAndCrumbs(trailId);
                 //loadCrumbsForTrail(trailId); //Set to trailId
             }
@@ -263,7 +263,7 @@ public class SubscriptionManagerTab extends android.support.v4.app.Fragment {
                 }
 
             }
-        });
+        }, myContext);
 
         clientRequestProxy.execute();
 
@@ -374,7 +374,7 @@ public class SubscriptionManagerTab extends android.support.v4.app.Fragment {
                 }
 
             }
-        });
+        }, myContext);
 
         clientRequestProxy.execute();
     }

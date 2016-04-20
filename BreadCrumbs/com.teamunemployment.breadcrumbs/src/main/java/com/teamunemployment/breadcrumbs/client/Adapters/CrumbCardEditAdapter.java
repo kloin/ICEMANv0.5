@@ -133,8 +133,8 @@ public class CrumbCardEditAdapter extends RecyclerView.Adapter<CrumbCardEditAdap
         final EditText trailDescription = (EditText) card.findViewById(R.id.trail_description);
 
         // Set our already selected title/descriptions.
-        updateViewElementWithProperty.UpdateEditTextElement(trailTitle, trailId, "TrailName");
-        updateViewElementWithProperty.UpdateEditTextElement(trailDescription, trailId, "Description");
+        updateViewElementWithProperty.UpdateEditTextElement(trailTitle, trailId, "TrailName", mContext);
+        updateViewElementWithProperty.UpdateEditTextElement(trailDescription, trailId, "Description", mContext);
 
         // Set up click listener for the save button
         TextView saveButton = (TextView) card.findViewById(R.id.save_edited_trail);
@@ -157,9 +157,8 @@ public class CrumbCardEditAdapter extends RecyclerView.Adapter<CrumbCardEditAdap
 
                 // Now save our details.
                 HTTPRequestHandler requestHandler = new HTTPRequestHandler();
-                requestHandler.SaveNodeProperty(trailId, "TrailName", title);
-                requestHandler.SaveNodeProperty(trailId, "Description", description);
-
+                requestHandler.SaveNodeProperty(trailId, "TrailName", title, mContext);
+                requestHandler.SaveNodeProperty(trailId, "Description", description, mContext);
             }
         });
     }
@@ -176,8 +175,8 @@ public class CrumbCardEditAdapter extends RecyclerView.Adapter<CrumbCardEditAdap
                     String descriptionResult = descriptionEditable.toString();
                     // Send save
                     HTTPRequestHandler requestHandler = new HTTPRequestHandler();
-                    requestHandler.SaveNodeProperty(crumbId, "Chat", descriptionResult);
-                 }
+                    requestHandler.SaveNodeProperty(crumbId, "Chat", descriptionResult, mContext);
+                }
             }
         });
 
@@ -223,7 +222,7 @@ public class CrumbCardEditAdapter extends RecyclerView.Adapter<CrumbCardEditAdap
     private void deleteCrumb(String crumbId) {
         String url = LoadBalancer.RequestServerAddress() + "/rest/Crumb/DeleteCrumb/" + crumbId;
         HTTPRequestHandler requestHandler = new HTTPRequestHandler();
-        requestHandler.SendSimpleHttpRequest(url);
+        requestHandler.SendSimpleHttpRequest(url, mContext);
         // need to remove it from the list
     }
     @Override
@@ -254,7 +253,7 @@ public class CrumbCardEditAdapter extends RecyclerView.Adapter<CrumbCardEditAdap
                     BindCard(result, card);
                     textCachingInterface.CacheText(latLongKey, result);
                 }
-            });
+            }, mContext);
             fetchCardDetails.execute();
         } else {
             BindCard(cachedLatLon, card);
@@ -273,7 +272,7 @@ public class CrumbCardEditAdapter extends RecyclerView.Adapter<CrumbCardEditAdap
                     crumbDescription.setText(result);
                     textCachingInterface.CacheText(descriptionKey, result);
                 }
-            });
+            }, mContext);
             fetchCrumbDescription.execute();
         } else {
             TextView crumbDescription = (TextView) card.findViewById(R.id.crumb_description);

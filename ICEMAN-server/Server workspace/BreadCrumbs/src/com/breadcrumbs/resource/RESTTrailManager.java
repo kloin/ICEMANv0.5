@@ -183,25 +183,28 @@ public class RESTTrailManager {
          return trail.GetNumberOfFollowersForATrail(trailId);
     }
     
-    @GET
-    @Path("/SaveMetaData/{metadata}/{trailId}")
-    public String SaveMetadataForTrail(@PathParam("metadata") String metadataJSON, @PathParam("trailId") String trailId) {
+    @POST
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Path("/SaveMetaData/{trailId}")
+    public String SaveMetadataForTrail(String metadataJSON, @PathParam("trailId") String trailId) {
     	// I think every time that we need the metadata, we will be fetching all of it, so I may just save the file to disk and when it is requested
     	// I can retrieve that file, and respond with the string.
     	TrailManager20 trailManager = new TrailManager20();
         JSONObject jsonObject = new JSONObject(metadataJSON);
-    	TrailMetadata metadata = trailManager.ProcessMetadata(jsonObject.getJSONObject("Events"));
-        
+        int startingIndex = jsonObject.getInt("StartingIndex");
+    	TrailMetadata metadata = trailManager.ProcessMetadata(jsonObject.getJSONObject("Events"), startingIndex);
         trailManager.SaveMetadata(metadata, Integer.parseInt(trailId));
      	return "200";
     }
     
-    @GET
-    @Path("/SaveMetadataAndReturnIt/{Metadata}/{TrailId}")
-    public String SaveMetadataAndReturnIt(@PathParam("Metadata") String metadataJSON, @PathParam("TrailId") String trailId) {
+    @POST
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Path("/SaveMetadataAndReturnIt/{TrailId}")
+    public String SaveMetadataAndReturnIt(String metadataJSON, @PathParam("TrailId") String trailId) {
         TrailManager20 trailManager = new TrailManager20();
         JSONObject jsonObject = new JSONObject(metadataJSON);
-    	TrailMetadata metadata = trailManager.ProcessMetadata(jsonObject.getJSONObject("Events"));
+        int startingIndex = jsonObject.getInt("StartingIndex");
+    	TrailMetadata metadata = trailManager.ProcessMetadata(jsonObject.getJSONObject("Events"), startingIndex);
         trailManager.SaveMetadata(metadata, Integer.parseInt(trailId));
         return trailManager.FetchMetadataFromTrail(trailId);
     }

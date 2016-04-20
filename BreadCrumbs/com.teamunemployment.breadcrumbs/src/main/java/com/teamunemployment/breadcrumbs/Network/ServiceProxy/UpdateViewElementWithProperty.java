@@ -21,7 +21,7 @@ import de.hdodenhof.circleimageview.CircleImageView;
  */
 public class UpdateViewElementWithProperty {
     private String TAG = "UPDATER";
-    public void UpdateMultipleViews(final ArrayList<TextView> views, String nodeId, String nodeProperty){
+    public void UpdateMultipleViews(final ArrayList<TextView> views, String nodeId, String nodeProperty, Context context){
         String url = LoadBalancer.RequestServerAddress() +"/rest/login/GetPropertyFromNode/"+nodeId+"/"+nodeProperty;
         AsyncDataRetrieval fetchDescription = new AsyncDataRetrieval(url, new AsyncDataRetrieval.RequestListener() {
             @Override
@@ -31,10 +31,10 @@ public class UpdateViewElementWithProperty {
                         textview.setText(result);
                     }
             }
-        });
+        }, context);
         fetchDescription.execute();
     }
-    public void UpdateTextViewElement(final TextView viewElementToUpdate, String nodeId, String nodeProperty) {
+    public void UpdateTextViewElement(final TextView viewElementToUpdate, String nodeId, String nodeProperty, Context context) {
         String url = LoadBalancer.RequestServerAddress() +"/rest/login/GetPropertyFromNode/"+nodeId+"/"+nodeProperty;
         AsyncDataRetrieval fetchDescription = new AsyncDataRetrieval(url, new AsyncDataRetrieval.RequestListener() {
             @Override
@@ -42,11 +42,11 @@ public class UpdateViewElementWithProperty {
                 if (result != null && !result.isEmpty())
               viewElementToUpdate.setText(result);
             }
-        });
+        }, context);
         fetchDescription.execute();
     }
 
-    public void UpdateTextViewWithElementAndExtraString(final TextView viewElementToUpdate, String nodeId, String nodeProperty, final String extra) {
+    public void UpdateTextViewWithElementAndExtraString(final TextView viewElementToUpdate, String nodeId, String nodeProperty, final String extra, Context context) {
         String url = LoadBalancer.RequestServerAddress() +"/rest/login/GetPropertyFromNode/"+nodeId+"/"+nodeProperty;
         AsyncDataRetrieval fetchDescription = new AsyncDataRetrieval(url, new AsyncDataRetrieval.RequestListener() {
             @Override
@@ -54,7 +54,7 @@ public class UpdateViewElementWithProperty {
                 if (result != null && !result.isEmpty())
                     viewElementToUpdate.setText(result + extra);
             }
-        });
+        }, context);
         fetchDescription.execute();
     }
 
@@ -73,7 +73,7 @@ public class UpdateViewElementWithProperty {
                     }
                 }
             }
-        });
+        }, context);
         fetchDescription.execute();
     }
 
@@ -93,11 +93,11 @@ public class UpdateViewElementWithProperty {
                     }
                 }
             }
-        });
+        }, context);
         fetchDescription.execute();
     }
 
-    public void UpdateEditTextElement(final EditText viewElementToUpdate, String nodeId, String nodeProperty) {
+    public void UpdateEditTextElement(final EditText viewElementToUpdate, String nodeId, String nodeProperty, Context context) {
         String url = LoadBalancer.RequestServerAddress() +"/rest/login/GetPropertyFromNode/"+nodeId+"/"+nodeProperty;
         AsyncDataRetrieval fetchDescription = new AsyncDataRetrieval(url, new AsyncDataRetrieval.RequestListener() {
             @Override
@@ -107,11 +107,11 @@ public class UpdateViewElementWithProperty {
                    viewElementToUpdate.setText(result);
                }
             }
-        });
+        }, context);
         fetchDescription.execute();
     }
 
-    public void UpdateTextElementWithUrl(final TextView viewElementToUpdate, String url) {
+    public void UpdateTextElementWithUrl(final TextView viewElementToUpdate, String url, Context context) {
         AsyncDataRetrieval fetchDescription = new AsyncDataRetrieval(url, new AsyncDataRetrieval.RequestListener() {
             @Override
             public void onFinished(String result) {
@@ -120,11 +120,11 @@ public class UpdateViewElementWithProperty {
                     viewElementToUpdate.setText("("+result+")");
                 }
             }
-        });
+        }, context);
         fetchDescription.execute();
     }
 
-    public void UpdateTextElementWithUrlAndAdditionalString(final TextView viewElementToUpdate, String url, final String extra) {
+    public void UpdateTextElementWithUrlAndAdditionalString(final TextView viewElementToUpdate, String url, final String extra, Context context) {
         AsyncDataRetrieval fetchDescription = new AsyncDataRetrieval(url, new AsyncDataRetrieval.RequestListener() {
             @Override
             public void onFinished(String result) {
@@ -132,7 +132,7 @@ public class UpdateViewElementWithProperty {
                     viewElementToUpdate.setText(result + " " + extra);
                 }
             }
-        });
+        }, context);
         fetchDescription.execute();
     }
 

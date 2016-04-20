@@ -95,7 +95,7 @@ public class EditTrailCardAdapter extends RecyclerView.Adapter<EditTrailCardAdap
     private void updateViews(String trailId, LinearLayout card) {
         TextView viewsTextView = (TextView) card.findViewById(R.id.trail_views);
         UpdateViewElementWithProperty updateViewElementWithProperty = new UpdateViewElementWithProperty();
-        updateViewElementWithProperty.UpdateTextViewWithElementAndExtraString(viewsTextView, trailId, "Views", " Views");
+        updateViewElementWithProperty.UpdateTextViewWithElementAndExtraString(viewsTextView, trailId, "Views", " Views", mContext);
     }
 
     private void FetchAndBindObject(final LinearLayout card, final String trailId) {
@@ -122,7 +122,7 @@ public class EditTrailCardAdapter extends RecyclerView.Adapter<EditTrailCardAdap
                         //textRetriever.CacheText(keyUrl, result);
                     }
                 }
-            });
+            }, mContext);
             fetchCardDetails.execute();
 
         // Need to fetch description with the other data but icbf
@@ -141,7 +141,7 @@ public class EditTrailCardAdapter extends RecyclerView.Adapter<EditTrailCardAdap
                        // textRetriever.CacheText(key, result);
                     }
                 }
-            });
+            }, mContext);
             fetchDescription.execute();
 
         updateViews(trailId, card);
@@ -209,7 +209,7 @@ public class EditTrailCardAdapter extends RecyclerView.Adapter<EditTrailCardAdap
                         activateButton.setTag("0");
 
                         //Set this as our active trail in the shared preferences so that we can reference it later when reloading.
-                        PreferenceManager.getDefaultSharedPreferences(mContext).edit().putString("TRAILID", "-1").commit();
+                        //PreferenceManager.getDefaultSharedPreferences(mContext).edit().putString("TRAILID", "-1").commit();
 
                         Snackbar snackbar = Snackbar
                                 .make(coordinatorLayout, "Active trail changed", Snackbar.LENGTH_LONG)

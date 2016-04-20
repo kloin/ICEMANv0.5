@@ -8,7 +8,6 @@ package com.breadcrumbs.models;
 import java.util.ArrayList;
 
 /**
- *
  * @author jek40
  * 
  * A instance to hold all the objects that we get from processing the metadata from a trail.

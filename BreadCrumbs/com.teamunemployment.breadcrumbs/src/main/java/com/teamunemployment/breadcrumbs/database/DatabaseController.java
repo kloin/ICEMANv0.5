@@ -7,22 +7,20 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteException;
 import android.database.sqlite.SQLiteOpenHelper;
-import android.database.sqlite.SQLiteStatement;
-import android.graphics.Bitmap;
 import android.location.Location;
 import android.preference.PreferenceManager;
 import android.util.Base64;
 import android.util.Log;
-import android.widget.Toast;
 
 import com.teamunemployment.breadcrumbs.Network.LoadBalancer;
 import com.teamunemployment.breadcrumbs.Network.ServiceProxy.AsyncPost;
-import com.teamunemployment.breadcrumbs.Trails.TrailManager;
+import com.teamunemployment.breadcrumbs.Preferences.Preferences;
+import com.teamunemployment.breadcrumbs.PreferencesAPI;
+import com.teamunemployment.breadcrumbs.Trails.TrailManagerWorker;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.sql.Blob;
 import java.text.DateFormat;
 import java.util.Date;
 
@@ -33,6 +31,7 @@ public class DatabaseController extends SQLiteOpenHelper {
 	private static final String DATABASE_NAME="users";
     private static final String TRAIL_POINTS_INDEX = "trailIndexDb";
 
+    private static final String TRAIL_SUMMARY = "trailsSummaryDb";
     private static final String CRUMBS = "crumbsDb";
     private static final String RESTZONES = "restZoneDb";
     private static final String METADATA = "metadataDb";
@@ -71,11 +70,12 @@ public class DatabaseController extends SQLiteOpenHelper {
 	}
 
     public boolean CheckUserExists(String userId) {
-        Cursor cursor = db.rawQuery("Select * from "+DATABASE_NAME+" where userid="+userId, null);
+        db = getReadableDatabase();
+        Cursor cursor = db.rawQuery("Select * from " + DATABASE_NAME + " where userid=" + userId, null);
         try {
-            db = getReadableDatabase();
 
             if (cursor.getCount() > 0) {
+                cursor.close();
                 return true;
             }
         }catch (SQLiteException ex) {
@@ -92,7 +92,7 @@ public class DatabaseController extends SQLiteOpenHelper {
     public void clearTrails(String trailId) {
         db = getWritableDatabase();
         db.rawQuery("DELETE from trailPoints", null);
-        db.rawQuery("DELETE from "+CRUMBS, null);
+        db.rawQuery("DELETE from " + CRUMBS, null);
     }
 
     private void setTrailPointIndex(String trailId, int trailIndex) {
@@ -123,6 +123,7 @@ public class DatabaseController extends SQLiteOpenHelper {
 
         return trailPointIndex;
     }
+
 
     /*
         This is used to save and store data for a trail. This is because we only save trails when:
@@ -211,8 +212,11 @@ public class DatabaseController extends SQLiteOpenHelper {
 
     }
 
+    @Deprecated
     // Method that checks whether more than "pointCount" points have been saved to the db, and if so
-    // we need to update the server to have
+    // we need to update the server to have//
+    // *************************************************************
+    // NOT USED ANYMORE BECAUSE WE DONT DO LIVE UPDATES. MAY BE USED SOMETIME IN THE FUTURE IF WE DO LIVE UPDATES.
     private void updateServer(int pointCount) {
         final String trailId = PreferenceManager.getDefaultSharedPreferences(mContext).getString("TRAILID", "-1");
 
@@ -320,7 +324,7 @@ public class DatabaseController extends SQLiteOpenHelper {
         SQLiteDatabase localDb = getWritableDatabase();
         localDb.insert(CRUMBS, null, cv);
         localDb.close();
-        AddMetadata(eventId, timeStamp, latitude, longitude, trailId, TrailManager.CRUMB);
+        AddMetadata(eventId, timeStamp, latitude, longitude, trailId, TrailManagerWorker.CRUMB, PreferencesAPI.GetInstance(mContext).GetTransportMethod());
     }
 
     public void SaveRestZone(String trailId, int eventId, double latitude, double longitude, String placeId, String timeStamp) {
@@ -336,7 +340,7 @@ public class DatabaseController extends SQLiteOpenHelper {
         localDb.insert(RESTZONES, null, cv);
         localDb.close();
 
-        AddMetadata(eventId, timeStamp, latitude, longitude, trailId, TrailManager.REST_ZONE);
+        AddMetadata(eventId, timeStamp, latitude, longitude, trailId, TrailManagerWorker.REST_ZONE, PreferencesAPI.GetInstance(mContext).GetTransportMethod());
     }
 
     public JSONObject GetAllRestZonesForATrail(String trailId) {
@@ -439,6 +443,7 @@ public class DatabaseController extends SQLiteOpenHelper {
                 "timeStamp TEXT, " +
                 "latitude REAL, " +
                 "longitude REAL," +
+                "transportMethod INTEGER,"+
                 "type INTEGER);");
 
         db.execSQL("CREATE TABLE " + WEATHER + " (_id INTEGER PRIMARY KEY AUTOINCREMENT, " +
@@ -449,6 +454,27 @@ public class DatabaseController extends SQLiteOpenHelper {
                 "latitude REAL, " +
                 "longitude REAL," +
                 "city TEXT);");
+
+        db.execSQL("CREATE TABLE " + TRAIL_SUMMARY + " (_id INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                "TrailId TEXT," +
+                "TrailName TEXT," +
+                "SavedIndex INTEGER," +
+                "StartDate TIMESTAMP);");
+    }
+
+    public void SaveTrailStart(String trailId, String startDate) {
+        ContentValues cv = new ContentValues();
+        cv.put("StartDate", startDate);
+        cv.put("TrailId", "0");
+        cv.put("TrailName", "This is a trail");
+        cv.put("SavedIndex", 0);
+
+       // cv.put("EndDate", ""); // End date is unkown - we can change this later.
+
+        SQLiteDatabase localDb = getWritableDatabase();
+        long localId = localDb.insert(TRAIL_SUMMARY, null, cv);
+        PreferencesAPI.GetInstance(mContext).SaveCurrentLocalTrailId((int) localId);
+        localDb.close();
     }
 
     public void AddWeather(String weatherId, String travelDay, String weatherDesc, Double latitude, Double longitude, String city, String temperature) {
@@ -470,8 +496,12 @@ public class DatabaseController extends SQLiteOpenHelper {
     /*
         This is the method we use to add information about the trail to the database. For everything we do (gps, crumb etc)
         there is metadata, and that will be saved in this database.
+
+        Just a note on the transport method - its the transport method up until you stopped. SO if we start driving,
+        and then dont register any changes until an hour later when we are walking, the transport method for that rest stop
+        where we are walking will be TrailManagerWorker.DRIVING.
      */
-    public void AddMetadata(int eventId, String timeStamp, double latitude, double longitude, String trailId, int type) {
+    public void AddMetadata(int eventId, String timeStamp, double latitude, double longitude, String trailId, int type, int transportMethod) {
         ContentValues cv = new ContentValues();
         cv.put("eventId", eventId);
         cv.put("trailId", trailId );
@@ -479,6 +509,7 @@ public class DatabaseController extends SQLiteOpenHelper {
         cv.put("latitude", latitude);
         cv.put("longitude", longitude);
         cv.put("type", type);
+        cv.put("transportMethod", transportMethod);
         SQLiteDatabase db = getWritableDatabase();
         db.insert(METADATA, null, cv);
         db.close();
@@ -488,11 +519,24 @@ public class DatabaseController extends SQLiteOpenHelper {
 		return this.db;
 	}
 
-    public JSONObject fetchMetadataFromDB(String trailId) {
-        JSONObject metadata = new JSONObject();
-        Cursor constantsCursor=getReadableDatabase().rawQuery("SELECT * FROM "+METADATA+" WHERE trailId ="+trailId+" ORDER BY _id",
+    public int GetSavedIndexForTrail(String trailId) {
+        Cursor constantsCursor=getReadableDatabase().rawQuery("SELECT * FROM " + TRAIL_SUMMARY + " WHERE TrailId =" + trailId + " ORDER BY _id",
                 null);
-        int count = 0;
+        if (constantsCursor.moveToFirst()) {
+            int count = constantsCursor.getInt(constantsCursor.getColumnIndex("SavedIndex"));
+            return count;
+        }
+        return 0;
+    }
+
+    public JSONObject fetchMetadataFromDB(String trailId) {
+        // We generally want to save the first point as a rest zone every time, even if it is not.
+        boolean firstPoint = true;
+        int currentIndex = PreferencesAPI.GetInstance(mContext).GetCurrentIndex();
+
+        JSONObject metadata = new JSONObject();
+        Cursor constantsCursor=getReadableDatabase().rawQuery("SELECT * FROM "+METADATA+" WHERE trailId ="+trailId+" AND _id >"+ currentIndex + " ORDER BY _id",
+                null);
         JSONObject lastNode = null;
 
         while (constantsCursor.moveToNext()) {
@@ -505,8 +549,8 @@ public class DatabaseController extends SQLiteOpenHelper {
             Double longitude = constantsCursor.getDouble(constantsCursor.getColumnIndex("longitude"));
             String timeStamp = constantsCursor.getString(constantsCursor.getColumnIndex("timeStamp"));
             String type = constantsCursor.getString(constantsCursor.getColumnIndex("type"));
-            String driving_method = "0";
-            //int index = constantsCursor.getInt(constantsCursor.getColumnIndex("trailIndex"));
+            int transportMethod = constantsCursor.getInt(constantsCursor.getColumnIndex("transportMethod"));
+
             // Save our single point as a single node, and add it to the overall object that is
             // going to be sent to the server.
             try {
@@ -515,20 +559,92 @@ public class DatabaseController extends SQLiteOpenHelper {
                 metadataNode.put("timeStamp", timeStamp);
                 metadataNode.put("trailId", trailId);
                 metadataNode.put("eventId", eventId);
-                metadataNode.put("type", type);
+                // This wraps the object so that the first point is not a gps point, which means that it wont track properly
+                if (firstPoint) {
+                    metadataNode.put("type", "3");
+                    firstPoint = false;
+                } else {
+                    metadataNode.put("type", type);
+                }
                 metadataNode.put("id", id);
-                metadataNode.put("driving_method", "0");
-                metadata.put(Integer.toString(count), metadataNode);
+                metadataNode.put("driving_method", Integer.toString(transportMethod));
+                metadata.put(Integer.toString(currentIndex), metadataNode);
+                lastNode = metadataNode;
                 // Also need to set last node and next node. So :
-                count += 1;
+                currentIndex += 1;
             } catch (JSONException e) {
                 e.printStackTrace();
             }
         }
 
+        // This is ugly im sorry im pushed for time
+        // We do this here to wrap the trail up, so that we dont get wierd stuff at the end of the trail.
+        try {
+            int id = lastNode.getInt("id") + 1;
+            String latitude = lastNode.getString("latitude");
+            String longitude = lastNode.getString("longitude");
+            int eventId = Integer.parseInt(lastNode.getString("eventId")) + 1;
+            String eventIdString = Integer.toString(eventId);
+            String timeStamp = lastNode.getString("timeStamp");
+            int transportMethod = lastNode.getInt("driving_method");
+
+            JSONObject finalNode = new JSONObject();
+            finalNode.put("latitude", latitude);
+            finalNode.put("longitude", longitude);
+            finalNode.put("timeStamp", timeStamp);
+            finalNode.put("trailId", trailId);
+            finalNode.put("eventId", eventIdString);
+            finalNode.put("type", "1"); // Trail end is one
+            finalNode.put("id", id);
+            finalNode.put("driving_method", Integer.toString(transportMethod));
+            metadata.put(Integer.toString(currentIndex), finalNode);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        } catch (NullPointerException nullPointer) {
+            nullPointer.printStackTrace();
+        }
+
+        // Update our current "save point" in the database.
+        updateTrailSavedPoint(trailId, currentIndex);
         Log.i("BC.DatabaseController", "Found Trail Points: " + metadata.toString());
         return metadata;
     }
+
+    private void updateTrailSavedPoint(String trailId, int count) {
+        ContentValues cv = new ContentValues();
+        cv.put("SavedIndex", count); //These Fields should be your String values of actual column names
+
+        SQLiteDatabase localDb = getWritableDatabase();
+        localDb.update(TRAIL_SUMMARY, cv, "TrailId=" + trailId, null);
+        localDb.close();
+
+        PreferencesAPI.GetInstance(mContext).SetCurrentIndex(count);
+    }
+
+    public JSONObject GetTrailSummary(String trailId) {
+        JSONObject metadata = new JSONObject();
+        Cursor constantsCursor=getReadableDatabase().rawQuery("SELECT * FROM " + TRAIL_SUMMARY + " WHERE TrailId =" + trailId + " ORDER BY _id",
+                null);
+        while (constantsCursor.moveToNext()) {
+            JSONObject trailSummaryNode = new JSONObject();
+
+            //Get all columns
+            String startDate = constantsCursor.getString(constantsCursor.getColumnIndex("StartDate"));
+            //int index = constantsCursor.getInt(constantsCursor.getColumnIndex("trailIndex"));
+            // Save our single point as a single node, and add it to the overall object that is
+            // going to be sent to the server.
+            try {
+                trailSummaryNode.put("TrailId", trailId);
+                trailSummaryNode.put("StartDate", startDate);
+                return trailSummaryNode;
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
+
+        return null;
+    }
+
 
     public JSONObject getCrumbsWithoutMedia(String trailId) {
         JSONObject returnObject = new JSONObject();
@@ -583,7 +699,7 @@ public class DatabaseController extends SQLiteOpenHelper {
             byte[] mediaBlob = constantsCursor.getBlob(index);
             try {
                 String base64String = Base64.encodeToString(mediaBlob, Base64.DEFAULT);
-
+                Log.d("Base64", "base64 retrieved");
                 node.put("eventId", eventId);
                 node.put("latitude", latitude);
                 node.put("longitude", longitude);
@@ -608,4 +724,51 @@ public class DatabaseController extends SQLiteOpenHelper {
         return returnObject;
     }
 
+    public String GetCurrentTrailName() {
+        Cursor cursor = null;
+        String trailName = "";
+        try{
+            cursor = getReadableDatabase().rawQuery("SELECT * FROM " + TRAIL_SUMMARY + " ORDER BY _id", null);
+            // WE just want the latest trail.
+            if(cursor.getCount() > 0) {
+                cursor.moveToLast();
+                trailName = cursor.getString(cursor.getColumnIndex("TrailName"));
+            }
+            return trailName;
+        }finally {
+            cursor.close();
+        }
+    }
+
+    public void SetCurrentTrailName(String trailName) {
+        Cursor cursor = null;
+        int id = -1;
+        try{
+            cursor = getReadableDatabase().rawQuery("SELECT * FROM " + TRAIL_SUMMARY + " ORDER BY _id", null);
+            // WE just want the latest trail.
+            if(cursor.getCount() > 0) {
+                cursor.moveToLast();
+               id = cursor.getInt(cursor.getColumnIndex("_id"));
+            }
+        }finally {
+            cursor.close();
+        }
+
+        getWritableDatabase().rawQuery("UPDATE " + TRAIL_SUMMARY + " SET TrailName = '" + trailName + "' WHERE _id="+id, null);
+    }
+
+    public String GetStartDateForCurrentTrail() {
+        Cursor cursor = null;
+        String date = "";
+        try{
+            cursor = getReadableDatabase().rawQuery("SELECT * FROM " + TRAIL_SUMMARY + " ORDER BY _id", null);
+            if(cursor.getCount() > 0) {
+                cursor.moveToLast();
+                date = cursor.getString(cursor.getColumnIndex("StartDate"));
+            }
+            return date;
+        }finally {
+            cursor.close();
+        }
+    }
 }

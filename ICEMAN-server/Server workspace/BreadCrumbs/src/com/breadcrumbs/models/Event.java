@@ -15,12 +15,16 @@ public class Event {
     private int mEventType;
     private Location mLocation;
     private Polyline mPolyline; // Polyline runs from this event, to the next one
+    private String mTimeStamp;
+    private String mPlaceId;
     
-    public Event(Location location, int eventType, Polyline polyline, int id) {
+    public Event(Location location, int eventType, Polyline polyline, int id, String placeId, String timeStamp) {
         mEventType = eventType;
         mLocation = location;
         mPolyline = polyline;
         mId = id;
+        mPlaceId = placeId;
+        mTimeStamp = timeStamp;
     }
     
     public Location GetLocation() {
@@ -37,5 +41,13 @@ public class Event {
     
     public int GetId() {
         return mId;
+    }
+    
+    public String GetPlaceId() {
+        return mPlaceId;
+    }
+    
+    public String GetTimeStamp() {
+        return mTimeStamp;
     }
 }

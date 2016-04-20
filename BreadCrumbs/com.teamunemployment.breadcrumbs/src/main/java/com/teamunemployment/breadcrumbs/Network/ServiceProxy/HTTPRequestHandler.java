@@ -5,6 +5,7 @@ import android.preference.PreferenceManager;
 import android.util.Log;
 
 import com.teamunemployment.breadcrumbs.Network.LoadBalancer;
+import com.teamunemployment.breadcrumbs.PreferencesAPI;
 
 import org.json.JSONObject;
 
@@ -22,19 +23,19 @@ public class HTTPRequestHandler {
     private JSONObject jsonObject;
     private String result;
     //This is a request which doesnt need a custom callback, we just want to send something to the server. this does not return anything
-    public void SendSimpleHttpRequest(String url) {
+    public void SendSimpleHttpRequest(String url, Context context) {
                 url = url.replaceAll(" ", "%20");
                 clientRequestProxy  = new AsyncDataRetrieval(url, new AsyncDataRetrieval.RequestListener() {
                     @Override
                     public void onFinished(String result) {
                         Log.i("SAVE", result);
                     }
-        });
+        },context);
 
         clientRequestProxy.execute();
     }
 
-    public String SendSimpleHttpRequestAndReturnString(String url) {
+    public String SendSimpleHttpRequestAndReturnString(String url, Context context) {
         url = url.replaceAll(" ", "%20");
         clientRequestProxy  = new AsyncDataRetrieval(url, new AsyncDataRetrieval.RequestListener() {
             /*
@@ -44,7 +45,7 @@ public class HTTPRequestHandler {
             public void onFinished(String res) {
                 result = res;
             }
-        });
+        }, context);
         clientRequestProxy.execute();
         return result;
     }
@@ -58,10 +59,10 @@ public class HTTPRequestHandler {
              */
             @Override
             public void onFinished(String res) {
-                PreferenceManager.getDefaultSharedPreferences(context).edit().putString("TRAILID", res).commit();
+                PreferencesAPI.GetInstance(context).SaveCurrentServerTrailId(Integer.parseInt(res));
 
             }
-        });
+        }, context);
         clientRequestProxy.execute();
 
         return result;
@@ -70,8 +71,8 @@ public class HTTPRequestHandler {
     /*
         Saves a property to a given node. AS per method name.
      */
-    public void SaveNodeProperty(String nodeId, String property, String value) {
+    public void SaveNodeProperty(String nodeId, String property, String value, Context context) {
         String saveUrl = LoadBalancer.RequestServerAddress() + "/rest/login/SaveStringPropertyToNode/"+nodeId + "/"+property + "/"+ value;
-        SendSimpleHttpRequest(saveUrl);
+        SendSimpleHttpRequest(saveUrl, context);
     }
 }

@@ -30,7 +30,6 @@ public class RESTCrumb {
 	@GET
 	@Path("DeleteCrumb/{CrumbId}")
 	public String DeleteCrumb(@PathParam("CrumbId") String CrumbId) {
-		
 		dbm = DBMaster.GetAnInstanceOfDBMaster();
 		String cypherQuery = "MATCH (n) WHERE ID(n) = " + CrumbId + " optional Match(n)-[r]-() DELETE r,n";
 		dbm.ExecuteCypherQueryNoReturn(cypherQuery);
@@ -87,4 +86,6 @@ public class RESTCrumb {
 		Crumb crumb = new Crumb();
 		return crumb.GetNumberOfLikesForACrumb(CrumbId);
 	}
+        
+        
 }

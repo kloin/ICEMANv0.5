@@ -84,7 +84,6 @@ public class HomeCardAdapter extends RecyclerView.Adapter<HomeCardAdapter.ViewHo
     // Replace the contents of a view (invoked by the layout manager)
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
-
         // Here we need to get the trailId from the array.
         String id = mDataset.get(position);
         FetchAndBindObject(holder.CardInner, id, position);
@@ -118,11 +117,11 @@ public class HomeCardAdapter extends RecyclerView.Adapter<HomeCardAdapter.ViewHo
                 public void onFinished(String result) {
                     //Result is our card details. We need to go though and fetch these
                     BindObject(result, card, trailId, position);
-                    if (!result.isEmpty() && keyUrl != null) {
+                    if (result != null && !result.isEmpty() && keyUrl != null) {
                         textRetriever.CacheText(keyUrl, result);
                     }
                 }
-            });
+            }, mContext);
             fetchCardDetails.execute();
         }   else {
             Log.d(TAG, "Found cache, will begin Binding card");
@@ -153,7 +152,7 @@ public class HomeCardAdapter extends RecyclerView.Adapter<HomeCardAdapter.ViewHo
                             PreferenceManager.getDefaultSharedPreferences(mContext).edit().putInt(LAST_CACHED_TIME + trailId, newCacheTime).commit();
                         }
                     }
-                });
+                }, mContext);
                 fetchCardDetails.execute();
             }
         }

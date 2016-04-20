@@ -107,12 +107,7 @@
                     android:layout_alignParentLeft="true"
                     android:layout_alignParentBottom="true"
                     android:textSize="22sp" />
-
-
             </RelativeLayout>
-
-
-
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -120,6 +115,13 @@
             android:layout_marginRight="15dp"
             android:layout_marginTop="10dp"
             android:layout_marginBottom="10dp">
+            <ImageView
+                android:id="@+id/map_click"
+                android:layout_width="wrap_content"
+                android:layout_height="20sp"
+                android:src="@drawable/ic_map_black_24dp"
+                android:alpha="0.5"
+                android:layout_alignParentBottom="true"/>
             <TextView
                 android:id="@+id/details_button"
                 android:layout_width="wrap_content"
@@ -127,7 +129,9 @@
                 android:textSize="14sp"
                 android:background="?attr/selectableItemBackground"
                 android:textColor="@color/ColorPrimary"
-                android:text="DETAILS"
+                android:text="VIEW MAP"
+                android:layout_marginLeft="20dp"
+                android:layout_toRightOf="@+id/map_click"
                 android:layout_alignParentBottom="true"/>
             <!--                android:layout_marginLeft="105dp"-->
         </RelativeLayout>

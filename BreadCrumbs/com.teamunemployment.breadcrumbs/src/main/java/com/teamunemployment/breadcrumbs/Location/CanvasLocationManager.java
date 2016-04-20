@@ -86,6 +86,7 @@ public class CanvasLocationManager implements GoogleApiClient.ConnectionCallback
 
     }
 
+    @Deprecated
     public void fetchTrailPointDataAndSaveItToTheServer() {
         final String trailPointsId;
         // HACZ - cos im just testing.

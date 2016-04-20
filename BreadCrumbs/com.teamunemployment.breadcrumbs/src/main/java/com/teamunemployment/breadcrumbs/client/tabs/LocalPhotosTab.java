@@ -92,7 +92,7 @@ public class LocalPhotosTab extends GridImageSelector {
                         public void onFinished(String result) {
                             PreferenceManager.getDefaultSharedPreferences(activityContext).edit().putString("COVERPHOTOID",result).commit();
                             HTTPRequestHandler simpleHttp = new HTTPRequestHandler();
-                            simpleHttp.SaveNodeProperty(userId, "CoverPhotoId", result);
+                            simpleHttp.SaveNodeProperty(userId, "CoverPhotoId", result, context);
                             Intent returnIntent = new Intent();
                             activityContext.setResult(Activity.RESULT_OK,returnIntent);
 

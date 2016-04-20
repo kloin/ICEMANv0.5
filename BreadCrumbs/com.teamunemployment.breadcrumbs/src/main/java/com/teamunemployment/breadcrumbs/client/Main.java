@@ -238,7 +238,7 @@ public class Main extends AppCompatActivity {
 				myIntent.setClassName("com.teamunemployment.breadcrumbs", "com.teamunemployment.breadcrumbs.client.SplashScreen");
 				startActivity(myIntent);
 			}
-		});
+		}, context);
 		asyncDataRetrieval.execute();
 	}
 
@@ -454,7 +454,7 @@ public class Main extends AppCompatActivity {
 					startActivity(myIntent);
 				}
 			}
-		});
+		}, context);
 		
 		serviceProxy.execute();
 
@@ -507,7 +507,7 @@ public class Main extends AppCompatActivity {
 					startActivity(myIntent);
 				}
 			}
-		});
+		}, context);
 
 		serviceProxy.execute();
 	}
@@ -553,6 +553,10 @@ public class Main extends AppCompatActivity {
 			@Override
 			public void onFinished(String result) {
 
+				if (result == null) {
+					Toast.makeText(context, "Failed to contact server.", Toast.LENGTH_LONG).show();
+					return;
+				}
 				// Need to create an account if there is not one, otherwise log in with the result, which will be the userId.
 				if (result.equals("404")) {
 					// Not found, create account
@@ -582,7 +586,7 @@ public class Main extends AppCompatActivity {
 					// Set our userId and proceed.
 				}
 			}
-		});
+		}, context);
 
 		asyncDataRetrieval.execute();
 	}
@@ -677,7 +681,7 @@ public class Main extends AppCompatActivity {
 				if (emailEditable != null && emailEditable.toString().contains("@")) {
 					HTTPRequestHandler simpleHttpRequest = new HTTPRequestHandler();
 					String emailUrl = LoadBalancer.RequestServerAddress() + "/rest/User/FetchUserDetails/" + emailEditable.toString();
-					simpleHttpRequest.SendSimpleHttpRequest(emailUrl);
+					simpleHttpRequest.SendSimpleHttpRequest(emailUrl, context);
 					dialog.dismiss();
 					Toast.makeText(context, "Details sent successfully", Toast.LENGTH_LONG).show();
 				}

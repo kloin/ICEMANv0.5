@@ -1,5 +1,6 @@
 package com.teamunemployment.breadcrumbs.Trails;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
@@ -11,11 +12,12 @@ import android.preference.PreferenceManager;
 import android.util.Base64;
 import android.util.Log;
 
-import com.google.android.gms.location.places.Place;
 import com.teamunemployment.breadcrumbs.BreadcrumbsLocationAPI;
 import com.teamunemployment.breadcrumbs.Network.LoadBalancer;
 import com.teamunemployment.breadcrumbs.Network.ServiceProxy.AsyncDataRetrieval;
 import com.teamunemployment.breadcrumbs.Network.ServiceProxy.AsyncImageFetch;
+import com.teamunemployment.breadcrumbs.Network.ServiceProxy.AsyncSendLargeJsonParam;
+import com.teamunemployment.breadcrumbs.PreferencesAPI;
 import com.teamunemployment.breadcrumbs.database.DatabaseController;
 
 import org.joda.time.DateTime;
@@ -23,46 +25,63 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.net.URLEncoder;
-import java.sql.Blob;
 import java.text.MessageFormat;
 import java.util.Iterator;
 
 /**
  * Created by jek40 on 30/03/2016.
  */
-public class TrailManager {
+public class TrailManagerWorker {
     public static final int TRAIL_START = 0;
     public static final int TRAIL_END = 1;
     public static final int CRUMB = 2;
     public static final int REST_ZONE = 3;
     public static final int GPS = 4;
+    public static final int ACTIVITY_CHANGE = 5;
+
+
+    public static final int DRIVING = 0;
+    public static final int ON_FOOT = 1;
 
 
     private Context mContext;
     private PlaceManager mPlaceManager;
     private DatabaseController mDbc;
     private SharedPreferences mPreferences;
-    public TrailManager(Context context) {
+    private PreferencesAPI mPreferencesAPI;
+    public TrailManagerWorker(Context context) {
         mContext = context;
         mPlaceManager = new PlaceManager();
         mDbc = new DatabaseController(context);
         mPreferences = PreferenceManager.getDefaultSharedPreferences(context);
+        mPreferencesAPI = PreferencesAPI.GetInstance(mContext);
     }
 
     // This is the method that extracts all our saved data about the server and saves it to the server.
     public void SaveEntireTrail(String trailId) {
         DatabaseController dbc = new DatabaseController(mContext);
         try {
+            int localTrailId = PreferencesAPI.GetInstance(mContext).GetLocalTrailId();
+            String localTrailString = "";
+            if (localTrailId != -1) {
+                localTrailString = Integer.toString(localTrailId);
+            }
+
+            int index = PreferencesAPI.GetInstance(mContext).GetCurrentIndex();
             // Fetch metadata
-            JSONObject metadataJson = dbc.fetchMetadataFromDB(trailId);
+            JSONObject metadataJson = dbc.fetchMetadataFromDB(localTrailString);
             JSONObject metadataPackage = new JSONObject();
+            JSONObject trailSummary = dbc.GetTrailSummary(trailId);
 
             metadataPackage.put("Events", metadataJson);
             metadataPackage.put("TrailId", trailId);
+            metadataPackage.put("StartDate", dbc.GetStartDateForCurrentTrail());
+            metadataPackage.put("EndDate", DateTime.now().toString());
+            metadataPackage.put("StartingIndex", index);
+
             // fetch crumb data
             JSONObject crumbsWithMedia = dbc.GetCrumbsWithMedia(trailId);
 
-            // fetch weather
             // Fetch RestZones
             JSONObject restZones = dbc.GetAllRestZonesForATrail(trailId);
 
@@ -98,29 +117,29 @@ public class TrailManager {
                     e.printStackTrace();
                 }
             }
-        }catch(JSONException e) {
+        } catch(JSONException e) {
             e.printStackTrace();
         }
     }
 
    // private void saveRestZones
     public void saveMetadata(JSONObject metadata, String trailId) {
-        String url = MessageFormat.format("{0}/rest/TrailManager/SaveMetaData/{1}/{2}",
+        String url = MessageFormat.format("{0}/rest/TrailManager/SaveMetaData/{1}",
                 LoadBalancer.RequestServerAddress(),
-                URLEncoder.encode(metadata.toString()),
                 trailId);
         url = url.replaceAll(" ", "%20");
-        AsyncDataRetrieval asyncDataRetrieval  = new AsyncDataRetrieval(url, new AsyncDataRetrieval.RequestListener() {
 
-            /*
-             * Override for the
-             */
+        AsyncSendLargeJsonParam asyncJSON = new AsyncSendLargeJsonParam(url, new AsyncSendLargeJsonParam.RequestListener() {
             @Override
-            public void onFinished(String result) {
-                Log.d("TRAIL_SAVE", "saved metadata");
+            public void onFinished(String result) throws JSONException {
+                // Our metadata gets returned, so now we have to load the map using the data that gets returned.
+                if (result != null) {
+                    Log.d("Result", result);
+                }
+
             }
-        });
-        asyncDataRetrieval.execute();
+        }, metadata);
+        asyncJSON.execute();
     }
 
     private void createNewCrumb(String chat, String userId, String trailId, String latitude, String longitude, String icon, String ext, String placeId,
@@ -156,7 +175,7 @@ public class TrailManager {
 
                 saveImage(media, result);
             }
-        });
+        }, mContext);
         asyncDataRetrieval.execute();
     }
 
@@ -174,23 +193,20 @@ public class TrailManager {
         imagesave.execute();
     }
 
-    public void CreateTrail() {
-
-    }
-
     /*
         Events can currently be:
         * Rest zone
         * crumb
         * trailStart
+        * activity change
      */
     public void CreateEventMetadata(int eventType, Location location) {
         // Fetch placeId
 
-        String trailId = mPreferences.getString("TRAILID", null);
+        String trailId = Integer.toString(PreferencesAPI.GetInstance(mContext).GetLocalTrailId());
         int eventId = mPreferences.getInt("EVENTID", -1);
 
-        if (trailId == null) {
+        if (trailId.equals("-1")) {
             throw new NullPointerException("Cannot create event because we failed to find the trailId");
         }
 
@@ -202,16 +218,16 @@ public class TrailManager {
         // Save event to appropriate database
         switch (eventType) {
             case TRAIL_START:
-                mDbc.AddMetadata(eventId, DateTime.now().toString(),location.getLatitude(), location.getLongitude(), trailId, TRAIL_START);
+                mDbc.AddMetadata(eventId, DateTime.now().toString(),location.getLatitude(), location.getLongitude(), trailId, TRAIL_START, mPreferencesAPI.GetTransportMethod());
                 break;
             case TRAIL_END:
-                mDbc.AddMetadata(eventId, DateTime.now().toString(),location.getLatitude(), location.getLongitude(), trailId, TRAIL_END);
+                mDbc.AddMetadata(eventId, DateTime.now().toString(),location.getLatitude(), location.getLongitude(), trailId, TRAIL_END, mPreferencesAPI.GetTransportMethod());
                 break;
             case CRUMB:
-                mDbc.AddMetadata(eventId, DateTime.now().toString(),location.getLatitude(), location.getLongitude(), trailId, CRUMB);
+                mDbc.AddMetadata(eventId, DateTime.now().toString(),location.getLatitude(), location.getLongitude(), trailId, CRUMB, mPreferencesAPI.GetTransportMethod());
                 break;
             case REST_ZONE:
-                mDbc.AddMetadata(eventId, DateTime.now().toString(),location.getLatitude(), location.getLongitude(), trailId, REST_ZONE);
+                mDbc.AddMetadata(eventId, DateTime.now().toString(),location.getLatitude(), location.getLongitude(), trailId, REST_ZONE, mPreferencesAPI.GetTransportMethod());
                 break;
         }
 
@@ -219,39 +235,35 @@ public class TrailManager {
 
     }
 
-    public void SavePhotoCrumb(Location location, Bitmap media, String description) {
-        String trailId = mPreferences.getString("TRAILID", null);
-
-        //mDbc.SaveCrumb(trailId, description);
-    }
-
-    // We want to save the start of the trail. Want an accurate recording for this.
-    public void SaveTrailStart() {
-        // Need to fetch our location before we save the trail start.
+    public void StartLocalTrail() {
+        DatabaseController dbc = new DatabaseController(mContext);
+        dbc.SaveTrailStart(null, DateTime.now().toString());
         BreadcrumbsLocationAPI locationAPI = new BreadcrumbsLocationAPI();
-        LocationListener locationListener = new LocationListener() {
-            @Override
-            public void onLocationChanged(Location location) {
-                CreateEventMetadata(TrailManager.TRAIL_START, location);
-            }
-
-            @Override
-            public void onStatusChanged(String provider, int status, Bundle extras) {
-
-            }
-
-            @Override
-            public void onProviderEnabled(String provider) {
-
-            }
-
-            @Override
-            public void onProviderDisabled(String provider) {
-
-            }
-        };
+        locationAPI.StartLocationService();
+        locationAPI.singleAccurateGpsRequest(fetchFirstPointListener);
 
 
-        locationAPI.singleAccurateGpsRequest(locationListener);
     }
+
+    private LocationListener fetchFirstPointListener = new LocationListener() {
+        @Override
+        public void onLocationChanged(Location location) {
+            CreateEventMetadata(0, location);
+        }
+
+        @Override
+        public void onStatusChanged(String provider, int status, Bundle extras) {
+
+        }
+
+        @Override
+        public void onProviderEnabled(String provider) {
+
+        }
+
+        @Override
+        public void onProviderDisabled(String provider) {
+
+        }
+    };
 }

@@ -4,6 +4,7 @@ import android.location.LocationListener;
 
 import com.teamunemployment.breadcrumbs.BackgroundServices.GPSStartEvent;
 import com.teamunemployment.breadcrumbs.BackgroundServices.GPSStopEvent;
+import com.teamunemployment.breadcrumbs.BackgroundServices.GeofenceRemoval;
 import com.teamunemployment.breadcrumbs.BackgroundServices.SingleGPSRequest;
 
 import org.greenrobot.eventbus.EventBus;
@@ -14,16 +15,20 @@ import org.greenrobot.eventbus.EventBus;
 public class BreadcrumbsLocationAPI {
 
     EventBus bus = EventBus.getDefault();
-
     // We use eventBus to send the GpsStartEvent to the service.
     public void StartLocationService() {
-        GPSStartEvent event = new GPSStartEvent(200);
+        GPSStartEvent event = new GPSStartEvent(6);
         bus.post(event);
     }
 
     public void StopLocationService() {
         GPSStopEvent event = new GPSStopEvent();
         bus.post(event);
+    }
+
+    public void RemoveGeofences() {
+        GeofenceRemoval gr = new GeofenceRemoval();
+        bus.post(gr);
     }
 
     public void updateGpsTimer(int newTime) {
@@ -34,7 +39,4 @@ public class BreadcrumbsLocationAPI {
         SingleGPSRequest request = new SingleGPSRequest(listener);
         bus.post(request);
     }
-
-
-    //public
 }

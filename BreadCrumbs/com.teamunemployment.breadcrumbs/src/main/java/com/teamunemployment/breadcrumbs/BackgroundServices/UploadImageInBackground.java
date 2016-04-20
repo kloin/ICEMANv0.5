@@ -15,8 +15,6 @@ import net.gotev.uploadservice.UploadNotificationConfig;
  */
 public class UploadImageInBackground extends Service {
 
-
-
     @Nullable
     @Override
     public IBinder onBind(Intent intent) {

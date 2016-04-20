@@ -61,6 +61,7 @@ public class ProfilePageViewer extends AppCompatActivity  implements DatePickerD
     private String followKey;
     private String TAG = "PROFILE";
     private String name;
+    private boolean refreshed = false;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -112,7 +113,7 @@ public class ProfilePageViewer extends AppCompatActivity  implements DatePickerD
                         Log.d(TAG, "Setting users name: "+ result);
                     }
                 }
-            });
+            }, myContext);
             fetchDescription.execute();
         }
 
@@ -173,9 +174,9 @@ public class ProfilePageViewer extends AppCompatActivity  implements DatePickerD
         TextView aboutTextView = (TextView) findViewById(R.id.about_uneditable);
 
         UpdateViewElementWithProperty updater = new UpdateViewElementWithProperty();
-        updater.UpdateEditTextElement(bio, userId, "About");
-        updater.UpdateTextViewElement(ageDisplay, userId, "Age");
-        updater.UpdateTextViewElement(aboutTextView, userId, "About");
+        updater.UpdateEditTextElement(bio, userId, "About", myContext);
+        updater.UpdateTextViewElement(ageDisplay, userId, "Age", myContext);
+        updater.UpdateTextViewElement(aboutTextView, userId, "About", myContext);
     }
 
     private void setUpFollowing() {
@@ -253,7 +254,7 @@ public class ProfilePageViewer extends AppCompatActivity  implements DatePickerD
                             Log.d(TAG, "Follow request responded: " + result);
                             textCaching.CacheText(followKey, "Y");
                         }
-                    });
+                    }, myContext);
                     asyncDataRetrieval.execute();
                     unfollowUserOnClickHandler(followButton, currentUserId);
                 }
@@ -276,7 +277,7 @@ public class ProfilePageViewer extends AppCompatActivity  implements DatePickerD
                             // need to check its legit here though
                             textCaching.CacheText(followKey, "N");
                         }
-                    });
+                    }, myContext);
                     asyncDataRetrieval.execute();
                     followUserOnClickHandler(followButton, currentUserId);
                 }
@@ -303,8 +304,8 @@ public class ProfilePageViewer extends AppCompatActivity  implements DatePickerD
 
         // Do the saving
         HTTPRequestHandler simpleSaver = new HTTPRequestHandler();
-        simpleSaver.SendSimpleHttpRequestAndReturnString(ageUrl);
-        simpleSaver.SendSimpleHttpRequestAndReturnString(aboutInfoUrl);
+        simpleSaver.SendSimpleHttpRequestAndReturnString(ageUrl, myContext);
+        simpleSaver.SendSimpleHttpRequestAndReturnString(aboutInfoUrl, myContext);
     }
 
     private void setIsDirtyListener() {
@@ -361,6 +362,7 @@ public class ProfilePageViewer extends AppCompatActivity  implements DatePickerD
         // This is the check for when we return with no data. Usually when the user hits the back button
         if (requestCode == 1) {
             if(resultCode == Activity.RESULT_OK){
+                refreshed = true;
                 Bitmap bitmap = GlobalContainer.GetContainerInstance().GetBitMap();
                 ImageView header = (ImageView) findViewById(R.id.headerPicture);
                 header.setImageBitmap(bitmap);
@@ -387,8 +389,10 @@ public class ProfilePageViewer extends AppCompatActivity  implements DatePickerD
 
     // Try to set the profile picture for a user
     private void setHeaderPic() {
+        if (refreshed) {
+            return;
+        }
         Bitmap bitmap = GlobalContainer.GetContainerInstance().GetBitMap();
-
         // Need to wipe that bitmap after use.
         GlobalContainer.GetContainerInstance().SetBitMap(null);
         final ImageView header = (ImageView) findViewById(R.id.headerPicture);
@@ -416,7 +420,7 @@ public class ProfilePageViewer extends AppCompatActivity  implements DatePickerD
                         }
                     }
                 }
-            });
+            }, myContext);
             asyncDataRetrieval.execute();
         } else {
             TextView textView = (TextView) myContext.findViewById(R.id.profile_select_prompt);
@@ -480,7 +484,7 @@ public class ProfilePageViewer extends AppCompatActivity  implements DatePickerD
             String userId = PreferenceManager.getDefaultSharedPreferences(myContext).getString("USERID", "-1");
             HTTPRequestHandler requestHandler = new HTTPRequestHandler();
             if (aboutEditable != null) {
-                requestHandler.SaveNodeProperty(userId, "About", aboutEditable.toString());
+                requestHandler.SaveNodeProperty(userId, "About", aboutEditable.toString(), myContext);
             }
         }
     }
@@ -522,7 +526,7 @@ public class ProfilePageViewer extends AppCompatActivity  implements DatePickerD
                     Log.e("Cards", "Failed to convert String to json");
                 }
             }
-        });
+        }, myContext);
 
         clientRequestProxy.execute();
     }

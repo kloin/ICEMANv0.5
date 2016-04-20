@@ -13,7 +13,7 @@ import android.view.animation.DecelerateInterpolator;
 public class SimpleAnimations {
 
     // Fade out a given view
-    public void FadeOutView(View view) {
+    public static void FadeOutView(View view) {
         Animation fadeOut = new AlphaAnimation(1, 0);
         fadeOut.setInterpolator(new AccelerateInterpolator()); //and this
         fadeOut.setStartOffset(1000);
@@ -25,7 +25,7 @@ public class SimpleAnimations {
     }
 
     // Fade in a given view.
-    public void FadeInView(View view) {
+    public static void FadeInView(View view) {
         Animation fadeIn = new AlphaAnimation(0, 1);
         fadeIn.setInterpolator(new DecelerateInterpolator()); //add this
         fadeIn.setDuration(1000);
@@ -33,6 +33,18 @@ public class SimpleAnimations {
         AnimationSet animation = new AnimationSet(false); //change to false
         animation.addAnimation(fadeIn);
         view.setAnimation(animation);
+        view.setVisibility(View.VISIBLE);
+    }
+
+    public static void FadeInViewWithSetDuration(View view, int duration) {
+        Animation fadeIn = new AlphaAnimation(0, 1);
+        fadeIn.setInterpolator(new DecelerateInterpolator()); //add this
+        fadeIn.setDuration(duration);
+
+        AnimationSet animation = new AnimationSet(false); //change to false
+        animation.addAnimation(fadeIn);
+        view.setAnimation(animation);
+        view.setVisibility(View.VISIBLE);
     }
 
 }

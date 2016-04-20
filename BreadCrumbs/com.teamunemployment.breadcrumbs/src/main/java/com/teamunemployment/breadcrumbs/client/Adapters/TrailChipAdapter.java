@@ -76,7 +76,7 @@ public class TrailChipAdapter extends BaseAdapter {
                         ex.printStackTrace();
                     }
                 }
-            });
+            }, context);
             fetchCardDetails.execute();
             // Glide.with(context).load(LoadBalancer.RequestCurrentDataAddress() + "/images/"+id+".jpg").centerCrop().placeholder(Color.GRAY).crossFade().into(imageView);
             // Glide.with(context).load("http://placehold.it/350x150").centerCrop().placeholder(Color.GRAY).crossFade().into(imageView);

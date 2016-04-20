@@ -101,7 +101,7 @@ public class FancyFollow {
                             Log.d(TAG, "Follow request responded: " + result);
                             mTextCaching.CacheText(mFollowKey, "Y");
                         }
-                    });
+                    }, mContext);
                     asyncDataRetrieval.execute();
                     unfollowUserOnClickHandler(followButton, currentUserId);
                 }
@@ -124,7 +124,7 @@ public class FancyFollow {
                             // need to check its legit here though
                             mTextCaching.CacheText(mFollowKey, "N");
                         }
-                    });
+                    }, mContext);
                     asyncDataRetrieval.execute();
                     followUserOnClickHandler(followButton, currentUserId);
                 }

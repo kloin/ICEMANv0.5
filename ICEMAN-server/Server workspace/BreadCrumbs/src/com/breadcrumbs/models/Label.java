@@ -6,7 +6,6 @@
 package com.breadcrumbs.models;
 
 /**
- *
  * @author Josiah Kendall
  */
 public interface Label {

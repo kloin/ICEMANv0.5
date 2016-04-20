@@ -28,8 +28,6 @@ import org.neo4j.graphdb.Node;
 public class TrailManager20 {
 
     private DBMaster dbm;
-    
-    
     public TrailManager20() {
         dbm = DBMaster.GetAnInstanceOfDBMaster();
     }
@@ -62,18 +60,28 @@ public class TrailManager20 {
             keysAndItems.put("TransportMethod", event.GetPolyline().TransportMethod);
         }
         
+        // Want to add timestamp and placeId if they exist.
+        String timeStamp = event.GetTimeStamp();
+        String placeId = event.GetPlaceId();
+        if (timeStamp != null) {
+            keysAndItems.put("TimeStamp", timeStamp);
+        }
+        if (placeId != null) {
+            keysAndItems.put("PlaceId", placeId);
+        }
         
         keysAndItems.put("EventType", event.GetType());
         keysAndItems.put("TrailId", trailId);
-
-        
         // It will not always be a crumb.
         int eventId = dbm.SaveNode(keysAndItems, DBMaster.myLabels.Event);   
         Node crumb = dbm.RetrieveNode(eventId);
         Node trail = dbm.RetrieveNode(trailId);
-        dbm.CreateRelationship(crumb, trail, DBMaster.myRelationships.Part_Of);	
+        if (trail != null) {
+            dbm.CreateRelationship(crumb, trail, DBMaster.myRelationships.Part_Of);	
+        }
     }
     
+ 
 	/*
 	 * Purpose of this method is to process the meta data that we recieve. We want to sort out the bad/unnessesary gps points.
 	 * We want to use this method to "clean" the data that we get.
@@ -85,127 +93,153 @@ public class TrailManager20 {
 	 * 
 	 * We want to change this information into the road plots (as based on google maps directions) as well as 
 	 */
-	public TrailMetadata ProcessMetadata(JSONObject metadataObject) {
-		ArrayList<Event> events = new ArrayList<Event>();
-                ArrayList<Location> gpsWaypoints = new ArrayList<Location>();
-                ArrayList<Location> eventLocations = new ArrayList<Location>();
-                Polyline eventPolyline = null;
-		// At the moment I am just converting each gps point into a trail point, but I want to change that later	
-		Iterator<String> keys = metadataObject.keys();
-                Location lastLocation = null;
-                Location currentLocation = null;
-                int count = 0;
-		while (keys.hasNext()) {
-                        keys.next(); // Just to move through the list
-			String next = Integer.toString(count); //We cannot use next, because it seems to pull it out in some random order.
-                        JSONObject node = metadataObject.getJSONObject(next);
-			int type = Integer.parseInt(node.getString("type"));
-                         if (type == StaticValues.GPS) {
-                            String latitude = node.getString("latitude");
-                            String longitude = node.getString("longitude");
-                            Location location = new Location(latitude, longitude);
-                            gpsWaypoints.add(location);
-                        } else {
-                             // We want to update the location to a new one so that we can draw a line between 
-                            if (currentLocation != null ) {
-                                lastLocation = new Location(currentLocation.GetLatitude(), currentLocation.GetLongitude());
-                            }
-                            String transportMethod = node.getString("driving_method");
-                            String latitude = node.getString("latitude");
-                            String longitude = node.getString("longitude");
-                            String eventId = node.getString("eventId");
-                            
-                            // Create the polyline between this and the last event we processed.
-                            currentLocation = new Location(Double.parseDouble(latitude), Double.parseDouble(longitude));
-                            int transport_method = Integer.parseInt(transportMethod);
-                            if (lastLocation != null) {
-                                
-                                eventPolyline = FetchPathBetweenEventsWithWaypoints(lastLocation, currentLocation, transport_method, gpsWaypoints);
-                                gpsWaypoints.clear();
-                            }
+	public TrailMetadata ProcessMetadata(JSONObject metadataObject, int startingIndex) {
+            // Events are the things that I draw to. These may be rest stops, places of interest, crumbs etc.            
+            ArrayList<Event> events = new ArrayList<Event>();
+            
+            // Gps waypoints guide us the correct way to the rest zones.
+            ArrayList<Location> gpsWaypoints = new ArrayList<Location>();
+            
+            // Locations of our events
+            ArrayList<Location> eventLocations = new ArrayList<Location>();
+            Polyline eventPolyline = null;
+            
+            // Grab an iterator so that we can move though the metadata and process it all.
+            Iterator<String> keys = metadataObject.keys();
+            
+            // These are used as locations that we draw between.
+            Location lastLocation = null;
+            Location currentLocation = null;
+            int count = startingIndex;
+            // Begin processing the data.
+            while (keys.hasNext()) {
+                // We only actually use the keys iterator as a counter, because we grab our own object using the count each time through.
+                keys.next(); 
+                // See - grab the object by the count, not the key. This is safe because of the way we save from the server
+                // We cannot use next, because it seems to pull it out in some random order.
+                String next = Integer.toString(count); 
+                JSONObject node = metadataObject.getJSONObject(next);
+                int type = Integer.parseInt(node.getString("type"));
+                
+                // We want to add location points to the waypoints array so that we can use them to guide our path between events.
+                if (type == StaticValues.GPS) {
+                    String latitude = node.getString("latitude");
+                    String longitude = node.getString("longitude");
+                    Location location = new Location(latitude, longitude);
+                    gpsWaypoints.add(location);
+                    
+                // Currently draw between everything else. This may change at a later date.     
+                } else {
+                     // We want to update the location to a new one so that we can draw a line between 
+                    if (currentLocation != null ) {
+                        lastLocation = new Location(currentLocation.GetLatitude(), currentLocation.GetLongitude());
+                    }
+                    
+                    // Just store this shit for showing on the map.
+                    String transportMethod = node.getString("driving_method");
+                    String latitude = node.getString("latitude");
+                    String longitude = node.getString("longitude");
+                    String eventId = node.getString("eventId");
+                    String timeStamp = getStringFromJSON(node, "timeStamp");
+                    String placeId = getStringFromJSON(node, "placeId");
+                    // Create the polyline between this and the last event we processed.
+                    currentLocation = new Location(Double.parseDouble(latitude), Double.parseDouble(longitude));
+                    int transport_method = Integer.parseInt(transportMethod);
+                    if (lastLocation != null) {
 
-                            // Create an event, and add it to our list of events
-                            eventLocations.add(currentLocation);
-                            Event event = new Event(currentLocation, type,eventPolyline, Integer.parseInt(eventId) ); 
-                            events.add(event);
-                        }
-                        count+= 1;
-                       
-		}
-                // Not sure If I am going to add the polyline to the trail.
-                // Build the overview polyline. Im not sure we will use this in the future but this is the simplest way to get it working now.
-           /*     String overviewPolylineString = null;
-                if (eventLocations.size() > 1) {
-                    overviewPolylineString = FetchTotalTrailPath(eventLocations);
+                        eventPolyline = FetchPathBetweenEventsWithWaypoints(lastLocation, currentLocation, transport_method, gpsWaypoints);
+                        gpsWaypoints.clear();
+                    }
+
+                    // Create an event, and add it to our list of events
+                    eventLocations.add(currentLocation);
+                    Event event = new Event(currentLocation, type,eventPolyline, Integer.parseInt(eventId), placeId, timeStamp); 
+                    events.add(event);
                 }
-                
-                // Create TrailMetadata object.
-                Polyline polyline = new Polyline(overviewPolylineString, 0, -1, Statics.StaticValues.DRIVING, 1);*/
-                TrailMetadata trailMetadata = new TrailMetadata(events, null);
-                
-		return trailMetadata;
-	}
-        
-        
-        public Polyline FetchPathBetweenEvents(Location location1, Location location2, int transportMethod) {
-            // Fetch the path between the two locations from google. Build a polyline out of that.
-            int isEncoded = 0;
-            String encodedString = "";
-           
-            if (transportMethod == Statics.StaticValues.DRIVING) {
-                // Fetch polyline from google.
-                encodedString = getGoogleDirectionsWithNoWaypoints(location1, location2);
-                if (encodedString == null) {
-                    isEncoded = 1;
-                    // Build our own custom encoded polyline just by matching the points.
-                    encodedString = location1.toString() + "|" + location2.toString();
-                }
-            } else if (transportMethod == StaticValues.WALKING) {
-                // Do simple 
+                count+= 1;
+
+            }
+            // Not sure If I am going to add the polyline to the trail.
+            // Build the overview polyline. Im not sure we will use this in the future but this is the simplest way to get it working now.
+       /*     String overviewPolylineString = null;
+            if (eventLocations.size() > 1) {
+                overviewPolylineString = FetchTotalTrailPath(eventLocations);
+            }
+
+            // Create TrailMetadata object.
+            Polyline polyline = new Polyline(overviewPolylineString, 0, -1, Statics.StaticValues.DRIVING, 1);*/
+            TrailMetadata trailMetadata = new TrailMetadata(events, null);
+
+            return trailMetadata;
+    }
+
+    // Safe way of getting shit from json witout it throwing errors. Does return nulls however.
+    private String getStringFromJSON(JSONObject node, String key) {
+        if (node.has(key)) {
+            return node.getString(key);
+        }
+        return null;
+    }
+    
+    public Polyline FetchPathBetweenEvents(Location location1, Location location2, int transportMethod) {
+        // Fetch the path between the two locations from google. Build a polyline out of that.
+        int isEncoded = 0;
+        String encodedString = "";
+
+        if (transportMethod == Statics.StaticValues.DRIVING) {
+            // Fetch polyline from google.
+            encodedString = getGoogleDirectionsWithNoWaypoints(location1, location2);
+            if (encodedString == null) {
                 isEncoded = 1;
                 // Build our own custom encoded polyline just by matching the points.
                 encodedString = location1.toString() + "|" + location2.toString();
-            }           
-            Polyline result = new Polyline(encodedString, 1,0, transportMethod, isEncoded);
-            return result;
-        }
-        
-        public Polyline FetchPathBetweenEventsWithWaypoints(Location location1, Location location2, 
-            int transportMethod, ArrayList<Location> waypoints) {
-            // Fetch the path between the two locations from google. Build a polyline out of that.
-            int isEncoded = 0;
-            String encodedString = "";
-           
-            if (transportMethod == Statics.StaticValues.DRIVING) {
-                // Fetch polyline from google.
-                encodedString = getGoogleDirectionsWithWaypoints(location1, location2, waypoints);
-                // This is the catch to check if encoding the string using the google api failed.
-                if (encodedString == null) {
-                    isEncoded = 1;
-                    // Build our own custom encoded polyline just by matching the points.
-                    encodedString = location1.toString() + "|" + location2.toString();
-                }
-            } else if (transportMethod == StaticValues.WALKING) {
-                
-                // Try do google first. It is unlikely that this will work most of the time but sometimes it will.
-                encodedString = null;//getGoogleWalkingDirections(location1, location2, waypoints);
-                if (encodedString == null) {
-                    // No path found, so we just add a simple polyline.
-                    isEncoded = 1;
-                    // Build our own custom encoded polyline just by matching the points.
-                    
-                    encodedString = location1.toString();// + "|" + location2.toString();
-                    for (int index = 0; index < waypoints.size(); index+=1) {
-                        encodedString = encodedString + "|" + waypoints.get(index).toString();
-                    }
-                    encodedString = encodedString + "|" + location2.toString();
-                }
-                
             }
-            
-            Polyline result = new Polyline(encodedString, 1,0, transportMethod, isEncoded);
-            return result;
+        } else if (transportMethod == StaticValues.WALKING) {
+            // Do simple 
+            isEncoded = 1;
+            // Build our own custom encoded polyline just by matching the points.
+            encodedString = location1.toString() + "|" + location2.toString();
+        }           
+        Polyline result = new Polyline(encodedString, 1,0, transportMethod, isEncoded);
+        return result;
+    }
+
+    public Polyline FetchPathBetweenEventsWithWaypoints(Location location1, Location location2, 
+        int transportMethod, ArrayList<Location> waypoints) {
+        // Fetch the path between the two locations from google. Build a polyline out of that.
+        int isEncoded = 0;
+        String encodedString = "";
+
+        if (transportMethod == Statics.StaticValues.DRIVING) {
+            // Fetch polyline from google.
+            encodedString = getGoogleDirectionsWithWaypoints(location1, location2, waypoints);
+            // This is the catch to check if encoding the string using the google api failed.
+            if (encodedString == null) {
+                isEncoded = 1;
+                // Build our own custom encoded polyline just by matching the points.
+                encodedString = location1.toString() + "|" + location2.toString();
+            }
+        } else if (transportMethod == StaticValues.WALKING) {
+
+            // Try do google first. It is unlikely that this will work most of the time but sometimes it will.
+            encodedString = null;//getGoogleWalkingDirections(location1, location2, waypoints);
+            if (encodedString == null) {
+                // No path found, so we just add a simple polyline.
+                isEncoded = 1;
+                // Build our own custom encoded polyline just by matching the points.
+
+                encodedString = location1.toString();// + "|" + location2.toString();
+                for (int index = 0; index < waypoints.size(); index+=1) {
+                    encodedString = encodedString + "|" + waypoints.get(index).toString();
+                }
+                encodedString = encodedString + "|" + location2.toString();
+            }
+
         }
+
+        Polyline result = new Polyline(encodedString, 1,0, transportMethod, isEncoded);
+        return result;
+    }
         private String getGoogleWalkingDirections(Location location1, Location location2, List<Location> waypoints) {
             String urlString = buildUrl(waypoints, location1, location2);
             urlString = urlString.concat("&mode=walking");

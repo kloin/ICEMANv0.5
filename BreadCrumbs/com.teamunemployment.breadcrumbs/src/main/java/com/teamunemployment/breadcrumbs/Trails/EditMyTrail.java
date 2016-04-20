@@ -25,6 +25,7 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.teamunemployment.breadcrumbs.Network.LoadBalancer;
+import com.teamunemployment.breadcrumbs.PreferencesAPI;
 import com.teamunemployment.breadcrumbs.R;
 import com.teamunemployment.breadcrumbs.Network.ServiceProxy.AsyncDataRetrieval;
 import com.teamunemployment.breadcrumbs.Network.ServiceProxy.HTTPRequestHandler;
@@ -64,7 +65,7 @@ public class EditMyTrail extends AppCompatActivity {
             trailId = extras.getString("TrailId");
             coverId = extras.getString("CoverId");
         } else {
-            trailId = PreferenceManager.getDefaultSharedPreferences(context).getString("TRAILID", "-1");
+            trailId = Integer.toString(PreferencesAPI.GetInstance(context).GetLocalTrailId());
         }
 
         setUpHeaderPhoto(trailId);
@@ -101,12 +102,13 @@ public class EditMyTrail extends AppCompatActivity {
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                TrailManager trailManager = new TrailManager(context);
-                String trailId = PreferenceManager.getDefaultSharedPreferences(context).getString("TRAILID", null);
-                if (trailId == null) {
+                TrailManagerWorker trailManagerWorker = new TrailManagerWorker(context);
+                int localTrailId = PreferencesAPI.GetInstance(context).GetLocalTrailId();
+
+                if (localTrailId == -1) {
                     throw new NullPointerException("TRAILID WAS NULL");
                 }
-                trailManager.SaveEntireTrail(trailId);
+                trailManagerWorker.SaveEntireTrail(trailId);
             }
         });
         ImageButton backButton = (ImageButton) findViewById(R.id.trail_edit_back_button);
@@ -156,7 +158,7 @@ public class EditMyTrail extends AppCompatActivity {
                 }
                 return ids;
             }
-        });
+        }, context);
         clientRequestProxy.execute();
         Log.i("BASE", "Sending request to construct the cards");
     }
@@ -164,7 +166,7 @@ public class EditMyTrail extends AppCompatActivity {
     private void deleteTrail(String trailId) {
         String url = LoadBalancer.RequestServerAddress() + "/rest/login/DeleteNode/" + trailId;
         HTTPRequestHandler requestHandler = new HTTPRequestHandler();
-        requestHandler.SendSimpleHttpRequest(url);
+        requestHandler.SendSimpleHttpRequest(url, context);
         // Hopefully that is all I need to do. May need to return something here if it fails.
     }
 
@@ -189,7 +191,7 @@ public class EditMyTrail extends AppCompatActivity {
                 // what if this fails?
                 deleteTrail(trailId);
                 // Remove trailIdFromPreferences so that we know that we no longer have a trail.
-                PreferenceManager.getDefaultSharedPreferences(context).edit().remove("TRAILID").commit();
+                PreferenceManager.getDefaultSharedPreferences(context).edit().remove("LOCAL_TRAIL").commit();
                 dialog.dismiss();
                 finish();
             }
@@ -209,7 +211,7 @@ public class EditMyTrail extends AppCompatActivity {
                 Glide.with(context).load(LoadBalancer.RequestCurrentDataAddress() + "/images/"+id + ".jpg").centerCrop().crossFade().into(header);
                 String saveUrl = LoadBalancer.RequestServerAddress() + "/rest/login/SaveStringPropertyToNode/"+ trailId + "/CoverPhotoId/" + id;
                 HTTPRequestHandler simpleHttpRequest = new HTTPRequestHandler();
-                simpleHttpRequest.SendSimpleHttpRequest(saveUrl);
+                simpleHttpRequest.SendSimpleHttpRequest(saveUrl, context);
             }
             if (resultCode == Activity.RESULT_CANCELED) {
                 //Write your code if there's no result
@@ -241,10 +243,10 @@ public class EditMyTrail extends AppCompatActivity {
         UpdateViewElementWithProperty updater = new UpdateViewElementWithProperty();
 
         EditText trailTitleEdit = (EditText) findViewById(R.id.title_edit);
-        updater.UpdateEditTextElement(trailTitleEdit, trailId, "TrailName");
+        updater.UpdateEditTextElement(trailTitleEdit, trailId, "TrailName", context);
 
         EditText about = (EditText) findViewById(R.id.countries_edit);
-        updater.UpdateEditTextElement(about, trailId, "Description");
+        updater.UpdateEditTextElement(about, trailId, "Description", context);
     }
 
     private void setUpHeaderPhoto(String crumbId) {
@@ -267,7 +269,6 @@ public class EditMyTrail extends AppCompatActivity {
     }
     // Handler to create the trail based on the data we have been given
     private void setUpButtonListeners() {
-
         ImageButton delete = (ImageButton) findViewById(R.id.delete_trail);
         delete.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -287,9 +288,9 @@ public class EditMyTrail extends AppCompatActivity {
         String titleUpdateUrl = LoadBalancer.RequestServerAddress() + "/rest/login/SaveStringPropertyToNode/"+trailId+"/TrailName/"+newTitle;
         String descriptionUpdateUrl = LoadBalancer.RequestServerAddress() + "/rest/login/SaveStringPropertyToNode/"+trailId+"/Description/"+newDescription;
 
-        AsyncDataRetrieval asyncDataRetrieval = new AsyncDataRetrieval(titleUpdateUrl, null);
+        AsyncDataRetrieval asyncDataRetrieval = new AsyncDataRetrieval(titleUpdateUrl, null, context);
         asyncDataRetrieval.execute();
-        AsyncDataRetrieval asyncDataRetrieval1 = new AsyncDataRetrieval(descriptionUpdateUrl, null);
+        AsyncDataRetrieval asyncDataRetrieval1 = new AsyncDataRetrieval(descriptionUpdateUrl, null, context);
         asyncDataRetrieval1.execute();
         finish();
     }

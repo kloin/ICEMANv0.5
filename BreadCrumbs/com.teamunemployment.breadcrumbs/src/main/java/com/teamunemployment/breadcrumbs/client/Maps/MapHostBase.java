@@ -15,16 +15,17 @@ import com.google.android.gms.maps.MapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.sothree.slidinguppanel.SlidingUpPanelLayout;
-import com.teamunemployment.breadcrumbs.Framework.JsonHandler;
 import com.teamunemployment.breadcrumbs.Network.LoadBalancer;
 import com.teamunemployment.breadcrumbs.Network.ServiceProxy.AsyncDataRetrieval;
+import com.teamunemployment.breadcrumbs.Network.ServiceProxy.AsyncSendLargeJsonParam;
+import com.teamunemployment.breadcrumbs.PreferencesAPI;
 import com.teamunemployment.breadcrumbs.R;
-import com.teamunemployment.breadcrumbs.Trails.MyCurrentTrailManager;
+import com.teamunemployment.breadcrumbs.Trails.MyCurrentTrailDisplayManager;
+import com.teamunemployment.breadcrumbs.database.DatabaseController;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.net.URLEncoder;
 import java.text.MessageFormat;
 
 /**
@@ -37,7 +38,7 @@ public class MapHostBase extends Activity implements
     private String TAG = "MapViewer";
     private AsyncDataRetrieval clientRequestProxy;
     private boolean requestingImage = false;
-    private MyCurrentTrailManager myCurrentTrailManager;
+    private MyCurrentTrailDisplayManager myCurrentTrailManager;
     private Context mContext;
 
     @Override
@@ -53,7 +54,7 @@ public class MapHostBase extends Activity implements
     protected void onStart() {
         super.onStart();
         Log.d(TAG, "Begining onStart");
-        // TrailManager is used for drawing trails and shit on the map.
+        //TrailManagerWorker is used for drawing trails and shit on the map.
     }
 
     // This is a method that wraps up all the startup shit done in onStart() and
@@ -65,34 +66,54 @@ public class MapHostBase extends Activity implements
         setBackButtonListener();
 
 		/* Grab the trail Id, which is used to load the details of the map and */
-        String trailId = PreferenceManager.getDefaultSharedPreferences(mContext).getString("TRAILID", null);
-        saveLocalFileMetadataAndLoadMapWithResponse(trailId);
+        int serverTrailId = PreferencesAPI.GetInstance(this).GetServerTrailId();
 
+        if (serverTrailId == -1) {
+            return;
+        }
+        saveLocalFileMetadataAndLoadMapWithResponse(Integer.toString(serverTrailId));
     }
 
-    private void saveLocalFileMetadataAndLoadMapWithResponse(String trailId) {
-        JSONObject json = buildJSONObject();
-        String url = MessageFormat.format("{0}/rest/TrailManager/SaveMetadataAndReturnIt/{1}/{2}",
+    private void saveLocalFileMetadataAndLoadMapWithResponse(final String trailId) {
+        PreferenceManager.getDefaultSharedPreferences(mContext).edit().putInt("CURRENT_INDEX", 0).commit();
+        int index = PreferenceManager.getDefaultSharedPreferences(mContext).getInt("CURRENT_INDEX", 0);
+        final DatabaseController dbc = new DatabaseController(mContext);
+        JSONObject json = dbc.fetchMetadataFromDB(trailId);
+        JSONObject wrapper = new JSONObject();
+        try {
+            wrapper.put("Events", json);
+            wrapper.put("TrailId", trailId);
+            wrapper.put("StartingIndex", index);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        String url = MessageFormat.format("{0}/rest/TrailManager/SaveMetadataAndReturnIt/{1}",
                 LoadBalancer.RequestServerAddress(),
-                URLEncoder.encode(json.toString()),
                 trailId);
         url = url.replaceAll(" ", "%20");
         // save our metadata and then do the loading with the metadata that gets returned.
-        AsyncDataRetrieval asyncDataRetrieval = new AsyncDataRetrieval(url, new AsyncDataRetrieval.RequestListener() {
+        AsyncSendLargeJsonParam asyncJSON = new AsyncSendLargeJsonParam(url, new AsyncSendLargeJsonParam.RequestListener() {
             @Override
             public void onFinished(String metadataJSON) throws JSONException {
                 // Our metadata gets returned, so now we have to load the map using the data that gets returned.
                 Log.d("Result", metadataJSON);
+                MyCurrentTrailDisplayManager myCurrentTrailDisplayManager = new MyCurrentTrailDisplayManager(mMap, (Activity)mContext);
+                myCurrentTrailDisplayManager.displayMetadata(new JSONObject(metadataJSON));
+                JSONObject crumbs = dbc.GetCrumbsWithMedia(trailId);
+                Log.d(TAG, "Successfully retrieved crumbs: " + crumbs.toString());
+              //  myCurrentTrailDisplayManager.DisplayCrumbsFromLocalDatabase(crumbs);
             }
-        });
-        asyncDataRetrieval.execute();
+        }, wrapper);
+            asyncJSON.execute();
     }
+
+    //private onMetadataFetched()
 
     private JSONObject buildJSONObject() {
         JSONObject wrapper = new JSONObject();
         try {
-            String trailId = PreferenceManager.getDefaultSharedPreferences(mContext).getString("TRAILID", null);
-            wrapper.put("TrailId", trailId);
+            int serverTrail = PreferencesAPI.GetInstance(this).GetServerTrailId();
+            wrapper.put("TrailId", Integer.toString(serverTrail));
             JSONObject events = new JSONObject();
             JSONObject event1 = new JSONObject();
             event1.put("latitude", "-44.9437402");
@@ -102,7 +123,7 @@ public class MapHostBase extends Activity implements
             event1.put("type", "2");
             event1.put("eventId", "0");
             event1.put("driving_method", "0");
-            event1.put("trailId", trailId);
+            event1.put("trailId", Integer.toString(serverTrail));
             event1.put("id", "0");
 
             JSONObject event2 = new JSONObject();
@@ -113,7 +134,7 @@ public class MapHostBase extends Activity implements
             event2.put("type", "2");
             event2.put("eventId", "1");
             event2.put("driving_method", "0");
-            event2.put("trailId", trailId);
+            event2.put("trailId", Integer.toString(serverTrail));
             event2.put("id", "1");
 
             JSONObject event3 = new JSONObject();
@@ -124,7 +145,7 @@ public class MapHostBase extends Activity implements
             event3.put("type", "2");
             event3.put("eventId", "2");
             event3.put("driving_method", "0");
-            event3.put("trailId", trailId);
+            event3.put("trailId", Integer.toString(serverTrail));
             event3.put("id", "2");
 
             JSONObject event4 = new JSONObject();
@@ -135,7 +156,7 @@ public class MapHostBase extends Activity implements
             event4.put("type", "2");
             event4.put("eventId", "3");
             event4.put("driving_method", "0");
-            event4.put("trailId", trailId);
+            event4.put("trailId", Integer.toString(serverTrail));
             event4.put("id", "3");
 
             JSONObject event5 = new JSONObject();
@@ -146,7 +167,7 @@ public class MapHostBase extends Activity implements
             event5.put("type", "2");
             event5.put("eventId", "4");
             event5.put("driving_method", "0");
-            event5.put("trailId", trailId);
+            event5.put("trailId", Integer.toString(serverTrail));
             event5.put("id", "4");
 
             events.put("0", event1);
@@ -176,12 +197,12 @@ public class MapHostBase extends Activity implements
                         // Dont actually need to do anything with this result, so I just log it.
                         Log.i("MapViewer.ViewUpdate", "Successfully added view to map. Status : " + result);
                     }
-                });
+                }, mContext);
         clientRequestProxy.execute();
     }
 
     private void createCurrentTrailManager(GoogleMap map) {
-        myCurrentTrailManager = new MyCurrentTrailManager(map, this);
+        myCurrentTrailManager = new MyCurrentTrailDisplayManager(map, this);
     }
 
     private void setTrailClickHandlers(final String userId) {

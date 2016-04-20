@@ -106,7 +106,7 @@ public class AccountManager {
                     //finish();
                     // Save cover Id for user.
                     HTTPRequestHandler requestHandler = new HTTPRequestHandler();
-                    requestHandler.SaveNodeProperty(userId, "CoverPhotoId", userId);
+                    requestHandler.SaveNodeProperty(userId, "CoverPhotoId", userId, context);
                 }
             });
 

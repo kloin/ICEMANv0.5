@@ -1,40 +1,29 @@
 package com.teamunemployment.breadcrumbs;
 
-import android.app.Application;
-import android.content.ContentValues;
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.location.Location;
-import android.net.Uri;
 import android.preference.PreferenceManager;
-import android.provider.MediaStore;
 import android.support.test.InstrumentationRegistry;
 import android.support.test.runner.AndroidJUnit4;
-import android.test.AndroidTestCase;
-import android.test.ApplicationTestCase;
-import android.test.InstrumentationTestCase;
 import android.test.RenamingDelegatingContext;
 import android.test.suitebuilder.annotation.SmallTest;
 import android.util.Log;
 
 import com.teamunemployment.breadcrumbs.Location.PathSense.Activity.PathSenseActivityManager;
 import com.teamunemployment.breadcrumbs.Network.LoadBalancer;
-import com.teamunemployment.breadcrumbs.Network.ServiceProxy.AsyncDataRetrieval;
-import com.teamunemployment.breadcrumbs.Trails.MyCurrentTrailManager;
-import com.teamunemployment.breadcrumbs.Trails.TrailManager;
+import com.teamunemployment.breadcrumbs.Trails.TrailManagerWorker;
 import com.teamunemployment.breadcrumbs.database.DatabaseController;
 
 import org.joda.time.DateTime;
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.junit.runners.JUnit4;
+
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
@@ -42,8 +31,6 @@ import static org.junit.Assert.fail;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.lang.Override;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.text.MessageFormat;
 
@@ -55,14 +42,14 @@ import java.text.MessageFormat;
 public class ApplicationTest {
     private Context mContext;
     private DatabaseController db;
-    private TrailManager trailManager;
+    private TrailManagerWorker trailManagerWorker;
     private SharedPreferences mPreferences;
     private static final String mockTrailId = "12345678";
     @Before
     public void Before() throws Exception {
         RenamingDelegatingContext context = new RenamingDelegatingContext(InstrumentationRegistry.getInstrumentation().getTargetContext(), "test_");
         db = new DatabaseController(context);
-        trailManager = new TrailManager(context);
+        trailManagerWorker = new TrailManagerWorker(context);
         mPreferences = PreferenceManager.getDefaultSharedPreferences(context);
         mContext = context;
     }
@@ -70,10 +57,20 @@ public class ApplicationTest {
     //According to Zainodis annotation only for legacy and not valid with gradle>1.1:
     @Test
     public void TestUserCanBeCreatedAndRetrieved(){
+
         db.SaveUser("7898", "Josiah", 24, "0123");
         assertTrue(db.CheckUserExists("7898"));
         // Here i have my new database wich is not connected to the standard database of the App
     }
+
+
+    @Test
+    public void TestWeCanCreateTrailSummary() {
+        db.SaveTrailStart("1", DateTime.now().toString());
+        assertTrue(db.GetTrailSummary("1") != null);
+    }
+
+
 
     @Test
     public void TestUserCannotBeFoundIfItDoesNotExist() {
@@ -124,10 +121,18 @@ public class ApplicationTest {
 
     @Test
     public void TestThatMetadataCanBeStoredAndRetrieved() {
-        trailManager.CreateEventMetadata(TrailManager.TRAIL_START, mockMeALocation());
+        trailManagerWorker.CreateEventMetadata(TrailManagerWorker.TRAIL_START, mockMeALocation());
         //db.AddMetadata("1", DateTime.now().toString(),123.000, -123.000, "0", );
         JSONObject jsonObject = db.fetchMetadataFromDB(mockTrailId);
         assertTrue(jsonObject.length() > 0);
+    }
+
+    @Test
+    public void TestHowTrailSavePointWorks() {
+        trailManagerWorker.CreateEventMetadata(TrailManagerWorker.TRAIL_START, mockMeALocation());
+
+        int test = db.GetSavedIndexForTrail(mockTrailId);
+        assertTrue(test> 0);
     }
 
     // Just a standard fake location with fake values. Might randomise these if neccesary
@@ -142,10 +147,10 @@ public class ApplicationTest {
     public void TestThatMetadataGetsIdProperty() throws JSONException {
         Location location = mockMeALocation();
         mPreferences.edit().putString("TRAILID", "12345678").commit();
-        trailManager.CreateEventMetadata(TrailManager.TRAIL_START, location);
-        trailManager.CreateEventMetadata(TrailManager.REST_ZONE, location);
-        trailManager.CreateEventMetadata(TrailManager.CRUMB, location);
-        trailManager.CreateEventMetadata(TrailManager.TRAIL_END, location);
+        trailManagerWorker.CreateEventMetadata(TrailManagerWorker.TRAIL_START, location);
+        trailManagerWorker.CreateEventMetadata(TrailManagerWorker.REST_ZONE, location);
+        trailManagerWorker.CreateEventMetadata(TrailManagerWorker.CRUMB, location);
+        trailManagerWorker.CreateEventMetadata(TrailManagerWorker.TRAIL_END, location);
 
         JSONObject jsonObject = db.fetchMetadataFromDB("12345678");
         JSONObject jsonObject1 = jsonObject.getJSONObject("1");
@@ -227,7 +232,7 @@ public class ApplicationTest {
         db.SaveCrumb(trailId2, description2, userId2, eventId2, latitude2, longitude2, mime2, timeStamp2, media2, icon2, placeId2, suburb2, city2, country2);
 
         // Hit SaveMethod
-        trailManager.SaveEntireTrail("99");
+        trailManagerWorker.SaveEntireTrail("99");
     }
 
     private static byte[] getBitmapAsByteArray(Bitmap bitmap) {
@@ -244,7 +249,7 @@ public class ApplicationTest {
         String url = MessageFormat.format(LoadBalancer.RequestServerAddress() + "/rest/login/saveTrail/{0}/{1}/{2}", "Test data 1", "test", userId);
         String trailId = "4243";
         mPreferences.edit().putString("TRAILID", "4243").commit();
-        trailManager.SaveTrailStart();
+        trailManagerWorker.SaveTrailStart();
         Location location1 = new Location("gps");
         location1.setLatitude(-44.9437402);
         location1.setLongitude(168.8378104);
@@ -255,15 +260,15 @@ public class ApplicationTest {
         location1.setLatitude(-45.0375501);
         location1.setLongitude(169.1944608);
 
-        trailManager.CreateEventMetadata(TrailManager.REST_ZONE, location1);
-        trailManager.CreateEventMetadata(TrailManager.CRUMB, location2);
-        // trailManager.CreateEventMetadata(TrailManager.GPS, mockMeALocation());
-        trailManager.CreateEventMetadata(TrailManager.REST_ZONE, location3);
+        trailManagerWorker.CreateEventMetadata(TrailManagerWorker.REST_ZONE, location1);
+        trailManagerWorker.CreateEventMetadata(TrailManagerWorker.CRUMB, location2);
+        // trailManagerWorker.CreateEventMetadata(TrailManagerWorker.GPS, mockMeALocation());
+        trailManagerWorker.CreateEventMetadata(TrailManagerWorker.REST_ZONE, location3);
         JSONObject jsonObject = db.fetchMetadataFromDB(trailId);
         JSONObject wrapper = new JSONObject();
         wrapper.put("TrailId", trailId);
         wrapper.put("Events", jsonObject);
-        trailManager.saveMetadata(wrapper, trailId);
+        trailManagerWorker.saveMetadata(wrapper, trailId);
     }
 
     @Test

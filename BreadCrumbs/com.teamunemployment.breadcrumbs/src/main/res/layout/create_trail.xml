@@ -18,7 +18,7 @@
         android:layout_height="wrap_content" />
     <TextView
         android:id="@+id/create_trail_header"
-        android:text="Create Trail"
+        android:text="Publish"
         android:layout_marginLeft="60dp"
         android:textSize="24sp"
         android:textColor="@color/white"
@@ -36,17 +36,27 @@
            android:layout_height="wrap_content"
            android:textSize="14sp"
            android:layout_margin="20dp"
-           android:text="Create a trail to record information about your journey as you travel."/>
+           android:text="Publish updates of your journey. Any content that you add remains private on your device until published."/>
        <TextView
            android:id="@+id/details_header"
            android:layout_below="@+id/new_trail_prompt"
-           android:text="DETAILS"
+           android:text="TRAIL DETAILS"
            android:textSize="16sp"
            android:textColor="@color/ColorPrimary"
            android:layout_margin="20dp"
            android:layout_width="wrap_content"
            android:layout_height="wrap_content" />
+       <TextView
+           android:id="@+id/edit_trail_name_publish_page"
+           android:text="EDIT"
+           android:layout_alignTop="@+id/details_header"
+           android:layout_alignParentRight="true"
+           android:textColor="@color/ColorPrimary"
+           android:layout_marginRight="30dp"
+           android:layout_width="wrap_content"
+           android:layout_height="wrap_content" />
        <EditText
+           android:visibility="gone"
            android:layout_width="match_parent"
            android:id="@+id/title_edit"
            android:inputType="textCapSentences"
@@ -58,26 +68,30 @@
            android:layout_marginRight="20dp"
            android:layout_marginLeft="17dp"
            android:layout_height="wrap_content" />
-       <android.support.v7.widget.SwitchCompat
-           android:id="@+id/trail_privacy_switch"
-           android:layout_width="match_parent"
-           android:layout_height="wrap_content"
-           android:textColor="@color/my_secondary_text"
-           android:layout_marginRight="20dp"
-           android:textSize="14sp"
-           android:layout_marginLeft="20dp"
-           android:layout_marginBottom="20dp"
-           android:layout_below="@id/title_edit"
-           android:text="Private Trail"/>
+
        <TextView
-           android:id="@+id/save_trail_button"
-           android:layout_below="@id/trail_privacy_switch"
+           android:id="@+id/trail_title_text_view"
+           android:text="I Am Traveller"
+           android:layout_below="@+id/details_header"
+           android:hint="Trail Title"
+           android:textSize="18sp"
+           android:layout_marginBottom="10dp"
+           android:layout_marginRight="20dp"
+           android:layout_marginLeft="17dp"
+           android:layout_width="match_parent"
+           android:layout_height="wrap_content" />
+       <TextView
+           android:id="@+id/publish_trail"
+           android:layout_below="@id/details_header"
            android:layout_alignParentRight="true"
            android:textColor="@color/ColorPrimary"
-           android:layout_margin="20dp"
+           android:layout_marginLeft="20dp"
+           android:layout_marginRight="20dp"
+           android:layout_marginBottom="20dp"
+           android:layout_marginTop="80dp"
            android:textSize="16sp"
            android:padding="10dp"
-           android:text="SAVE"
+           android:text="PUBLISH"
            android:layout_width="wrap_content"
            android:layout_height="wrap_content" />
        <EditText

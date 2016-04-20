@@ -14,9 +14,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ImageButton;
-import android.widget.ImageView;
 import android.widget.Spinner;
-import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.VideoView;
 
@@ -26,11 +24,10 @@ import com.google.android.gms.location.places.Place;
 import com.google.android.gms.location.places.PlaceLikelihood;
 import com.google.android.gms.location.places.PlaceLikelihoodBuffer;
 import com.teamunemployment.breadcrumbs.Location.BreadCrumbsFusedLocationProvider;
-import com.teamunemployment.breadcrumbs.Location.CanvasLocationManager;
 import com.teamunemployment.breadcrumbs.Network.LoadBalancer;
 import com.teamunemployment.breadcrumbs.Network.ServiceProxy.AsyncDataRetrieval;
 import com.teamunemployment.breadcrumbs.Network.ServiceProxy.AsyncUploadVideo;
-import com.teamunemployment.breadcrumbs.Trails.MyCurrentTrailManager;
+import com.teamunemployment.breadcrumbs.Trails.MyCurrentTrailDisplayManager;
 import com.teamunemployment.breadcrumbs.caching.GlobalContainer;
 import com.teamunemployment.breadcrumbs.R;
 
@@ -54,7 +51,7 @@ public class SaveVideoActivity  extends Activity {
     private static final float ROTATE_TO = 360.0f;// 3.141592654f * 32.0f;
     private Activity context;
     private GlobalContainer globalContainer;
-    private MyCurrentTrailManager currentTrailManager;
+    private MyCurrentTrailDisplayManager currentTrailManager;
     private HashMap<String, String> trailAndIdMap;
     private AsyncDataRetrieval asyncDataRetrieval;
     private String SavedCrumbId;
@@ -75,7 +72,7 @@ public class SaveVideoActivity  extends Activity {
         //actionBar.hide();
         filePath = extras.getString("videoUrl");
         setMedia(filePath); // Set the video.
-        currentTrailManager = MyCurrentTrailManager.GetCurrentTrailManagerInstance();
+        currentTrailManager = MyCurrentTrailDisplayManager.GetCurrentTrailManagerInstance();
         VideoView content = (VideoView) findViewById(R.id.video);
         ViewGroup.LayoutParams layoutParams = content.getLayoutParams();
         DisplayMetrics displaymetrics = new DisplayMetrics();
@@ -146,6 +143,7 @@ public class SaveVideoActivity  extends Activity {
             descriptionString = editable.toString();
         }
 
+        // Need to change this
         final String TrailId = PreferenceManager.getDefaultSharedPreferences(this.getApplicationContext()).getString("TRAILID", "-1");
         if (TrailId.equals("-1")) {
             Toast.makeText(this, "No current active trail. Create a trail from the main menu.", Toast.LENGTH_LONG).show();
@@ -234,7 +232,7 @@ public class SaveVideoActivity  extends Activity {
                     //No trail Data - this is an issue - should be catching this earlier.
                 }
             }
-        });
+        }, context);
         asyncDataRetrieval.execute();
     }
 
@@ -299,7 +297,7 @@ public class SaveVideoActivity  extends Activity {
                 SavedCrumbId = result;
                 saveVideo();
             }
-        });
+        }, context);
 
         asyncDataRetrieval.execute();
         System.out.println("Sending save request to : " + url);

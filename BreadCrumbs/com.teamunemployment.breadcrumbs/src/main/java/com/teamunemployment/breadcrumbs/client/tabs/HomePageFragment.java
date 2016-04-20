@@ -12,7 +12,7 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.Toast;
 
-import com.teamunemployment.breadcrumbs.Trails.MyCurrentTrailManager;
+import com.teamunemployment.breadcrumbs.Trails.MyCurrentTrailDisplayManager;
 import com.teamunemployment.breadcrumbs.R;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapFragment;
@@ -21,7 +21,7 @@ public class HomePageFragment extends android.support.v4.app.Fragment {
     private Context context;
     private View rootView;
     private Activity activityContext;
-    private MyCurrentTrailManager trailManager;
+    private MyCurrentTrailDisplayManager trailManager;
     public void onAttach(Activity activity) {
         activityContext= activity;
         super.onAttach(activity);
@@ -41,7 +41,7 @@ public class HomePageFragment extends android.support.v4.app.Fragment {
             TrailStartToggleListener();
             ActionBarListeners();
             GoogleMap map = ((MapFragment) activityContext.getFragmentManager().findFragmentById(R.id.map)).getMap();
-            trailManager = new MyCurrentTrailManager(map, activityContext);
+            trailManager = new MyCurrentTrailDisplayManager(map, activityContext);
         } catch (InflateException e) {
             /* map is already there, just return view as it is */
         }
