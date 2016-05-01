@@ -67,4 +67,16 @@ public class TextCaching {
         // In this case we will need to send a network request to the server to get the data.
         return null;
     }
+
+    public void DeleteCacheFile(String id) {
+        String path = Utils.getExternalCacheDir(context) + "/"+id+".txt";
+        File fdelete = new File(path);
+        if (fdelete.exists()) {
+            if (fdelete.delete()) {
+                System.out.println("file Deleted :" + path);
+            } else {
+                System.out.println("file not Deleted :" + path);
+            }
+        }
+    }
 }

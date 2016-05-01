@@ -271,17 +271,8 @@ public class BreadcrumbsLocationProvider implements LocationListener {
                     case MESSAGE_ON_GEOFENCE_EVENT: {
                         localCaching.CacheText("Handler", "Case correct. Now doing geofence work: ");
                         // Geofence is broken - start up gps again, and start listening to activities too.
-                        activity.StartGPS(1, 0);
+                        activity.StartGPS(600, 0);
                         activity.startListeningToActivityChangesForUser();
-
-                        NotificationManager notificationManager = (NotificationManager) mActivity.mContext.getSystemService(mActivity.mContext.NOTIFICATION_SERVICE);
-                        NotificationCompat.Builder noti = new NotificationCompat.Builder(mActivity.mContext);
-                        noti.setContentTitle("GEOFENCE");
-                        noti.setContentText("brooken");
-                        noti.setSmallIcon(R.drawable.bc64);
-                        notificationManager.notify(123456789, noti.build());
-                        // Save break point to metadata
-                        // mActivity.dbc.AddMetadata(eventId, timeStamp.toString(), location.getLatitude(), location.getLongitude(), trailId, "GPS");
                     }
                 }
             }
@@ -518,7 +509,7 @@ public class BreadcrumbsLocationProvider implements LocationListener {
             // here to request the missing permissions, and then overriding
             //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
             //                                          int[] grantResults)
-            // to handle the case where the user grants the permission. See the documentation
+        // to handle the case where the user grants the permission. See the documentation
             // for ActivityCompat#requestPermissions for more details.
             return;
         }

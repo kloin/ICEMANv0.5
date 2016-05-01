@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent" android:layout_height="wrap_content">
+    <TextView
+        android:id="@+id/material_design_dialog_header"
+        android:text="Mobile data"
+        android:textStyle="bold"
+        android:textSize="18sp"
+        android:layout_marginLeft="20dp"
+        android:layout_marginTop="20dp"
+        android:layout_marginBottom="20dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+
+    <TextView
+        android:id="@+id/dialog_body"
+        android:text="Unless you connect to a Wi-Fi network, you will not be able to use the Internet, Email, or other apps that require a data connection.\n\nMobile data will be turned off."
+        android:layout_width="wrap_content"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp"
+        android:layout_below="@id/material_design_dialog_header"
+        android:layout_height="wrap_content" />
+    <TextView
+        android:id="@+id/header_cancel_button"
+        android:visibility="gone"
+        android:text="Cancel"
+        android:layout_below="@+id/dialog_body"
+        android:layout_toLeftOf="@+id/header_ok_button"
+        android:layout_marginBottom="20dp"
+        android:layout_marginTop="20dp"
+        android:layout_marginRight="20dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+    <TextView
+        android:id="@+id/header_ok_button"
+        android:text="Ok"
+        android:textColor="@color/ColorPrimary"
+        android:layout_below="@+id/dialog_body"
+        android:layout_alignParentRight="true"
+        android:layout_marginRight="20dp"
+        android:layout_width="50dp"
+        android:gravity="center"
+        android:layout_height="40dp" />
+
+
+</RelativeLayout>

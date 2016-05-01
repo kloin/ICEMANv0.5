@@ -1,23 +1,35 @@
 package com.teamunemployment.breadcrumbs.Trails;
 
 import android.app.Activity;
+import android.app.Notification;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.location.Location;
 import android.location.LocationListener;
 import android.os.Bundle;
+import android.os.Environment;
 import android.preference.PreferenceManager;
 import android.util.Base64;
 import android.util.Log;
 
+import com.teamunemployment.breadcrumbs.BackgroundServices.StopTrackingIntent;
+import com.teamunemployment.breadcrumbs.BreadcrumbsActivityAPI;
 import com.teamunemployment.breadcrumbs.BreadcrumbsLocationAPI;
+import com.teamunemployment.breadcrumbs.Crumb;
+import com.teamunemployment.breadcrumbs.Location.PlaceManager;
 import com.teamunemployment.breadcrumbs.Network.LoadBalancer;
 import com.teamunemployment.breadcrumbs.Network.ServiceProxy.AsyncDataRetrieval;
 import com.teamunemployment.breadcrumbs.Network.ServiceProxy.AsyncImageFetch;
 import com.teamunemployment.breadcrumbs.Network.ServiceProxy.AsyncSendLargeJsonParam;
+import com.teamunemployment.breadcrumbs.Network.ServiceProxy.AsyncUploadVideo;
 import com.teamunemployment.breadcrumbs.PreferencesAPI;
+import com.teamunemployment.breadcrumbs.R;
+import com.teamunemployment.breadcrumbs.caching.TextCaching;
 import com.teamunemployment.breadcrumbs.database.DatabaseController;
 
 import org.joda.time.DateTime;
@@ -43,15 +55,12 @@ public class TrailManagerWorker {
     public static final int DRIVING = 0;
     public static final int ON_FOOT = 1;
 
-
     private Context mContext;
-    private PlaceManager mPlaceManager;
     private DatabaseController mDbc;
     private SharedPreferences mPreferences;
     private PreferencesAPI mPreferencesAPI;
     public TrailManagerWorker(Context context) {
         mContext = context;
-        mPlaceManager = new PlaceManager();
         mDbc = new DatabaseController(context);
         mPreferences = PreferenceManager.getDefaultSharedPreferences(context);
         mPreferencesAPI = PreferencesAPI.GetInstance(mContext);
@@ -68,6 +77,7 @@ public class TrailManagerWorker {
             }
 
             int index = PreferencesAPI.GetInstance(mContext).GetCurrentIndex();
+
             // Fetch metadata
             JSONObject metadataJson = dbc.fetchMetadataFromDB(localTrailString);
             JSONObject metadataPackage = new JSONObject();
@@ -79,8 +89,9 @@ public class TrailManagerWorker {
             metadataPackage.put("EndDate", DateTime.now().toString());
             metadataPackage.put("StartingIndex", index);
 
-            // fetch crumb data
-            JSONObject crumbsWithMedia = dbc.GetCrumbsWithMedia(trailId);
+            // Fetch crumb data
+            int crumbsIndex = PreferencesAPI.GetInstance(mContext).GetLastSavedMediaCrumbIndex();
+            JSONObject crumbsWithMedia = dbc.GetCrumbsWithMedia(localTrailString, crumbsIndex);
 
             // Fetch RestZones
             JSONObject restZones = dbc.GetAllRestZonesForATrail(trailId);
@@ -91,28 +102,17 @@ public class TrailManagerWorker {
             Iterator iterator = crumbsWithMedia.keys();
             Log.d("TRAIL_SAVE_TEST", "saving " + iterator.toString());
             while (iterator.hasNext()) {
+
                 try {
                     String key = iterator.next().toString();
-                    JSONObject crumb = crumbsWithMedia.getJSONObject(key);
-                    String eventId = crumb.getString("eventId");
-                    double latitude = crumb.getDouble("latitude");
-                    double longitude = crumb.getDouble("longitude");
-                    String timeStamp = crumb.getString("timeStamp");
-                    String description = crumb.getString("description");
-                    String userId = crumb.getString("userId");
-                    String icon = " ";//crumb.getString("icon");
-                    String media = crumb.getString("media");
-                    String placeId = crumb.getString("placeId");
-                    String suburb = crumb.getString("suburb");
-                    String city = crumb.getString("city");
-                    String country = " ";//crumb.getString("country");
-                    String mime = crumb.getString("mime");
+                    JSONObject crumbJSON = crumbsWithMedia.getJSONObject(key);
+                    Crumb crumb = new Crumb(crumbJSON);
+                    if (crumb.GetMediaType().equals(".mp4")) {
+                        saveMp4Crumb(crumb);
+                    } else {
+                        saveJpegCrumb(crumb);
+                    }
 
-                    byte[] mediaBytes = Base64.decode(media, Base64.DEFAULT);
-                    Bitmap bitmap = BitmapFactory.decodeByteArray(mediaBytes, 0, mediaBytes.length);
-                    Log.d("TRAIL_TEST", "bitmap height " + bitmap.getHeight());
-
-                    createNewCrumb(description, userId, trailId, Double.toString(latitude), Double.toString(longitude), icon, mime, placeId, suburb, city, country, mime, bitmap);
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
@@ -120,6 +120,106 @@ public class TrailManagerWorker {
         } catch(JSONException e) {
             e.printStackTrace();
         }
+    }
+
+    public void saveMp4Crumb(Crumb crumb) {
+        // Save crumb for the crumb
+        String url = MessageFormat.format("{0}/rest/login/savecrumb/{1}/{2}/{3}/{4}/{5}/{6}/{7}/{8}/{9}/{10}/{11}/{12}",
+                LoadBalancer.RequestServerAddress(),
+                " ",
+                crumb.GetUserId(),
+                Integer.toString(mPreferencesAPI.GetServerTrailId()),
+                Double.toString(crumb.GetLatitude()),
+                Double.toString(crumb.GetLongitude()),
+                " ",
+                ".mp4",
+                crumb.GetPlaceId(),
+                crumb.GetSuburb(),
+                crumb.GetCity(),
+                crumb.GetCountry(),
+                crumb.GetTimestamp());
+        url = url.replaceAll(" ", "%20");
+        final int index = crumb.GetIndex();
+        final String eventId = crumb.GetEventId();
+        final String fileName =  Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES).toString() + "/"+ eventId + ".mp4";
+        // Send request to save vide
+        AsyncDataRetrieval asyncDataRetrieval  = new AsyncDataRetrieval(url, new AsyncDataRetrieval.RequestListener() {
+            @Override
+            public void onFinished(String result) {
+                if (result == null) {
+                    //throw new NullPointerException("FAILED TO SAVE CRUMB");
+                }
+                Log.d("TRAIL_SAVE", "saving ID : " + result);
+                saveVideo(result, fileName, index);
+            }
+        }, mContext);
+        asyncDataRetrieval.execute();
+    }
+
+    private void saveVideo (String savedCrumbId, String filePath, final int index) {
+        String url = MessageFormat.format("{0}/rest/login/saveCrumbWithVideo/{1}",
+                LoadBalancer.RequestServerAddress(),
+                savedCrumbId);
+
+        url = url.replaceAll(" ", "%20");
+        AsyncUploadVideo uploadVideo = new AsyncUploadVideo(url, filePath, new AsyncUploadVideo.RequestListener() {
+
+            /*
+             * Override for the
+             */
+            @Override
+            public void onFinished(String result) {
+                if (result != null && !result.startsWith("<")) {
+                    // update where we are up to.
+                    mPreferencesAPI.SetLastSavedMediaCrumbIndex(index);
+                    TextCaching textCaching = new TextCaching(mContext);
+                }
+            }
+        });
+        uploadVideo.execute();
+    }
+    public void saveJpegCrumb(Crumb crumb) {
+        String url = MessageFormat.format("{0}/rest/login/savecrumb/{1}/{2}/{3}/{4}/{5}/{6}/{7}/{8}/{9}/{10}/{11}/{12}",
+                LoadBalancer.RequestServerAddress(),
+                " ",
+                crumb.GetUserId(),
+                mPreferencesAPI.GetServerTrailId(),
+                Double.toString(crumb.GetLatitude()),
+                Double.toString(crumb.GetLongitude()),
+                " ",
+                ".jpg",
+                crumb.GetPlaceId(),
+                crumb.GetSuburb(),
+                crumb.GetCity(),
+                crumb.GetCountry(),
+                crumb.GetTimestamp());
+        url = url.replaceAll(" ",
+         "%20");
+        final int index = crumb.GetIndex();
+        final Bitmap media = getCrumbBitmap(crumb.GetEventId());
+        final String eventId = crumb.GetEventId();
+        AsyncDataRetrieval asyncDataRetrieval  = new AsyncDataRetrieval(url, new AsyncDataRetrieval.RequestListener() {
+
+            /*
+             * Override for the
+             */
+            @Override
+            public void onFinished(String result) {
+                if (result == null) {
+                    //throw new NullPointerException("FAILED TO SAVE CRUMB");
+                }
+                Log.d("TRAIL_SAVE", "saving ID : " + result);
+
+                saveImage(media, result, index, eventId);
+            }
+        }, mContext);
+        asyncDataRetrieval.execute();
+    }
+
+    private Bitmap getCrumbBitmap(String eventId) {
+
+        // Grab the bitmap that we have saved to the pictures/breadcrumbs/eventId.png directory
+        return null;
     }
 
    // private void saveRestZones
@@ -143,43 +243,11 @@ public class TrailManagerWorker {
     }
 
     private void createNewCrumb(String chat, String userId, String trailId, String latitude, String longitude, String icon, String ext, String placeId,
-                                String suburb, String city, String country, String timeStamp, final Bitmap media) {
-        String url = MessageFormat.format("{0}/rest/login/savecrumb/{1}/{2}/{3}/{4}/{5}/{6}/{7}/{8}/{9}/{10}/{11}/{12}",
-                LoadBalancer.RequestServerAddress(),
-                chat,
-                userId,
-                trailId,
-                latitude,
-                longitude,
-                icon,
-                ext,
-                placeId,
-                suburb,
-                city,
-                country,
-                timeStamp);
+                                String suburb, String city, String country, String timeStamp, final Bitmap media, final int index, final String eventId) {
 
-        url = url.replaceAll(" ", "%20");
-
-        AsyncDataRetrieval asyncDataRetrieval  = new AsyncDataRetrieval(url, new AsyncDataRetrieval.RequestListener() {
-
-            /*
-             * Override for the
-             */
-            @Override
-            public void onFinished(String result) {
-                if (result == null) {
-                    throw new NullPointerException("FAILED TO SAVE CRUMB");
-                }
-                Log.d("TRAIL_SAVE", "saving ID : " + result);
-
-                saveImage(media, result);
-            }
-        }, mContext);
-        asyncDataRetrieval.execute();
     }
 
-    private void saveImage(Bitmap media, String crumbId) {
+    private void saveImage(Bitmap media, String crumbId, final int index, final String eventId) {
         AsyncImageFetch imagesave = new AsyncImageFetch(media, crumbId , new AsyncImageFetch.RequestListener() {
 
             /*
@@ -187,7 +255,12 @@ public class TrailManagerWorker {
              */
             @Override
             public void onFinished(String result) {
-                //finish();
+                if (result != null && !result.startsWith("<")) {
+                    // update where we are up to.
+                    mPreferencesAPI.SetLastSavedMediaCrumbIndex(index);
+                    TextCaching textCaching = new TextCaching(mContext);
+                    textCaching.DeleteCacheFile(eventId);
+                }
             }
         });
         imagesave.execute();
@@ -231,18 +304,40 @@ public class TrailManagerWorker {
                 break;
         }
 
+        // This is where we increment
         mPreferences.edit().putInt("EVENTID", eventId+1).commit();
 
     }
 
     public void StartLocalTrail() {
+        mPreferencesAPI.RemoveTrailBasedValues();
         DatabaseController dbc = new DatabaseController(mContext);
+
+        // Start our trail.
         dbc.SaveTrailStart(null, DateTime.now().toString());
         BreadcrumbsLocationAPI locationAPI = new BreadcrumbsLocationAPI();
+
+        Intent stopIntent = new Intent(mContext.getApplicationContext(), StopTrackingIntent.class);
+       // stopIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+       // stopIntent.setAction("STOPGPS");
+      //  int requestID = (int) System.currentTimeMillis();
+        PendingIntent pIntent = PendingIntent.getActivity(mContext.getApplicationContext(), 1000, stopIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+
+        // Start up our background service.
         locationAPI.StartLocationService();
+        final NotificationManager systemService = (NotificationManager) mContext.getApplicationContext().getSystemService(mContext.getApplicationContext().NOTIFICATION_SERVICE);
+        Notification n  = new Notification.Builder(mContext.getApplicationContext())
+                .setContentTitle("Breadcrumbs")
+                .setContentText("Tracking is currently enabled.")
+                .setSmallIcon(R.drawable.ic_launcher)
+                .addAction(R.drawable.ic_action_cancel, "Stop", pIntent)
+                .build();
+        systemService.notify(2222, n);
         locationAPI.singleAccurateGpsRequest(fetchFirstPointListener);
 
-
+        // Start up our activity service
+        BreadcrumbsActivityAPI activityAPI = new BreadcrumbsActivityAPI();
+        activityAPI.ListenToUserActivityChanges();
     }
 
     private LocationListener fetchFirstPointListener = new LocationListener() {

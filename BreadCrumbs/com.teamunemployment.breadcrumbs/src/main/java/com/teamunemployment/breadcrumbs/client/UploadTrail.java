@@ -109,6 +109,7 @@ public class UploadTrail extends Activity {
                 } else {
                     publishTrail(Integer.toString(serverTrailId));
                 }
+                finish();
             }
         });
     }

@@ -3,6 +3,7 @@ package com.teamunemployment.breadcrumbs.caching;
 import android.annotation.TargetApi;
 import android.content.Context;
 import android.database.Cursor;
+import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Environment;
@@ -10,7 +11,10 @@ import android.provider.DocumentsContract;
 import android.provider.MediaStore;
 import android.util.Log;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
 
 /**
  * Stolen from Platonius on stackOverflow, cheers mate.
@@ -40,7 +44,7 @@ public class Utils {
     }
 
     public static File GetExternalFacebookCacheDir(Context context) {
-        if (locationExists(context.getExternalCacheDir().toString()+"/Facebook/")) {
+        if (locationExists(context.getExternalCacheDir().toString() + "/Facebook/")) {
             Log.d("UTILS", "Found facebook cache exists");
             return new File(context.getExternalCacheDir().toString()+"/Facebook/");
         }
@@ -122,6 +126,41 @@ public class Utils {
 
         cursor.close();
         return filePath;
+    }
+
+    /*
+    ===============================================================================
+    *********************   Writing files utils ********************************
+    =============================================================================
+     */
+    // Save vido. Juest taking away some abstraction level here.
+    public static boolean SaveVideo(String fileName, byte[] arrayOfShit) throws IOException {
+        writeByteArrayToDisk(fileName, arrayOfShit);
+        return true;
+    }
+
+    // Write a byte array to a file. Used by video and image
+    private static boolean writeByteArrayToDisk(String fileName, byte[] arrayOfShit) throws IOException {
+        FileOutputStream fos=new FileOutputStream(fileName);
+        fos.write(arrayOfShit);
+        fos.close();
+        return true;
+    }
+
+
+    // Create byte array from bitmap. Saved as PNG format at full quality.
+    public static boolean SaveBitmap(String fileName, Bitmap media) {
+        ByteArrayOutputStream stream = new ByteArrayOutputStream();
+        media.compress(Bitmap.CompressFormat.PNG, 100, stream);
+        byte[] byteArray = stream.toByteArray();
+        try{
+            writeByteArrayToDisk(fileName, byteArray);
+        } catch (IOException ex) {
+            Log.d("FILESAVE", "Saving bitmap failed");
+            ex.printStackTrace();
+            return false;
+        }
+        return true;
     }
 
 }

@@ -43,7 +43,7 @@ public class TrailManager20 {
     
     // Get all the metadata out of the db.
     public String FetchMetadataFromTrail(String trailId) {
-        String cypherQuery = "MATCH (event:Event) WHERE event.TrailId = '"+trailId+"' RETURN event";
+        String cypherQuery = "MATCH (event:Event) WHERE event.TrailId = '"+trailId+"' RETURN event ORDER BY event.Id";
         String result = dbm.ExecuteCypherQueryJSONStringReturn(cypherQuery);
         return result;      
     }
@@ -89,8 +89,6 @@ public class TrailManager20 {
 	 * @param metadata 
 	 * This is basically the description of the entire trail. It contains all the gps points, as well as latitude/longitude of 
 	 * every place of interest (where we stay etc), as well as activity at the time etc. This should hopefully not be too much chatter.
-            
-	 * 
 	 * We want to change this information into the road plots (as based on google maps directions) as well as 
 	 */
 	public TrailMetadata ProcessMetadata(JSONObject metadataObject, int startingIndex) {
@@ -120,14 +118,15 @@ public class TrailManager20 {
                 String next = Integer.toString(count); 
                 JSONObject node = metadataObject.getJSONObject(next);
                 int type = Integer.parseInt(node.getString("type"));
+                int transportMethodInt = Integer.parseInt(node.getString("driving_method"));
                 
                 // We want to add location points to the waypoints array so that we can use them to guide our path between events.
-                if (type == StaticValues.GPS) {
+                // however we dont add them when we are walking - we just drive straight to them
+                if ( type == StaticValues.GPS && transportMethodInt != StaticValues.WALKING) {
                     String latitude = node.getString("latitude");
                     String longitude = node.getString("longitude");
                     Location location = new Location(latitude, longitude);
                     gpsWaypoints.add(location);
-                    
                 // Currently draw between everything else. This may change at a later date.     
                 } else {
                      // We want to update the location to a new one so that we can draw a line between 
@@ -244,7 +243,7 @@ public class TrailManager20 {
             String urlString = buildUrl(waypoints, location1, location2);
             urlString = urlString.concat("&mode=walking");
             JSONObject jsonResponse = fetchDirectionsFromGoogle(urlString);
-             if (jsonResponse.getJSONArray("routes").length() == 0) {
+             if (jsonResponse.getJSONArray("routes") == null || jsonResponse.getJSONArray("routes").length() == 0) {
                 return null;
             }
             
@@ -259,7 +258,7 @@ public class TrailManager20 {
             
             String urlString = buildUrl(locationList, location1, location2);
             JSONObject jsonResponse = fetchDirectionsFromGoogle(urlString);
-            if (jsonResponse.getJSONArray("routes").length() == 0) {
+            if (jsonResponse.getJSONArray("routes") == null || jsonResponse.getJSONArray("routes").length() == 0) {
                 return null;
             }
             
@@ -274,7 +273,7 @@ public class TrailManager20 {
             
             String urlString = buildUrl(waypoints, location1, location2);
             JSONObject jsonResponse = fetchDirectionsFromGoogle(urlString);
-            if (jsonResponse.getJSONArray("routes").length() == 0) {
+            if (jsonResponse.getJSONArray("routes") == null || jsonResponse.getJSONArray("routes").length() == 0) {
                 return null;
             }
             

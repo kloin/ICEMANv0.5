@@ -26,6 +26,7 @@ import com.google.android.gms.maps.model.Marker;
 import com.google.maps.android.clustering.Cluster;
 import com.google.maps.android.clustering.ClusterManager;
 import com.sothree.slidinguppanel.SlidingUpPanelLayout;
+import com.teamunemployment.breadcrumbs.client.StoryBoard.StoryBoardActivity;
 
 
 import org.json.JSONException;
@@ -41,14 +42,16 @@ public class MapDisplayManager implements GoogleMap.OnMarkerClickListener, Googl
     private GoogleMap mapInstance = null;
     private GlobalContainer globalContainer = GlobalContainer.GetContainerInstance();
     private Activity context;
-    private ClusterManager<DisplayCrumb> clusterManager;
+    public ClusterManager<DisplayCrumb> clusterManager;
     private RecyclerView mRecyclerView;
     private String trailId;
+    private ArrayList<CrumbCardDataObject> mDataObjects;
 
     public MapDisplayManager( GoogleMap map, Activity context, String trailId) {
         this.mapInstance = map;
         this.context = context;
         this.trailId = trailId;
+        mDataObjects = new ArrayList<>();
         setUpClusterManager();
 
     }
@@ -138,12 +141,37 @@ public class MapDisplayManager implements GoogleMap.OnMarkerClickListener, Googl
 
             @Override
             public boolean onClusterClick(Cluster<DisplayCrumb> displayCrumbCluster) {
+
+                final Intent viewCrumbsIntent = new Intent(context, StoryBoardActivity.class);
+                ArrayList<DisplayCrumb> crumbs = (ArrayList<DisplayCrumb>) displayCrumbCluster.getItems();
+                final ArrayList<CrumbCardDataObject> crumbObjects = new ArrayList<>();
+                Iterator<DisplayCrumb> crumbIterator = crumbs.iterator();
+                int photoCount = 0;
+                int videoCount = 0;
+                while (crumbIterator.hasNext()) {
+                    DisplayCrumb next = crumbIterator.next();
+                    CrumbCardDataObject object = new CrumbCardDataObject(next.getExtension(), next.getId(), next.getPlaceId(), next.getPosition().latitude, next.getPosition().longitude);
+                    crumbObjects.add(object);
+                    if (next.getExtension().equals(".jpg")) {
+                        photoCount += 1;
+                    } else if (next.getExtension().equals(".mp4")) {
+                        videoCount += 1;
+                    }
+                }
+
+                // Is parcebale expesive?
+                viewCrumbsIntent.putExtra("StartingObject", crumbObjects.get(0));
+                viewCrumbsIntent.putParcelableArrayListExtra("CrumbArray", mDataObjects); // Note - this is currently using serializable - shoiuld use parcelable for speed
+                viewCrumbsIntent.putExtra("TrailId", trailId);
+                context.startActivityForResult(viewCrumbsIntent, 1);
+                return true;
                 // Zoom into ever
+                /*
                 LatLngBounds markerBounds = getBounds(displayCrumbCluster);
                 int padding = 40; // offset from edges of the map in pixels
                 CameraUpdate cu = CameraUpdateFactory.newLatLngBounds(markerBounds, padding);
                 mapInstance.animateCamera(cu);
-                return true;
+                return true;*/
             }
         });
 
@@ -151,15 +179,21 @@ public class MapDisplayManager implements GoogleMap.OnMarkerClickListener, Googl
             @Override
             public boolean onClusterItemClick(final DisplayCrumb clusterItem) {
                 // Get the id, and add it to the array to be passed to the
+                if (clusterItem.getId().equals("-1")) {
+                    return false;
+                }
                 ArrayList<String> idArray = new ArrayList<>();
                 idArray.add(clusterItem.getId());
-                Intent viewCrumbsIntent = new Intent(context, SelectedEventViewerBase.class);
+
+                Intent viewCrumbsIntent = new Intent(context, StoryBoardActivity.class);
                 ArrayList<CrumbCardDataObject> crumbs = new ArrayList<>();
-                CrumbCardDataObject tempCard = new CrumbCardDataObject(clusterItem.getExtension(), clusterItem.getId());
+
+                CrumbCardDataObject tempCard = new CrumbCardDataObject(clusterItem.getExtension(), clusterItem.getId(), clusterItem.getPlaceId(), clusterItem.getPosition().latitude, clusterItem.getPosition().longitude);
                 crumbs.add(tempCard);
-                viewCrumbsIntent.putParcelableArrayListExtra("CrumbArray", crumbs);
+                viewCrumbsIntent.putExtra("StartingObject", new CrumbCardDataObject(clusterItem.getExtension(), clusterItem.getId(), clusterItem.getPlaceId(),clusterItem.getPosition().latitude, clusterItem.getPosition().longitude));
+                viewCrumbsIntent.putParcelableArrayListExtra("CrumbArray", mDataObjects);
                 viewCrumbsIntent.putExtra("TrailId", trailId);
-                context.startActivity(viewCrumbsIntent);
+                context.startActivityForResult(viewCrumbsIntent, 1);
                 final String placeId = clusterItem.getPlaceId();
                 final String suburb = clusterItem.getSuburb();
                 BreadCrumbsFusedLocationProvider locationProvider = new BreadCrumbsFusedLocationProvider(context);
@@ -232,6 +266,7 @@ public class MapDisplayManager implements GoogleMap.OnMarkerClickListener, Googl
         final String country = crumb.getString("Country");
         final String timeStamp = crumb.getString("TimeStamp");
         final String description = crumb.getString("Chat");
+        mDataObjects.add(new CrumbCardDataObject(mediaType, id, placeId, Latitude, Longitude));
 
         if (!local) {
             AsyncFetchThumbnail asyncDataRetrieval = new AsyncFetchThumbnail(id, new AsyncFetchThumbnail.RequestListener() {
@@ -240,29 +275,43 @@ public class MapDisplayManager implements GoogleMap.OnMarkerClickListener, Googl
                     //mapInstance.setMyLocationEnabled(false);
                     DisplayCrumb displayCrumb = new DisplayCrumb(Latitude, Longitude, mediaType, id, R.drawable.wine_glass, placeId,suburb, city, country, timeStamp, description, result);
                     clusterManager.addItem(displayCrumb);
-                    //mapInstance.setMapType(GoogleMap.MAP_TYPE_SATELLITE);
-                    //  mapInstance.animateCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(Latitude, Longitude), 10.0f));
-                    // Need to adjust the screen so the rendering updates?
+                    clusterManager.cluster();
                 }
             });
             asyncDataRetrieval.execute();
         }
-        else {
-            String media = crumb.getString("media");
-            byte[] mediaBytes = Base64.decode(media, Base64.DEFAULT);
-            Bitmap bitmap = BitmapFactory.decodeByteArray(mediaBytes, 0, mediaBytes.length);
 
-            DisplayCrumb displayCrumb = new DisplayCrumb(Latitude, Longitude, mediaType, id, R.drawable.wine_glass, placeId,suburb, city, country, timeStamp, description, bitmap);
-            clusterManager.addItem(displayCrumb);
+        else {
+
 
         }
-        // Construct the location, set our clickListener (handled in here).
-
-        // Show the shit on the map
-
     }
 
-    public void DrawLocalCrumbFromJSON(JSONObject crumb) {
+    public void DrawLocalCrumbFromJson(JSONObject crumb, String id) throws JSONException {
+        mapInstance = PassTheMapPlease(); // Shit code
+
+
+        String url = "";
+        // Get our variables
+        final Double Latitude = crumb.getDouble("latitude");
+        final Double Longitude = crumb.getDouble("longitude");
+        String media = crumb.getString("media");
+        final String mediaType = crumb.getString("mime");
+        final String placeId = crumb.getString("placeId");
+        final String suburb = crumb.getString("suburb");
+        final String city = crumb.getString("city");
+        final String country = "nz";
+        final String timeStamp = crumb.getString("timeStamp");
+        final String description = crumb.getString("description");
+
+        // Convert media
+        byte[] mediaBytes = Base64.decode(media, Base64.DEFAULT);
+        Bitmap bitmap = BitmapFactory.decodeByteArray(mediaBytes, 0, mediaBytes.length);
+
+
+        DisplayCrumb displayCrumb = new DisplayCrumb(Latitude, Longitude, mediaType, id, R.drawable.wine_glass, placeId,suburb, city, country, timeStamp, description, bitmap);
+        clusterManager.addItem(displayCrumb);
+        clusterManager.cluster();
 
     }
 

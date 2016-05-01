@@ -142,30 +142,29 @@ import java.util.Locale;
         imageView.setLayoutParams(layoutParams);
         // Need to make a base class for loadBitmap, non cards wont work with this.
         Glide.with(mContext).load(LoadBalancer.RequestCurrentDataAddress() + "/images/"+crumbId+".jpg").centerCrop().placeholder(R.drawable.background3).crossFade().into(imageView);
-
     }
 
     // Test for the ExoPlayer
     private void exoplayerPlayTest(String strUri, SurfaceView surface) {
-        Uri uri = Uri.parse("http://download.wavetlan.com/SVV/Media/HTTP/H264/Talkinghead_Media/H264_test1_Talkinghead_mp4_480x360.mp4");
-        final int numRenderers = 2;
-
-        // Build the sample source
-        SampleSource sampleSource =
-                new FrameworkSampleSource((Context) mContext, uri, /* headers */ null);
-
-        // Build the track renderers
-        TrackRenderer videoRenderer = new MediaCodecVideoTrackRenderer(sampleSource, MediaCodec.VIDEO_SCALING_MODE_SCALE_TO_FIT);
-        TrackRenderer audioRenderer = new MediaCodecAudioTrackRenderer(sampleSource);
-
-        // Build the ExoPlayer and start playback
-        ExoPlayer exoPlayer = ExoPlayer.Factory.newInstance(numRenderers);
-        exoPlayer.prepare(videoRenderer, audioRenderer);
-
-        // Pass the surface to the video renderer.
-        exoPlayer.sendMessage(videoRenderer, MediaCodecVideoTrackRenderer.MSG_SET_SURFACE, surface.getHolder().getSurface());
-
-        exoPlayer.setPlayWhenReady(true);
+//        Uri uri = Uri.parse("http://download.wavetlan.com/SVV/Media/HTTP/H264/Talkinghead_Media/H264_test1_Talkinghead_mp4_480x360.mp4");
+//        final int numRenderers = 2;
+//
+//        // Build the sample source
+//        SampleSource sampleSource =
+//                new FrameworkSampleSource((Context) mContext, uri, /* headers */ null);
+//
+//        // Build the track renderers
+//        TrackRenderer videoRenderer = new MediaCodecVideoTrackRenderer(sampleSource, MediaCodec.VIDEO_SCALING_MODE_SCALE_TO_FIT);
+//        TrackRenderer audioRenderer = new MediaCodecAudioTrackRenderer(sampleSource);
+//
+//        // Build the ExoPlayer and start playback
+//        ExoPlayer exoPlayer = ExoPlayer.Factory.newInstance(numRenderers);
+//        exoPlayer.prepare(videoRenderer, audioRenderer);
+//
+//        // Pass the surface to the video renderer.
+//        exoPlayer.sendMessage(videoRenderer, MediaCodecVideoTrackRenderer.MSG_SET_SURFACE, surface.getHolder().getSurface());
+//
+//        exoPlayer.setPlayWhenReady(true);
     }
     private void loadAndAdjustVideo(LinearLayout card, String crumbId) {
         final SurfaceView video = (SurfaceView) card.findViewById(R.id.crumb_video);

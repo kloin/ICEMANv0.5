@@ -1,17 +1,22 @@
 package com.teamunemployment.breadcrumbs.client.tabs;
 
+import android.Manifest;
 import android.app.ActionBar;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
+import android.graphics.Matrix;
 import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
 import android.location.LocationListener;
 import android.os.Bundle;
+import android.os.Environment;
 import android.preference.PreferenceManager;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.view.ViewPager;
 import android.util.DisplayMetrics;
 import android.util.Log;
@@ -28,6 +33,7 @@ import android.widget.Toast;
 
 import com.teamunemployment.breadcrumbs.Location.BreadCrumbsFusedLocationProvider;
 import com.teamunemployment.breadcrumbs.Location.BreadcrumbsLocationProvider;
+import com.teamunemployment.breadcrumbs.Location.PlaceManager;
 import com.teamunemployment.breadcrumbs.Network.LoadBalancer;
 import com.teamunemployment.breadcrumbs.Network.NetworkConnectivityManager;
 import com.teamunemployment.breadcrumbs.Network.ServiceProxy.AsyncDataRetrieval;
@@ -41,6 +47,7 @@ import com.google.android.gms.common.api.ResultCallback;
 import com.google.android.gms.location.places.Place;
 import com.google.android.gms.location.places.PlaceLikelihood;
 import com.google.android.gms.location.places.PlaceLikelihoodBuffer;
+import com.teamunemployment.breadcrumbs.caching.Utils;
 import com.teamunemployment.breadcrumbs.client.BaseViewModel;
 import com.teamunemployment.breadcrumbs.database.DatabaseController;
 
@@ -81,6 +88,7 @@ public class SaveEventFragment extends Activity {
     private AsyncDataRetrieval asyncDataRetrieval;
 	private BreadcrumbsLocationProvider locationProvider;
 	private BreadCrumbsFusedLocationProvider fusedLocationProvider;
+	private boolean backCameraOpen;
 	/*
 	 * Do as LITTLE as possible in the constructors. If possible, load at run-time
 	 */
@@ -90,19 +98,14 @@ public class SaveEventFragment extends Activity {
 		setContentView(R.layout.add_screen);
 		globalContainer = GlobalContainer.GetContainerInstance();
 		addTapListeners();
-        //trailId = "15";
+
         context = this;
         ActionBar actionBar = getActionBar();
+		backCameraOpen = getIntent().getBooleanExtra("IsBackCameraOpen", true);
         SetMedia();
         // use with care.
         currentTrailManager = MyCurrentTrailDisplayManager.GetCurrentTrailManagerInstance();
 		// Set the height of the camera to be the same as the width so we get a square.
-		ImageView cardView = (ImageView) findViewById(R.id.media);
-		ViewGroup.LayoutParams layoutParams = cardView.getLayoutParams();
-		DisplayMetrics displaymetrics = new DisplayMetrics();
-		getWindowManager().getDefaultDisplay().getMetrics(displaymetrics);
-		layoutParams.height = displaymetrics.widthPixels;
-		cardView.setLayoutParams(layoutParams);
 		setBackButtonListener();
 		locationProvider = BreadcrumbsLocationProvider.getInstance(this);
 		fusedLocationProvider = new BreadCrumbsFusedLocationProvider(this);
@@ -125,54 +128,17 @@ public class SaveEventFragment extends Activity {
 	}
 	
 	private void addTapListeners() {
-		//adding listeners
-		/*ImageButton backButton = (ImageButton) findViewById(R.id.backAddScreen);
-		backButton.setOnClickListener(new OnClickListener() {
-
+		final TextView done = (TextView) findViewById(R.id.done_button);
+		done.setOnClickListener(new OnClickListener() {
 			@Override
-			public void onClick(View arg0) {
-				finish();
-				
+			public void onClick(View view) {
+				createNewEvent();
+				Intent myIntent = new Intent(context, BaseViewModel.class);
+				myIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+				context.startActivity(myIntent);
 			}
-		});*/
-
-		//viewPager = (ViewPager) findViewById(R.id.pager);
-		/*iv = (ImageView)findViewById(R.id.media);
-        final ImageButton cancelSaveButton = (ImageButton) findViewById(R.id.cancelButton);
-        cancelSaveButton.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                // Exit this page
-                finish();
-            }
-        });*/
-
-		final TextView newTrailButton =
-				(TextView) findViewById(R.id.done_button);
-			newTrailButton.setOnClickListener(new OnClickListener() {
-				@Override
-				public void onClick(View view) {
-					createNewEvent();
-
-				/*	Intent viewCrumbsIntent = new Intent(context, BreadCrumbsImageSelector.class);
-					String trailId = PreferenceManager.getDefaultSharedPreferences(context).getString("TRAILID", null);
-					if (trailId != null) {
-						viewCrumbsIntent.putExtra("TrailId", "5950"); // What is going on here? needs to be sorted out
-						context.startActivity(viewCrumbsIntent);
-					} else {
-						// This really needs to be handled better.
-						Toast.makeText(context, "Save failed because we did not find a trail to save to", Toast.LENGTH_SHORT).show();
-					}*/
-
-					/*RotateAnimation r; // = new RotateAnimation(ROTATE_FROM, ROTATE_TO);
-					r = new RotateAnimation(ROTATE_FROM, ROTATE_TO, Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f);
-					r.setDuration((long) 2*1500);
-					r.setRepeatCount(100);
-					newTrailButton.startAnimation(r);*/
-				}
-			});
-       // getAllOwnedOrPartOfTrailsForAUser();
-		}
+		});
+	}
 	private void getAllOwnedOrPartOfTrailsForAUser() {
         // Get all trails with a url request, convert the result to json
         String userId = PreferenceManager.getDefaultSharedPreferences(getApplicationContext()).getString("USERID", "-1");
@@ -230,95 +196,91 @@ public class SaveEventFragment extends Activity {
 	
 	private void createNewEvent() {
 		//Currently we will only be creating a crumb. In the future we will be able to create both.
-        EditText chatTextView = (EditText) findViewById(R.id.crumb_description);
 		trailId = Integer.toString(PreferencesAPI.GetInstance(context).GetLocalTrailId());
-        if (trailId.equals("-1")) {
-			Toast.makeText(this, "No current active trail. Create a trail from the main menu.", Toast.LENGTH_LONG).show();
-            return;
-        }
 
         final Location location = locationProvider.GetBestRecentLocation();
 		if (location == null) {
 			// Need to display and error to the user
 			Log.d("SAVE_EVENT", "Failed to find a satisfactory recent location, fetching location now");
-			LocationListener locationListener = new LocationListener() {
-				@Override
-				public void onLocationChanged(Location location) {
-					processAndSaveEvent(location, trailId);
-				}
+			if (ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED ||
+					ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+				Toast.makeText(context, "Cannot save a crumb without location services enabled.", Toast.LENGTH_LONG).show();
+			} else {
+				LocationListener locationListener = new LocationListener() {
+					@Override
+					public void onLocationChanged(Location location) {
+						processAndSaveEvent(location);
+					}
 
-				@Override
-				public void onStatusChanged(String provider, int status, Bundle extras) {
+					@Override
+					public void onStatusChanged(String provider, int status, Bundle extras) {
 
-				}
+					}
 
-				@Override
-				public void onProviderEnabled(String provider) {
+					@Override
+					public void onProviderEnabled(String provider) {
 
-				}
+					}
 
-				@Override
-				public void onProviderDisabled(String provider) {
-
-				}
-			};
-			locationProvider.requestLocationUpdate(locationListener);
+					@Override
+					public void onProviderDisabled(String provider) {
+						Toast.makeText(context, "Cannot save a crumb without location services enabled.", Toast.LENGTH_LONG).show();
+					}
+				};
+				locationProvider.requestLocationUpdate(locationListener);
+			}
 
 			return;
 		}
-		processAndSaveEvent(location, trailId);
+		processAndSaveEvent(location);
 
 	}
 
-
-
-	private void processAndSaveEvent(final Location location, final String trailId) {
-		final double lat = location.getLatitude();
-		final double longit = location.getLongitude();
-		String suburb = "";
-		String city = "";
-		String country = "";
-		if (NetworkConnectivityManager.IsNetworkAvailable(context)) {
-			Geocoder gcd = new Geocoder(context, Locale.getDefault());
-			try {
-				final List<Address> addresses = gcd.getFromLocation(lat, longit, 1);
-				if (addresses.size() > 0) {
-					Address address = addresses.get(0);
-					suburb = address.getSubLocality();
-					city = address.getLocality();
-					country = address.getCountryName();
-				}
-			} catch (IOException e) {
-				e.printStackTrace();
-			} catch(IllegalArgumentException ex) {
-				// Happens when we have a Latitude of more than 90 or less than -90
-				// Happens when we have a longitude of more than 180/-180
-			} catch (IndexOutOfBoundsException outOfBounds) {
-				// WE dont have any addresses, so get fails.
-			}
+	private String getSuburb(Address address) {
+		if (address != null) {
+			return address.getSubLocality();
 		}
 
-		final String latitude = String.valueOf(lat);
-		final String longitude = String.valueOf(longit);
+		return " "; // return an empty string which will be sent to the server.
+	}
 
-		String Icon = "Shitty styff";
-		final String UserId = globalContainer.GetUserId();
+	private String getCity(Address address) {
+		if (address != null) {
+			return address.getLocality();
+		}
+		return " "; // return an empty string which will be sent to the server.
+	}
 
+	private String getCountry(Address address) {
+		if (address != null) {
+			return address.getCountryName();
+		}
+		return " "; // return an empty string which will be sent to the server.
+	}
+
+	private void processAndSaveEvent(final Location location) {
+
+		// Fetch Time
 		Calendar calendar = Calendar.getInstance();
 		final String timeStamp = calendar.getTime().toString();
-		// Just think of this shitty code as a javascript promise
-		final String finalSuburb = suburb;
-		final String finalCity = city;
-		final String finalCountry = country;
+
+		// Get the address
+		Address address = PlaceManager.GetPlace(context, location.getLatitude(), location.getLongitude());
+
+		// Parameters that we need to save to for a crumb.
+		final String suburb = getSuburb(address);
+		final String finalCity = getCity(address);
+		final String finalCountry = getCountry(address);
+
 		fusedLocationProvider.GetCurrentPlace(new ResultCallback<PlaceLikelihoodBuffer>() {
 			@Override
 			public void onResult(PlaceLikelihoodBuffer likelyPlaces) {
 				String placeId = " ";
 				try {
 					PlaceLikelihood placeLikelihood = likelyPlaces.get(0);
-					if (placeLikelihood != null ) {
+					if (placeLikelihood != null) {
 						Place place = placeLikelihood.getPlace();
-						if (place!=null) {
+						if (place != null) {
 							placeId = place.getId();
 						}
 					}
@@ -328,14 +290,6 @@ public class SaveEventFragment extends Activity {
 					ex.printStackTrace();
 				}
 
-		/*		for (PlaceLikelihood placeLikelihood : likelyPlaces) {
-					Log.i("TEST", String.format("Place '%s' has likelihood: %g",
-							placeLikelihood.getPlace().getName(),
-							placeLikelihood.getLikelihood()));
-							id = placeLikelihood.getPlace().getId();
-
-				}*/
-
 				// We need to wait
 				//createNewCrumb(chat, UserId, TrailId, latitude, longitude,  "icon", ".jpg", placeId, finalSuburb, finalCity, finalCountry, timeStamp);
 				DatabaseController dbc = new DatabaseController(context);
@@ -344,7 +298,7 @@ public class SaveEventFragment extends Activity {
 					eventId = 0;
 				}
 
-				eventId +=1;
+				eventId += 1;
 				SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
 				preferences.edit().putInt("EVENTID", eventId).commit();
 				String userId = preferences.getString("USERID", null);
@@ -353,14 +307,14 @@ public class SaveEventFragment extends Activity {
 				if (userId == null) {
 					throw new NullPointerException("User id was null.");
 				}
-
+				// Need to set our trailId as the local one.
+				String localTrailId = Integer.toString(PreferencesAPI.GetInstance(context).GetLocalTrailId());
+				String fileName =  Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES).toString() + eventId;
 				// save our crumb to the db. It will be saved to the server when we publish
-				dbc.SaveCrumb(trailId, " ", userId, eventId, lat, longit, ".jpg", timeStamp, getBitmapAsByteArray(media), "", placeId, finalSuburb, finalCity, finalCountry);
+				Utils.SaveBitmap(fileName, media);
+				dbc.SaveCrumb(localTrailId, " ", userId, eventId, location.getLatitude(), location.getLongitude(), ".jpg", timeStamp, "", placeId, suburb, finalCity, finalCountry);
 				TrailManagerWorker trailManagerWorker = new TrailManagerWorker(context);
 				trailManagerWorker.CreateEventMetadata(TrailManagerWorker.CRUMB, location);
-				Intent myIntent = new Intent(context, BaseViewModel.class);
-				myIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-				context.startActivity(myIntent);
 			}
 		});
 	}
@@ -385,11 +339,59 @@ public class SaveEventFragment extends Activity {
 		imagesave.execute();	
 	}
 
+	private void adjustMedia(Bitmap bm) {
+		if (backCameraOpen) {
+
+			if (90 != 0 && bm != null) {
+				Matrix m = new Matrix();
+
+				m.setRotate(90, (float) bm.getWidth() / 2, (float) bm.getHeight() / 2);
+				try {
+					Bitmap b2 = Bitmap.createBitmap(
+							bm, 0, 0, bm.getWidth(), bm.getHeight(), m, true);
+					if (bm != b2) {
+						bm.recycle();
+						bm = b2;
+					}
+				} catch (OutOfMemoryError ex) {
+					ex.printStackTrace();
+				}
+			}
+		}
+		// Otherwise its a front cam shot, rotate the other way.
+		else {
+			if (bm != null) {
+				Matrix m = new Matrix();
+
+				m.setRotate(270, (float) bm.getWidth()/2, (float) bm.getHeight() / 2);
+				try {
+					Bitmap b2 = Bitmap.createBitmap(bm, 0, 0, bm.getWidth(), bm.getHeight(), m, true);
+					if (bm != b2) {
+						bm.recycle();
+						bm = b2;
+					}
+
+					// Our images keep being flipped?
+					Matrix flipHorizontalMatrix = new Matrix();
+					flipHorizontalMatrix.setScale(-1,1);
+					flipHorizontalMatrix.postTranslate(bm.getWidth(),0);
+					bm = Bitmap.createBitmap(bm, 0, 0, bm.getWidth(), bm.getHeight(), flipHorizontalMatrix, true);
+				} catch (OutOfMemoryError ex) {
+					throw ex;
+				}
+			}
+		}
+		iv = (ImageView) findViewById(R.id.media);
+		iv.setImageBitmap(bm);
+		media = bm;
+	}
+
 	public void SetMedia() {
         //Unpack extras
-        media = globalContainer.GetBitMap();
-		iv = (ImageView) findViewById(R.id.media);
-		iv.setImageBitmap(media);
+		media = globalContainer.GetBitMap();
+		adjustMedia(media);
+
+
 	}
 	// adda photo.
 //	private void addMedia() {

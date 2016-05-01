@@ -17,10 +17,13 @@ import com.teamunemployment.breadcrumbs.Network.ServiceProxy.AsyncPost;
 import com.teamunemployment.breadcrumbs.Preferences.Preferences;
 import com.teamunemployment.breadcrumbs.PreferencesAPI;
 import com.teamunemployment.breadcrumbs.Trails.TrailManagerWorker;
+import com.teamunemployment.breadcrumbs.caching.TextCaching;
+import com.teamunemployment.breadcrumbs.caching.Utils;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.IOException;
 import java.text.DateFormat;
 import java.util.Date;
 
@@ -302,8 +305,7 @@ public class DatabaseController extends SQLiteOpenHelper {
     }
 
     // Store our crumbs and details to the database until we are ready to save.
-    public void SaveCrumb(String trailId, String description, String userId, int eventId, double latitude, double longitude, String mime, String timeStamp, byte[] media, String icon, String placeId, String suburb, String city,
-                          String country) {
+    public void SaveCrumb(String trailId, String description, String userId, int eventId, double latitude, double longitude, String mime, String timeStamp, String icon, String placeId, String suburb, String city, String country) {
 
         ContentValues cv = new ContentValues();
         cv.put("trailId", trailId);
@@ -319,12 +321,48 @@ public class DatabaseController extends SQLiteOpenHelper {
         cv.put("mime", mime);
         cv.put("longitude", longitude);
         cv.put("latitude", latitude);
-        cv.put("media", media);
 
         SQLiteDatabase localDb = getWritableDatabase();
         localDb.insert(CRUMBS, null, cv);
         localDb.close();
         AddMetadata(eventId, timeStamp, latitude, longitude, trailId, TrailManagerWorker.CRUMB, PreferencesAPI.GetInstance(mContext).GetTransportMethod());
+    }
+
+    public void SaveVideoCrumb(String trailId, String userId, int eventId, double latitude, double longitude, String mime, String timeStamp, String icon,String placeId, String suburb, String city,
+                               String country) {
+        ContentValues cv = new ContentValues();
+        cv.put("trailId", trailId);
+        cv.put("eventId", eventId);
+        cv.put("description", " ");
+        cv.put("userId", userId);
+        cv.put("icon", icon);
+        cv.put("placeId", placeId);
+        cv.put("suburb", suburb);
+        cv.put("city", city);
+        cv.put("country", country);
+        cv.put("timeStamp", timeStamp);
+        cv.put("mime", mime);
+        cv.put("longitude", longitude);
+        cv.put("latitude", latitude);
+
+
+    }
+
+    private void saveVideoToLocalFile(int eventId, byte[] media) {
+        String path = Utils.getExternalCacheDir(mContext) + "/"+eventId+".bcv";
+
+        // Use this to save the file as bcv (breadcrumbsvideo - just so that people cant open it.
+        try {
+            Utils.SaveVideo(path, media);
+        } catch (IOException e) {
+            Log.d("BC/DBC", "Saving video failed. Stack trace follows.");
+            e.printStackTrace();
+        }
+    }
+
+    private void saveMediaToLocalFile(int eventId, byte[] media) {
+        // Convert to base64
+
     }
 
     public void SaveRestZone(String trailId, int eventId, double latitude, double longitude, String placeId, String timeStamp) {
@@ -424,8 +462,7 @@ public class DatabaseController extends SQLiteOpenHelper {
                 "timeStamp TEXT, " +
                 "mime TEXT," +
                 "latitude REAL, " +
-                "longitude REAL," +
-                "media BLOB);");
+                "longitude REAL);");
 
         // Database for RestZones.
         db.execSQL("CREATE TABLE " + RESTZONES + " (_id INTEGER PRIMARY KEY AUTOINCREMENT, " +
@@ -462,7 +499,7 @@ public class DatabaseController extends SQLiteOpenHelper {
                 "StartDate TIMESTAMP);");
     }
 
-    public void SaveTrailStart(String trailId, String startDate) {
+    public int SaveTrailStart(String trailId, String startDate) {
         ContentValues cv = new ContentValues();
         cv.put("StartDate", startDate);
         cv.put("TrailId", "0");
@@ -475,6 +512,7 @@ public class DatabaseController extends SQLiteOpenHelper {
         long localId = localDb.insert(TRAIL_SUMMARY, null, cv);
         PreferencesAPI.GetInstance(mContext).SaveCurrentLocalTrailId((int) localId);
         localDb.close();
+        return (int) localId;
     }
 
     public void AddWeather(String weatherId, String travelDay, String weatherDesc, Double latitude, Double longitude, String city, String temperature) {
@@ -675,9 +713,60 @@ public class DatabaseController extends SQLiteOpenHelper {
         return returnObject;
     }
 
-    public JSONObject GetCrumbsWithMedia(String trailId) {
+    public JSONObject GetCrumbsWithMedia(String trailId, int aboveIndex) {
         JSONObject returnObject = new JSONObject();
-        Cursor constantsCursor=getReadableDatabase().rawQuery("SELECT * FROM "+CRUMBS+" WHERE trailId ="+trailId+" ORDER BY _id",
+        Cursor constantsCursor=getReadableDatabase().rawQuery("SELECT * FROM "+CRUMBS+" WHERE trailId ="+trailId+" AND _id > "+aboveIndex+" ORDER BY _id",
+                null);
+        int count = 0;
+        while (constantsCursor.moveToNext()) {
+            JSONObject node = new JSONObject();
+            //Get all columns
+            String eventId = constantsCursor.getString(constantsCursor.getColumnIndex("eventId"));
+            String description = constantsCursor.getString(constantsCursor.getColumnIndex("description"));
+            Double latitude = constantsCursor.getDouble(constantsCursor.getColumnIndex("latitude"));
+            Double longitude = constantsCursor.getDouble(constantsCursor.getColumnIndex("longitude"));
+            String timeStamp = constantsCursor.getString(constantsCursor.getColumnIndex("timeStamp"));
+            String userId = constantsCursor.getString(constantsCursor.getColumnIndex("userId"));
+            String icon = constantsCursor.getString(constantsCursor.getColumnIndex("icon"));
+            String placeId = constantsCursor.getString(constantsCursor.getColumnIndex("placeId"));
+            String suburb = constantsCursor.getString(constantsCursor.getColumnIndex("suburb"));
+            String city = constantsCursor.getString(constantsCursor.getColumnIndex("city"));
+            String mime = constantsCursor.getString(constantsCursor.getColumnIndex("mime"));
+            int index = constantsCursor.getInt(constantsCursor.getColumnIndex("_id"));
+
+            try {
+                TextCaching caching = new TextCaching(mContext);
+                String base64String = caching.FetchCachedText(eventId);
+
+                Log.d("Base64", "base64 retrieved");
+                node.put("eventId", eventId);
+                node.put("latitude", latitude);
+                node.put("longitude", longitude);
+                node.put("timeStamp", timeStamp);
+                node.put("description", description);
+                node.put("userId", userId);
+                node.put("icon", icon);
+                node.put("media", base64String);
+                node.put("placeId", placeId);
+                node.put("suburb", suburb);
+                node.put("city", city);
+                node.put("mime", mime);
+                node.put("index", index);
+                returnObject.put(Integer.toString(count), node);
+                count += 1;
+            } catch (JSONException e) {
+                Log.e("DBC", "failed to get crumbs with media");
+                e.printStackTrace();
+            }
+            int finalIndex = index + count;
+            PreferencesAPI.GetInstance(mContext).SetLastSavedMediaCrumbIndex(finalIndex);
+        }
+        return returnObject;
+    }
+
+    public JSONObject GetAllCrumbs(String id) {
+        JSONObject returnObject = new JSONObject();
+        Cursor constantsCursor=getReadableDatabase().rawQuery("SELECT * FROM "+CRUMBS+" WHERE trailId ="+id+" ORDER BY _id",
                 null);
         int count = 0;
         while (constantsCursor.moveToNext()) {
@@ -695,10 +784,9 @@ public class DatabaseController extends SQLiteOpenHelper {
             String suburb = constantsCursor.getString(constantsCursor.getColumnIndex("suburb"));
             String city = constantsCursor.getString(constantsCursor.getColumnIndex("city"));
             String mime = constantsCursor.getString(constantsCursor.getColumnIndex("mime"));
-            int index = constantsCursor.getColumnIndex("media");
-            byte[] mediaBlob = constantsCursor.getBlob(index);
             try {
-                String base64String = Base64.encodeToString(mediaBlob, Base64.DEFAULT);
+                TextCaching textCaching = new TextCaching(mContext);
+                String base64String = textCaching.FetchCachedText(eventId);
                 Log.d("Base64", "base64 retrieved");
                 node.put("eventId", eventId);
                 node.put("latitude", latitude);
@@ -720,7 +808,6 @@ public class DatabaseController extends SQLiteOpenHelper {
                 e.printStackTrace();
             }
         }
-
         return returnObject;
     }
 

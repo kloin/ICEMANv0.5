@@ -1,4 +1,4 @@
-package com.teamunemployment.breadcrumbs.BackgroundServices;
+package com.teamunemployment.breadcrumbs.BackgroundServices.MessageObjects;
 
 import android.location.LocationListener;
 

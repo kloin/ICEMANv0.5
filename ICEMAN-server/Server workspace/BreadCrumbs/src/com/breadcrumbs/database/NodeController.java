@@ -115,7 +115,7 @@ public class NodeController implements INodeController {
 			Map nodeItemMap = it.next();
 			Collection valuesCollection = nodeItemMap.values();
 			Node tempNode = (Node) valuesCollection.toArray()[0];
-			json.put("Node"+ tempNode.getId(), nodeConverter.ConvertSingleNodeToJSON(tempNode));
+			json.put(Integer.toString(index), nodeConverter.ConvertSingleNodeToJSON(tempNode));
 			index+= 1;			
 		}
 		

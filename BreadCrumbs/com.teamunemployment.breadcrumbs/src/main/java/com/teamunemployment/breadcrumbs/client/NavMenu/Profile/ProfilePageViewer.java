@@ -364,16 +364,14 @@ public class ProfilePageViewer extends AppCompatActivity  implements DatePickerD
             if(resultCode == Activity.RESULT_OK){
                 refreshed = true;
                 Bitmap bitmap = GlobalContainer.GetContainerInstance().GetBitMap();
+                GlobalContainer.GetContainerInstance().SetBitMap(null);
                 ImageView header = (ImageView) findViewById(R.id.headerPicture);
-                header.setImageBitmap(bitmap);
-                // Load our new image
-                Toast.makeText(myContext, "Update profile", Toast.LENGTH_SHORT).show();
-                //final ImageView header = (ImageView) findViewById(R.id.headerPicture);
-                String id = PreferenceManager.getDefaultSharedPreferences(myContext).getString("COVERPHOTOID", "-1");
-            //    Glide.with(myContext).load(LoadBalancer.RequestCurrentDataAddress() + "/images/"+id + ".jpg").centerCrop().crossFade().into(header);
-            //    String saveUrl = LoadBalancer.RequestServerAddress() + "/rest/login/SaveStringPropertyToNode/"+ userId + "/CoverPhotoId/" + id;
-              //  HTTPRequestHandler simpleHttpRequest = new HTTPRequestHandler();
-              //  simpleHttpRequest.SendSimpleHttpRequest(saveUrl);
+                if (bitmap != null) {
+                    header.setImageBitmap(bitmap);
+                } else {
+                    String id = PreferenceManager.getDefaultSharedPreferences(myContext).getString("COVERPHOTOID", "-1");
+                    Glide.with(myContext).load(LoadBalancer.RequestCurrentDataAddress() + "/images/"+id + ".jpg").centerCrop().crossFade().into(header);
+                }
             }
             if (resultCode == Activity.RESULT_CANCELED) {
                 //Write your code if there's no result
@@ -383,8 +381,6 @@ public class ProfilePageViewer extends AppCompatActivity  implements DatePickerD
         if (resultCode == 5) {
 
         }
-
-
     }
 
     // Try to set the profile picture for a user

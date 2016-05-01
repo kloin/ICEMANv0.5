@@ -237,7 +237,7 @@ public class RetrieveData {
     public String Obliterate() {
     	// USE THIS WITH CAUTION - probably will not be kept around after testing because this would be dumb
     	Trail trail = new Trail();
-    	//trail.Obliterate();
+    	trail.Obliterate();
     	return "go fuck your self";
     }
     

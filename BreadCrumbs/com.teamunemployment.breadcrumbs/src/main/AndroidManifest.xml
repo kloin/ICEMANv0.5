@@ -2,8 +2,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
 
     package="com.teamunemployment.breadcrumbs"
-    android:versionCode="5"
-    android:versionName="5" >
+    android:versionCode="7"
+    android:versionName="7" >
 
     <permission android:name="com.teamunemployment.breadcrumbs.permission.C2D_MESSAGE"
         android:protectionLevel="signature" />
@@ -33,6 +33,7 @@
 
     <application
         android:allowBackup="true"
+        android:name="android.support.multidex.MultiDexApplication"
         android:icon="@drawable/ic_launcher"
         android:label="@string/app_name"
         android:theme="@style/AppTheme">
@@ -103,6 +104,8 @@
         </service>
         <service android:name=".BootReciever.BootloaderService" android:exported="false"></service>
 
+        <service android:name=".BackgroundServices.StopTrackingIntent" android:exported="false" />
+
         <activity android:name=".client.TrailManager"
             android:screenOrientation="portrait">
         </activity>
@@ -111,9 +114,6 @@
             android:screenOrientation="portrait">
         </activity>
         <activity android:name=".client.CrumbViewer.CommentViewer"
-            android:screenOrientation="portrait">
-        </activity>
-        <activity android:name=".Trails.CreateTrail"
             android:screenOrientation="portrait">
         </activity>
         <activity android:name=".Trails.EditMyTrail"
@@ -172,8 +172,11 @@
         <activity android:name=".client.NavMenu.About"
             android:screenOrientation="portrait">
         </activity>
+        <activity android:name=".client.StoryBoard.StoryBoardActivity" android:screenOrientation="portrait"></activity>
         <activity android:name=".client.ImageChooser.TrailCoverImageSelector"
             android:screenOrientation="portrait"></activity>
+
+        <activity android:name=".client.TestingVideo"></activity>
         <provider
             android:name="com.facebook.FacebookContentProvider"
             android:authorities="com.facebook.app.FacebookContentProvider668335369892920"
@@ -185,6 +188,7 @@
         <!--AIzaSyBQ9w6VrGGquOHwERNrc_jAx_jcm8mrKQw  - this is the legit release one-->
         <!--  AIzaSyBmkUW1b2c3cXhz-Sw7cfWtK41Qz-0aaww -->
         <!--  AIzaSyCy82ucudMrzKRtUsF0S3v_DSVyNL5m9n8
+        AIzaSyD1tXj_z3zgxB-5tPG8H9sXS4NCBWAJosA debug 22/04 ??
         A4:0B:0E:F1:E0:AB:A0:FF:3B:E4:C2:8E:D3:71:CA:93:6B:CB:84:70
         AIzaSyCfkLHIJIAnKKwd5S4nLMN5apRtWj28rwc- debug key-->
         <meta-data

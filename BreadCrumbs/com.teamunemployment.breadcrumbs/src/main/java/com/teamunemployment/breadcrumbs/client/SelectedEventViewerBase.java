@@ -7,6 +7,7 @@ import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.util.LruCache;
+import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -15,6 +16,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.ListView;
 import android.widget.PopupWindow;
 import android.widget.ProgressBar;
 import android.widget.VideoView;
@@ -71,7 +73,6 @@ public class SelectedEventViewerBase extends AppCompatActivity {
         String trailId = getIntent().getStringExtra("TrailId");
         jsonHandler = new JsonHandler();
         mRecyclerView = (RecyclerView) findViewById(R.id.crumb_recycler);
-
         toolbar.setTitleTextAppearance(this, R.style.HeaderFont);
         toolbar.setNavigationIcon(R.drawable.ic_action_back);
         toolbar.setTitleTextColor(Color.WHITE);
@@ -107,7 +108,9 @@ public class SelectedEventViewerBase extends AppCompatActivity {
         AsyncDataRetrieval asyncDataRetrieval = new AsyncDataRetrieval(url, new AsyncDataRetrieval.RequestListener() {
             @Override
             public void onFinished(String result) {
-                toolbar.setTitle(result);
+                if (!result.startsWith("<")) {
+                    toolbar.setTitle(result);
+                }
             }
         }, mContext);
         asyncDataRetrieval.execute();

@@ -1,21 +1,18 @@
 package com.teamunemployment.breadcrumbs.BackgroundServices;
 
 import android.app.Service;
-import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.location.Location;
 import android.location.LocationListener;
-import android.os.Bundle;
 import android.os.IBinder;
-import android.preference.PreferenceManager;
 import android.support.annotation.Nullable;
 import android.util.Log;
-import android.widget.Toast;
 
+import com.teamunemployment.breadcrumbs.BackgroundServices.MessageObjects.GPSStartEvent;
+import com.teamunemployment.breadcrumbs.BackgroundServices.MessageObjects.GPSStopEvent;
+import com.teamunemployment.breadcrumbs.BackgroundServices.MessageObjects.SingleGPSRequest;
 import com.teamunemployment.breadcrumbs.Location.BreadcrumbsLocationProvider;
 import com.teamunemployment.breadcrumbs.PreferencesAPI;
-import com.teamunemployment.breadcrumbs.Weather.WeatherManager;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -126,5 +123,6 @@ public class BackgroundService extends Service {
     public void stopListeningForUserActivity() {
         locationProvider.StopListeningToPathsenseActivityUpdates();
     }
+
 
 }

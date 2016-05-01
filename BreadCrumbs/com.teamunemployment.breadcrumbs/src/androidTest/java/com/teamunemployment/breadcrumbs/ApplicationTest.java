@@ -99,7 +99,7 @@ public class ApplicationTest {
             String city = "North Shore";
             String country = "New Zealand";
             db.SaveCrumb(trailId, description, userId, eventId, latitude, longitude, mime, timeStamp, media, icon, placeId, suburb, city, country);
-            JSONObject jsonObject = db.GetCrumbsWithMedia("99");
+            JSONObject jsonObject = db.GetCrumbsWithMedia("99", 0);
             assertTrue(jsonObject.length() == 1);
 
             JSONObject jsonObject1 = jsonObject.getJSONObject("0");
@@ -249,7 +249,7 @@ public class ApplicationTest {
         String url = MessageFormat.format(LoadBalancer.RequestServerAddress() + "/rest/login/saveTrail/{0}/{1}/{2}", "Test data 1", "test", userId);
         String trailId = "4243";
         mPreferences.edit().putString("TRAILID", "4243").commit();
-        trailManagerWorker.SaveTrailStart();
+        trailManagerWorker.StartLocalTrail();
         Location location1 = new Location("gps");
         location1.setLatitude(-44.9437402);
         location1.setLongitude(168.8378104);

@@ -244,14 +244,8 @@ public class HomeCardAdapter extends RecyclerView.Adapter<HomeCardAdapter.ViewHo
             if (resultJSON.has("coverPhotoId")) {
                 String coverId = resultJSON.getString("coverPhotoId");
                 Log.d(TAG, "Found coverPhotoId: " +coverId );
-                if (coverId.equals("0")) {
-                    trailCoverPhoto.setBackgroundResource(R.drawable.db3);
-                }
                 Glide.with(mContext).load(LoadBalancer.RequestCurrentDataAddress() + "/images/"+coverId+".jpg").centerCrop().crossFade().into(trailCoverPhoto);
 
-            } else {
-                Log.d(TAG, "Could not find coverPhotoId");
-                trailCoverPhoto.setBackgroundResource(R.drawable.db3);
             }
 
             titleTextView.setText(title);

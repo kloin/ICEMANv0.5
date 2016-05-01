@@ -15,6 +15,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.preference.PreferenceManager;
+import android.support.multidex.MultiDexApplication;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.content.ContextCompat;
@@ -30,6 +31,7 @@ import com.teamunemployment.breadcrumbs.Location.BreadcrumbsLocationProvider;
 import com.teamunemployment.breadcrumbs.PreferencesAPI;
 import com.teamunemployment.breadcrumbs.R;
 import com.teamunemployment.breadcrumbs.Trails.TrailManagerWorker;
+import com.teamunemployment.breadcrumbs.caching.TextCaching;
 import com.teamunemployment.breadcrumbs.client.TrailManager;
 import com.teamunemployment.breadcrumbs.database.DatabaseController;
 
@@ -44,7 +46,7 @@ import org.joda.time.LocalTime;
  * This is a wrapper class around PathSense's Activity API. This is designed to allow our locationManager
  * know what the users current state is, and make decisions based on that information.
  */
-public class PathSenseActivityManager {
+public class PathSenseActivityManager{
 
     private static final String TAG = PathSenseActivityManager.class.getName();
     // Messages
@@ -73,16 +75,17 @@ public class PathSenseActivityManager {
     private int eventId;
     private String trailId;
     private SharedPreferences mPreferences;
+    private TextCaching mTextCaching;
 
     private PreferencesAPI mPreferencesApi;
     // Public constructor for now.
     public PathSenseActivityManager(Context context) {
         mContext = context;
-
         JodaTimeAndroid.init(context);
         mLocationProvider = BreadcrumbsLocationProvider.getInstance(mContext);
         dbc = new DatabaseController(context);
         mPreferences = PreferenceManager.getDefaultSharedPreferences(mContext);
+        mTextCaching = new TextCaching(mContext);
     }
 
     /*
@@ -93,6 +96,7 @@ public class PathSenseActivityManager {
     }
 
     public void StartPathSenseActivityManager() {
+        mTextCaching.CacheText("STARTINGPATHSENSE", "started");
         mHandler = new InternalHandler(this);
         // receivers
         LocalBroadcastManager localBroadcastManager = LocalBroadcastManager.getInstance(mContext);
@@ -205,6 +209,8 @@ public class PathSenseActivityManager {
                         PathsenseDetectedActivities detectedActivities = (PathsenseDetectedActivities) msg.obj;
                         PathsenseDetectedActivity mostProbableActivity = detectedActivities.getMostProbableActivity();
                         if (mostProbableActivity != null) {
+
+                            mActivity.mTextCaching.CacheText("Activity", "is: " + mostProbableActivity.getDetectedActivity().toString());
                             activity.updateCurrentActivityStatus(mostProbableActivity.getDetectedActivity().toString());
                         }
                         break;
@@ -213,6 +219,7 @@ public class PathSenseActivityManager {
                         PathsenseDetectedActivities detectedActivities = (PathsenseDetectedActivities) msg.obj;
                         PathsenseDetectedActivity mostProbableActivity = detectedActivities.getMostProbableActivity();
                         if (mostProbableActivity != null) {
+                            mActivity.mTextCaching.CacheText("Activity", "is: " + mostProbableActivity.getDetectedActivity().toString());
                             activity.updateCurrentActivityStatus(mostProbableActivity.getDetectedActivity().toString());
                         }
                         break;
@@ -227,7 +234,8 @@ public class PathSenseActivityManager {
 
     // This basically validates the activity from pathsense, by making sure that it checks it 3 times. pathsense is sometimes wrong.
     private void updateCurrentActivityStatus(String currentActivity) {
-
+        TextCaching textCaching = new TextCaching(mContext);
+        textCaching.CacheText(currentActivity, "is the current activity");
         Log.d("PS_Activity", "Starting processing of activity of type: " + currentActivity);
         // This is the activity we are currently recording against.
         String savedActivity = mPreferences.getString(SAVED_ACTIVITY_KEY, null);
@@ -251,6 +259,7 @@ public class PathSenseActivityManager {
 
         // If we already have that as our saved activity, don't bother doing anything.
         if (!currentActivity.equals(savedActivity)) {
+
             // This is our event change
             // In this case we need to do some work to figure out if we should update
             String pendingActivity = mPreferences.getString(PENDING_ACTIVITY_KEY, null);
@@ -278,7 +287,7 @@ public class PathSenseActivityManager {
                     mPreferences.edit().remove(PENDING_ACTIVITY_COUNT_KEY).commit();
 
                     if (currentActivity == null) {
-                        mPreferences.edit().putString(SAVED_ACTIVITY_KEY, "UNKNOWN").commit();
+                        //mPreferences.edit().putString(SAVED_ACTIVITY_KEY, "UNKNOWN").commit();
                     }
                     mPreferences.edit().putString(SAVED_ACTIVITY_KEY, currentActivity).commit();
                     //Check to seee if we are changing from driving to walking or vice versa.
@@ -305,12 +314,43 @@ public class PathSenseActivityManager {
                 // Driving to not driving use case. We are no longer driving, so we need to start requesting location updates again
             } else if (currentActivity != DRIVING && savedActivity.equals(DRIVING)) { // We were driving but now wer are not
                 mPreferencesApi.SetTransportMethod(TrailManagerWorker.ON_FOOT);
+                mLocationProvider.requestLocationUpdate(activityChangeAndStartEventLocationListener);
                 mLocationProvider.StartGPS(600, 200);
             }
         }
     }
 
     LocationListener activityChangeAndStopEventLocationListener = new LocationListener() {
+        @Override
+        public void onLocationChanged(Location location) {
+            eventId = mPreferences.getInt("EVENTID", 0);
+            trailId = Integer.toString(PreferencesAPI.GetInstance(mContext).GetLocalTrailId());
+            // When we save
+            dbc.AddMetadata(eventId, DateTime.now().toString(), location.getLatitude(), location.getLongitude(), trailId, TrailManagerWorker.ACTIVITY_CHANGE, TrailManagerWorker.DRIVING);
+            eventId += 1;
+            mPreferences.edit().putInt("EVENTID",eventId).commit();
+            // This was our last location update, so now we stop.
+            mLocationProvider.RemoveGPSUpdates();
+
+        }
+
+        @Override
+        public void onStatusChanged(String provider, int status, Bundle extras) {
+
+        }
+
+        @Override
+        public void onProviderEnabled(String provider) {
+
+        }
+
+        @Override
+        public void onProviderDisabled(String provider) {
+
+        }
+    };
+
+    LocationListener activityChangeAndStartEventLocationListener = new LocationListener() {
         @Override
         public void onLocationChanged(Location location) {
             eventId = mPreferences.getInt("EVENTID", 0);
@@ -379,17 +419,13 @@ public class PathSenseActivityManager {
                 if (location == null || System.currentTimeMillis() - location.getTime() < minimumTimeInMillis) {
                     singleGpsUpdateWrapper();
                 } else {
+                    // Location is all good, just use this
                     saveRestPoint(preferences, location);
                     preferences.edit().remove("STATE").commit();
-                    NotificationManager notificationManager = (NotificationManager) mContext.getSystemService(mContext.NOTIFICATION_SERVICE);
-                    NotificationCompat.Builder noti = new NotificationCompat.Builder(mContext);
-                    noti.setContentTitle("RestZone");
-                    noti.setContentText("saved");
-                    noti.setSmallIcon(R.drawable.bc64);
-                    notificationManager.notify(123456789, noti.build());
                     getAndSavePlaceId(location);
                     // Remove repeating updates, because we are at rest now
                     mLocationProvider.RemoveGPSUpdates();
+                    mPreferencesApi.RemoveActivityBasedValues();
                     mLocationProvider.StopListeningToPathsenseActivityUpdates();
                     // At this point we have successfully recorded a rest zone. We need to post up and wait for geofence to be broken.
                     createGeofence(location);
@@ -433,6 +469,7 @@ public class PathSenseActivityManager {
         DatabaseController dbc = new DatabaseController(mContext);
         int trailId = PreferencesAPI.GetInstance(mContext).GetLocalTrailId();
         if (trailId == -1) {
+            // Happens occasionally
             throw new NullPointerException("Fatal: Trail Id was Null");
         }
         int eventId = preferences.getInt("EVENTID", 0); // BAD IDEA - WE NEED TO SAVE PREFERENCES

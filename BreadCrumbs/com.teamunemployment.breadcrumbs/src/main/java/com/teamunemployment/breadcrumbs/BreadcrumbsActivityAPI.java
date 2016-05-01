@@ -14,4 +14,5 @@ public class BreadcrumbsActivityAPI {
         UserActivity event = new UserActivity();
         bus.post(event);
     }
+
 }

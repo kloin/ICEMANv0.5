@@ -50,12 +50,6 @@ public class LocationService extends IntentService {
                 // Save our trail point to the db.
                 dbc.saveTrailPoint(trailId, location, userId);
                 // This is mostly debug. When we are tracking in production we will be showing an unremovable notification as per google terms etc.
-                NotificationManager notificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
-                Builder noti = new NotificationCompat.Builder(this);
-                noti.setContentTitle("BreadCrumbs");
-                noti.setContentText("Provided by " + location.getProvider());
-                noti.setSmallIcon(R.drawable.bc64);
-                notificationManager.notify(1234, noti.build());
 
                 // We also want to trigger updates to pathsense.
                // BreadcrumbsLocationProvider breadcrumbsLocationProvider = BreadcrumbsLocationProvider.getInstance(this.getApplicationContext());

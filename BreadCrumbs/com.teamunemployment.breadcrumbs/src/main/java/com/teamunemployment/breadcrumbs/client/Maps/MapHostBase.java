@@ -3,21 +3,33 @@ package com.teamunemployment.breadcrumbs.client.Maps;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.location.Location;
+import android.location.LocationListener;
+import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.provider.ContactsContract;
 import android.support.v7.widget.CardView;
+import android.transition.Slide;
+import android.transition.TransitionInflater;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 
+import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapFragment;
+import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.sothree.slidinguppanel.SlidingUpPanelLayout;
+import com.teamunemployment.breadcrumbs.Location.BreadcrumbsLocationProvider;
 import com.teamunemployment.breadcrumbs.Network.LoadBalancer;
+import com.teamunemployment.breadcrumbs.Network.NetworkConnectivityManager;
 import com.teamunemployment.breadcrumbs.Network.ServiceProxy.AsyncDataRetrieval;
 import com.teamunemployment.breadcrumbs.Network.ServiceProxy.AsyncSendLargeJsonParam;
+import com.teamunemployment.breadcrumbs.Preferences.Preferences;
 import com.teamunemployment.breadcrumbs.PreferencesAPI;
 import com.teamunemployment.breadcrumbs.R;
 import com.teamunemployment.breadcrumbs.Trails.MyCurrentTrailDisplayManager;
@@ -27,6 +39,9 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.text.MessageFormat;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 
 /**
  * Created by jek40 on 11/04/2016.
@@ -40,6 +55,7 @@ public class MapHostBase extends Activity implements
     private boolean requestingImage = false;
     private MyCurrentTrailDisplayManager myCurrentTrailManager;
     private Context mContext;
+    private DatabaseController mDbc;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,6 +64,12 @@ public class MapHostBase extends Activity implements
         mMap = ((MapFragment) getFragmentManager().findFragmentById(R.id.map)).getMap();
         mContext = this;
         setListenersAndLoaders();
+        hideSlider();
+    }
+
+    private void hideSlider() {
+        RelativeLayout slider = (RelativeLayout) findViewById(R.id.slider);
+        slider.setVisibility(View.GONE);
     }
 
     @Override
@@ -66,19 +88,61 @@ public class MapHostBase extends Activity implements
         setBackButtonListener();
 
 		/* Grab the trail Id, which is used to load the details of the map and */
-        int serverTrailId = PreferencesAPI.GetInstance(this).GetServerTrailId();
+        int trailId =PreferencesAPI.GetInstance(mContext).GetLocalTrailId();
 
-        if (serverTrailId == -1) {
+        // Bit of an issue if this occurrs, but it shouldnt
+        if (trailId == -1) {
             return;
         }
-        saveLocalFileMetadataAndLoadMapWithResponse(Integer.toString(serverTrailId));
+
+        saveLocalFileMetadataAndLoadMapWithResponse(Integer.toString(trailId));
     }
 
-    private void saveLocalFileMetadataAndLoadMapWithResponse(final String trailId) {
-        PreferenceManager.getDefaultSharedPreferences(mContext).edit().putInt("CURRENT_INDEX", 0).commit();
-        int index = PreferenceManager.getDefaultSharedPreferences(mContext).getInt("CURRENT_INDEX", 0);
-        final DatabaseController dbc = new DatabaseController(mContext);
-        JSONObject json = dbc.fetchMetadataFromDB(trailId);
+    private void doLocalLoad() {
+        initDatabaseController();
+        List<LatLng> list = new ArrayList<>();
+        String trailId = Integer.toString(PreferencesAPI.GetInstance(mContext).GetLocalTrailId());
+        JSONObject metadata = mDbc.fetchMetadataFromDB(trailId);
+        Iterator<String> metadataKeys = metadata.keys();
+        while (metadataKeys.hasNext()) {
+            //
+            String next = metadataKeys.next();
+            try {
+                JSONObject node = metadata.getJSONObject(next);
+                String latitude = node.getString("latitude");
+                String longitude = node.getString("longitude");
+                LatLng point = new LatLng(Double.parseDouble(latitude), Double.parseDouble(longitude));
+                list.add(point);
+            } catch (JSONException ex) {
+                ex.printStackTrace();
+            }
+        }
+        // Need to load local trails here too.
+        MyCurrentTrailDisplayManager displayManager = new MyCurrentTrailDisplayManager(mMap, (Activity) mContext);
+        displayManager.DrawPolyline(list);
+        zoomOnMyLocation();
+
+     }
+
+    private void saveLocalFileMetadataAndLoadMapWithResponse(String localTrailId) {
+        initDatabaseController();
+        int trailId = PreferencesAPI.GetInstance(mContext).GetServerTrailId();
+        if (trailId == -1 || !NetworkConnectivityManager.IsNetworkAvailable(mContext)) {
+            doLocalLoad();
+            return;
+        }
+        doProcessingOnServer(Integer.toString(trailId), localTrailId);
+    }
+
+    private void initDatabaseController() {
+        if (mDbc == null) {
+            mDbc = new DatabaseController(mContext);
+        }
+    }
+
+    private void doProcessingOnServer(final String trailId, final String localTrailId) {
+        int index = PreferencesAPI.GetInstance(mContext).GetCurrentIndex();
+        JSONObject json = mDbc.fetchMetadataFromDB(localTrailId);
         JSONObject wrapper = new JSONObject();
         try {
             wrapper.put("Events", json);
@@ -99,12 +163,51 @@ public class MapHostBase extends Activity implements
                 Log.d("Result", metadataJSON);
                 MyCurrentTrailDisplayManager myCurrentTrailDisplayManager = new MyCurrentTrailDisplayManager(mMap, (Activity)mContext);
                 myCurrentTrailDisplayManager.displayMetadata(new JSONObject(metadataJSON));
-                JSONObject crumbs = dbc.GetCrumbsWithMedia(trailId);
+                mMap.setMyLocationEnabled(true);
+                zoomOnMyLocation();
+                JSONObject crumbs = mDbc.GetAllCrumbs(localTrailId);
+                myCurrentTrailDisplayManager.DisplayCrumbsFromLocalDatabase(crumbs);
                 Log.d(TAG, "Successfully retrieved crumbs: " + crumbs.toString());
-              //  myCurrentTrailDisplayManager.DisplayCrumbsFromLocalDatabase(crumbs);
+                //  myCurrentTrailDisplayManager.DisplayCrumbsFromLocalDatabase(crumbs);
             }
         }, wrapper);
-            asyncJSON.execute();
+        asyncJSON.execute();
+    }
+
+    private void zoomOnMyLocation() {
+        LocationListener locationListener = new LocationListener() {
+            @Override
+            public void onLocationChanged(Location location) {
+                mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(
+                        new LatLng(location.getLatitude(), location.getLongitude()), 13));
+
+                CameraPosition cameraPosition = new CameraPosition.Builder()
+                        .target(new LatLng(location.getLatitude(), location.getLongitude()))      // Sets the center of the map to location user
+                        .zoom(17)                   // Sets the zoom
+                        .bearing(90)                // Sets the orientation of the camera to east
+                        .tilt(40)                   // Sets the tilt of the camera to 30 degrees
+                        .build();                   // Creates a CameraPosition from the builder
+                mMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
+
+            }
+
+            @Override
+            public void onStatusChanged(String provider, int status, Bundle extras) {
+
+            }
+
+            @Override
+            public void onProviderEnabled(String provider) {
+
+            }
+
+            @Override
+            public void onProviderDisabled(String provider) {
+
+            }
+        };
+
+        BreadcrumbsLocationProvider.getInstance(mContext).requestLocationUpdate(locationListener);
     }
 
     //private onMetadataFetched()

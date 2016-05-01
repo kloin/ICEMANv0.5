@@ -37,21 +37,8 @@ public class PreferencesAPI {
     public boolean isDriving() {
         String currentActivity = mPreferences.getString(SAVED_ACTIVITY_KEY, null);
         if (currentActivity == null) {
-            mPreferences.edit().putString(SAVED_ACTIVITY_KEY, "REST");
-            NotificationManager notificationManager = (NotificationManager) mContext.getSystemService(mContext.NOTIFICATION_SERVICE);
-            NotificationCompat.Builder noti = new NotificationCompat.Builder(mContext);
-            noti.setContentTitle("Activity");
-            noti.setContentText("was null");
-            noti.setSmallIcon(R.drawable.bc64);
-            notificationManager.notify(123456789, noti.build());
             return false;
         }
-        NotificationManager notificationManager = (NotificationManager) mContext.getSystemService(mContext.NOTIFICATION_SERVICE);
-        NotificationCompat.Builder noti = new NotificationCompat.Builder(mContext);
-        noti.setContentTitle("activity");
-        noti.setContentText("wasnt null");
-        noti.setSmallIcon(R.drawable.bc64);
-        notificationManager.notify(123456789, noti.build());
         return currentActivity.equals(PathSenseActivityManager.DRIVING);
     }
 
@@ -125,5 +112,45 @@ public class PreferencesAPI {
         return mPreferences.getString("TRAIL_NAME", "");
     }
 
+    public void RemoveActivityBasedValues() {
+        mPreferences.edit().remove("TRANSPORT_METHOD").commit();
+        //mPreferences.edit().remove("STATE").commit();
+    }
 
+    public void SetLastSavedMediaCrumbIndex(int index) {
+        mPreferences.edit().putInt("CRUMB_INDEX", index).commit();
+    }
+
+    public int GetLastSavedMediaCrumbIndex() {
+        return mPreferences.getInt("CRUMB_INDEX", -1);
+    }
+
+    public void RemoveTrailBasedValues() {
+        // Remove all these
+        mPreferences.edit().remove("CRUMB_INDEX").commit();
+        mPreferences.edit().remove("TRANSPORT_METHOD").commit();
+        mPreferences.edit().remove("TRAIL_NAME").commit();
+        mPreferences.edit().remove("CURRENT_INDEX").commit();
+        mPreferences.edit().remove("USER_TRACKING").commit();
+        mPreferences.edit().remove("TRACKING").commit();
+        mPreferences.edit().remove("SERVER_TRAIL").commit();
+        mPreferences.edit().remove("LOCAL_TRAIL").commit();
+        mPreferences.edit().remove("STATE").commit();
+    }
+
+    public int GetEventId() {
+        return mPreferences.getInt("EVENTID", -1);
+    }
+
+    public void SetEventId(int eventId) {
+        mPreferences.edit().putInt("EVENTID", eventId).commit();
+    }
+
+    public int GetVideoId() {
+        return mPreferences.getInt("VIDEOID", 0);
+    }
+
+    public void SetVideoId(int videoId) {
+        mPreferences.edit().putInt("VIDEOID", videoId).commit();
+    }
 }

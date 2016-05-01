@@ -4,17 +4,16 @@ import android.animation.ObjectAnimator;
 import android.animation.PropertyValuesHolder;
 import android.app.ActivityManager;
 import android.app.Dialog;
-import android.app.NotificationManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.preference.PreferenceManager;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.TabLayout;
-import android.support.v4.app.NotificationCompat;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
@@ -24,6 +23,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SwitchCompat;
 import android.support.v7.widget.Toolbar;
+import android.transition.Slide;
+import android.transition.TransitionInflater;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.Gravity;
@@ -49,6 +50,8 @@ import com.oguzdev.circularfloatingactionmenu.library.SubActionButton;
 import com.teamunemployment.breadcrumbs.BackgroundServices.BackgroundService;
 import com.teamunemployment.breadcrumbs.BreadcrumbsActivityAPI;
 import com.teamunemployment.breadcrumbs.BreadcrumbsLocationAPI;
+import com.teamunemployment.breadcrumbs.Dialogs.IDialogCallback;
+import com.teamunemployment.breadcrumbs.Dialogs.SimpleMaterialDesignDialog;
 import com.teamunemployment.breadcrumbs.Location.BreadCrumbsFusedLocationProvider;
 import com.teamunemployment.breadcrumbs.Location.BreadcrumbsLocationProvider;
 import com.teamunemployment.breadcrumbs.Network.LoadBalancer;
@@ -60,6 +63,7 @@ import com.teamunemployment.breadcrumbs.Network.ServiceProxy.HomelessNetworkTool
 import com.teamunemployment.breadcrumbs.Network.ServiceProxy.UpdateViewElementWithProperty;
 import com.teamunemployment.breadcrumbs.Trails.*;
 import com.teamunemployment.breadcrumbs.caching.GlobalContainer;
+import com.teamunemployment.breadcrumbs.caching.Utils;
 import com.teamunemployment.breadcrumbs.client.Animations.SimpleAnimations;
 import com.teamunemployment.breadcrumbs.client.Cards.HomeCardAdapter;
 import com.teamunemployment.breadcrumbs.client.NavigationDrawer.DrawerItemCustomAdapter;
@@ -81,14 +85,15 @@ import java.util.Iterator;
  */
 public class BaseViewModel extends AppCompatActivity {
 
-	private BaseViewModel context;
+    private static final String TITLE = "Trail Created";
+    private static final String DESCRIPTION = "Your good to go! You can edit, view and publish your trail(s) from the side menu. Use the button below to add content.";
+	private BaseViewModel mContext;
 	private AsyncDataRetrieval clientRequestProxy;
 	private HomeCardAdapter mAdapter;
 	private GlobalContainer globalContainer;
 
-    private SharedPreferences mPreferences;
     private RecyclerView mRecyclerView;
-    private RecyclerView.LayoutManager mLayoutManager;
+
     private boolean isTracking = false;
 
     private DrawerLayout mDrawerLayout;
@@ -121,7 +126,6 @@ public class BaseViewModel extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.home_page_with_tabs);
-        mPreferences = PreferenceManager.getDefaultSharedPreferences(this);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         toolbar.setTitleTextAppearance(this, R.style.HeaderFont);
         setSupportActionBar(toolbar);
@@ -129,7 +133,7 @@ public class BaseViewModel extends AppCompatActivity {
         setupViewPager(viewPager);
         tabLayout = (TabLayout) findViewById(R.id.tabs);
         tabLayout.setupWithViewPager(viewPager);
-        context = this;
+        mContext = this;
         Intent intent = getIntent();
         Bundle extras = getIntent().getExtras();
         name = PreferenceManager.getDefaultSharedPreferences(this).getString("USERNAME", "");
@@ -155,8 +159,6 @@ public class BaseViewModel extends AppCompatActivity {
             public void onDrawerOpened(View drawerView) {
                 super.onDrawerOpened(drawerView);
                 drawerIsOpen = true;
-                // code here will execute once the drawer is opened( As I dont want anything happened whe drawer is
-                // open I am not going to put anything here)
             }
 
             @Override
@@ -170,7 +172,7 @@ public class BaseViewModel extends AppCompatActivity {
 
         ObjectDrawerItem[] drawerItem = new ObjectDrawerItem[5];
         drawerItem[0] = new ObjectDrawerItem(R.drawable.ic_perm_identity_black_24dp, "Profile");
-        drawerItem[1] = new ObjectDrawerItem(R.drawable.bc_add_trail, "Create Trail");
+        drawerItem[1] = new ObjectDrawerItem(R.drawable.ic_timeline_add_black_24px, "Create Trail");
         drawerItem[2] = new ObjectDrawerItem(R.drawable.ic_timeline_black_24dp, "My Trail");
         drawerItem[3] = new ObjectDrawerItem(R.drawable.ic_camera_alt_black_24dp, "Capture");
         drawerItem[4] = new ObjectDrawerItem(R.drawable.ic_settings_black_24dp, "Settings");
@@ -195,21 +197,42 @@ public class BaseViewModel extends AppCompatActivity {
 
         // Create both our action buttons
         setUpFab();
-        setCreateNewTrailListener();
+        setTheCreateNewTrailListener();
 
         // Update to the correct button
         updateFabButtonState();
     }
 
-    private void setCreateNewTrailListener() {
+    private void setUpExitTransition() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            Slide slide = (Slide) TransitionInflater.from(this).inflateTransition(R.transition.activity_slide);
+            getWindow().setExitTransition(slide);
+        }
+    }
+
+    private void initSupportToolbar() {
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        toolbar.setTitleTextAppearance(this, R.style.HeaderFont);
+        setSupportActionBar(toolbar);
+    }
+
+    private void initSupportViewPager() {
+        viewPager = (ViewPager) findViewById(R.id.viewpager);
+        setupViewPager(viewPager);
+        tabLayout = (TabLayout) findViewById(R.id.tabs);
+        tabLayout.setupWithViewPager(viewPager);
+    }
+
+    private void setTheCreateNewTrailListener() {
         addTrailFab = (android.support.design.widget.FloatingActionButton) findViewById(R.id.create_new_trail);
         addTrailFab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                SimpleAnimations simpleAnimations = new SimpleAnimations();
+
                 showCreateTrailDialog();
             }
         });
-        String x ="x";
     }
 
     private void setUpFab() {
@@ -225,9 +248,9 @@ public class BaseViewModel extends AppCompatActivity {
                     .build();
 
         final FloatingActionMenu rightLowerMenu = new FloatingActionMenu.Builder(this)
-                .addSubActionView(buildUploadSubActionButton())
                 .addSubActionView(buildCameraSubActionButton())
                 .addSubActionView(buildTrackingSubActionButton())
+                .addSubActionView(buildUploadSubActionButton())
                 .attachTo(rightLowerButton)
                 .build();
 
@@ -247,6 +270,7 @@ public class BaseViewModel extends AppCompatActivity {
             public void onMenuOpened(FloatingActionMenu menu) {
                 // Rotate the icon of rightLowerButton 45 degrees clockwise
                 openMenuFab(fabIconNew, overlay);
+
             }
 
             @Override
@@ -264,13 +288,15 @@ public class BaseViewModel extends AppCompatActivity {
         subActionButton1.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (NetworkConnectivityManager.IsNetworkAvailable(context)) {
-                    Intent intent = new Intent(context, UploadTrail.class);
-                    context.startActivity(intent);
-
+                Intent intent = new Intent(mContext, TestingVideo.class);
+                mContext.startActivity(intent);
+                /*
+                if (NetworkConnectivityManager.IsNetworkAvailable(mContext)) {
+                    Intent intent = new Intent(mContext, UploadTrail.class);
+                    mContext.startActivity(intent);
                 } else {
-                    Toast.makeText(context, "Cannot upload - No internet Connection available", Toast.LENGTH_LONG).show();
-                }
+                    Toast.makeText(mContext, "Cannot upload - No internet Connection available", Toast.LENGTH_LONG).show();
+                }*/
             }
         });
 
@@ -294,7 +320,7 @@ public class BaseViewModel extends AppCompatActivity {
     }
 
     private SubActionButton buildTrackingSubActionButton() {
-        mPreferencesApi = PreferencesAPI.GetInstance(context);
+        mPreferencesApi = PreferencesAPI.GetInstance(mContext);
         boolean alreadyTrackingFromLastTime = mPreferencesApi.isTrackingEnabledByUser();
         mTrackingIcon = new ImageView(this);
         if (alreadyTrackingFromLastTime) {
@@ -303,23 +329,46 @@ public class BaseViewModel extends AppCompatActivity {
             mTrackingIcon.setImageDrawable(getResources().getDrawable(R.drawable.ic_action_location_searching));
         }
         trackingButton = rLSubBuilder.setContentView(mTrackingIcon).build();
+
         trackingButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                boolean tracking = mPreferencesApi.isTrackingEnabledByUser();
-                if (tracking) {
-                    mTrackingIcon.setImageDrawable(getResources().getDrawable(R.drawable.ic_action_location_searching));
-                    locationAPI.StopLocationService();
-                    mPreferencesApi.SetUserTracking(false);
-                } else {
-                    mTrackingIcon.setImageDrawable(getResources().getDrawable(R.drawable.ic_my_location_black_24dp));
-                    locationAPI.StartLocationService();
-                    mPreferencesApi.SetUserTracking(true);
-                }
+              handleTrackingButtonToggle();
             }
         });
 
         return trackingButton;
+    }
+
+    private void handleTrackingButtonToggle() {
+        boolean tracking = mPreferencesApi.isTrackingEnabledByUser();
+        if (tracking) {
+            SimpleMaterialDesignDialog.Build(mContext)
+                    .SetTitle("Stop tracking")
+                    .SetTextBody("Do you want to disable tracking?")
+                    .SetActionWording("Stop Tracking")
+                    .UseCancelButton(true)
+                    .SetCallBack(CreateStopTrackingCallback())
+                    .Show();
+
+        } else {
+            mTrackingIcon.setImageDrawable(getResources().getDrawable(R.drawable.ic_my_location_black_24dp));
+            locationAPI.StartLocationService();
+            mPreferencesApi.SetUserTracking(true);
+        }
+    }
+
+    private IDialogCallback CreateStopTrackingCallback() {
+        IDialogCallback callback = new IDialogCallback(){
+
+            @Override
+            public void DoCallback() {
+                mTrackingIcon.setImageDrawable(getResources().getDrawable(R.drawable.ic_action_location_searching));
+                locationAPI.StopLocationService();
+                mPreferencesApi.SetUserTracking(false);
+            }
+        };
+        return callback;
     }
 
     private void openMenuFab(ImageView fabIconNew, final View overlay) {
@@ -348,7 +397,7 @@ public class BaseViewModel extends AppCompatActivity {
     }
 
     private void checkServiceStateAndStartIfNeccessary() {
-        ActivityManager manager = (ActivityManager) context.getSystemService(Context.ACTIVITY_SERVICE);
+        ActivityManager manager = (ActivityManager) mContext.getSystemService(Context.ACTIVITY_SERVICE);
         for (ActivityManager.RunningServiceInfo service : manager.getRunningServices(Integer.MAX_VALUE)) {
             if (BackgroundService.class.getName().equals(service.service.getClassName())) {
                 //your service is running
@@ -362,18 +411,18 @@ public class BaseViewModel extends AppCompatActivity {
     }
 
     private void testDB() {
-        DatabaseController dbc = new DatabaseController(context);
-        String userId = PreferenceManager.getDefaultSharedPreferences(context).getString("TRAILID", null);
+        DatabaseController dbc = new DatabaseController(mContext);
+        String userId = PreferenceManager.getDefaultSharedPreferences(mContext).getString("TRAILID", null);
         JSONObject json = dbc.fetchMetadataFromDB(userId);
         Log.d("JSON", json.toString());
-       // GalleryManager manager = new GalleryManager(context);
+       // GalleryManager manager = new GalleryManager(mContext);
        // manager.GetGalleryFolders();
     }
 
     private void setupViewPager(ViewPager viewPager) {
         ViewPagerAdapter adapter = new ViewPagerAdapter(getSupportFragmentManager());
-        adapter.addFragment(new HomeTabFragment(), "Home");
-        adapter.addFragment(new ExploreTabFragment(), "Explore");
+        adapter.addFragment(new HomeTabFragment(), "FEED");
+        adapter.addFragment(new ExploreTabFragment(), "DISCOVER");
         viewPager.setAdapter(adapter);
     }
 
@@ -448,7 +497,7 @@ public class BaseViewModel extends AppCompatActivity {
         // Check if we have a trailId
         // If we do, show th fab.
         // Else, show the normal.
-        int localTrailId =  PreferencesAPI.GetInstance(context).GetLocalTrailId();
+        int localTrailId =  PreferencesAPI.GetInstance(mContext).GetLocalTrailId();
         // We have no trailId, so we show the add content fab.
         if (localTrailId == -1) {
             showAddTrailFab();
@@ -583,12 +632,12 @@ public class BaseViewModel extends AppCompatActivity {
             uploadButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    if (NetworkConnectivityManager.IsNetworkAvailable(context)) {
-                        Intent intent = new Intent(context, UploadTrail.class);
-                        context.startActivity(intent);
+                    if (NetworkConnectivityManager.IsNetworkAvailable(mContext)) {
+                        Intent intent = new Intent(mContext, UploadTrail.class);
+                        mContext.startActivity(intent);
 
                     } else {
-                        Toast.makeText(context, "Cannot upload - No internet Connection available", Toast.LENGTH_LONG).show();
+                        Toast.makeText(mContext, "Cannot upload - No internet Connection available", Toast.LENGTH_LONG).show();
                     }
 
                 }
@@ -609,22 +658,22 @@ public class BaseViewModel extends AppCompatActivity {
                 // Stop tracking
                 if (isTracking) {
                     // Stop and save here.
-                    PreferenceManager.getDefaultSharedPreferences(context).edit().putBoolean("TRACKING", false).commit();
+                    PreferenceManager.getDefaultSharedPreferences(mContext).edit().putBoolean("TRACKING", false).commit();
                     breadCrumbsFusedLocationProvider.StopBackgroundGPSSerivce();
-                    BreadcrumbsLocationProvider.getInstance(context).StopListeningToPathsenseActivityUpdates();
+                    BreadcrumbsLocationProvider.getInstance(mContext).StopListeningToPathsenseActivityUpdates();
                     isTracking = false;
                 } else {
                     // Start tracking
-                    int localTrailId = PreferencesAPI.GetInstance(context).GetLocalTrailId();
+                    int localTrailId = PreferencesAPI.GetInstance(mContext).GetLocalTrailId();
                     if (localTrailId != -1) {
-                        PreferenceManager.getDefaultSharedPreferences(context).edit().putBoolean("TRACKING", true).commit();
+                        PreferenceManager.getDefaultSharedPreferences(mContext).edit().putBoolean("TRACKING", true).commit();
                         //breadCrumbsFusedLocationProvider.StartBackgroundGPSService();
-                        // BreadcrumbsLocationProvider.getInstance(context).StartListeningToPathSense();
+                        // BreadcrumbsLocationProvider.getInstance(mContext).StartListeningToPathSense();
                         locationAPI.StartLocationService();
                         activityAPI = new BreadcrumbsActivityAPI();
                         activityAPI.ListenToUserActivityChanges();
 
-                        //BreadcrumbsLocationProvider.getInstance(context).ListenPassivelyForGPSUpdatesInBackground();
+                        //BreadcrumbsLocationProvider.getInstance(mContext).ListenPassivelyForGPSUpdatesInBackground();
                         isTracking = true;
                     } else {
                         // Show dialog - cant start tracking
@@ -641,7 +690,7 @@ public class BaseViewModel extends AppCompatActivity {
         String userId = PreferenceManager.getDefaultSharedPreferences(this).getString("USERID", globalContainer.GetUserId());
         if (name == null) {
             UpdateViewElementWithProperty updateViewElementWithProperty = new UpdateViewElementWithProperty();
-            updateViewElementWithProperty.UpdateTextViewElement(belongsTo, userId, "Username", context);
+            updateViewElementWithProperty.UpdateTextViewElement(belongsTo, userId, "Username", mContext);
         } else {
             belongsTo.setText(name);
         }
@@ -650,19 +699,19 @@ public class BaseViewModel extends AppCompatActivity {
 
     private void updateCoverPhoto () {
         final ImageView background = (ImageView) findViewById(R.id.drawer_background);
-        String coverPhotoId = PreferenceManager.getDefaultSharedPreferences(context).getString("COVERPHOTOID", "-1");
+        String coverPhotoId = PreferenceManager.getDefaultSharedPreferences(mContext).getString("COVERPHOTOID", "-1");
         String userId = PreferenceManager.getDefaultSharedPreferences(this).getString("USERID", globalContainer.GetUserId());
         if (coverPhotoId.equals("-1")) {
             String imageIdUrl = LoadBalancer.RequestServerAddress() + "/rest/login/GetPropertyFromNode/"+userId+"/CoverPhotoId";
             AsyncDataRetrieval asyncDataRetrieval = new AsyncDataRetrieval(imageIdUrl, new AsyncDataRetrieval.RequestListener() {
                 @Override
                 public void onFinished(String result) {
-                    Glide.with(context).load(LoadBalancer.RequestCurrentDataAddress() + "/images/"+result + ".jpg").centerCrop().crossFade().into(background);
+                    Glide.with(mContext).load(LoadBalancer.RequestCurrentDataAddress() + "/images/"+result + ".jpg").centerCrop().crossFade().into(background);
                 }
-            }, context);
+            }, mContext);
             asyncDataRetrieval.execute();
         } else {
-            Glide.with(context).load(LoadBalancer.RequestCurrentDataAddress() + "/images/"+coverPhotoId + ".jpg").centerCrop().crossFade().into(background);
+            Glide.with(mContext).load(LoadBalancer.RequestCurrentDataAddress() + "/images/"+coverPhotoId + ".jpg").centerCrop().crossFade().into(background);
         }
     }
 
@@ -696,7 +745,7 @@ public class BaseViewModel extends AppCompatActivity {
 
                     globalContainer.SetTrailIdsCurrentlyDisplayed(allIds);
 
-                    mAdapter = new HomeCardAdapter(allIds, context);
+                    mAdapter = new HomeCardAdapter(allIds, mContext);
                     mRecyclerView.setAdapter(mAdapter);
                     int difference = allIds.size() - oldIds.size();
                     displayMessage(difference + " New Trails");
@@ -722,7 +771,7 @@ public class BaseViewModel extends AppCompatActivity {
                 }
                 return ids;
             }
-        }, context);
+        }, mContext);
         clientRequestProxy.execute();
     }
 
@@ -736,14 +785,14 @@ public class BaseViewModel extends AppCompatActivity {
             public void onFinished(String result) {
                 try {
                     // Hide loading spinner
-                    ProgressBar loadingSpinner = (ProgressBar) context.findViewById(R.id.explore_progress_bar);
+                    ProgressBar loadingSpinner = (ProgressBar) mContext.findViewById(R.id.explore_progress_bar);
                     loadingSpinner.setVisibility(View.GONE);
                     // Get our arrayList for the card adapter
                     JSONObject jsonResult = new JSONObject(result);
                     ArrayList<String> ids = convertJSONToArrayList(jsonResult);
                     globalContainer.SetTrailIdsCurrentlyDisplayed(ids);
                     // Create the adapter, and set it to the recyclerView so that it displays
-                    mAdapter = new HomeCardAdapter(ids, context);
+                    mAdapter = new HomeCardAdapter(ids, mContext);
                     mRecyclerView.setAdapter(mAdapter);
                 } catch (JSONException e) {
                     // TODO Auto-generated catch block
@@ -767,7 +816,7 @@ public class BaseViewModel extends AppCompatActivity {
                 }
                 return ids;
             }
-        }, context);
+        }, mContext);
         clientRequestProxy.execute();
         Log.i("BASE", "Sending request to construct the cards");
     }
@@ -801,7 +850,6 @@ public class BaseViewModel extends AppCompatActivity {
 
         // Handle action buttons
         switch(item.getItemId()) {
-
             default:
                 return super.onOptionsItemSelected(item);
         }
@@ -860,7 +908,7 @@ public class BaseViewModel extends AppCompatActivity {
                     @Override
                     public void run() {
                         newIntent.setClassName("com.teamunemployment.breadcrumbs", "com.teamunemployment.breadcrumbs.client.NavMenu.Profile.ProfilePageViewer");
-                        newIntent.putExtra("userId", PreferenceManager.getDefaultSharedPreferences(context).getString("USERID", "-1"));
+                        newIntent.putExtra("userId", PreferenceManager.getDefaultSharedPreferences(mContext).getString("USERID", "-1"));
                         newIntent.putExtra("name", name);
                         startActivity(newIntent);
                     }
@@ -920,7 +968,7 @@ public class BaseViewModel extends AppCompatActivity {
     }
 
     private void showDialog(String message) {
-        final Dialog dialog = new Dialog(context);
+        final Dialog dialog = new Dialog(mContext);
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
         dialog.setContentView(R.layout.no_user_trail_dialog);
         TextView messageTextView = (TextView) dialog.findViewById(R.id.denied_message);
@@ -937,7 +985,7 @@ public class BaseViewModel extends AppCompatActivity {
     }
 
     private void showCreateTrailDialog() {
-        final Dialog dialog = new Dialog(context);
+        final Dialog dialog = new Dialog(mContext);
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
         dialog.setContentView(R.layout.create_trail_dialog);
         final TextView createButton = (TextView) dialog.findViewById(R.id.create_dialog);
@@ -946,9 +994,13 @@ public class BaseViewModel extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 // Create local trail
-                TrailManagerWorker trailManagerWorker = new TrailManagerWorker(context);
+                TrailManagerWorker trailManagerWorker = new TrailManagerWorker(mContext);
                 trailManagerWorker.StartLocalTrail();
-                android.support.design.widget.FloatingActionButton floatingActionButton = (android.support.design.widget.FloatingActionButton) context.findViewById(R.id.create_new_trail);
+                if (mPreferencesApi.GetLocalTrailId() < 3) {
+                    // show first time dialog.
+                    showMaterialDesignDialog(TITLE, DESCRIPTION);
+                }
+                android.support.design.widget.FloatingActionButton floatingActionButton = (android.support.design.widget.FloatingActionButton) mContext.findViewById(R.id.create_new_trail);
                 floatingActionButton.setVisibility(View.GONE);
                 mPreferencesApi.SetUserTracking(true);
 
@@ -957,13 +1009,15 @@ public class BaseViewModel extends AppCompatActivity {
                 mTrackingIcon.setImageDrawable(getResources().getDrawable(R.drawable.ic_my_location_black_24dp));
 
                 //Create notification
-                NotificationManager notificationManager = (NotificationManager) context.getSystemService(context.NOTIFICATION_SERVICE);
-                NotificationCompat.Builder noti = new NotificationCompat.Builder(context);
-                noti.setContentTitle("Trail Created");
-                noti.setContentText("Happy trails!");
-                noti.setSmallIcon(R.drawable.ic_launcher);
-                notificationManager.notify(1, noti.build());
+//                NotificationManager notificationManager = (NotificationManager) mContext.getSystemService(mContext.NOTIFICATION_SERVICE);
+//                NotificationCompat.Builder noti = new NotificationCompat.Builder(mContext);
+//                noti.setContentTitle("Trail Created");
+//                noti.setContentText("You can name, edit and upload this trail later from the publish screen.");
+//                noti.setSmallIcon(R.drawable.ic_launcher);
+//                notificationManager.notify(1, noti.build());
                 dialog.dismiss();
+
+                SimpleAnimations.shrinkNewTrailFab(addTrailFab, rightLowerButton, mContext);
             }
         });
 
@@ -978,7 +1032,9 @@ public class BaseViewModel extends AppCompatActivity {
     }
 
 
-
+    private void showMaterialDesignDialog(String title, String message) {
+        SimpleMaterialDesignDialog.Build(mContext).SetTitle(title).SetTextBody(message).Show();
+    }
 }
 
 	

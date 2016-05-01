@@ -52,12 +52,6 @@ public class CameraCapture extends ActionBarActivity {
 
         // Construction purposes.
 		setBackButtonListener();
-		FrameLayout overlay = (FrameLayout) findViewById(R.id.camera_overlay);
-		ViewGroup.LayoutParams overlayParams = overlay.getLayoutParams();
-		DisplayMetrics displaymetrics = new DisplayMetrics();
-		getWindowManager().getDefaultDisplay().getMetrics(displaymetrics);
-		overlayParams.height = displaymetrics.widthPixels;
-		overlay.setLayoutParams(overlayParams);
 	}
 
 	private void setBackButtonListener() {
@@ -79,7 +73,7 @@ public class CameraCapture extends ActionBarActivity {
 	    catch (Exception e){
 	        // Camera is not available (in use or does not exist)
             c.release();
-	    	System.out.println("Fuck the camera is not letting us use it");
+	    	System.out.println("Fuck the camera it is not letting us use it");
  	    }
 	    return c; // returns null if camera is unavailable
 	}

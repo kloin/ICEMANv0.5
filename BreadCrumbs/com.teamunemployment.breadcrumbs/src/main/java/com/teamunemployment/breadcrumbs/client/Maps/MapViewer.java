@@ -9,15 +9,20 @@ import android.os.Bundle;
 import android.support.v7.widget.CardView;
 import android.text.SpannableStringBuilder;
 import android.text.style.StyleSpan;
+
+import android.transition.Fade;
+import android.transition.Slide;
+import android.transition.TransitionInflater;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.View;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
-import android.widget.PopupWindow;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
+import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.maps.android.ui.IconGenerator;
 import com.teamunemployment.breadcrumbs.Framework.JsonHandler;
@@ -34,6 +39,8 @@ import com.google.android.gms.maps.MapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.sothree.slidinguppanel.SlidingUpPanelLayout;
+import com.teamunemployment.breadcrumbs.client.Cards.CrumbCardDataObject;
+
 import static android.graphics.Typeface.BOLD;
 import static android.graphics.Typeface.ITALIC;
 import static android.text.Spannable.SPAN_EXCLUSIVE_EXCLUSIVE;
@@ -56,6 +63,7 @@ public class MapViewer extends Activity implements
 	private boolean requestingImage = false;
     private MyCurrentTrailDisplayManager myCurrentTrailManager;
 	private Context mContext;
+	private ArrayList<DisplayCrumb> mCrumbs;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -64,6 +72,12 @@ public class MapViewer extends Activity implements
         mMap = ((MapFragment) getFragmentManager().findFragmentById(R.id.map)).getMap();
 		setListenersAndLoaders();
 		mContext = this;
+
+		if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
+			Slide fade = new Slide();
+			fade.setDuration(1000);
+			getWindow().setExitTransition(fade);
+		}
 
 	}
 
@@ -85,7 +99,7 @@ public class MapViewer extends Activity implements
 		/* Grab the trail Id, which is used to load the details of the map and */
 		String trailId = this.getIntent().getStringExtra("TrailId");
 		getBaseDetailsForATrail(trailId);
-		myCurrentTrailManager.DisplayCrumbs(trailId);
+		myCurrentTrailManager.StartCrumbDisplay(trailId);
 		myCurrentTrailManager.GetAndDisplayTrailOnMap(trailId);
 		addViewToTrail(trailId);
 	}
@@ -101,6 +115,18 @@ public class MapViewer extends Activity implements
 			}
 		}, this);
 		clientRequestProxy.execute();
+	}
+
+	/*
+		For displaying photos we  need to get all the crumb objects, so that we can loop through them all.
+	 */
+	public ArrayList<DisplayCrumb> GetTrailCrumbObjects() {
+		if (mCrumbs == null) {
+			// This better never happen, but if it does we need to know about it.
+			throw new NullPointerException("GetTrailCrumbObjects called too early, object was null");
+		}
+
+		return mCrumbs;
 	}
 
 	private void createCurrentTrailManager(GoogleMap map) {
@@ -250,6 +276,25 @@ public class MapViewer extends Activity implements
 //		});
 	}
 
+	@Override
+	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+		super.onActivityResult(requestCode, resultCode, data);
+		if (resultCode == RESULT_OK) {
+			Toast.makeText(mContext, "Finished", Toast.LENGTH_LONG).show();
+			CrumbCardDataObject dataObject = data.getParcelableExtra("LastObject");
+			if (dataObject != null) {
+				CameraPosition cameraPosition = new CameraPosition.Builder()
+						.target(new LatLng(dataObject.GetLatitude(), dataObject.GetLongitude()))      // Sets the center of the map to location user
+								.zoom(17)                   // Sets the zoom
+								.bearing(90)                // Sets the orientation of the camera to east
+								.tilt(40)                   // Sets the tilt of the camera to 30 degrees
+								.build();
+				mMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
+			}
+
+			// Then we passed data back, need to focus on this now.
+		}
+	}
 
 	private void setBackButtonListener() {
 		ImageView backButton = (ImageView) findViewById(R.id.backButtonCapture);

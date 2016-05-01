@@ -16,14 +16,6 @@
         android:id="@+id/camera_preview"
         android:layout_width="match_parent"
     android:layout_height="match_parent" />
-    <RelativeLayout
-        android:id="@+id/camera_preview_cover"
-        android:layout_below="@+id/camera_overlay"
-        android:layout_width="match_parent"
-        android:layout_height="fill_parent"
-        android:layout_alignParentBottom="true"
-        android:background="@color/white_pressed">
-    </RelativeLayout>
 
     <com.getbase.floatingactionbutton.FloatingActionButton
         android:id="@+id/captureButton"
@@ -38,15 +30,7 @@
         android:id="@+id/header"
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
-        android:background="@color/ColorPrimary">
-    </FrameLayout>
-    <FrameLayout
-        android:id="@+id/camera_overlay"
-        android:layout_below="@+id/header"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:background="@null">
-
+        android:background="#40000000">
     </FrameLayout>
 
     <ImageButton
@@ -56,15 +40,6 @@
         android:padding="8dp"
         android:background="?attr/selectableItemBackground"
         android:src="@drawable/ic_action_back" />
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="?attr/actionBarSize"
-        android:text="Capture"
-        style="@style/CodeFont"
-        android:padding="8dp"
-        android:textSize="12pt"
-        android:layout_marginLeft="50dp"
-        android:textColor="@color/white"/>
     <ImageButton
         android:id="@+id/font_or_back_camera"
         android:layout_width="wrap_content"

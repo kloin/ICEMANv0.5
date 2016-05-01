@@ -128,15 +128,6 @@ public class WeatherAlarmReceiver extends BroadcastReceiver {
             String travelDayNum = null; // We can work this out server side by knowing the start date of the server
             DatabaseController databaseController = new DatabaseController(mContext);
             databaseController.AddWeather(Integer.toString(weatherId), travelDayNum, weatherCondition, mLocation.getLatitude(), mLocation.getLongitude(), city, Float.toString(currentTemp));
-
-            NotificationManager notificationManager = (NotificationManager)  mContext.getSystemService(mContext.NOTIFICATION_SERVICE);
-            NotificationCompat.Builder noti = new NotificationCompat.Builder(mContext);
-            noti.setContentTitle("Weather for today");
-            noti.setContentText("Weather today is: " + weatherCondition + ". CurrentTemperature: " + currentTemp);
-            noti.setSmallIcon(R.drawable.bc64);
-            notificationManager.notify(1234567, noti.build());
-
-
             Log.d(TAG, "Processed weather event and saved weather to the DB.");
         }
 

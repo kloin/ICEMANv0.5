@@ -37,10 +37,11 @@
            android:textSize="14sp"
            android:layout_margin="20dp"
            android:text="Publish updates of your journey. Any content that you add remains private on your device until published."/>
+
        <TextView
-           android:id="@+id/details_header"
+           android:id="@+id/title_title"
            android:layout_below="@+id/new_trail_prompt"
-           android:text="TRAIL DETAILS"
+           android:text="TITLE"
            android:textSize="16sp"
            android:textColor="@color/ColorPrimary"
            android:layout_margin="20dp"
@@ -49,19 +50,21 @@
        <TextView
            android:id="@+id/edit_trail_name_publish_page"
            android:text="EDIT"
-           android:layout_alignTop="@+id/details_header"
+           android:layout_alignTop="@+id/title_title"
            android:layout_alignParentRight="true"
            android:textColor="@color/ColorPrimary"
            android:layout_marginRight="30dp"
            android:layout_width="wrap_content"
            android:layout_height="wrap_content" />
+
+
        <EditText
            android:visibility="gone"
            android:layout_width="match_parent"
            android:id="@+id/title_edit"
            android:inputType="textCapSentences"
            style="@style/CodeFont"
-           android:layout_below="@+id/details_header"
+           android:layout_below="@+id/title_title"
            android:hint="Trail Title"
            android:textSize="14sp"
            android:layout_marginBottom="10dp"
@@ -71,29 +74,16 @@
 
        <TextView
            android:id="@+id/trail_title_text_view"
-           android:text="I Am Traveller"
-           android:layout_below="@+id/details_header"
+           android:text="I"
+           android:layout_below="@+id/title_title"
            android:hint="Trail Title"
            android:textSize="18sp"
-           android:layout_marginBottom="10dp"
+           android:layout_marginBottom="30dp"
            android:layout_marginRight="20dp"
-           android:layout_marginLeft="17dp"
+           android:layout_marginLeft="20dp"
            android:layout_width="match_parent"
            android:layout_height="wrap_content" />
-       <TextView
-           android:id="@+id/publish_trail"
-           android:layout_below="@id/details_header"
-           android:layout_alignParentRight="true"
-           android:textColor="@color/ColorPrimary"
-           android:layout_marginLeft="20dp"
-           android:layout_marginRight="20dp"
-           android:layout_marginBottom="20dp"
-           android:layout_marginTop="80dp"
-           android:textSize="16sp"
-           android:padding="10dp"
-           android:text="PUBLISH"
-           android:layout_width="wrap_content"
-           android:layout_height="wrap_content" />
+
        <EditText
            android:layout_width="match_parent"
            android:hint="TAGS"
@@ -105,4 +95,17 @@
            android:layout_marginLeft="20dp"
            android:layout_height="wrap_content" />
    </RelativeLayout>
+    <TextView
+        android:id="@+id/publish_trail"
+        android:layout_below="@id/trail_title_text_view"
+        android:layout_gravity="bottom"
+        android:gravity="center"
+        android:height="50dp"
+        android:textColor="@color/white"
+        android:textSize="16sp"
+        android:padding="10dp"
+        android:text="PUBLISH"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/ColorPrimary"/>
 </FrameLayout>
