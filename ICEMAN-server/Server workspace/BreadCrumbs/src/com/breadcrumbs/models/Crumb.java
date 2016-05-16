@@ -58,50 +58,91 @@ public class Crumb {
 		return String.valueOf(crumbId);
 	}
 	
-	public void ConvertAndSaveVideo(InputStream stream, String crumbId) {
-		// get first body part (index 0)                
+    public int ConvertAndSaveVideo(InputStream stream, String crumbId) {
+        int result = 0;             
         File targetFile = new File("/var/lib/tomcat7/webapps/images/"+crumbId+".mp4");
         byte[] buffer = new byte[1024];
         OutputStream outputStream;
-		try {
-			outputStream = new FileOutputStream(targetFile);
-                int length;             
-                while((length = stream.read(buffer)) > 0)
-                    outputStream.write(buffer, 0, length);           
-                outputStream.close();
-                    } catch (FileNotFoundException e) {
-                            // TODO Auto-generated catch block
-                            e.printStackTrace();
-                    } catch (IOException e) {
-                            // TODO Auto-generated catch block
-                            e.printStackTrace();
-                    }
-                
-                
-	}
-	
-	public void ConvertAndSaveImage(InputStream uploadImageStream, String crumbId) {
-            File targetFile = new File("/var/lib/tomcat7/webapps/images/"+crumbId+".jpg");
-            byte[] buffer = new byte[1024];
-            OutputStream outputStream;
-            try {    
-                // Create a thumbnail.
-                createAndSaveThumbnail(uploadImageStream, crumbId);
-                outputStream = new FileOutputStream(targetFile);
-                int length;             
-                while((length = uploadImageStream.read(buffer)) > 0) {
-                    outputStream.write(buffer, 0, length);      
-                }
-            
-                outputStream.close(); 
-            } catch (FileNotFoundException e) {
-                    // TODO Auto-generated catch block
-                    e.printStackTrace();
-            } catch (IOException e) {
-                    // TODO Auto-generated catch block
-                    e.printStackTrace();
+        try {
+            outputStream = new FileOutputStream(targetFile);
+            int length;             
+            while((length = stream.read(buffer)) > 0) {
+                outputStream.write(buffer, 0, length);      
             }
-	}
+            outputStream.close();
+        } catch (FileNotFoundException e) {
+            result = 1;
+            DeleteFile("/var/lib/tomcat7/webapps/images/"+crumbId+".mp4");
+            e.printStackTrace();
+        } catch (IOException e) {
+            result = 1;
+            DeleteFile("/var/lib/tomcat7/webapps/images/"+crumbId+".mp4");
+            e.printStackTrace();
+        }
+        return result;            
+    }
+    
+    /**
+     * @param inputStream
+     * @param mime The mime type (".jpg" ".mp4")
+     * @param crumbId The crumb id we are saving against. Used in fileName
+     * @return The result (success or failure)
+     */
+    public int saveMedia (InputStream inputStream, String mime, String crumbId) {
+        int result = 0; // Success = 0, failure = 1;
+        if (mime.equals(".mp4")) {
+            result = ConvertAndSaveVideo(inputStream, crumbId);
+        } else {
+            result = ConvertAndSaveImage(inputStream, crumbId);
+        }
+        
+        return result;
+    }
+    
+    public int ConvertAndSaveImage(InputStream uploadImageStream, String crumbId) {
+        int result = 0;
+        File targetFile = new File("/var/lib/tomcat7/webapps/images/"+crumbId+".jpg");
+        byte[] buffer = new byte[1024];
+        OutputStream outputStream;
+        try {    
+            // Create a thumbnail.
+            createAndSaveThumbnail(uploadImageStream, crumbId);
+            outputStream = new FileOutputStream(targetFile);
+            int length;             
+            while((length = uploadImageStream.read(buffer)) > 0) {
+                outputStream.write(buffer, 0, length);      
+            }
+            outputStream.close(); 
+        } catch (FileNotFoundException e) {
+                result = 1;
+                // Delete what we had tried to save.
+                DeleteFile("/var/lib/tomcat7/webapps/images/"+crumbId+".jpg");
+                e.printStackTrace();
+        } catch (IOException e) {
+                result = 1;
+                DeleteFile("/var/lib/tomcat7/webapps/images/"+crumbId+".jpg");
+                e.printStackTrace();
+        }
+        return result;
+    }
+    
+    
+    /**
+     * Delete a file from our local file system
+     * @param fileName The path of the file to delete.
+     */
+    public void DeleteFile(String fileName) {
+        try {
+            File file = new File(fileName);
+            if(file.delete()){
+                System.out.println(file.getName() + " is deleted!");
+            }else{
+                System.out.println("Delete operation is failed.");
+            }
+    	} catch(Exception e){
+            e.printStackTrace();
+    	}
+    }
         
         // Create a thumbnail of an image.
         private void createAndSaveThumbnail(InputStream uploadInputStream, String crumbId) throws IOException {

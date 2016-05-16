@@ -187,6 +187,63 @@ public class RetrieveData {
             return "done"; 
     }
     
+    /**
+     * Save an image object. We need to pass all the parameters, as well as the 
+     * image/video object as a multipartForm. We save the crumb, then the image to
+     * disk. If the crumb data fails to save, we delete the metadata we saved for it.
+     * 
+     * @param data The image or video for this crumb
+     * @param chat The description of said media
+     * @param userId the user who is saving the crumb
+     * @param trailId the trail to save against
+     * @param latitude the latitude of the crumb.
+     * @param longitude The longitude of the crumb.
+     * @param icon The icon to place on the map when viewing. Not used at the moment.
+     * @param extension The mime type. Can be .jpg or .mp4
+     * @param placeId The place Id that we fetch from the google apis.
+     * @param suburb The suburb of the crumbs locality
+     * @param city The city of the crumbs locality
+     * @param country The country of the crumbs locality
+     * @param timeStamp The time the crumb was created.
+    */
+    @POST
+    @Path("/savecrumb/{chat}/{userId}/{trailId}/{latitude}/{longitude}/{icon}/{extension}/{placeId}/{suburb}/{city}/{country}/{timeStamp}")
+    @Consumes(MediaType.MULTIPART_FORM_DATA)
+    public String UploadCrumb(MultiPart data, 
+            @PathParam("chat")String chat,
+            @PathParam("userId")String userId,
+            @PathParam("trailId")String trailId,
+            @PathParam("latitude")String latitude,
+            @PathParam("longitude")String longitude,
+            @PathParam("icon")String icon,
+            @PathParam("extension") String extension,
+            @PathParam("placeId") String placeId,
+            @PathParam("suburb") String suburb,
+            @PathParam("city") String city,
+            @PathParam("country") String country,
+            @PathParam("timeStamp") String timeStamp) {   
+        
+        Crumb crumb =new Crumb();
+        
+        // Save the crumb metadata.
+        String id = crumb.AddCrumb(chat, userId, trailId, latitude, longitude, icon, extension, placeId, suburb, city, country, timeStamp);
+        
+        // Now save the multipart data (our image/video).
+        List<BodyPart> parts = data.getBodyParts();
+        BodyPartEntity bpe = (BodyPartEntity) parts.get(0).getEntity();
+        InputStream stream = bpe.getInputStream();
+        
+        int savingMediaResult = crumb.saveMedia(stream, extension, id);
+        if (savingMediaResult == 0) {
+            return "200"; 
+        } else {
+            // Delete crumb metadata that we have saved.
+            DeleteNode(id);
+        }
+        return "500";
+        
+    }
+    
     @POST
     @Path("/saveCrumbWithVideo/{crumbId}")
     @Consumes(MediaType.MULTIPART_FORM_DATA)
