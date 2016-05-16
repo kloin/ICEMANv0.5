@@ -5,13 +5,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.location.Location;
 import android.location.LocationListener;
-import android.os.Build;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
-import android.provider.ContactsContract;
 import android.support.v7.widget.CardView;
-import android.transition.Slide;
-import android.transition.TransitionInflater;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
@@ -29,7 +24,6 @@ import com.teamunemployment.breadcrumbs.Network.LoadBalancer;
 import com.teamunemployment.breadcrumbs.Network.NetworkConnectivityManager;
 import com.teamunemployment.breadcrumbs.Network.ServiceProxy.AsyncDataRetrieval;
 import com.teamunemployment.breadcrumbs.Network.ServiceProxy.AsyncSendLargeJsonParam;
-import com.teamunemployment.breadcrumbs.Preferences.Preferences;
 import com.teamunemployment.breadcrumbs.PreferencesAPI;
 import com.teamunemployment.breadcrumbs.R;
 import com.teamunemployment.breadcrumbs.Trails.MyCurrentTrailDisplayManager;
@@ -53,9 +47,11 @@ public class MapHostBase extends Activity implements
     private String TAG = "MapViewer";
     private AsyncDataRetrieval clientRequestProxy;
     private boolean requestingImage = false;
-    private MyCurrentTrailDisplayManager myCurrentTrailManager;
     private Context mContext;
-    private DatabaseController mDbc;
+    private DatabaseController dbc;
+    private PreferencesAPI mPreferencesApi;
+    private String trailId;
+    private MyCurrentTrailDisplayManager myCurrentTrailDisplayManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -63,6 +59,8 @@ public class MapHostBase extends Activity implements
         setContentView(R.layout.home_map);
         mMap = ((MapFragment) getFragmentManager().findFragmentById(R.id.map)).getMap();
         mContext = this;
+        mPreferencesApi = new PreferencesAPI(mContext);
+        myCurrentTrailDisplayManager = new MyCurrentTrailDisplayManager(mMap,(Activity) mContext);
         setListenersAndLoaders();
         hideSlider();
     }
@@ -81,14 +79,14 @@ public class MapHostBase extends Activity implements
 
     // This is a method that wraps up all the startup shit done in onStart() and
     private void setListenersAndLoaders() {
-        createCurrentTrailManager(mMap);
+        myCurrentTrailDisplayManager = new MyCurrentTrailDisplayManager(mMap, this);
 
         // Button listeners, do as they say.
         setToggleSatellite();
         setBackButtonListener();
 
 		/* Grab the trail Id, which is used to load the details of the map and */
-        int trailId =PreferencesAPI.GetInstance(mContext).GetLocalTrailId();
+        int trailId = mPreferencesApi.GetLocalTrailId();
 
         // Bit of an issue if this occurrs, but it shouldnt
         if (trailId == -1) {
@@ -98,14 +96,31 @@ public class MapHostBase extends Activity implements
         saveLocalFileMetadataAndLoadMapWithResponse(Integer.toString(trailId));
     }
 
+    /*
+        Load trail from a local database.
+     */
     private void doLocalLoad() {
+        // Check if we have a database controller - if not this method creates it.
         initDatabaseController();
+
+        // We will use this multiple times - so get it now as a member variable.
+        trailId = Integer.toString(mPreferencesApi.GetLocalTrailId());
+
+        // Build trail path from our database
+        buildTrailPathFromLocalDB();
+
+        // Grab the images and show them.
+        displayCrumbsFromLocal();
+
+        // The user is looking at their own trail, which should draw to where they are, so we zoom onto them.
+        zoomOnMyLocation();
+    }
+
+    private void buildTrailPathFromLocalDB() {
         List<LatLng> list = new ArrayList<>();
-        String trailId = Integer.toString(PreferencesAPI.GetInstance(mContext).GetLocalTrailId());
-        JSONObject metadata = mDbc.fetchMetadataFromDB(trailId);
+        JSONObject metadata = dbc.fetchMetadataFromDB(trailId, false);
         Iterator<String> metadataKeys = metadata.keys();
         while (metadataKeys.hasNext()) {
-            //
             String next = metadataKeys.next();
             try {
                 JSONObject node = metadata.getJSONObject(next);
@@ -118,15 +133,20 @@ public class MapHostBase extends Activity implements
             }
         }
         // Need to load local trails here too.
-        MyCurrentTrailDisplayManager displayManager = new MyCurrentTrailDisplayManager(mMap, (Activity) mContext);
-        displayManager.DrawPolyline(list);
-        zoomOnMyLocation();
+        myCurrentTrailDisplayManager.DrawPolyline(list);
+    }
 
-     }
+    private void displayCrumbsFromLocal() {
+        JSONObject crumbsJson = dbc.GetAllCrumbs(trailId);
+        if (myCurrentTrailDisplayManager == null) {
+            myCurrentTrailDisplayManager = new MyCurrentTrailDisplayManager(mMap, (Activity) mContext);
+        }
+        myCurrentTrailDisplayManager.DisplayCrumbsFromLocalDatabase(crumbsJson);
+    }
 
     private void saveLocalFileMetadataAndLoadMapWithResponse(String localTrailId) {
         initDatabaseController();
-        int trailId = PreferencesAPI.GetInstance(mContext).GetServerTrailId();
+        int trailId = mPreferencesApi.GetServerTrailId();
         if (trailId == -1 || !NetworkConnectivityManager.IsNetworkAvailable(mContext)) {
             doLocalLoad();
             return;
@@ -135,14 +155,14 @@ public class MapHostBase extends Activity implements
     }
 
     private void initDatabaseController() {
-        if (mDbc == null) {
-            mDbc = new DatabaseController(mContext);
+        if (dbc == null) {
+            dbc = new DatabaseController(mContext);
         }
     }
 
     private void doProcessingOnServer(final String trailId, final String localTrailId) {
-        int index = PreferencesAPI.GetInstance(mContext).GetCurrentIndex();
-        JSONObject json = mDbc.fetchMetadataFromDB(localTrailId);
+        int index = mPreferencesApi.GetCurrentIndex();
+        JSONObject json = dbc.fetchMetadataFromDB(localTrailId, false);
         JSONObject wrapper = new JSONObject();
         try {
             wrapper.put("Events", json);
@@ -161,11 +181,11 @@ public class MapHostBase extends Activity implements
             public void onFinished(String metadataJSON) throws JSONException {
                 // Our metadata gets returned, so now we have to load the map using the data that gets returned.
                 Log.d("Result", metadataJSON);
-                MyCurrentTrailDisplayManager myCurrentTrailDisplayManager = new MyCurrentTrailDisplayManager(mMap, (Activity)mContext);
+                myCurrentTrailDisplayManager = new MyCurrentTrailDisplayManager(mMap, (Activity)mContext);
                 myCurrentTrailDisplayManager.displayMetadata(new JSONObject(metadataJSON));
                 mMap.setMyLocationEnabled(true);
                 zoomOnMyLocation();
-                JSONObject crumbs = mDbc.GetAllCrumbs(localTrailId);
+                JSONObject crumbs = dbc.GetAllCrumbs(localTrailId);
                 myCurrentTrailDisplayManager.DisplayCrumbsFromLocalDatabase(crumbs);
                 Log.d(TAG, "Successfully retrieved crumbs: " + crumbs.toString());
                 //  myCurrentTrailDisplayManager.DisplayCrumbsFromLocalDatabase(crumbs);
@@ -188,7 +208,6 @@ public class MapHostBase extends Activity implements
                         .tilt(40)                   // Sets the tilt of the camera to 30 degrees
                         .build();                   // Creates a CameraPosition from the builder
                 mMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
-
             }
 
             @Override
@@ -215,7 +234,7 @@ public class MapHostBase extends Activity implements
     private JSONObject buildJSONObject() {
         JSONObject wrapper = new JSONObject();
         try {
-            int serverTrail = PreferencesAPI.GetInstance(this).GetServerTrailId();
+            int serverTrail = mPreferencesApi.GetServerTrailId();
             wrapper.put("TrailId", Integer.toString(serverTrail));
             JSONObject events = new JSONObject();
             JSONObject event1 = new JSONObject();
@@ -302,10 +321,6 @@ public class MapHostBase extends Activity implements
                     }
                 }, mContext);
         clientRequestProxy.execute();
-    }
-
-    private void createCurrentTrailManager(GoogleMap map) {
-        myCurrentTrailManager = new MyCurrentTrailDisplayManager(map, this);
     }
 
     private void setTrailClickHandlers(final String userId) {

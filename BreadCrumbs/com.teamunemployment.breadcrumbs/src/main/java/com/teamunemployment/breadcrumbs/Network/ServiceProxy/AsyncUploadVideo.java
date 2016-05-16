@@ -67,13 +67,10 @@ public class AsyncUploadVideo extends AsyncTask<Void, Integer, String> {
         return uploadFile();
     }
 
-    @SuppressWarnings("deprecation")
     private String uploadFile() {
         try {
             File sourceFile = new File(filePath);
-
             Log.d("VIDEOSAVE", "File...::::" + sourceFile + " : " + sourceFile.exists());
-
             final MediaType MEDIA_TYPE_MP4 = MediaType.parse("video/mp4");
 
             RequestBody requestBody = new MultipartBuilder()

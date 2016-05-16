@@ -14,8 +14,8 @@ android {
         applicationId "com.teamunemployment.breadcrumbs"
         minSdkVersion 16
         targetSdkVersion 23
-        versionCode 8
-        versionName "8.0"
+        versionCode 10
+        versionName "B8.0.2"
         multiDexEnabled true
         testInstrumentationRunner 'android.support.test.runner.AndroidJUnitRunner'
         generatedDensities = []
@@ -88,8 +88,13 @@ dependencies {
     compile 'com.txusballesteros:AutoscaleEditText:1.0'
     compile 'com.oguzdev:CircularFloatingActionMenu:1.0.2'
     compile 'com.android.support:multidex:1.0.0'
-
+    compile 'com.danikula:videocache:2.3.4'
     compile 'com.devbrackets.android:exomedia:2.5.6'
+
+    // For finding memory leaks- just temporary
+    debugCompile 'com.squareup.leakcanary:leakcanary-android:1.4-beta2'
+    releaseCompile 'com.squareup.leakcanary:leakcanary-android-no-op:1.4-beta2'
+    testCompile 'com.squareup.leakcanary:leakcanary-android-no-op:1.4-beta2'
 
     testCompile 'junit:junit:4.12'
     // Set this dependency if you want to use the Hamcrest matcher library

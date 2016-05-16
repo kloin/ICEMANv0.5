@@ -4,8 +4,10 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.ContextWrapper;
 import android.content.Intent;
+import android.content.res.ColorStateList;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
 import android.graphics.Matrix;
 import android.hardware.Camera;
 import android.media.CamcorderProfile;
@@ -14,6 +16,7 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.preference.PreferenceManager;
 import android.provider.MediaStore;
+import android.support.design.widget.FloatingActionButton;
 import android.util.AttributeSet;
 import android.util.DisplayMetrics;
 import android.util.Log;
@@ -26,6 +29,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.ImageButton;
+import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
 
@@ -33,6 +37,7 @@ import com.google.android.gms.common.api.Releasable;
 import com.teamunemployment.breadcrumbs.PreferencesAPI;
 import com.teamunemployment.breadcrumbs.R;
 import com.teamunemployment.breadcrumbs.caching.GlobalContainer;
+import com.teamunemployment.breadcrumbs.client.Animations.SimpleAnimations;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -40,6 +45,8 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.security.Policy;
 import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
 
 public class CameraController extends SurfaceView implements SurfaceHolder.Callback, Camera.AutoFocusCallback {
     private SurfaceHolder mHolder;
@@ -53,6 +60,15 @@ public class CameraController extends SurfaceView implements SurfaceHolder.Callb
     private String fileName;
     private int cameraWidth;
     private int cameraHeight;
+
+    private int videoTimer = 0;
+    private final static int FRONT_FACING_CAM = 0;
+    private final static int SELFIE_CAM = 1;
+    private final static int VIDEO = 1;
+    private final static int PHOTO = 0;
+    private int CAMERA_MODE = VIDEO;
+
+    private Timer t;
     /*
         Default constructors for a custom surfaceView.
      */
@@ -60,24 +76,31 @@ public class CameraController extends SurfaceView implements SurfaceHolder.Callb
         super(context);
         getHolder().addCallback(this);
         this.context = (Activity) context;
+        videoTimer= 0;
     }
 
     public CameraController(Context context, AttributeSet attributeSet) {
         super(context, attributeSet);
         getHolder().addCallback(this);
         this.context = (Activity) context;
+        videoTimer= 0;
+
     }
 
     public CameraController(Context context, AttributeSet attrs, int defStyle)  {
         super(context, attrs, defStyle);
         getHolder().addCallback(this);
         this.context = (Activity) context;
+        videoTimer= 0;
     }
+
+
 
     @Override
     public void surfaceCreated(SurfaceHolder holder) {
         // Set the height of the camera to be the same as the width so we get a square.
         mHolder = holder;
+        videoTimer = 0;
         if (backCameraOpen) {
             mCamera = Camera.open(0); // Open rear facing by default
         }
@@ -198,6 +221,27 @@ public class CameraController extends SurfaceView implements SurfaceHolder.Callb
         return optimalSize;
     }
 
+    private Camera.Size getOptimalVideoSize(List<Camera.Size> sizes) {
+        // Source: http://stackoverflow.com/questions/7942378/android-camera-will-not-work-startpreview-fails
+        Camera.Size optimalSize = null;
+
+        // Try to find a size match which suits the whole screen minus the menu on the left.
+        for (Camera.Size size : sizes) {
+            Log.d("CAM", "Checking size: width = " + size.width + ", Height = "+size.height);
+            if (size.height <500) {
+                return size;
+            }
+        }
+
+        // If we cannot find the one that matches the aspect ratio, ignore the requirement.
+        if (optimalSize == null) {
+            // TODO : Backup in case we don't get a size.
+            return sizes.get(sizes.size()-2); // random number really
+        }
+
+        return optimalSize;
+    }
+
     public void OpenBackCamera() {
         if (isPreviewRunning) {
             mCamera.stopPreview();
@@ -211,12 +255,12 @@ public class CameraController extends SurfaceView implements SurfaceHolder.Callb
         Camera.Size size = getOptimalPreviewSize(parameters.getSupportedPictureSizes());
         cameraHeight = size.height;
         cameraWidth = size.width;
-        parameters.setFocusMode(Camera.Parameters.FOCUS_MODE_EDOF);
+        if (parameters.getFocusMode() == null) {
+            parameters.setFocusMode(Camera.Parameters.FOCUS_MODE_CONTINUOUS_PICTURE);
+        }
 
         parameters.setPictureSize(size.width, size.height);
         mCamera.setParameters(parameters);
-        // parameters.setPictureSize(1280, 720);
-        //parameters.setPictureFormat(format);
         mCamera.setParameters(parameters);
         isPreviewRunning = true;
         mCamera.autoFocus(this);
@@ -278,7 +322,7 @@ public class CameraController extends SurfaceView implements SurfaceHolder.Callb
         mCamera.lock();
         List<Camera.Size> supportedSizes = mCamera.getParameters().getSupportedVideoSizes();
 
-        // If the supported video sizes are the same as the preview sizes, the above call returns null. No idea why that was ever a good idea.
+        // If the supported video sizes are the same as the preview sizes, the above call returns null. No idea why anyone ever thought that was a good idea.
         if (supportedSizes == null) {
             supportedSizes = mCamera.getParameters().getSupportedPreviewSizes();
         }
@@ -290,7 +334,7 @@ public class CameraController extends SurfaceView implements SurfaceHolder.Callb
         recorder.setAudioSource(MediaRecorder.AudioSource.DEFAULT);
         recorder.setVideoSource(MediaRecorder.VideoSource.DEFAULT);
         CamcorderProfile cpHigh = CamcorderProfile.get(CamcorderProfile.QUALITY_HIGH);
-        // seems ris
+
         if (backCameraOpen) {
             recorder.setOrientationHint(90);
         } else {
@@ -298,15 +342,14 @@ public class CameraController extends SurfaceView implements SurfaceHolder.Callb
         }
         recorder.setVideoEncodingBitRate(3000000);
         recorder.setOutputFormat(MediaRecorder.OutputFormat.DEFAULT);
-        recorder.setVideoFrameRate(16); //might be auto-determined due to lighting
-
-        recorder.setVideoSize(supportedSizes.get(0).width, supportedSizes.get(0).height);
+        Camera.Size size = getOptimalVideoSize(supportedSizes);
+        recorder.setVideoSize(size.width, size.height);
 
         recorder.setAudioEncoder(MediaRecorder.AudioEncoder.AMR_NB);
         recorder.setVideoEncoder(MediaRecorder.VideoEncoder.H264);
 
         fileName =  Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES).toString();
-        int eventId = PreferencesAPI.GetInstance(context).GetEventId();
+        int eventId = new PreferencesAPI(context).GetEventId();
         //eventId += 1;
         // I Add the +1 because later in the piece(before saving, I increment the event Id. This entire class needs a rework.
         fileName += "/"+ eventId+ ".mp4"; //
@@ -339,17 +382,31 @@ public class CameraController extends SurfaceView implements SurfaceHolder.Callb
         Listener for when the user takes a photo.
      */
     public void SetupCameraButtonListener() {
-        final ImageButton cameraButton = (ImageButton) context.findViewById(R.id.captureButton);
-        cameraButton.setOnLongClickListener(new OnLongClickListener() {
+        final FloatingActionButton cameraButton = (FloatingActionButton) context.findViewById(R.id.captureButton);
+        final FloatingActionButton videoButton = (FloatingActionButton) context.findViewById(R.id.videoButton);
 
+        videoButton.setOnClickListener(new FloatingActionButton.OnClickListener() {
             @Override
-            public boolean onLongClick(View v) {
-                currentlyFilming = true;
-                // Set up our video camera. This is different from taking a photo
-                setUpVideoCamera();
-                recorder.start();
-                //Toast.makeText(context, "Video recording currently disabled",Toast.LENGTH_LONG ).show();
-                return true;
+            public void onClick(View v) {
+                if (CAMERA_MODE == VIDEO) {
+                    if (currentlyFilming) {
+                        Toast.makeText(context, "Cannot toggle while filming", Toast.LENGTH_SHORT).show();
+                        return;
+                    }
+
+                    CAMERA_MODE = PHOTO;
+                    // Change to red
+                    cameraButton.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor("#F44336")));
+                    SimpleAnimations.ShrinkUnshrinkStandardFab(cameraButton);
+                    cameraButton.setImageDrawable(context.getResources().getDrawable(R.drawable.ic_action_camera));
+                } else {
+                    CAMERA_MODE = VIDEO;
+                    // Set back to blue.
+                    cameraButton.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor("#2196F3")));
+                    SimpleAnimations.ShrinkUnshrinkStandardFab(cameraButton);
+                    cameraButton.setImageDrawable(context.getResources().getDrawable(R.drawable.ic_videocam_white_24dp));
+
+                }
             }
         });
 
@@ -357,34 +414,17 @@ public class CameraController extends SurfaceView implements SurfaceHolder.Callb
            @Override
            public void onClick(View v) {
                // Take a photo
-               mCamera.takePicture(null, rawCallback, jpegCallback);
-               //mCamera.stopPreview();
+               if (CAMERA_MODE == PHOTO) {
+                   mCamera.takePicture(null, rawCallback, jpegCallback);
+
+               } else {
+                   toggleVideo();
+                   // set the color to a pressed blue color.
+                   cameraButton.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor("#BBDEFB")));
+               }
            }
 
        });
-
-        cameraButton.setOnTouchListener(new OnTouchListener() {
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                if (event.getAction() == MotionEvent.ACTION_UP && currentlyFilming) {
-
-                    recorder.stop();
-                    disableVideoCamera();
-                    currentlyFilming = false;
-
-                    // Launch video intent to save the video.
-                    Intent save = new Intent();
-                    save.setClassName("com.teamunemployment.breadcrumbs", "com.teamunemployment.breadcrumbs.client.tabs.SaveVideoActivity");
-                    Bundle extras = new Bundle();
-                    extras.putBoolean("IsBackCameraOpen", backCameraOpen);
-                    save.putExtras(extras);
-                    save.putExtra("videoUrl", fileName); //The uri to our address
-                    context.startActivity(save);
-                }
-                // return false so that we are not consuming the event and our onclick still works
-                return false;
-            }
-        });
 
         ImageButton imageButton = (ImageButton) context.findViewById(R.id.backButtonCapture);
         imageButton.setOnClickListener(new OnClickListener() {
@@ -393,6 +433,68 @@ public class CameraController extends SurfaceView implements SurfaceHolder.Callb
                 context.finish();
             }
         });
+    }
+
+    private void toggleVideo() {
+        if (currentlyFilming) {
+            recorder.stop();
+            disableVideoCamera();
+            currentlyFilming = false;
+            t.cancel();
+            // Launch video intent to save the video.
+            Intent save = new Intent();
+            save.setClassName("com.teamunemployment.breadcrumbs", "com.teamunemployment.breadcrumbs.client.tabs.SaveVideoActivity");
+            Bundle extras = new Bundle();
+            extras.putBoolean("IsBackCameraOpen", backCameraOpen);
+            save.putExtras(extras);
+            save.putExtra("videoUrl", fileName); //The uri to our address
+            context.startActivity(save);
+        } else {
+            currentlyFilming = true;
+            //doProgressShit(50);
+            startTimer();
+            // Set up our video camera. This is different from taking a photo
+            setUpVideoCamera();
+           // videoButton.setBackgroundColor(getResources().getColor(R.color.accent));
+            recorder.start();
+        }
+    }
+
+
+    private void startTimer() {
+        t=new Timer();
+        final ProgressBar progressBar = (ProgressBar) context.findViewById(R.id.video_progress);
+        //progressBar.getProgressDrawable().set(Color.parseColor("#C0D000"), android.graphics.PorterDuff.Mode.SRC_ATOP);
+        //progressBar.setScaleY(4f);z
+        t.scheduleAtFixedRate(new TimerTask() {
+            @Override
+            public void run() {
+                videoTimer += 50;
+                if (videoTimer < 15000) {
+                    progressBar.setProgress(videoTimer);
+                } else {
+                    // Stop video, and go to the next page
+                    stopRecorderAndOpenViewScreen();
+                    t.cancel();
+                }
+            }
+        }, 50, 50);
+    }
+
+    private void stopRecorderAndOpenViewScreen() {
+        if (recorder!= null) {
+            recorder.stop();
+            disableVideoCamera();
+            currentlyFilming = false;
+            // Launch video intent to save the video.
+            Intent save = new Intent();
+            save.setClassName("com.teamunemployment.breadcrumbs", "com.teamunemployment.breadcrumbs.client.tabs.SaveVideoActivity");
+            Bundle extras = new Bundle();
+            extras.putBoolean("IsBackCameraOpen", backCameraOpen);
+            save.putExtras(extras);
+            save.putExtra("videoUrl", fileName);
+            context.startActivity(save);
+        }
     }
 
     Camera.PictureCallback rawCallback = new Camera.PictureCallback() {

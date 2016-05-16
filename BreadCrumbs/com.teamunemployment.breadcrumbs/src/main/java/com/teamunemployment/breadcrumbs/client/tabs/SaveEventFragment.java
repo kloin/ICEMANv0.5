@@ -16,6 +16,7 @@ import android.location.LocationListener;
 import android.os.Bundle;
 import android.os.Environment;
 import android.preference.PreferenceManager;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.view.ViewPager;
 import android.util.DisplayMetrics;
@@ -77,7 +78,6 @@ public class SaveEventFragment extends Activity {
 	private Map<String, String> map = new HashMap<String, String>();
 	private static Bitmap media;
 	private ImageView iv;
-    private MyCurrentTrailDisplayManager currentTrailManager;
 	private static String crumbMedia;
 	private LruCache<String, Bitmap> mMemoryCache;
 	private String trailId;
@@ -89,6 +89,7 @@ public class SaveEventFragment extends Activity {
 	private BreadcrumbsLocationProvider locationProvider;
 	private BreadCrumbsFusedLocationProvider fusedLocationProvider;
 	private boolean backCameraOpen;
+	private PreferencesAPI mPreferencesApi;
 	/*
 	 * Do as LITTLE as possible in the constructors. If possible, load at run-time
 	 */
@@ -98,22 +99,25 @@ public class SaveEventFragment extends Activity {
 		setContentView(R.layout.add_screen);
 		globalContainer = GlobalContainer.GetContainerInstance();
 		addTapListeners();
-
+		mPreferencesApi = new PreferencesAPI(this);
         context = this;
         ActionBar actionBar = getActionBar();
 		backCameraOpen = getIntent().getBooleanExtra("IsBackCameraOpen", true);
         SetMedia();
-        // use with care.
-        currentTrailManager = MyCurrentTrailDisplayManager.GetCurrentTrailManagerInstance();
+
 		// Set the height of the camera to be the same as the width so we get a square.
 		setBackButtonListener();
 		locationProvider = BreadcrumbsLocationProvider.getInstance(this);
 		fusedLocationProvider = new BreadCrumbsFusedLocationProvider(this);
 	}
 
+	@Override
+	public void onTrimMemory(int level) {
+		super.onTrimMemory(level);
+	}
 
 	private void setBackButtonListener() {
-		ImageView backButton = (ImageView) findViewById(R.id.backAddScreen);
+		FloatingActionButton backButton = (FloatingActionButton) findViewById(R.id.backAddScreen);
 		backButton.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
@@ -122,13 +126,9 @@ public class SaveEventFragment extends Activity {
 			}
 		});
 	}
-
-	public static void SetCrumbMedia(String crumbMedias) {
-		crumbMedia = crumbMedias;
-	}
 	
 	private void addTapListeners() {
-		final TextView done = (TextView) findViewById(R.id.done_button);
+		final FloatingActionButton done = (FloatingActionButton) findViewById(R.id.done_button);
 		done.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View view) {
@@ -139,64 +139,10 @@ public class SaveEventFragment extends Activity {
 			}
 		});
 	}
-	private void getAllOwnedOrPartOfTrailsForAUser() {
-        // Get all trails with a url request, convert the result to json
-        String userId = PreferenceManager.getDefaultSharedPreferences(getApplicationContext()).getString("USERID", "-1");
-        String url = MessageFormat.format("{0}/rest/User/GetAllEditibleTrailsForAUser/{1}",
-                LoadBalancer.RequestServerAddress(),
-                userId);
-        asyncDataRetrieval = new AsyncDataRetrieval(url, new AsyncDataRetrieval.RequestListener() {
-            @Override
-            public void onFinished(String result) {
-                //Trail Created
-                try {
-                    if (result == null) {
-                        return;
-                    }
-                    editableTrails = new JSONObject(result);
-                    loadTrailsIntoHashMap(editableTrails);
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-            }
-        }, context);
-        asyncDataRetrieval.execute();
-    }
-	private void loadTrailsIntoHashMap(JSONObject trailsToLoad) {
-        // Get all trails Owned/part_of for our user.
-        //s = (Spinner) findViewById(R.id.spinner_image);
-        //Get all trails
-        //Add them to hashMap of string/trail
-        trailAndIdMap = new HashMap<String, String>();
-		Iterator iterator = trailsToLoad.keys();
-		while (iterator.hasNext()) {
-			JSONObject trail;
-			try {
-				trail = trailsToLoad.getJSONObject(iterator.next().toString());
-                String title = trail.getString("TrailName");
-                String id = trail.getString("Id");
-                trailAndIdMap.put(title, id);
-			} catch (JSONException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-		}
-        // Load the trails from the hashSet into the spinner adapter.
-        ArrayList<String> array = new ArrayList<String>();
-        Collection baseList = trailAndIdMap.keySet();
-        Iterator<String> listIterator = baseList.iterator();
-        while (listIterator.hasNext()) {
-            array.add(listIterator.next());
-        }
-
-        ArrayAdapter<String> spinnerArrayAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, array); // selected item will look like a spinner set from XML
-        spinnerArrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        //s.setAdapter(spinnerArrayAdapter);
-	}
 	
 	private void createNewEvent() {
 		//Currently we will only be creating a crumb. In the future we will be able to create both.
-		trailId = Integer.toString(PreferencesAPI.GetInstance(context).GetLocalTrailId());
+		trailId = Integer.toString(mPreferencesApi.GetLocalTrailId());
 
         final Location location = locationProvider.GetBestRecentLocation();
 		if (location == null) {
@@ -298,9 +244,9 @@ public class SaveEventFragment extends Activity {
 					eventId = 0;
 				}
 
-				eventId += 1;
+				//eventId += 1;
 				SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
-				preferences.edit().putInt("EVENTID", eventId).commit();
+				//preferences.edit().putInt("EVENTID", eventId).commit();
 				String userId = preferences.getString("USERID", null);
 
 				// Crash the app here. I am doing this because this should never happen in production - if it does happen I want to catch it as soon as possiible
@@ -308,8 +254,8 @@ public class SaveEventFragment extends Activity {
 					throw new NullPointerException("User id was null.");
 				}
 				// Need to set our trailId as the local one.
-				String localTrailId = Integer.toString(PreferencesAPI.GetInstance(context).GetLocalTrailId());
-				String fileName =  Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES).toString() + eventId;
+				String localTrailId = Integer.toString(mPreferencesApi.GetLocalTrailId());
+				String fileName =  Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES).toString() + "/"+eventId;
 				// save our crumb to the db. It will be saved to the server when we publish
 				Utils.SaveBitmap(fileName, media);
 				dbc.SaveCrumb(localTrailId, " ", userId, eventId, location.getLatitude(), location.getLongitude(), ".jpg", timeStamp, "", placeId, suburb, finalCity, finalCountry);

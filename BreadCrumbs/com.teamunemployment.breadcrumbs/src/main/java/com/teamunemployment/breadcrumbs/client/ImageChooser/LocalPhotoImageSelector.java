@@ -13,6 +13,7 @@ import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.provider.MediaStore;
 import android.support.v4.content.ContextCompat;
+import android.support.v4.content.CursorLoader;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
@@ -26,9 +27,11 @@ import com.teamunemployment.breadcrumbs.Network.ServiceProxy.AsyncDataRetrieval;
 import com.teamunemployment.breadcrumbs.Network.ServiceProxy.AsyncImageFetch;
 import com.teamunemployment.breadcrumbs.Network.ServiceProxy.GETImageSaver;
 import com.teamunemployment.breadcrumbs.Network.ServiceProxy.HTTPRequestHandler;
+import com.teamunemployment.breadcrumbs.Network.ServiceProxy.UploadFile;
 import com.teamunemployment.breadcrumbs.R;
 import com.teamunemployment.breadcrumbs.RandomUsefulShit.Utils;
 import com.teamunemployment.breadcrumbs.caching.GlobalContainer;
+import com.teamunemployment.breadcrumbs.caching.TextCaching;
 import com.teamunemployment.breadcrumbs.client.Adapters.LocalFilesGridViewAdapter;
 import com.teamunemployment.breadcrumbs.client.Animations.SimpleAnimations;
 import com.teamunemployment.breadcrumbs.client.Image.ImageLoadingManager;
@@ -41,6 +44,7 @@ import org.json.JSONException;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.URL;
 import java.util.ArrayList;
 
 /**
@@ -99,65 +103,110 @@ public class LocalPhotoImageSelector extends Activity {
                         //Intent returnIntent = new Intent();
                         //activityContext.setResult(Activity.RESULT_OK,returnIntent);
                         //UploadTheImage(position);
-                        UploadBase64String(position);
+                        UploadProfileImage(position);
+                        Uri images = MediaStore.Images.Media.EXTERNAL_CONTENT_URI;
+                        final Uri uri = Uri.parse(images + "/" + ids.get(position));
+
                         // Quiting on select for now.
+                        ImageLoadingManager imageLoadingManager = new ImageLoadingManager(mContext);
+                        Bitmap bitmap = null;
+                        try {
+                            bitmap = imageLoadingManager.GetFull720Bitmap(uri);
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                        GlobalContainer.GetContainerInstance().SetBitMap(bitmap);
+                        // Tell the tabs activity (from previously) that we have saved and want to go back to the profile page.
                         Intent returnIntent = new Intent();
+                        returnIntent.putExtra("bitmap",bitmap);
                         mContext.setResult(5, returnIntent);
+                        mContext.finish();
                         //mContext.finish();
                     }
                 });
             }
         });
     }
-    private void UploadBase64String(int position) {
+
+    private void uploadImage(int position, String url) {
+
+        // BAND AID FOR POOR CODE
         Uri images = MediaStore.Images.Media.EXTERNAL_CONTENT_URI;
-        final Uri uri = Uri.parse(images + "/" + ids.get(position));
-        // FetchMedia
-        final String userId = PreferenceManager.getDefaultSharedPreferences(mContext).getString("USERID", "-1");
-        ImageLoadingManager imageLoadingManager = new ImageLoadingManager(mContext);
-        try {
-            final Bitmap bitmap = imageLoadingManager.GetFull720Bitmap(uri);
-            GlobalContainer.GetContainerInstance().SetBitMap(bitmap);
 
-            final String saveImageUrl = LoadBalancer.RequestServerAddress() + "/rest/Crumb/UploadProfileImage/"+ userId;
-            AsyncDataRetrieval asyncDataRetrieval = new AsyncDataRetrieval(saveImageUrl, new AsyncDataRetrieval.RequestListener() {
-                @Override
-                public void onFinished(String result) throws JSONException {
-                    Log.d(TAG, "Created image save with Id of: "+result);
-                    //First we need to save a crumb of for the selected photo. so we basically treat
-                    // this as if we were just saving a photo that had just been taken.
-                    saveImage(bitmap, result);
-
-                    // Save our cover photo for opening a few activities later. When we return to profile page.
-                    PreferenceManager.getDefaultSharedPreferences(mContext).edit().putString("COVERPHOTOID",result).commit();
-                    HTTPRequestHandler simpleHttp = new HTTPRequestHandler();
-                    simpleHttp.SaveNodeProperty(userId, "CoverPhotoId", result, mContext);
-                    Intent returnIntent = new Intent();
-                    mContext.setResult(5, returnIntent);
-                    mContext.finish();
-                }
-            }, mContext);
-            asyncDataRetrieval.execute();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        Intent returnIntent = new Intent();
-        mContext.setResult(5, returnIntent);
-        mContext.finish();
-    }
-
-    private void saveImage(Bitmap media, String crumbId) {
-        AsyncImageFetch imagesave = new AsyncImageFetch(media, crumbId , new AsyncImageFetch.RequestListener() {
+        Uri uri = Uri.parse(images + "/" + ids.get(position));
+        String stringUrl = getRealPathFromURI(mContext, uri);
+        File sourceFile = new File(stringUrl);
+        UploadFile imagesave = new UploadFile(url, stringUrl, new UploadFile.RequestListener() {
 
             /*
              * Override for the
              */
             @Override
             public void onFinished(String result) {
-                //finish();
             }
         });
         imagesave.execute();
+    }
+
+    private String getRealPathFromURI(Context context, Uri contentUri) {
+        String[] proj = { MediaStore.Audio.Media.DATA };
+        CursorLoader loader = new CursorLoader(context, contentUri, proj, null, null, null);
+        Cursor cursor = loader.loadInBackground();
+        int column_index = cursor.getColumnIndexOrThrow(MediaStore.Audio.Media.DATA);
+        cursor.moveToFirst();
+        return cursor.getString(column_index);
+    }
+
+    private void UploadProfileImage(int position) {
+
+        // Root of the local images folder.
+        Uri images = MediaStore.Images.Media.EXTERNAL_CONTENT_URI;
+
+        // FetchMedia
+        final String userId = PreferenceManager.getDefaultSharedPreferences(mContext).getString("USERID", "-1");
+
+
+        // First we save the crumb to the database. We use a request listerner (getRequestListener) to  do the save once we have updated the profile image.
+        final String saveImageUrl = LoadBalancer.RequestServerAddress() + "/rest/Crumb/UploadProfileImage/"+ userId;
+        AsyncDataRetrieval asyncDataRetrieval = new AsyncDataRetrieval(saveImageUrl, getRequestListener(userId, position), mContext);
+        asyncDataRetrieval.execute();
+
+        final Uri uri = Uri.parse(images + "/" + ids.get(position));
+
+        // FetchMedia
+        ImageLoadingManager imageLoadingManager = new ImageLoadingManager(mContext);
+        Bitmap bitmap = null;
+        try {
+            bitmap = imageLoadingManager.GetFull720Bitmap(uri);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        // Tell the tabs activity (from previously) that we have saved and want to go back to the profile page.
+        Intent returnIntent = new Intent();
+        returnIntent.putExtra("bitmap",bitmap);
+        mContext.setResult(5, returnIntent);
+        mContext.finish();
+    }
+
+    private AsyncDataRetrieval.RequestListener getRequestListener(final String userId, final int position) {
+        return new AsyncDataRetrieval.RequestListener() {
+            @Override
+            public void onFinished(String result) throws JSONException {
+                Log.d(TAG, "Created image save with Id of: "+result);
+                //First we need to save a crumb of for the selected photo. so we basically treat
+                // this as if we were just saving a photo that had just been taken.
+                String url = new String(LoadBalancer.RequestServerAddress() + "/rest/login/savecrumb/"+ result);
+                uploadImage(position, url);
+                // Save our cover photo for opening a few activities later. When we return to profile page.
+                PreferenceManager.getDefaultSharedPreferences(mContext).edit().putString("COVERPHOTOID",result).commit();
+                HTTPRequestHandler simpleHttp = new HTTPRequestHandler();
+                simpleHttp.SaveNodeProperty(userId, "CoverPhotoId", result, mContext);
+                Intent returnIntent = new Intent();
+                mContext.setResult(5, returnIntent);
+                mContext.finish();
+            }
+        };
     }
 
     private void UploadTheImage(int position) {
@@ -187,7 +236,7 @@ public class LocalPhotoImageSelector extends Activity {
                     // this as if we were just saving a photo that had just been taken.
                     String uploadImage= LoadBalancer.RequestServerAddress() + "/rest/login/savecrumb/"+result;
                     try {
-                        String uploadId = new MultipartUploadRequest(mContext, uploadImage)
+                        new MultipartUploadRequest(mContext, uploadImage)
                                 .addFileToUpload(file + "/breadcrumbsprofile.png", "test")
                                         .setNotificationConfig(new UploadNotificationConfig())
                                         .setMaxRetries(2)

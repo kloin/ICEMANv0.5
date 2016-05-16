@@ -1,7 +1,10 @@
 package com.teamunemployment.breadcrumbs.RandomUsefulShit;
 
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.media.ExifInterface;
+import android.os.Environment;
+import android.support.annotation.Nullable;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -44,4 +47,57 @@ public class Utils {
     }
 
 
+    /*
+        Returns a bitmap from the specified location. Returns null if things go bad. Will most likely
+        throw an exception if the filename is not pointing to any file so be wary of that.
+     */
+    @Nullable
+    public static Bitmap FetchRawBitmapFromFile(String fileName) {
+        Bitmap bitmap = null;
+        File image = new File(fileName);
+        BitmapFactory.Options bmOptions = new BitmapFactory.Options();
+        bitmap = BitmapFactory.decodeFile(image.getAbsolutePath(),bmOptions);
+        return bitmap;
+    }
+
+
+    /*
+        Return a 'thumbnail' of a bitmap with a scaled size 120x120. Use alternative scaled method
+        if you want to scale the bitmap to custom sizes.
+
+     *  @throws IllegalArgumentException if width is <= 0, or height is <= 0
+     */
+    @Nullable
+    public static Bitmap FetchBitmapThumbnailFromFile(String fileName) {
+        Bitmap bitmap = null;
+        File image = new File(fileName);
+        BitmapFactory.Options bmOptions = new BitmapFactory.Options();
+        bitmap = BitmapFactory.decodeFile(image.getAbsolutePath(),bmOptions);
+        // Filter by default as I think it creates better results when downsizing.
+        return Bitmap.createScaledBitmap(bitmap, 120, 120,true);
+    }
+
+    /*
+        Fetch a bitmap with specified witdth and height scaling
+
+        @Returns A bitmap or nothing if you give it a bad URL
+        @throws IllegalArgumentException if width is <= 0, or height is <= 0
+     */
+    @Nullable
+    public static Bitmap FetchScaledBitmapFromFile(String fileName, int width, int height) {
+        Bitmap bitmap = null;
+        File image = new File(fileName);
+        BitmapFactory.Options bmOptions = new BitmapFactory.Options();
+        bitmap = BitmapFactory.decodeFile(image.getAbsolutePath(),bmOptions);
+        // Filter by default as I think it creates better results when downsizing.
+        return Bitmap.createScaledBitmap(bitmap, width, height, true);
+    }
+
+    public static String FetchLocalPathToImageFile(String eventId) {
+       return Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES).toString() + "/"+eventId + ".jpg";
+    }
+
+    public static String FetchLocalPathToVideoFile(String eventId) {
+        return Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES).toString() + "/"+eventId + ".mp4";
+    }
 }

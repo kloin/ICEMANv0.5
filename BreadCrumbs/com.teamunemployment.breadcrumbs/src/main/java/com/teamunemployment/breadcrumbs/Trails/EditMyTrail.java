@@ -53,6 +53,7 @@ public class EditMyTrail extends AppCompatActivity {
     private LinearLayoutManager mLayoutManager;
     private ArrayList<String> crumbsArray;
     private CrumbCardEditAdapter mAdapter;
+    private PreferencesAPI mPreferencesApi;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,12 +61,13 @@ public class EditMyTrail extends AppCompatActivity {
         setContentView(R.layout.trail_editor_2);
         context = this;
 
+        mPreferencesApi = new PreferencesAPI(context);
         Bundle extras = getIntent().getExtras();
         if (extras != null) {
             trailId = extras.getString("TrailId");
             coverId = extras.getString("CoverId");
         } else {
-            trailId = Integer.toString(PreferencesAPI.GetInstance(context).GetLocalTrailId());
+            trailId = Integer.toString(mPreferencesApi.GetLocalTrailId());
         }
 
         setUpHeaderPhoto(trailId);
@@ -103,7 +105,7 @@ public class EditMyTrail extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 TrailManagerWorker trailManagerWorker = new TrailManagerWorker(context);
-                int localTrailId = PreferencesAPI.GetInstance(context).GetLocalTrailId();
+                int localTrailId = mPreferencesApi.GetLocalTrailId();
 
                 if (localTrailId == -1) {
                     throw new NullPointerException("TRAILID WAS NULL");

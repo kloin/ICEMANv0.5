@@ -1,6 +1,5 @@
 package com.teamunemployment.breadcrumbs.Network.ServiceProxy;
 
-
 import android.graphics.Bitmap;
 import android.os.AsyncTask;
 import android.util.Base64;
@@ -18,7 +17,6 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
-
 
 public class AsyncImageFetch extends AsyncTask<String, Integer, String> {
 		private JSONObject json = new JSONObject();

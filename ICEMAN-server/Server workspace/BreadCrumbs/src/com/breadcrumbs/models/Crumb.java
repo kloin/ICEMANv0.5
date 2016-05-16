@@ -51,11 +51,9 @@ public class Crumb {
 		Node crumb = dbm.RetrieveNode(crumbId);
 		Node trail = dbm.RetrieveNode(Integer.parseInt(trailId));
 
-		// Set the cover photo.
-		if (Integer.parseInt(trailManager.GetNumberOfCrumbsForATrail(trailId)) <=1) {
-			trailManager.SetCoverPhoto(trailId, Integer.toString(crumbId));
-		}
-		
+		// Set the cover photo. This is being done automatically at the moment, but in the future we will
+                // need to check if the user has set a personal cover photo first.
+                trailManager.SetCoverPhoto(trailId, Integer.toString(crumbId));
 		dbm.CreateRelationship(crumb, trail, myRelationships.Part_Of);	
 		return String.valueOf(crumbId);
 	}
@@ -67,54 +65,53 @@ public class Crumb {
         OutputStream outputStream;
 		try {
 			outputStream = new FileOutputStream(targetFile);
-            int length;             
-            while((length = stream.read(buffer)) > 0)
-            	outputStream.write(buffer, 0, length);           
-            outputStream.close(); 
-		} catch (FileNotFoundException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+                int length;             
+                while((length = stream.read(buffer)) > 0)
+                    outputStream.write(buffer, 0, length);           
+                outputStream.close();
+                    } catch (FileNotFoundException e) {
+                            // TODO Auto-generated catch block
+                            e.printStackTrace();
+                    } catch (IOException e) {
+                            // TODO Auto-generated catch block
+                            e.printStackTrace();
+                    }
+                
+                
 	}
 	
-	/*
-	 * 	why is this not being called?
-	 */
-	public void ConvertAndSaveImage(String uploadImageString, String crumbId) {
-		RenderedImage image = null;
-        byte[] imageByte;
-        try {
-        	String serverAddress = "/var/lib/tomcat7/webapps/images/";
-        	String localAddress = "C:/Users/jek40/iceman/ICEMANv0.5/ICEMAN-server/Server workspace/.metadata/.plugins/org.eclipse.wst.server.core/tmp0/wtpwebapps/BreadCrumbs/images/";//"C:/Users/aDirtyCanvas/workspace/BreadCrumbs/WebContent/images/";
-            imageByte =  Base64.decodeBase64(uploadImageString);          
-            FileOutputStream imageOutFile = new FileOutputStream(
-            		serverAddress+crumbId+".jpg");
+	public void ConvertAndSaveImage(InputStream uploadImageStream, String crumbId) {
+            File targetFile = new File("/var/lib/tomcat7/webapps/images/"+crumbId+".jpg");
+            byte[] buffer = new byte[1024];
+            OutputStream outputStream;
+            try {    
+                // Create a thumbnail.
+                createAndSaveThumbnail(uploadImageStream, crumbId);
+                outputStream = new FileOutputStream(targetFile);
+                int length;             
+                while((length = uploadImageStream.read(buffer)) > 0) {
+                    outputStream.write(buffer, 0, length);      
+                }
             
-            imageOutFile.write(imageByte);
-          
-            imageOutFile.close();
-            
-            // Now we need to create the thumbnail
-            InputStream in = new ByteArrayInputStream(imageByte);
-			BufferedImage img = ImageIO.read(in);
+                outputStream.close(); 
+            } catch (FileNotFoundException e) {
+                    // TODO Auto-generated catch block
+                    e.printStackTrace();
+            } catch (IOException e) {
+                    // TODO Auto-generated catch block
+                    e.printStackTrace();
+            }
+	}
+        
+        // Create a thumbnail of an image.
+        private void createAndSaveThumbnail(InputStream uploadInputStream, String crumbId) throws IOException {
+			BufferedImage img = ImageIO.read(uploadInputStream);
 			Image scaledImg = img.getScaledInstance(100, 100, Image.SCALE_SMOOTH);
 			BufferedImage thumbnail = new BufferedImage(100, 100, BufferedImage.TYPE_INT_RGB);
 			thumbnail.createGraphics().drawImage(scaledImg,0,0,null);
-			ImageIO.write(thumbnail, "jpg", new File(serverAddress + crumbId+"T.jpg"));
-			
-            Trail trail = new Trail();
-            // Now test if we need to save a cover photo for a trail
-            //trail.Set
+			ImageIO.write(thumbnail, "jpg", new File(Statics.StaticValues.serverAddress + crumbId+"T.jpg"));      
 
-		} catch (IOException e) {
- 
-			e.printStackTrace();
-		}
-            //- this badboy with the crumbId so we can find it again
-	}
+        }
 
 	public String GetLatitudeAndLongitude(String crumbId) {
 		dbm = DBMaster.GetAnInstanceOfDBMaster();

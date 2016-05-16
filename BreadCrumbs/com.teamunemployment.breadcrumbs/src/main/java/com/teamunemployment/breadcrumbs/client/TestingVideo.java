@@ -53,12 +53,11 @@ public class TestingVideo  extends Activity implements SurfaceHolder.Callback,
         preparePlayer(true);
     }
 
-
     private void preparePlayer(boolean playWhenReady) {
         if (player == null) {
             String userAgent = Util.getUserAgent(this, "BreadcrumbsExoplayer");
             Uri uri = Uri.parse(LoadBalancer.RequestCurrentDataAddress() + "/images/5073.mp4");
-            player = new BreadcrumbsExoPlayer(new ExtractorRendererBuilder(context,userAgent, uri));
+            player = new BreadcrumbsExoPlayer(new ExtractorRendererBuilder(context,userAgent, uri, false));
             player.addListener(this);
             player.setCaptionListener(this);
             player.seekTo(0);
@@ -122,7 +121,6 @@ public class TestingVideo  extends Activity implements SurfaceHolder.Callback,
     private static final class KeyCompatibleMediaController extends MediaController {
 
         private MediaController.MediaPlayerControl playerControl;
-
         public KeyCompatibleMediaController(Context context) {
             super(context);
         }

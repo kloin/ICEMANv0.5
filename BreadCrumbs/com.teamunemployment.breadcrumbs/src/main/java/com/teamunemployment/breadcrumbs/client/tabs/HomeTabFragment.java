@@ -226,7 +226,6 @@ public class HomeTabFragment extends Fragment {
                     loadingSpinner.setVisibility(View.GONE);
                     CardView networkIssueCard = (CardView) rootView.findViewById(R.id.network_issue_placeholder);
                     if (result.equals("NE1")) {
-
                         simpleAnimations.FadeInView(networkIssueCard);
                         networkIssueCard.setVisibility(View.VISIBLE);
                         return;

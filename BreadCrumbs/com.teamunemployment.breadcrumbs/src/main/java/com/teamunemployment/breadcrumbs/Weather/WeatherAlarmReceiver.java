@@ -34,9 +34,6 @@ public class WeatherAlarmReceiver extends BroadcastReceiver {
     private Context mContext;
     private Location mLocation;
 
-
-
-
     @Override
     public void onReceive(Context context, Intent intent) {
         mContext = context;

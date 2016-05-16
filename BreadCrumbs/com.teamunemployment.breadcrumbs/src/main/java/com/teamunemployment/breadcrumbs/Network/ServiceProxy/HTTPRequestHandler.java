@@ -59,7 +59,7 @@ public class HTTPRequestHandler {
              */
             @Override
             public void onFinished(String res) {
-                PreferencesAPI.GetInstance(context).SaveCurrentServerTrailId(Integer.parseInt(res));
+                new PreferencesAPI(context).SaveCurrentServerTrailId(Integer.parseInt(res));
 
             }
         }, context);

@@ -85,6 +85,7 @@ public class PathSenseActivityManager{
         mLocationProvider = BreadcrumbsLocationProvider.getInstance(mContext);
         dbc = new DatabaseController(context);
         mPreferences = PreferenceManager.getDefaultSharedPreferences(mContext);
+        mPreferencesApi = new PreferencesAPI(context);
         mTextCaching = new TextCaching(mContext);
     }
 
@@ -304,7 +305,7 @@ public class PathSenseActivityManager{
     private void checkForDrivingEvent(String savedActivity, String currentActivity) {
         // This means we have started driving.
         if (mPreferencesApi == null) {
-            mPreferencesApi = PreferencesAPI.GetInstance(mContext);
+            mPreferencesApi = new PreferencesAPI(mContext);
         }
         if (mPreferencesApi.isTrackingEnabledByUser()) {
             if (currentActivity.equals(DRIVING) && !savedActivity.equals(DRIVING)) {
@@ -324,7 +325,7 @@ public class PathSenseActivityManager{
         @Override
         public void onLocationChanged(Location location) {
             eventId = mPreferences.getInt("EVENTID", 0);
-            trailId = Integer.toString(PreferencesAPI.GetInstance(mContext).GetLocalTrailId());
+            trailId = Integer.toString(mPreferencesApi.GetLocalTrailId());
             // When we save
             dbc.AddMetadata(eventId, DateTime.now().toString(), location.getLatitude(), location.getLongitude(), trailId, TrailManagerWorker.ACTIVITY_CHANGE, TrailManagerWorker.DRIVING);
             eventId += 1;
@@ -354,7 +355,7 @@ public class PathSenseActivityManager{
         @Override
         public void onLocationChanged(Location location) {
             eventId = mPreferences.getInt("EVENTID", 0);
-            trailId = Integer.toString(PreferencesAPI.GetInstance(mContext).GetLocalTrailId());
+            trailId = Integer.toString(mPreferencesApi.GetLocalTrailId());
             // When we save
             dbc.AddMetadata(eventId, DateTime.now().toString(), location.getLatitude(), location.getLongitude(), trailId, TrailManagerWorker.ACTIVITY_CHANGE, TrailManagerWorker.DRIVING);
             eventId += 1;
@@ -467,7 +468,7 @@ public class PathSenseActivityManager{
     private void saveRestPoint(SharedPreferences preferences, Location location) {
 
         DatabaseController dbc = new DatabaseController(mContext);
-        int trailId = PreferencesAPI.GetInstance(mContext).GetLocalTrailId();
+        int trailId = mPreferencesApi.GetLocalTrailId();
         if (trailId == -1) {
             // Happens occasionally
             throw new NullPointerException("Fatal: Trail Id was Null");

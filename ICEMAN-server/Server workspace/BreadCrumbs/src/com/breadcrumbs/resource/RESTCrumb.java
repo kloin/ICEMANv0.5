@@ -12,14 +12,20 @@ import com.breadcrumbs.models.Crumb;
 import com.breadcrumbs.search.Search;
 
 import Statics.StaticValues;
+import com.breadcrumbs.database.NodeController;
 import com.breadcrumbs.models.Trail;
 import java.util.Hashtable;
+import javax.ws.rs.Produces;
+import javax.ws.rs.core.MediaType;
 import org.neo4j.graphdb.Node;
 
 @Path("/Crumb")
 public class RESTCrumb {
 	private DBMaster dbm;
 
+        /*
+            Get the latitude and longitude for a crumb. Pretty self explainatory.
+        */
 	@GET
 	@Path("GetLatitudeAndLogitudeForCrumb/{CrumbId}")
 	public String GetLatitudeAndLongitudeForACrumb(@PathParam("CrumbId") String CrumbId) {		
@@ -27,6 +33,10 @@ public class RESTCrumb {
 		return crumb.GetLatitudeAndLongitude(CrumbId);
 	}
 	
+        /*
+            Delete a crumb by its Id. It also does a search on the disk for 
+            any files related to that crumb (.jpg, .mp4) and deletes them from storage.
+        */
 	@GET
 	@Path("DeleteCrumb/{CrumbId}")
 	public String DeleteCrumb(@PathParam("CrumbId") String CrumbId) {
@@ -48,6 +58,11 @@ public class RESTCrumb {
 		return "success";
 	}
 	
+        /*
+            Upload a porfile image. This is for uploading images that we have not
+            currently got stored in the databse - i.e images that are stored locally
+            on the users phone ( think instagram etc.).
+        */
         @GET
         @Path("UploadProfileImage/{UserId}")
         public String UploadProfileImage(@PathParam("UserId") String userId) {
@@ -65,12 +80,29 @@ public class RESTCrumb {
             return String.valueOf(crumbId);
         }
         
+        /*
+            Get a propery from a crumb, using the crumb Id and the property name.
+        */
 	@GET
 	@Path("GetPropertyFromCrumb/{CrumbId}/{Property}") 
 	public String GetPropertyFromCrumb(@PathParam("CrumbId") String CrumbId,
-									   @PathParam("Property") String Property) {
+                                           @PathParam("Property") String Property) {
 		return "";
 	}
+        
+     
+        /*
+            Get all the crumb ids for a user that have corresponding images.
+        */
+        @GET
+        @Produces(MediaType.APPLICATION_JSON)
+        @Path("GetAllImageCrumbIdsForAUser/{id}")
+        public String GetAllCrumbIdsForAUser(@PathParam("id") String id) {
+            dbm = DBMaster.GetAnInstanceOfDBMaster();
+            System.out.println("Fetching all crumbs ids that are photos, for user with ID: " + id);
+            String cypherQuery = "MATCH (n:Crumb) WHERE n.UserId = '"+id+" AND n.Extension = '.jpg' RETURN n";
+            return dbm.ExecuteCypherQueryJSONStringReturnJustIds(cypherQuery);
+        }
 	
 	@GET
 	@Path("UserLikesCrumb/{CrumbId}/{UserId}")

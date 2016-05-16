@@ -156,6 +156,25 @@ public class UserService {
 		String cypherQuery = "start n = node("+userId+") match n-[:Has_Pinned]->(user:User) return user";	
 		return dbMaster.ExecuteCypherQueryJSONStringReturnJustIds(cypherQuery);
 	}
+        
+        public String GetNumberOfUsersThatWeFollow(String userId) {
+            DBMaster dbMaster = DBMaster.GetAnInstanceOfDBMaster();
+            String cypherQuery = "start n = node("+userId+") match n-[:Has_Pinned]->(user:User) return count(*)";	
+            return dbMaster.ExecuteCypherQueryReturnCount(cypherQuery);
+        }
+        
+        public String GetAllUsersThatFollowUs(String userId) {
+            DBMaster dbMaster = DBMaster.GetAnInstanceOfDBMaster();
+            String cypherQuery = "start n = node("+userId+") match (user:User)-[:Has_Pinned]->(n) return user";
+            return dbMaster.ExecuteCypherQueryJSONStringReturnJustIds(cypherQuery);
+        }
+        
+        public String GetNumberOfUsersThatFollowUs(String userId) {
+            DBMaster dbMaster = DBMaster.GetAnInstanceOfDBMaster();
+            String cypherQuery = "start n = node("+userId+") match (user:User)-[:Has_Pinned]->(n) Return count(*)";
+            return dbMaster.ExecuteCypherQueryReturnCount(cypherQuery);
+        }
+       
 
 	/*
 	 * Get all Trails for our pinned users, as well as all the trails that we have pinned.

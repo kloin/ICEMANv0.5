@@ -83,7 +83,6 @@ public class BreadcrumbsLocationProvider implements LocationListener {
     private static BreadcrumbsLocationProvider sInstance;
     // Manages fetching location from androids Location
 
-
     // Needs to be public so that we can access it from activity?
     private InternalHandler mHandler;
     private Context mContext;

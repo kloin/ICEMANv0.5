@@ -20,6 +20,9 @@ import android.widget.TextView;
 
 import com.teamunemployment.breadcrumbs.CustomElements.FancyFollow;
 import com.teamunemployment.breadcrumbs.Network.ServiceProxy.AsyncFetchThumbnail;
+import com.teamunemployment.breadcrumbs.Network.ServiceProxy.HTTPRequestHandler;
+import com.teamunemployment.breadcrumbs.Network.ServiceProxy.SimpleNetworkApi;
+import com.teamunemployment.breadcrumbs.Network.ServiceProxy.UpdateViewElementWithProperty;
 import com.teamunemployment.breadcrumbs.caching.TextCachingInterface;
 import com.teamunemployment.breadcrumbs.Network.LoadBalancer;
 import com.teamunemployment.breadcrumbs.Network.ServiceProxy.AsyncDataRetrieval;
@@ -47,11 +50,12 @@ public class HomeCardAdapter extends RecyclerView.Adapter<HomeCardAdapter.ViewHo
     private String LAST_CACHED_TIME = "LAST_CACHED_TIME";
     private final String TAG = "HOME_CARD";
     private TextCaching mTextCaching;
+
     // Provide a reference to the views for each data item
     // Complex data items may need more than one view per item, and
     // you provide access to all the views for a data item in a view holder
     public static class ViewHolder extends RecyclerView.ViewHolder {
-        // each data item is just a string in this case
+        // Each data item is just a string in this case
         public LinearLayout CardInner;
         public ViewHolder(View v) {
             super(v);
@@ -91,6 +95,7 @@ public class HomeCardAdapter extends RecyclerView.Adapter<HomeCardAdapter.ViewHo
 
     private void FetchAndBindObject(final LinearLayout card, final String trailId, final int position) {
         Log.d(TAG, "Begin loading card at position : " +position);
+
         // This is our url.
         final String keyUrl = "TrailManagerGetBaseDetailsForATrail" + trailId;
         final String url = LoadBalancer.RequestServerAddress() + "/rest/TrailManager/GetBaseDetailsForATrail/" + trailId;
@@ -157,6 +162,11 @@ public class HomeCardAdapter extends RecyclerView.Adapter<HomeCardAdapter.ViewHo
             }
         }
 
+        // Set the number of crumbs for this trail.
+        setNumberOfCrumbsView(card, trailId);
+
+        // Temp - for managing all the messy as fuk shit.
+        setTempDeleteButton(card, trailId);
         // Need to fetch description with the other data but icbf
         final String key = trailId + "Description";
         String descriptionUrl = LoadBalancer.RequestServerAddress() +"/rest/login/GetPropertyFromNode/"+trailId+"/Description";
@@ -173,6 +183,24 @@ public class HomeCardAdapter extends RecyclerView.Adapter<HomeCardAdapter.ViewHo
         updateViews(trailId, card);
     }
 
+    private void setNumberOfCrumbsView(LinearLayout card, String trailId) {
+        TextView numberOfCrumbsTextView = (TextView) card.findViewById(R.id.number_of_crumbs);
+        String url = LoadBalancer.RequestServerAddress() + "/rest/TrailManager/GetNumberOfCrumbsForATrail/" + trailId;
+        SimpleNetworkApi.UpdateTextViewWithStringResponseFromAGivenUrl(numberOfCrumbsTextView, url, mContext);
+    }
+
+    private void setTempDeleteButton(LinearLayout card, final String trailId) {
+        TextView deleteTextView = (TextView) card.findViewById(R.id.delete);
+        deleteTextView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String url = LoadBalancer.RequestServerAddress() + "/rest/login/DeleteNode/" + trailId;
+                HTTPRequestHandler requestHandler = new HTTPRequestHandler();
+                requestHandler.SendSimpleHttpRequest(url,mContext);
+            }
+        });
+
+    }
     // Update the cached version of t
     private void updateViews(String trailId, LinearLayout card) {
         TextView viewsTextView = (TextView) card.findViewById(R.id.trail_views);
@@ -245,7 +273,6 @@ public class HomeCardAdapter extends RecyclerView.Adapter<HomeCardAdapter.ViewHo
                 String coverId = resultJSON.getString("coverPhotoId");
                 Log.d(TAG, "Found coverPhotoId: " +coverId );
                 Glide.with(mContext).load(LoadBalancer.RequestCurrentDataAddress() + "/images/"+coverId+".jpg").centerCrop().crossFade().into(trailCoverPhoto);
-
             }
 
             titleTextView.setText(title);

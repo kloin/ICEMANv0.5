@@ -6,7 +6,6 @@ import android.app.ActivityManager;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.os.Build;
 import android.os.Bundle;
@@ -27,6 +26,7 @@ import android.transition.Slide;
 import android.transition.TransitionInflater;
 import android.util.DisplayMetrics;
 import android.util.Log;
+import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -63,7 +63,6 @@ import com.teamunemployment.breadcrumbs.Network.ServiceProxy.HomelessNetworkTool
 import com.teamunemployment.breadcrumbs.Network.ServiceProxy.UpdateViewElementWithProperty;
 import com.teamunemployment.breadcrumbs.Trails.*;
 import com.teamunemployment.breadcrumbs.caching.GlobalContainer;
-import com.teamunemployment.breadcrumbs.caching.Utils;
 import com.teamunemployment.breadcrumbs.client.Animations.SimpleAnimations;
 import com.teamunemployment.breadcrumbs.client.Cards.HomeCardAdapter;
 import com.teamunemployment.breadcrumbs.client.NavigationDrawer.DrawerItemCustomAdapter;
@@ -71,6 +70,7 @@ import com.teamunemployment.breadcrumbs.client.NavigationDrawer.ObjectDrawerItem
 import com.bumptech.glide.Glide;
 import com.teamunemployment.breadcrumbs.client.tabs.ExploreTabFragment;
 import com.teamunemployment.breadcrumbs.client.tabs.HomeTabFragment;
+import com.teamunemployment.breadcrumbs.client.tabs.MyStuffTab;
 import com.teamunemployment.breadcrumbs.database.DatabaseController;
 
 import org.json.JSONException;
@@ -85,8 +85,8 @@ import java.util.Iterator;
  */
 public class BaseViewModel extends AppCompatActivity {
 
-    private static final String TITLE = "Trail Created";
-    private static final String DESCRIPTION = "Your good to go! You can edit, view and publish your trail(s) from the side menu. Use the button below to add content.";
+    private static final String TRAIL_CREATED_TITLE = "Trail Created";
+    private static final String TRAIL_CREATED_DESCRIPTION = "Your good to go! You can edit, view and publish your trail(s) from the side menu. Use the button below to add content.";
 	private BaseViewModel mContext;
 	private AsyncDataRetrieval clientRequestProxy;
 	private HomeCardAdapter mAdapter;
@@ -120,6 +120,10 @@ public class BaseViewModel extends AppCompatActivity {
     private SubActionButton.Builder rLSubBuilder;
     private SubActionButton trackingButton;
     private ImageView mTrackingIcon;
+    private ImageView fabIconNew;
+    private FloatingActionMenu rightLowerMenu;
+
+    private View overlay;
 
     private PreferencesAPI mPreferencesApi;
     @Override
@@ -134,8 +138,8 @@ public class BaseViewModel extends AppCompatActivity {
         tabLayout = (TabLayout) findViewById(R.id.tabs);
         tabLayout.setupWithViewPager(viewPager);
         mContext = this;
-        Intent intent = getIntent();
-        Bundle extras = getIntent().getExtras();
+
+
         name = PreferenceManager.getDefaultSharedPreferences(this).getString("USERNAME", "");
 
         // This is going to happen after clearing the cache. Need to work out solution for multiple situations like this.
@@ -144,6 +148,8 @@ public class BaseViewModel extends AppCompatActivity {
             HomelessNetworkTools networkTools = new HomelessNetworkTools();
             // networkTools.FetchStringAndSaveToPreferences("USERNAME", );
         }
+
+        mPreferencesApi = new PreferencesAPI(this);
         globalContainer = GlobalContainer.GetContainerInstance();
         setUpTrackingButtons();
 
@@ -191,8 +197,6 @@ public class BaseViewModel extends AppCompatActivity {
         setTrackingButtonsPosition();
 
         locationAPI = new BreadcrumbsLocationAPI();
-
-
         checkServiceStateAndStartIfNeccessary();
 
         // Create both our action buttons
@@ -238,23 +242,24 @@ public class BaseViewModel extends AppCompatActivity {
     private void setUpFab() {
 
         rLSubBuilder = new SubActionButton.Builder(this);
-        rLSubBuilder.setLayoutParams(new FrameLayout.LayoutParams(200, 200));
+        int convertedPixelSize = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 50, getResources().getDisplayMetrics());
+        rLSubBuilder.setLayoutParams(new FrameLayout.LayoutParams(convertedPixelSize, convertedPixelSize));
 
-        final ImageView fabIconNew = new ImageView(this);
+        fabIconNew = new ImageView(this);
         fabIconNew.setImageDrawable(getResources().getDrawable(R.drawable.ic_action_new));
         rightLowerButton = new FloatingActionButton.Builder(this)
                 .setContentView(fabIconNew)
                 .setBackgroundDrawable(R.drawable.button_action_accent)
                     .build();
 
-        final FloatingActionMenu rightLowerMenu = new FloatingActionMenu.Builder(this)
+        rightLowerMenu = new FloatingActionMenu.Builder(this)
                 .addSubActionView(buildCameraSubActionButton())
                 .addSubActionView(buildTrackingSubActionButton())
                 .addSubActionView(buildUploadSubActionButton())
                 .attachTo(rightLowerButton)
                 .build();
 
-        final View overlay = findViewById(R.id.overlay);
+        overlay = findViewById(R.id.overlay);
         overlay.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -288,6 +293,7 @@ public class BaseViewModel extends AppCompatActivity {
         subActionButton1.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                rightLowerMenu.close(true);
                 Intent intent = new Intent(mContext, TestingVideo.class);
                 mContext.startActivity(intent);
                 /*
@@ -310,9 +316,16 @@ public class BaseViewModel extends AppCompatActivity {
         subActionButton1.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent newIntent = new Intent();
-                newIntent.setClassName("com.teamunemployment.breadcrumbs", "com.teamunemployment.breadcrumbs.client.Camera.CameraCapture");
-                startActivity(newIntent);
+                rightLowerMenu.close(true);
+                new Handler().postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        Intent newIntent = new Intent();
+                        newIntent.setClassName("com.teamunemployment.breadcrumbs", "com.teamunemployment.breadcrumbs.client.Camera.CameraCapture");
+                        startActivity(newIntent);
+                    }
+                }, 350);
+
             }
         });
 
@@ -320,7 +333,7 @@ public class BaseViewModel extends AppCompatActivity {
     }
 
     private SubActionButton buildTrackingSubActionButton() {
-        mPreferencesApi = PreferencesAPI.GetInstance(mContext);
+        mPreferencesApi = new PreferencesAPI(mContext);
         boolean alreadyTrackingFromLastTime = mPreferencesApi.isTrackingEnabledByUser();
         mTrackingIcon = new ImageView(this);
         if (alreadyTrackingFromLastTime) {
@@ -333,7 +346,7 @@ public class BaseViewModel extends AppCompatActivity {
         trackingButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-              handleTrackingButtonToggle();
+                handleTrackingButtonToggle();
             }
         });
 
@@ -350,8 +363,8 @@ public class BaseViewModel extends AppCompatActivity {
                     .UseCancelButton(true)
                     .SetCallBack(CreateStopTrackingCallback())
                     .Show();
-
         } else {
+            rightLowerMenu.close(true);
             mTrackingIcon.setImageDrawable(getResources().getDrawable(R.drawable.ic_my_location_black_24dp));
             locationAPI.StartLocationService();
             mPreferencesApi.SetUserTracking(true);
@@ -363,6 +376,7 @@ public class BaseViewModel extends AppCompatActivity {
 
             @Override
             public void DoCallback() {
+                rightLowerMenu.close(true);
                 mTrackingIcon.setImageDrawable(getResources().getDrawable(R.drawable.ic_action_location_searching));
                 locationAPI.StopLocationService();
                 mPreferencesApi.SetUserTracking(false);
@@ -413,7 +427,7 @@ public class BaseViewModel extends AppCompatActivity {
     private void testDB() {
         DatabaseController dbc = new DatabaseController(mContext);
         String userId = PreferenceManager.getDefaultSharedPreferences(mContext).getString("TRAILID", null);
-        JSONObject json = dbc.fetchMetadataFromDB(userId);
+        JSONObject json = dbc.fetchMetadataFromDB(userId, true);
         Log.d("JSON", json.toString());
        // GalleryManager manager = new GalleryManager(mContext);
        // manager.GetGalleryFolders();
@@ -423,6 +437,7 @@ public class BaseViewModel extends AppCompatActivity {
         ViewPagerAdapter adapter = new ViewPagerAdapter(getSupportFragmentManager());
         adapter.addFragment(new HomeTabFragment(), "FEED");
         adapter.addFragment(new ExploreTabFragment(), "DISCOVER");
+        adapter.addFragment(new MyStuffTab(), "MY STUFF");
         viewPager.setAdapter(adapter);
     }
 
@@ -497,7 +512,7 @@ public class BaseViewModel extends AppCompatActivity {
         // Check if we have a trailId
         // If we do, show th fab.
         // Else, show the normal.
-        int localTrailId =  PreferencesAPI.GetInstance(mContext).GetLocalTrailId();
+        int localTrailId =  new PreferencesAPI(mContext).GetLocalTrailId();
         // We have no trailId, so we show the add content fab.
         if (localTrailId == -1) {
             showAddTrailFab();
@@ -558,7 +573,7 @@ public class BaseViewModel extends AppCompatActivity {
 
     // Update the visibility of the trail buttons - tracking, my trail etc
     private void updateTrailOrientatedButtons() {
-        int localTrailId = PreferencesAPI.GetInstance(this).GetLocalTrailId();
+        int localTrailId = mPreferencesApi.GetLocalTrailId();
         RelativeLayout layout = (RelativeLayout) findViewById(R.id.tracking_toggle_wrapper);
         if (localTrailId != -1) {
             // Hide shit
@@ -620,7 +635,7 @@ public class BaseViewModel extends AppCompatActivity {
         RelativeLayout uploadButton = (RelativeLayout) findViewById(R.id.upload);
 
         // If we do not yet have a trail, we need to set this as ivisible.
-        final int localTrailId = PreferencesAPI.GetInstance(this).GetLocalTrailId();
+        final int localTrailId = mPreferencesApi.GetLocalTrailId();
 
         if (localTrailId == -1) {
             trackingWrapper.setVisibility(View.GONE);
@@ -664,7 +679,7 @@ public class BaseViewModel extends AppCompatActivity {
                     isTracking = false;
                 } else {
                     // Start tracking
-                    int localTrailId = PreferencesAPI.GetInstance(mContext).GetLocalTrailId();
+                    int localTrailId = mPreferencesApi.GetLocalTrailId();
                     if (localTrailId != -1) {
                         PreferenceManager.getDefaultSharedPreferences(mContext).edit().putBoolean("TRACKING", true).commit();
                         //breadCrumbsFusedLocationProvider.StartBackgroundGPSService();
@@ -880,7 +895,7 @@ public class BaseViewModel extends AppCompatActivity {
     }
 
     private void decideIfCameraOrNewTrailButton(final Menu menu) {
-        int localTrailId = PreferencesAPI.GetInstance(this).GetLocalTrailId();
+        int localTrailId = mPreferencesApi.GetLocalTrailId();
         if (localTrailId == -1) {
             //Hide it.
         }
@@ -900,7 +915,7 @@ public class BaseViewModel extends AppCompatActivity {
 
     private void selectItem(int position) {
         final Intent newIntent = new Intent();
-        int localTrailId = PreferencesAPI.GetInstance(this).GetLocalTrailId();
+        int localTrailId = mPreferencesApi.GetLocalTrailId();
         //Load the correct page.
         switch (position) {
             case 0:
@@ -996,10 +1011,8 @@ public class BaseViewModel extends AppCompatActivity {
                 // Create local trail
                 TrailManagerWorker trailManagerWorker = new TrailManagerWorker(mContext);
                 trailManagerWorker.StartLocalTrail();
-                if (mPreferencesApi.GetLocalTrailId() < 3) {
-                    // show first time dialog.
-                    showMaterialDesignDialog(TITLE, DESCRIPTION);
-                }
+                // Show post trail orientation dialog.
+                showMaterialDesignDialog(TRAIL_CREATED_TITLE, TRAIL_CREATED_DESCRIPTION);
                 android.support.design.widget.FloatingActionButton floatingActionButton = (android.support.design.widget.FloatingActionButton) mContext.findViewById(R.id.create_new_trail);
                 floatingActionButton.setVisibility(View.GONE);
                 mPreferencesApi.SetUserTracking(true);

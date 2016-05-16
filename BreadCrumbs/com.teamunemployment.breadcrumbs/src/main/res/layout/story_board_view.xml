@@ -1,25 +1,26 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
-
+    android:layout_height="match_parent"
+    android:id="@+id/root">
     <ImageView
         android:id="@+id/image_01"
         android:visibility="gone"
         android:scaleType="centerCrop"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
-    <ProgressBar
-        android:id="@+id/progress_01"
-        android:visibility="gone"
-        android:layout_gravity="center"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
+
     <SurfaceView
         android:id="@+id/video_01"
         android:visibility="gone"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+    <ProgressBar
+        android:id="@+id/progress_01"
+        android:visibility="gone"
+        android:layout_centerInParent="true"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content" />
 
@@ -29,31 +30,32 @@
         android:scaleType="centerCrop"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
-    <ProgressBar
-        android:id="@+id/progress_02"
-        android:visibility="gone"
-        android:layout_gravity="center"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
     <SurfaceView
         android:id="@+id/video_02"
         android:visibility="gone"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+    <ProgressBar
+        android:id="@+id/progress_02"
+        android:visibility="gone"
+        android:layout_centerInParent="true"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content" />
 
     <ImageView
         android:id="@+id/image_03"
         android:scaleType="centerCrop"
+        android:visibility="gone"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+    <SurfaceView
+        android:id="@+id/video_03"
+        android:visibility="gone"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
     <ProgressBar
         android:id="@+id/progress_03"
-        android:layout_gravity="center"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
-    <SurfaceView
-        android:id="@+id/video_03"
-        android:visibility="gone"
+        android:layout_centerInParent="true"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content" />
 
@@ -63,15 +65,15 @@
         android:scaleType="centerCrop"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
-    <ProgressBar
-        android:id="@+id/progress_04"
-        android:visibility="gone"
-        android:layout_gravity="center"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
     <SurfaceView
         android:id="@+id/video_04"
         android:visibility="gone"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+    <ProgressBar
+        android:id="@+id/progress_04"
+        android:visibility="gone"
+        android:layout_centerInParent="true"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content" />
 
@@ -81,63 +83,113 @@
         android:scaleType="centerCrop"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
-    <ProgressBar
-        android:id="@+id/progress_05"
-        android:visibility="gone"
-        android:layout_gravity="center"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
     <SurfaceView
         android:id="@+id/video_05"
         android:visibility="gone"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"/>
+    <ProgressBar
+        android:id="@+id/progress_05"
+        android:visibility="gone"
+        android:layout_centerInParent="true"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content" />
+    <ProgressBar
+        android:id="@+id/horizontal_progress"
+        android:max="15000"
+        android:layout_marginTop="44dp"
+        android:layout_width="match_parent"
+        android:progressBackgroundTint="#00000000"
+        android:layout_height="wrap_content"
+        style="@style/Base.Widget.AppCompat.ProgressBar.Horizontal"/>
     <FrameLayout
         android:id="@+id/storyboard_overlay"
-        android:layout_marginTop="50dp"
+        android:layout_marginTop="42dp"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
-
     </FrameLayout>
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="50dp"
-        android:background="#20000000">
-        <TextView
-            android:id="@+id/user_name"
-            android:layout_marginTop="5dp"
-            android:layout_marginLeft="15dp"
-            android:textSize="16sp"
-            android:textColor="@color/white"
-            android:text="Josiah Kendall"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
+        android:background="#60000000">
         <ImageView
             android:id="@+id/location_image"
-            android:layout_below="@id/user_name"
             android:layout_marginTop="4dp"
             android:layout_marginLeft="15dp"
             android:src="@drawable/ic_location_on_white_24dp"
-            android:layout_width="15dp"
-            android:layout_height="15dp" />
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent" />
         <TextView
             android:id="@+id/place_name"
-            android:text="Tuscan Canyon"
+            android:text="Auckland"
             android:layout_toRightOf="@+id/location_image"
-            android:textSize="12sp"
+            android:textSize="16sp"
+            android:gravity="center"
             android:layout_alignTop="@+id/location_image"
             android:textColor="@color/white"
             android:layout_below="@+id/user_name"
             android:layout_marginLeft="2dp"
             android:layout_width="wrap_content"
+            android:layout_height="match_parent" />
+        <TextView
+            android:id="@+id/crumb_count"
+            android:text="0/4"
+            android:layout_alignParentRight="true"
+            android:layout_margin="10dp"
+            android:textSize="12sp"
+            android:textColor="@color/white"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
     </RelativeLayout>
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/delete_crumb"
+        android:layout_alignParentRight="true"
+        android:layout_marginRight="20dp"
+        android:layout_marginTop="60dp"
+        app:fabSize="mini"
+        android:src="@drawable/ic_delete_white_24dp"
+        app:backgroundTint="#60000000"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/previous_storyboard_item"
+        app:backgroundTint="#60000000"
+        android:layout_margin="20dp"
+        android:src="@drawable/exomedia_ic_skip_previous_white"
+        app:fabSize="mini"
+        android:layout_gravity="right"
+        android:layout_alignParentRight="true"
+        android:layout_above="@+id/next_storyboard_item"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/next_storyboard_item"
+        app:backgroundTint="#60000000"
+        android:layout_marginRight="20dp"
+        android:layout_marginBottom="20dp"
+        android:src="@drawable/exomedia_ic_skip_next_white"
+        app:fabSize="mini"
+        android:layout_gravity="right"
+        android:layout_alignParentRight="true"
+        android:layout_above="@+id/back_to_map"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/back_to_map"
         android:layout_width="wrap_content"
         app:backgroundTint="#60000000"
-        android:layout_margin="20dp"
+        android:layout_marginRight="20dp"
+        android:layout_marginBottom="30dp"
+        app:fabSize="mini"
         android:src="@drawable/ic_layers_white_24dp"
-        android:layout_gravity="bottom|right"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true"
         android:layout_height="wrap_content" />
-</FrameLayout>
+
+    <RelativeLayout
+        android:id="@+id/bottom_bar_storyboard"
+        android:layout_alignParentBottom="true"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:background="#60000000"></RelativeLayout>
+</RelativeLayout>

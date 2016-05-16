@@ -10,6 +10,7 @@ import android.os.Environment;
 import android.provider.DocumentsContract;
 import android.provider.MediaStore;
 import android.util.Log;
+import android.util.TypedValue;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -151,16 +152,22 @@ public class Utils {
     // Create byte array from bitmap. Saved as PNG format at full quality.
     public static boolean SaveBitmap(String fileName, Bitmap media) {
         ByteArrayOutputStream stream = new ByteArrayOutputStream();
-        media.compress(Bitmap.CompressFormat.PNG, 100, stream);
+        media.compress(Bitmap.CompressFormat.JPEG, 75, stream);
         byte[] byteArray = stream.toByteArray();
         try{
-            writeByteArrayToDisk(fileName, byteArray);
+            writeByteArrayToDisk(fileName + ".jpg", byteArray);
         } catch (IOException ex) {
             Log.d("FILESAVE", "Saving bitmap failed");
             ex.printStackTrace();
             return false;
         }
         return true;
+    }
+
+
+    public int convertPixelToDp(int px, Context context) {
+        int convertedDpSize = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, px, context.getResources().getDisplayMetrics());
+        return convertedDpSize;
     }
 
 }

@@ -76,6 +76,10 @@ public class LocalFoldersTab extends GridImageSelector {
         if (resultCode == 5) {
             Activity activityContext = (Activity) context;
             Intent returnIntent = new Intent();
+            if (data!= null) {
+                Bitmap bitmap = data.getParcelableExtra("bitmap");
+                returnIntent.putExtra("bitmap", bitmap);
+            }
             activityContext.setResult(Activity.RESULT_OK, returnIntent);
             activityContext.finish();
 

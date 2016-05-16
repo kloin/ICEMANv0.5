@@ -17,7 +17,9 @@ import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
+import android.widget.Toast;
 
 import com.teamunemployment.breadcrumbs.Location.BreadCrumbsFusedLocationProvider;
 import com.teamunemployment.breadcrumbs.caching.GlobalContainer;
@@ -41,10 +43,6 @@ public class CameraCapture extends ActionBarActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.add_activity);
 
-        globalContainer = GlobalContainer.GetContainerInstance();
-        ImageButton cameraButton = (ImageButton) findViewById(R.id.captureButton);
-        globalContainer.SetCaptureButton(cameraButton);
-
 		// ********** POTENTIAL BATTERY ISSUE *******************************
 		// I start the foreground service but I never manually stop it. Does it get destroyed with the intent?
 		breadCrumbsFusedLocationProvider = new BreadCrumbsFusedLocationProvider(this);
@@ -52,6 +50,14 @@ public class CameraCapture extends ActionBarActivity {
 
         // Construction purposes.
 		setBackButtonListener();
+	}
+
+	@Override
+	protected void onResume() {
+		super.onResume();
+		// Make sure that the progress bar is back at 0.
+		ProgressBar progressBar = (ProgressBar) findViewById(R.id.video_progress);
+		progressBar.setProgress(0);
 	}
 
 	private void setBackButtonListener() {
@@ -64,60 +70,4 @@ public class CameraCapture extends ActionBarActivity {
 			}
 		});
 	}
-
-	public static Camera getCameraInstance(){
-	    Camera c = null;
-	    try {
-	        c = Camera.open(); // attempt to get a Camera instance
-	    }
-	    catch (Exception e){
-	        // Camera is not available (in use or does not exist)
-            c.release();
-	    	System.out.println("Fuck the camera it is not letting us use it");
- 	    }
-	    return c; // returns null if camera is unavailable
-	}
-
-	@Override
-	protected void onDestroy() {
-		super.onDestroy();
-	}
-
-	//The single click to take a photo. Video not currently supported
-	public void TakePhotoWithCamera() {
-		//Our button via tag
-        final Camera camera = getCameraInstance();
-		SurfaceView photoclick = (SurfaceView) rootView.findViewById(R.id.camera_preview);
-		//Camera camera = Camera
-		//Listener for click
-		photoclick.setOnClickListener(new OnClickListener() {
-			@Override
-		    public void onClick(View v) {
-				//camera.takePicture(null, rawCallback, jpegCallback);
-		    }
-		});
-		
-		
-	}
-	
-	String mCurrentPhotoPath;
-
-	private File createImageFile() throws IOException {
-	    // Create an image file name
-	    String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
-	    String imageFileName = "JPEG_" + timeStamp + "_";
-	    File storageDir = Environment.getExternalStoragePublicDirectory(
-	            Environment.DIRECTORY_PICTURES);
-	    File image = File.createTempFile(
-	        imageFileName,  /* prefix */
-	        ".jpg",         /* suffix */
-	        storageDir      /* directory */
-	    );
-
-	    // Save a file: path for use with ACTION_VIEW intents
-	    mCurrentPhotoPath = "file:" + image.getAbsolutePath();
-	    
-	    return image;
-	}
-
 }

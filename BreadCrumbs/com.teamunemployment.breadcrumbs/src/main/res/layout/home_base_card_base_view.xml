@@ -82,7 +82,7 @@
               android:layout_gravity="center" /> -->
             <RelativeLayout
                 android:layout_width="match_parent"
-                android:layout_height="260dp">
+                android:layout_height="350dp">
 
 
             <ImageView
@@ -91,11 +91,28 @@
                 android:visibility="visible"
                 android:background="@color/white"
                 android:layout_width="match_parent"
-                android:layout_height="260dp" />
+                android:layout_height="350dp" />
                 <FrameLayout
                     android:layout_width="match_parent"
-                    android:layout_height="260dp"
+                    android:layout_height="350dp"
                     android:background="#20000000"></FrameLayout>
+                <ImageView
+                    android:id="@+id/crumb_count_image"
+                    android:layout_above="@+id/Title"
+                    android:layout_alignParentLeft="true"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginRight="5dp"
+                    android:src="@drawable/ic_group_work_white_24dp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
+                <TextView
+                    android:id="@+id/number_of_crumbs"
+                    android:layout_toRightOf="@+id/crumb_count_image"
+                    android:layout_above="@id/Title"
+                    android:textColor="@color/white"
+
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
                 <TextView
                     android:id="@+id/Title"
                     android:layout_width="wrap_content"
@@ -104,6 +121,8 @@
                     android:layout_margin="10dp"
                     android:textColor="@color/white"
                     style="@style/CodeFont"
+                    android:ellipsize="end"
+                    android:singleLine="true"
                     android:layout_alignParentLeft="true"
                     android:layout_alignParentBottom="true"
                     android:textSize="22sp" />
@@ -133,6 +152,14 @@
                 android:layout_marginLeft="20dp"
                 android:layout_toRightOf="@+id/map_click"
                 android:layout_alignParentBottom="true"/>
+            <TextView
+                android:id="@+id/delete"
+                android:text="DELETE"
+                android:layout_alignParentRight="true"
+                android:layout_alignParentBottom="true"
+                android:textColor="@color/red"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
             <!--                android:layout_marginLeft="105dp"-->
         </RelativeLayout>
     </LinearLayout>

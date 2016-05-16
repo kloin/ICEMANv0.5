@@ -69,12 +69,12 @@ public class MyCurrentTrailDisplayManager {
     private LocationRequest locationrequest;
     private Intent mIntentService;
     private PendingIntent mPendingIntent;
-    private static MyCurrentTrailDisplayManager currentTrailManager;
     private MapDisplayManager mapDisplayManager;
     private float currentZoom = -1;
     private boolean alreadyFocused = false;
     private int mDayOfYear = 0;
     private ArrayList<StoryBoardItemData> mStoryBoardItems;
+    private PreferencesAPI mPreferencesApi;
     /*
     Display a single trail and its crumbs
     */
@@ -82,9 +82,9 @@ public class MyCurrentTrailDisplayManager {
         this.map = map;
         this.context = context;
         mapContext=this;
-        currentTrailManager = this;
-        mapDisplayManager = new MapDisplayManager(map, context,Integer.toString(PreferencesAPI.GetInstance(context).GetLocalTrailId()));
-
+        mPreferencesApi = new PreferencesAPI(context);
+        mapDisplayManager = new MapDisplayManager(map, context,Integer.toString(mPreferencesApi.GetLocalTrailId()));
+        mPreferencesApi = new PreferencesAPI(context);
         linkedList.add(0, "#2196F3");
         UiSettings uiSettings = map.getUiSettings();
         uiSettings.setCompassEnabled(false);
@@ -95,7 +95,6 @@ public class MyCurrentTrailDisplayManager {
     public MyCurrentTrailDisplayManager(Activity context) {
         this.context = context;
         mapContext = this;
-        currentTrailManager = this;
     }
 
     private void setOnMapCameraChangedListener() {
@@ -110,20 +109,6 @@ public class MyCurrentTrailDisplayManager {
         });
     }
 
-    /*
-    This should probably be a singleton
-
-    A static intsance for classes that want to get a hold of this instance but have no map etc.. May
-    want to change this at a later date tho. - seperate the drawing and the recording of shit.
-
-     */
-    public static MyCurrentTrailDisplayManager GetCurrentTrailManagerInstance() {
-        if (currentTrailManager == null) {
-            return null;
-        }
-        return currentTrailManager;
-    }
-
     // Redraw the map
     public void redraw() {
         DisplayTrailOnMap(GlobalContainer.GetContainerInstance().GetTrailsJSON().toString());
@@ -131,6 +116,7 @@ public class MyCurrentTrailDisplayManager {
 
     public void GetAndDisplayTrailOnMap(String trailId) {
         setOnMapCameraChangedListener();
+
         // First construct our url that we want:
         mapDisplayManager = new MapDisplayManager(map, context, trailId);
 
@@ -210,7 +196,6 @@ public class MyCurrentTrailDisplayManager {
             map.addMarker(new MarkerOptions()
                     .position(location)
                     .icon(BitmapDescriptorFactory.fromResource(R.drawable.player_sprite)));
-
         }
         else if (eventType == TrailManagerWorker.CRUMB) {
             // Draw crumb type on the map.
@@ -384,7 +369,6 @@ public class MyCurrentTrailDisplayManager {
     }
 
     public void DisplayCrumbsFromLocalDatabase(JSONObject crumbs) {
-
         // This creates the async request with a callback method of what I want completed when the
         try {
             // Get the crumb title ??? why do i do this? last crumb?
@@ -392,12 +376,10 @@ public class MyCurrentTrailDisplayManager {
             JSONObject next = null;
             while (keys.hasNext()) {
                 // The next node to get data from and Draw.
-                //next = crumbs.get
                 String id = keys.next();
                 next = crumbs.getJSONObject(id);
-                mapDisplayManager.DrawLocalCrumbFromJson(next, "-1");
+                mapDisplayManager.DrawLocalCrumbFromJson(next);
                 mapDisplayManager.clusterManager.cluster();
-
             }
             // Now that we are done, we want to set the focus to the last crumb added
 
@@ -452,7 +434,7 @@ public class MyCurrentTrailDisplayManager {
         // HACZ - cos im just testing.
         final DatabaseController dbc = new DatabaseController(context);
         // But how will I actually know this?
-        final String localTrailId = Integer.toString(PreferencesAPI.GetInstance(context).GetLocalTrailId());
+        final String localTrailId = Integer.toString(mPreferencesApi.GetLocalTrailId());
 
         // Dont want to be saving a non existent trail - I will do other shit with it first
         if (!localTrailId.equals("-1")) {

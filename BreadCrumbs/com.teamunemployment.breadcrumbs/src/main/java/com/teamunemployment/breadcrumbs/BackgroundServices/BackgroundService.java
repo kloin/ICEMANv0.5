@@ -11,6 +11,7 @@ import android.util.Log;
 import com.teamunemployment.breadcrumbs.BackgroundServices.MessageObjects.GPSStartEvent;
 import com.teamunemployment.breadcrumbs.BackgroundServices.MessageObjects.GPSStopEvent;
 import com.teamunemployment.breadcrumbs.BackgroundServices.MessageObjects.SingleGPSRequest;
+import com.teamunemployment.breadcrumbs.BackgroundServices.MessageObjects.TrailObject;
 import com.teamunemployment.breadcrumbs.Location.BreadcrumbsLocationProvider;
 import com.teamunemployment.breadcrumbs.PreferencesAPI;
 
@@ -30,7 +31,7 @@ public class BackgroundService extends Service {
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        mPreferencesApi = PreferencesAPI.GetInstance(this);
+        mPreferencesApi = new PreferencesAPI(this);
         handleServiceStart();
         return START_STICKY;
     }
@@ -39,12 +40,13 @@ public class BackgroundService extends Service {
     private void handleServiceStart() {
         boolean tracking = mPreferencesApi.isTracking();
         if (tracking) {
-            PreferencesAPI.GetInstance(this).DeleteCurrentUserState();
+            mPreferencesApi.DeleteCurrentUserState();
             startListeningForUserActivity();
-            if (!PreferencesAPI.GetInstance(this).isDriving()) {
+            if (!mPreferencesApi.isDriving()) {
                 startPassiveGPS(600, 200);
             }
         }
+        // Weather not being used
         //FetchWeatherForTheDayService.setLaunchTimeForWeatherRequest(this);
     }
 
@@ -59,7 +61,7 @@ public class BackgroundService extends Service {
     public void onDestroy() {
         Log.d("SERVICE", "THIS IS DEAD");
         bus.unregister(this);
-        PreferencesAPI.GetInstance(this).DeleteCurrentUserState();
+        mPreferencesApi.DeleteCurrentUserState();
         mPreferencesApi.SetTracking(true);
         super.onDestroy();
     }
@@ -90,6 +92,18 @@ public class BackgroundService extends Service {
     @Subscribe
     public void onStartListeningForUserActivity(UserActivity event) {
         startListeningForUserActivity();
+    }
+
+    /**
+     * Method to save a trail to the database. This method takes a {@link TrailObject} that contains
+     * the trail information, and uploads the information to the server. The actual uploading process
+     * occurs in several steps and can take some time, so we need to run this in a background service.
+     *
+     * @Param trailObject: The object that contains the information about the trail
+     */
+    @Subscribe
+    public void UploadTrailToDatabase(TrailObject trailObject) {
+
     }
 
     @Subscribe
@@ -124,5 +138,8 @@ public class BackgroundService extends Service {
         locationProvider.StopListeningToPathsenseActivityUpdates();
     }
 
+    // This is the actual worker process for saving a trail to the database. see {@link #UploadTrailToDatabase(TrailObject)}
+    private void SaveTrail(TrailObject trailObject) {
 
+    }
 }

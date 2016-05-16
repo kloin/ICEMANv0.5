@@ -17,13 +17,15 @@ public class CrumbCardDataObject implements Parcelable{
     private String placeId;
     private Double latitude;
     private Double longitude;
+    private int isLocal; // 0 is local, 1 is server
 
-    public CrumbCardDataObject(String dataType, String crumbId, String placeId, Double latitude, Double longitude) {
+    public CrumbCardDataObject(String dataType, String crumbId, String placeId, Double latitude, Double longitude, int isLocal) {
         this.dataType = dataType;
         this.crumbId = crumbId;
         this.placeId = placeId;
         this.longitude = longitude;
         this.latitude = latitude;
+        this.isLocal = isLocal;
     }
 
     protected CrumbCardDataObject(Parcel in) {
@@ -32,6 +34,7 @@ public class CrumbCardDataObject implements Parcelable{
         placeId = in.readString();
         longitude = in.readDouble();
         latitude = in.readDouble();
+        isLocal = in.readInt();
     }
 
     public static final Creator<CrumbCardDataObject> CREATOR = new Creator<CrumbCardDataObject>() {
@@ -67,6 +70,8 @@ public class CrumbCardDataObject implements Parcelable{
         return longitude;
     }
 
+    public int GetIsLocal() {return isLocal; }
+
     @Override
     public int describeContents() {
         return 0;
@@ -79,5 +84,6 @@ public class CrumbCardDataObject implements Parcelable{
         dest.writeString(placeId);
         dest.writeDouble(latitude);
         dest.writeDouble(longitude);
+        dest.writeInt(isLocal);
     }
 }

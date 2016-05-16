@@ -8,6 +8,7 @@ import com.squareup.okhttp.OkHttpClient;
 import com.squareup.okhttp.Request;
 import com.squareup.okhttp.Response;
 import com.teamunemployment.breadcrumbs.Network.NetworkConnectivityManager;
+import com.teamunemployment.breadcrumbs.caching.TextCaching;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -60,6 +61,11 @@ public class AsyncDataRetrieval extends AsyncTask<String, Integer, String> {
 		 * Remember - GET is pretty shit, I need to do more research.
 		 */
 		public String SendDataRequest(String url) {
+
+			// check the cache first
+			//TextCaching caching = new TextCaching(mContext);
+			//String key = url.replace("/","");
+			//caching.FetchCachedText()
 			if (!NetworkConnectivityManager.IsNetworkAvailable(mContext)) {
 				Log.d("NETWORK", "No network connection available.");
 				return null;

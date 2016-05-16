@@ -1,23 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.sothree.slidinguppanel.SlidingUpPanelLayout xmlns:sothree="http://schemas.android.com/apk/res-auto"
+
+<RelativeLayout xmlns:sothree="http://schemas.android.com/apk/res-auto"
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     xmlns:fab="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/sliding_layout"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-
-    sothree:umanoFadeColor="@android:color/transparent"
-    android:gravity="bottom"
-    sothree:umanoPanelHeight="100sp"
-    sothree:umanoShadowHeight="4dp">
+    android:layout_height="match_parent">
+    <com.sothree.slidinguppanel.SlidingUpPanelLayout
+        android:id="@+id/sliding_layout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        sothree:umanoFadeColor="@android:color/transparent"
+        android:gravity="bottom"
+        sothree:umanoPanelHeight="60dp"
+        sothree:umanoShadowHeight="4dp">
     <!--    tools:context="client.Main" -->
-    <LinearLayout
+    <RelativeLayout
         android:id="@+id/LinearLayout2"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical">
-
         <FrameLayout
             android:id="@+id/mapHolder"
             android:layout_width="match_parent"
@@ -60,7 +62,7 @@
                 android:src="@drawable/ic_action_new"
                 android:layout_gravity="left|bottom" /> -->
         </FrameLayout>
-    </LinearLayout>
+    </RelativeLayout>
     <RelativeLayout
         android:id="@+id/slider"
         android:layout_width="fill_parent"
@@ -71,6 +73,7 @@
             android:layout_width="match_parent"
             android:layout_height="100sp"
             android:background="@color/ColorPrimary">
+
             <TextView
                 android:id="@+id/username_map_overlay"
                 android:layout_width="wrap_content"
@@ -89,14 +92,6 @@
                 android:textSize="22sp"
                 android:paddingLeft="20dp"
                 android:paddingTop="10dp"/>
-            <ImageView
-                android:id="@+id/up_slider_button_trail_map"
-                android:background="@drawable/ic_expand_less_white_24dp"
-                android:layout_margin="20dp"
-                android:layout_alignParentRight="true"
-                android:layout_width="40dp"
-                android:layout_height="40dp"
-                />
         </RelativeLayout>
 
     <android.support.v7.widget.CardView
@@ -249,4 +244,14 @@
             android:layout_alignParentRight="true"
             android:layout_marginBottom="16dp"/>
     </RelativeLayout>
-</com.sothree.slidinguppanel.SlidingUpPanelLayout>
+    </com.sothree.slidinguppanel.SlidingUpPanelLayout>
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/play_button"
+        android:layout_marginRight="30sp"
+        android:layout_marginBottom="50dp"
+        android:src="@drawable/exomedia_ic_play_arrow_white"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+</RelativeLayout>

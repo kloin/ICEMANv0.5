@@ -98,7 +98,7 @@ public class ApplicationTest {
             String suburb = "Birkdale";
             String city = "North Shore";
             String country = "New Zealand";
-            db.SaveCrumb(trailId, description, userId, eventId, latitude, longitude, mime, timeStamp, media, icon, placeId, suburb, city, country);
+           // db.SaveCrumb(trailId, description, userId, eventId, latitude, longitude, mime, timeStamp, media, icon, placeId, suburb, city, country);
             JSONObject jsonObject = db.GetCrumbsWithMedia("99", 0);
             assertTrue(jsonObject.length() == 1);
 
@@ -123,7 +123,7 @@ public class ApplicationTest {
     public void TestThatMetadataCanBeStoredAndRetrieved() {
         trailManagerWorker.CreateEventMetadata(TrailManagerWorker.TRAIL_START, mockMeALocation());
         //db.AddMetadata("1", DateTime.now().toString(),123.000, -123.000, "0", );
-        JSONObject jsonObject = db.fetchMetadataFromDB(mockTrailId);
+        JSONObject jsonObject = db.fetchMetadataFromDB(mockTrailId, );
         assertTrue(jsonObject.length() > 0);
     }
 
@@ -152,7 +152,7 @@ public class ApplicationTest {
         trailManagerWorker.CreateEventMetadata(TrailManagerWorker.CRUMB, location);
         trailManagerWorker.CreateEventMetadata(TrailManagerWorker.TRAIL_END, location);
 
-        JSONObject jsonObject = db.fetchMetadataFromDB("12345678");
+        JSONObject jsonObject = db.fetchMetadataFromDB("12345678", );
         JSONObject jsonObject1 = jsonObject.getJSONObject("1");
         String id = jsonObject1.getString("id");
         Log.d("TEST", "Id : " + id);
@@ -211,7 +211,7 @@ public class ApplicationTest {
         String city = "North Shore";
         String country = "New Zealand";
 
-        db.SaveCrumb(trailId, description, userId, eventId, latitude, longitude, mime, timeStamp, media, icon, placeId, suburb, city, country);
+//        db.SaveCrumb(trailId, description, userId, eventId, latitude, longitude, mime, timeStamp, media, icon, placeId, suburb, city, country);
         URL url2 = new URL("http://104.199.132.109:8080/images/6504.jpg");
         Bitmap image2 = BitmapFactory.decodeStream(url2.openConnection().getInputStream());
         assertTrue(image2!=null);
@@ -229,7 +229,7 @@ public class ApplicationTest {
         String suburb2 = "Birkdale";
         String city2 = "North Shore";
         String country2 = "New Zealand";
-        db.SaveCrumb(trailId2, description2, userId2, eventId2, latitude2, longitude2, mime2, timeStamp2, media2, icon2, placeId2, suburb2, city2, country2);
+//        db.SaveCrumb(trailId2, description2, userId2, eventId2, latitude2, longitude2, mime2, timeStamp2, media2, icon2, placeId2, suburb2, city2, country2);
 
         // Hit SaveMethod
         trailManagerWorker.SaveEntireTrail("99");
@@ -264,7 +264,7 @@ public class ApplicationTest {
         trailManagerWorker.CreateEventMetadata(TrailManagerWorker.CRUMB, location2);
         // trailManagerWorker.CreateEventMetadata(TrailManagerWorker.GPS, mockMeALocation());
         trailManagerWorker.CreateEventMetadata(TrailManagerWorker.REST_ZONE, location3);
-        JSONObject jsonObject = db.fetchMetadataFromDB(trailId);
+        JSONObject jsonObject = db.fetchMetadataFromDB(trailId, );
         JSONObject wrapper = new JSONObject();
         wrapper.put("TrailId", trailId);
         wrapper.put("Events", jsonObject);
@@ -273,8 +273,8 @@ public class ApplicationTest {
 
     @Test
     public void TestThatSavingCrumbSavesMetadata() throws JSONException {
-        db.SaveCrumb("1234","test", "1", 2, 0.0, 0.0, ".jpg", DateTime.now().toString(), null, "", "", "", "", "");
-        JSONObject jsonObject = db.fetchMetadataFromDB("1234");
+//        db.SaveCrumb("1234","test", "1", 2, 0.0, 0.0, ".jpg", DateTime.now().toString(), null, "", "", "", "", "");
+        JSONObject jsonObject = db.fetchMetadataFromDB("1234", );
         jsonObject = jsonObject.getJSONObject("0");
         assertTrue(jsonObject.getDouble("latitude") == 0.0);
     }

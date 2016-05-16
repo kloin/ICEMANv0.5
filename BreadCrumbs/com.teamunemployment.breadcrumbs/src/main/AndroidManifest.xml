@@ -2,8 +2,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
 
     package="com.teamunemployment.breadcrumbs"
-    android:versionCode="7"
-    android:versionName="7" >
+    android:versionCode="8"
+    android:versionName="8.02">
 
     <permission android:name="com.teamunemployment.breadcrumbs.permission.C2D_MESSAGE"
         android:protectionLevel="signature" />
@@ -188,12 +188,12 @@
         <!--AIzaSyBQ9w6VrGGquOHwERNrc_jAx_jcm8mrKQw  - this is the legit release one-->
         <!--  AIzaSyBmkUW1b2c3cXhz-Sw7cfWtK41Qz-0aaww -->
         <!--  AIzaSyCy82ucudMrzKRtUsF0S3v_DSVyNL5m9n8
-        AIzaSyD1tXj_z3zgxB-5tPG8H9sXS4NCBWAJosA debug 22/04 ??
+        AIzaSyD1tXj_z3zgxB-5tPG8H9sXS4NCBWAJosA debug 22/04 ?? yes
         A4:0B:0E:F1:E0:AB:A0:FF:3B:E4:C2:8E:D3:71:CA:93:6B:CB:84:70
         AIzaSyCfkLHIJIAnKKwd5S4nLMN5apRtWj28rwc- debug key-->
         <meta-data
             android:name="com.google.android.geo.API_KEY"
-            android:value="AIzaSyD1tXj_z3zgxB-5tPG8H9sXS4NCBWAJosA"/>
+            android:value="IzaSyBQ9w6VrGGquOHwERNrc_jAx_jcm8mrKQw"/>
 
         <meta-data android:name="com.facebook.sdk.ApplicationId" android:value="@string/facebook_app_id"/>
         <!-- Pathsense APIs -->

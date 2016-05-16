@@ -176,13 +176,16 @@ public class RetrieveData {
     }
    
     @POST
-    @Consumes(MediaType.APPLICATION_JSON)
     @Path("/savecrumb/{id}")
-	public String uploadFile(String test, @PathParam("id") String id) {   
-    	Crumb crumb =new Crumb();
-		crumb.ConvertAndSaveImage(test, id);
-		return "done"; 
-	}
+    @Consumes(MediaType.MULTIPART_FORM_DATA)
+    public String uploadFile(MultiPart data, @PathParam("id") String id) {   
+    Crumb crumb =new Crumb();
+    List<BodyPart> parts = data.getBodyParts();
+        BodyPartEntity bpe = (BodyPartEntity) parts.get(0).getEntity();
+        InputStream stream = bpe.getInputStream();
+            crumb.ConvertAndSaveImage(stream, id);
+            return "done"; 
+    }
     
     @POST
     @Path("/saveCrumbWithVideo/{crumbId}")
@@ -231,15 +234,15 @@ public class RetrieveData {
     	System.out.println("Saved New User");
     	return Integer.toString(db.SaveNode(keysAndItems, com.breadcrumbs.database.DBMaster.myLabels.User));
     }
-    
-    @GET
-    @Path("/DeleteAllData")
-    public String Obliterate() {
-    	// USE THIS WITH CAUTION - probably will not be kept around after testing because this would be dumb
-    	Trail trail = new Trail();
-    	trail.Obliterate();
-    	return "go fuck your self";
-    }
+    // USE THIS BRO
+//    @GET
+//    @Path("/DeleteAllData")
+//    public String Obliterate() {
+//    	// USE THIS WITH CAUTION - probably will not be kept around after testing because this would be dumb
+//    	Trail trail = new Trail();
+//    	trail.Obliterate();
+//    	return "go fuck your self";
+//    }
     
     @GET
     @Path("/DeleteNode/{nodeId}")

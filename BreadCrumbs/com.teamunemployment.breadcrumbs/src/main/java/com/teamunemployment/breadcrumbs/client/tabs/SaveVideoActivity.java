@@ -12,6 +12,7 @@ import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.os.Environment;
 import android.preference.PreferenceManager;
+import android.support.design.widget.FloatingActionButton;
 import android.text.Editable;
 import android.util.DisplayMetrics;
 import android.util.Log;
@@ -21,12 +22,12 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.ProgressBar;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.VideoView;
 
-import com.getbase.floatingactionbutton.FloatingActionButton;
 import com.google.android.gms.common.api.ResultCallback;
 import com.google.android.gms.location.places.Place;
 import com.google.android.gms.location.places.PlaceLikelihood;
@@ -53,6 +54,8 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
+import java.util.Timer;
+import java.util.TimerTask;
 
 /**
  * Created by aDirtyCanvas on 5/30/2015.
@@ -62,19 +65,21 @@ public class SaveVideoActivity  extends Activity implements TextureView.SurfaceT
     private static final float ROTATE_FROM = 0.0f;
     private static final float ROTATE_TO = 360.0f;// 3.141592654f * 32.0f;
     private Activity context;
-    private GlobalContainer globalContainer;
-    private MyCurrentTrailDisplayManager currentTrailManager;
     private HashMap<String, String> trailAndIdMap;
     private AsyncDataRetrieval asyncDataRetrieval;
     private String SavedCrumbId;
     private JSONObject editableTrails;
     private String filePath;
     private BreadCrumbsFusedLocationProvider locationProvider;
+    private PreferencesAPI mPreferencesApi;
 
     // Media player shit
     private Surface mSurface;
     private TextureView mTextureView;
     private MediaPlayer mMediaPlayer;
+    private Timer t;
+    private int videoTimer = 0;
+    private int duration = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -84,20 +89,44 @@ public class SaveVideoActivity  extends Activity implements TextureView.SurfaceT
         setContentView(R.layout.save_video);
 
         context = this;
-        globalContainer = GlobalContainer.GetContainerInstance();
         addTapListeners();
-
-        currentTrailManager = MyCurrentTrailDisplayManager.GetCurrentTrailManagerInstance();
+        mPreferencesApi = new PreferencesAPI(context);
         locationProvider = new BreadCrumbsFusedLocationProvider(this);
         mTextureView = (TextureView) findViewById(R.id.video);
         mTextureView.setSurfaceTextureListener(this);
+    }
 
+    private void setUpProgressBar() {
+        if (mMediaPlayer!= null) {
+            int duration = mMediaPlayer.getDuration();
+            ProgressBar progressBar = (ProgressBar) findViewById(R.id.video_progress);
+            progressBar.setMax(duration);
+        }
+    }
+
+    private void startTimer() {
+        t=new Timer();
+        final ProgressBar progressBar = (ProgressBar) context.findViewById(R.id.video_progress);
+        //progressBar.getProgressDrawable().set(Color.parseColor("#C0D000"), android.graphics.PorterDuff.Mode.SRC_ATOP);
+        //progressBar.setScaleY(4f);z
+        t.scheduleAtFixedRate(new TimerTask() {
+            @Override
+            public void run() {
+                videoTimer += 50;
+                if (videoTimer < duration) {
+                    progressBar.setProgress(videoTimer);
+                } else {
+                    // Stop video, and go to the next page
+                    videoTimer = 0;
+                }
+            }
+        }, 50, 50);
     }
 
     // Add listeners for saving, cancelling etc..
     private void addTapListeners() {
         //adding listeners
-        ImageButton backButton = (ImageButton) findViewById(R.id.backAddScreen);
+        FloatingActionButton backButton = (FloatingActionButton) findViewById(R.id.backAddScreen);
         backButton.setOnClickListener(new View.OnClickListener() {
 
             @Override
@@ -106,14 +135,13 @@ public class SaveVideoActivity  extends Activity implements TextureView.SurfaceT
 
             }
         });
-        final TextView newTrailButton = (TextView) findViewById(R.id.save_video);
+
+        FloatingActionButton newTrailButton = (FloatingActionButton) findViewById(R.id.save_video);
         newTrailButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                // need to have  saving indicator like a loading indicator around this button.
-                // doShit()
-                // No i need to send the save network request.
                 createNewEvent();
+                t.cancel();
                 finish();
             }
         });
@@ -122,7 +150,7 @@ public class SaveVideoActivity  extends Activity implements TextureView.SurfaceT
     // Create new crumb to save the video to.
     private void createNewEvent() {
         // Need to change this
-        final String TrailId = Integer.toString(PreferencesAPI.GetInstance(context).GetLocalTrailId());
+        final String TrailId = Integer.toString(mPreferencesApi.GetLocalTrailId());
         if (TrailId.equals("-1")) {
             Toast.makeText(this, "No current active trail. Create a trail from the main menu.", Toast.LENGTH_LONG).show();
             return;
@@ -149,25 +177,31 @@ public class SaveVideoActivity  extends Activity implements TextureView.SurfaceT
         locationProvider.GetCurrentPlace(new ResultCallback<PlaceLikelihoodBuffer>() {
             @Override
             public void onResult(PlaceLikelihoodBuffer likelyPlaces) {
-                String placeId = "";
-                PlaceLikelihood placeLikelihood = likelyPlaces.get(0);
-                if (placeLikelihood != null) {
-                    Place place = placeLikelihood.getPlace();
-                    if (place != null) {
-                        placeId = place.getId();
+                String placeId = " ";
+                try {
+                    PlaceLikelihood placeLikelihood = likelyPlaces.get(0);
+                    if (placeLikelihood != null) {
+                        Place place = placeLikelihood.getPlace();
+                        if (place != null) {
+                            placeId = place.getId();
+                        }
                     }
+                    likelyPlaces.release();
+                } catch (IllegalStateException ex) {
+                    ex.printStackTrace();
                 }
-                likelyPlaces.release();
-                String userId = PreferencesAPI.GetInstance(context).GetUserId();
+
+                String userId = mPreferencesApi.GetUserId();
 
                 // We need to wait
                 String fileName = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES).toString();
-                int eventId = PreferencesAPI.GetInstance(context).GetEventId();
+                int eventId = mPreferencesApi.GetEventId();
                 fileName += "/" + eventId + ".mp4";
                 createNewCrumb(" ", userId, TrailId, location, "icon", ".mp4", placeId, suburb, finalCity, finalCountry, timeStamp, fileName);
             }
         });
     }
+
     private void createNewCrumb(String Chat, String UserId,	String TrailId,	Location location, String Icon, String Extension, String placeId, String suburb, String city, String country, String timeStamp, String fileName) {
         DatabaseController dbc = new DatabaseController(context);
         int eventId = PreferenceManager.getDefaultSharedPreferences(context).getInt("EVENTID", -1);
@@ -186,10 +220,10 @@ public class SaveVideoActivity  extends Activity implements TextureView.SurfaceT
             throw new NullPointerException("User id was null.");
         }
         // Need to set our trailId as the local one.
-        String localTrailId = Integer.toString(PreferencesAPI.GetInstance(context).GetLocalTrailId());
+        String localTrailId = Integer.toString(mPreferencesApi.GetLocalTrailId());
 
         // save our crumb to the db. It will be saved to the server when we publish
-        dbc.SaveCrumb(localTrailId," ", userId, eventId, location.getLatitude(), location.getLongitude(), ".mp4", timeStamp, "", placeId, suburb, city, country);
+        dbc.SaveCrumb(localTrailId," ", userId, eventId, location.getLatitude(), location.getLongitude(), ".mp4", timeStamp, "icon", placeId, suburb, city, country);
         TrailManagerWorker trailManagerWorker = new TrailManagerWorker(context);
         trailManagerWorker.CreateEventMetadata(TrailManagerWorker.CRUMB, location);
     }
@@ -228,8 +262,8 @@ public class SaveVideoActivity  extends Activity implements TextureView.SurfaceT
         buildMediaPlayer(filePath);
     }
 
-    private void buildMediaPlayer(String videoPath) {
-        MediaPlayer mediaPlayer = new MediaPlayer();
+    private void buildMediaPlayer(final String videoPath) {
+        final MediaPlayer mediaPlayer = new MediaPlayer();
 
         try {
             mediaPlayer.setDataSource(videoPath);
@@ -242,9 +276,23 @@ public class SaveVideoActivity  extends Activity implements TextureView.SurfaceT
                     mMediaPlayer = mp;
                     mMediaPlayer.start();
                     mMediaPlayer.setLooping(true);
+                    duration = mMediaPlayer.getDuration();
+                    setUpProgressBar();
+                    startTimer();
+
+                }
+            };
+
+            MediaPlayer.OnCompletionListener onCompletionListener =  new MediaPlayer.OnCompletionListener() {
+                @Override
+                public void onCompletion(MediaPlayer mp) {
+                    videoTimer = 0;
+                    t.cancel();
+                    startTimer();
                 }
             };
             mediaPlayer.setOnPreparedListener(onPreparedListener);
+            mediaPlayer.setOnCompletionListener(onCompletionListener);
         } catch (IOException e) {
             e.printStackTrace();
         }

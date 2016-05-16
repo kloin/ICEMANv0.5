@@ -23,6 +23,7 @@ import com.google.android.exoplayer.text.Cue;
 import com.google.android.exoplayer.text.TextRenderer;
 import com.google.android.exoplayer.upstream.BandwidthMeter;
 import com.google.android.exoplayer.upstream.DefaultBandwidthMeter;
+import com.google.android.exoplayer.upstream.Loader;
 import com.google.android.exoplayer.util.PlayerControl;
 import com.google.android.exoplayer.util.Util;
 
@@ -34,9 +35,9 @@ import java.util.concurrent.CopyOnWriteArrayList;
 /**
  * Created by jek40 on 1/05/2016.
  */
-public class BreadcrumbsExoPlayer implements ExoPlayer.Listener, ChunkSampleSource.EventListener,
-        DefaultBandwidthMeter.EventListener, MediaCodecVideoTrackRenderer.EventListener,
-        MediaCodecAudioTrackRenderer.EventListener, TextRenderer, ExtractorSampleSource.EventListener {
+public class BreadcrumbsExoPlayer implements ExoPlayer.Listener, DefaultBandwidthMeter.EventListener,
+        MediaCodecVideoTrackRenderer.EventListener, MediaCodecAudioTrackRenderer.EventListener,
+        TextRenderer, BreadcrumbsExtractorSampleSource.EventListener {
 
     /*
       ==============================================================================================
@@ -74,8 +75,7 @@ public class BreadcrumbsExoPlayer implements ExoPlayer.Listener, ChunkSampleSour
     public interface Listener {
         void onStateChanged(boolean playWhenReady, int playbackState);
         void onError(Exception e);
-        void onVideoSizeChanged(int width, int height, int unappliedRotationDegrees,
-                                float pixelWidthHeightRatio);
+        void onVideoSizeChanged(int width, int height, int unappliedRotationDegrees,float pixelWidthHeightRatio);
     }
 
     /**
@@ -101,17 +101,10 @@ public class BreadcrumbsExoPlayer implements ExoPlayer.Listener, ChunkSampleSour
      * A listener for debugging information.
      */
     public interface InfoListener {
-        void onVideoFormatEnabled(Format format, int trigger, long mediaTimeMs);
-        void onAudioFormatEnabled(Format format, int trigger, long mediaTimeMs);
-        void onDroppedFrames(int count, long elapsed);
-        void onBandwidthSample(int elapsedMs, long bytes, long bitrateEstimate);
-        void onLoadStarted(int sourceId, long length, int type, int trigger, Format format,
-                           long mediaStartTimeMs, long mediaEndTimeMs);
-        void onLoadCompleted(int sourceId, long bytesLoaded, int type, int trigger, Format format,
-                             long mediaStartTimeMs, long mediaEndTimeMs, long elapsedRealtimeMs, long loadDurationMs);
-        void onDecoderInitialized(String decoderName, long elapsedRealtimeMs,
-                                  long initializationDurationMs);
-        void onAvailableRangeChanged(int sourceId, TimeRange availableRange);
+
+        // only using completed at the moment
+        void onLoadCompleted(Loader.Loadable loadable);
+
     }
 
     /**
@@ -171,7 +164,7 @@ public class BreadcrumbsExoPlayer implements ExoPlayer.Listener, ChunkSampleSour
         this.rendererBuilder = rendererBuilder;
 
         // We dont allow the user to manually seek, but we do seek to a position programatically.
-        player = ExoPlayer.Factory.newInstance(RENDERER_COUNT, 1000, 4000);
+        player = ExoPlayer.Factory.newInstance(RENDERER_COUNT, 0, 4000);
         player.addListener(this);
         playerControl = new PlayerControl(player);
         mainHandler = new Handler();
@@ -179,10 +172,10 @@ public class BreadcrumbsExoPlayer implements ExoPlayer.Listener, ChunkSampleSour
         // Initialise in an idle state.
         lastReportedPlaybackState = STATE_IDLE;
         rendererBuildingState = RENDERER_BUILDING_STATE_IDLE;
-
         // Disable text initially.
         player.setSelectedTrack(TYPE_TEXT, TRACK_DISABLED);
     }
+
 
     public PlayerControl getPlayerControl() {
         return playerControl;
@@ -341,21 +334,6 @@ public class BreadcrumbsExoPlayer implements ExoPlayer.Listener, ChunkSampleSour
         }
         return playerState;
     }
-//
-//    @Override
-//    public BandwidthMeter getBandwidthMeter() {
-//        return bandwidthMeter;
-//    }
-//
-//    @Override
-//    public CodecCounters getCodecCounters() {
-//        return codecCounters;
-//    }
-//
-//    @Override
-//    public long getCurrentPosition() {
-//        return player.getCurrentPosition();
-//    }
 
     public long getDuration() {
         return player.getDuration();
@@ -385,29 +363,8 @@ public class BreadcrumbsExoPlayer implements ExoPlayer.Listener, ChunkSampleSour
 
     @Override
     public void onBandwidthSample(int elapsedMs, long bytes, long bitrateEstimate) {
-        if (infoListener != null) {
-            infoListener.onBandwidthSample(elapsedMs, bytes, bitrateEstimate);
-        }
     }
 
-
-    @Override
-    public void onLoadStarted(int sourceId, long length, int type, int trigger, Format format, long mediaStartTimeMs, long mediaEndTimeMs) {
-
-    }
-
-    @Override
-    public void onLoadCompleted(int sourceId, long bytesLoaded, int type, int trigger, Format format, long mediaStartTimeMs, long mediaEndTimeMs, long elapsedRealtimeMs, long loadDurationMs) {
-        if (infoListener != null) {
-            infoListener.onLoadCompleted(sourceId, bytesLoaded, type, trigger, format, mediaStartTimeMs,
-                    mediaEndTimeMs, elapsedRealtimeMs, loadDurationMs);
-        }
-    }
-
-    @Override
-    public void onLoadCanceled(int sourceId, long bytesLoaded) {
-        // Do nothing atm.
-    }
 
     @Override
     public void onLoadError(int sourceId, IOException e) {
@@ -417,13 +374,10 @@ public class BreadcrumbsExoPlayer implements ExoPlayer.Listener, ChunkSampleSour
     }
 
     @Override
-    public void onUpstreamDiscarded(int sourceId, long mediaStartTimeMs, long mediaEndTimeMs) {
-
-    }
-
-    @Override
-    public void onDownstreamFormatChanged(int sourceId, Format format, int trigger, long mediaTimeMs) {
-
+    public void onLoadCompleted(Loader.Loadable loadable) {
+        if (infoListener != null) {
+            infoListener.onLoadCompleted(loadable);
+        }
     }
 
     @Override
@@ -494,6 +448,8 @@ public class BreadcrumbsExoPlayer implements ExoPlayer.Listener, ChunkSampleSour
         boolean playWhenReady = player.getPlayWhenReady();
         int playbackState = getPlaybackState();
         if (lastReportedPlayWhenReady != playWhenReady || lastReportedPlaybackState != playbackState) {
+
+
             for (Listener listener : listeners) {
                 listener.onStateChanged(playWhenReady, playbackState);
             }
@@ -501,6 +457,8 @@ public class BreadcrumbsExoPlayer implements ExoPlayer.Listener, ChunkSampleSour
             lastReportedPlaybackState = playbackState;
         }
     }
+
+
 
     private void pushSurface(boolean blockForSurfacePush) {
         if (videoRenderer == null) {

@@ -47,14 +47,11 @@ import mehdi.sakout.fancybuttons.FancyButton;
 /**
  * Created by Josiah Kendall on 4/21/2015.
  */
-public class ProfilePageViewer extends AppCompatActivity  implements DatePickerDialog.DatePickerDialogListener{
-    private GlobalContainer gc;
+public class ProfilePageViewer extends AppCompatActivity  implements DatePickerDialog.DatePickerDialogListener {
     private String userId;
     private Activity myContext;
     private boolean isDirty = false;
     private TextView ageEditText;
-    private EditText countriesTravelled;
-    private EditText gender;
     static final int PICK_PROFILE_REQUEST = 1;
     private boolean isOwnProfile = false;
     private TextCaching textCaching;
@@ -68,17 +65,12 @@ public class ProfilePageViewer extends AppCompatActivity  implements DatePickerD
         myContext = this;
         setContentView(R.layout.profile_screen);
         textCaching = new TextCaching(this);
-
-        //Get user Id and name from bundle
         Bundle extras = getIntent().getExtras();
-
         // Set up User
         setUpUser(extras);
-
         // Set up user interaction - click handlers etc depending on the userId.
         setUpFollowing();
         setUpCollapsableToolbar(name);
-        setIsDirtyListener();
         loadDetails();
         setButtonListeners();
         setHeaderPic();
@@ -99,7 +91,6 @@ public class ProfilePageViewer extends AppCompatActivity  implements DatePickerD
         Log.d(TAG, "Found Name: " + name);
         if (userId == null ) {
             Log.d(TAG, "UserId is null, we are fucked");
-            Toast.makeText(this, "Serious issues", Toast.LENGTH_SHORT).show();
         } else if(name == null) {
             // Re fetch name.
             Log.d(TAG, "Name was null - re fetching from server using userId");
@@ -116,22 +107,13 @@ public class ProfilePageViewer extends AppCompatActivity  implements DatePickerD
             }, myContext);
             fetchDescription.execute();
         }
-
-        GlobalContainer gc = GlobalContainer.GetContainerInstance();
-        if (userId.equals(PreferenceManager.getDefaultSharedPreferences(this).getString("USERID",
-                gc.GetUserId()))) {
-            // This means that we are loading our current users profile. Everything should be editable.
-            Log.d(TAG, "We are viewing our active users profile. Need to set up appropriate edit " +
-                    "click handlers.");
-            SetUpClickHandlers();
-        }
     }
 
     private void setEditButtonVisibility() {
         Log.d(TAG, "Setting up edit button visiblity");
         TextView saveButton = (TextView) findViewById(R.id.profile_save);
         saveButton.setVisibility(View.GONE);
-        if (!userId.equals(PreferenceManager.getDefaultSharedPreferences(myContext).getString("USERID", "-1"))) {
+        if (!isOwnProfile) {
             Log.d(TAG, "Not our local user - need to hide the edit/save buttons");
             // Hide the edsit button, and the Save button.
             TextView editButton = (TextView) findViewById(R.id.toggle_edit_profile);
@@ -139,12 +121,11 @@ public class ProfilePageViewer extends AppCompatActivity  implements DatePickerD
         }
     }
 
+    // Set the height and name field for our toolbar heading thingy that slides up.
     private void setUpCollapsableToolbar(String name) {
         Log.d(TAG, "Setting up the collapsable toolbar");
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-       // mRecyclerView = (RecyclerView) findViewById(R.id.crumb_recycler);
-      //  mRecyclerView.setHasFixedSize(true);
         CollapsingToolbarLayout collapsingToolbarLayout = (CollapsingToolbarLayout) findViewById(R.id.collapsable_toolbar_holder);
         collapsingToolbarLayout.setExpandedTitleTextAppearance(R.style.HeaderFont);
         collapsingToolbarLayout.setCollapsedTitleTextColor(Color.WHITE);
@@ -195,7 +176,6 @@ public class ProfilePageViewer extends AppCompatActivity  implements DatePickerD
             @Override
             public void onClick(View v) {
                 save();
-                Toast.makeText(myContext, "Saved", Toast.LENGTH_SHORT).show();
             }
         });
 
@@ -207,30 +187,6 @@ public class ProfilePageViewer extends AppCompatActivity  implements DatePickerD
                 finish(); // Quit this screen
             }
         });
-
-        TextView dobEditLauncher = (TextView) findViewById(R.id.date_picker_launcher);
-        dobEditLauncher.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                openDatePicker();
-            }
-        });
-    }
-
-    private void setUpUnfollowButton(final String currentUserId, final FancyButton followButton) {
-        followButton.setVisibility(View.VISIBLE);
-        followButton.setText("Following");
-        followButton.setTextColor(Color.WHITE);
-        followButton.setBackgroundColor(getResources().getColor(R.color.ColorPrimary));
-        unfollowUserOnClickHandler(followButton, currentUserId);
-
-    }
-
-    private void setUpFollowButton(final String currentUserId, final FancyButton followButton) {
-        followButton.setVisibility(View.VISIBLE);
-        followButton.setText("Follow");
-        // Need to cache whether the user is following the other user or not
-        followUserOnClickHandler(followButton, currentUserId);
     }
 
     private void followUserOnClickHandler(final FancyButton followButton, final String currentUserId) {
@@ -284,54 +240,21 @@ public class ProfilePageViewer extends AppCompatActivity  implements DatePickerD
             }
         });
     }
-    private void openDatePicker() {
-        DatePickerDialog datePickerDialog = new DatePickerDialog();
-        datePickerDialog.show(getSupportFragmentManager(), "datepicker");
-    }
 
     // Save our changes age, gender and Nationality
     private void save() {
         // Just going to save all values, cos fuck it.
-        ageEditText = (TextView) findViewById(R.id.age);
-        String age = ageEditText.getText().toString();
+
         EditText bio = (EditText) findViewById(R.id.bio_edit_text);
         String about = bio.getText().toString();
         //String genderInfo = gender.getText().toString();
 
-        String ageUrl = LoadBalancer.RequestServerAddress()+ "/rest/login/SaveStringPropertyToNode/"+userId+"/Age/"+age;
         String aboutInfoUrl = LoadBalancer.RequestServerAddress()+ "/rest/login/SaveStringPropertyToNode/"+userId+"/About/"+about;
         //String genderInfoUrl = LoadBalancer.RequestServerAddress()+ "/rest/login/SaveStringPropertyToNode/"+userId+"/Sex/"+genderInfo;
 
         // Do the saving
         HTTPRequestHandler simpleSaver = new HTTPRequestHandler();
-        simpleSaver.SendSimpleHttpRequestAndReturnString(ageUrl, myContext);
         simpleSaver.SendSimpleHttpRequestAndReturnString(aboutInfoUrl, myContext);
-    }
-
-    private void setIsDirtyListener() {
-       // EditText text = (EditText) findViewById(R.id.about_me);
-        //text.addTextChangedListener(textWatcher);
-    }
-
-    // For isDirty. Not using ATM
-    private TextWatcher textWatcher = new TextWatcher() {
-        // Required
-        public void afterTextChanged(Editable s) {
-        }
-
-        // Required
-        public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-        }
-
-        // what we will work with
-        public void onTextChanged(CharSequence s, int start, int before, int count) {
-            isDirty = true;
-        }
-    };
-
-    private void SetUpClickHandlers() {
-        // Set Image click handlers for profile and header photo.
-
     }
 
     @Override
@@ -352,19 +275,22 @@ public class ProfilePageViewer extends AppCompatActivity  implements DatePickerD
     @Override
     protected void onRestart() {
         super.onRestart();
-
     }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-
+        Bitmap bitmap = null;
+        if (data != null) {
+            bitmap = data.getParcelableExtra("bitmap");
+            if (bitmap == null) {
+                bitmap = GlobalContainer.GetContainerInstance().GetBitMap();
+            }
+        }
         // This is the check for when we return with no data. Usually when the user hits the back button
         if (requestCode == 1) {
             if(resultCode == Activity.RESULT_OK){
                 refreshed = true;
-                Bitmap bitmap = GlobalContainer.GetContainerInstance().GetBitMap();
-                GlobalContainer.GetContainerInstance().SetBitMap(null);
                 ImageView header = (ImageView) findViewById(R.id.headerPicture);
                 if (bitmap != null) {
                     header.setImageBitmap(bitmap);
@@ -377,20 +303,11 @@ public class ProfilePageViewer extends AppCompatActivity  implements DatePickerD
                 //Write your code if there's no result
             }
         }
-
-        if (resultCode == 5) {
-
-        }
     }
 
     // Try to set the profile picture for a user
     private void setHeaderPic() {
-        if (refreshed) {
-            return;
-        }
-        Bitmap bitmap = GlobalContainer.GetContainerInstance().GetBitMap();
-        // Need to wipe that bitmap after use.
-        GlobalContainer.GetContainerInstance().SetBitMap(null);
+
         final ImageView header = (ImageView) findViewById(R.id.headerPicture);
         ViewGroup.LayoutParams layoutParams = header.getLayoutParams();
         DisplayMetrics displaymetrics = new DisplayMetrics();
@@ -399,9 +316,8 @@ public class ProfilePageViewer extends AppCompatActivity  implements DatePickerD
         layoutParams.height = width;
         header.setLayoutParams(layoutParams);
         String coverPhotoId = PreferenceManager.getDefaultSharedPreferences(myContext).getString("COVERPHOTOID", "-1");
-        if (bitmap != null) {
-            header.setImageBitmap(bitmap);
-        } else if (!userId.equals(PreferenceManager.getDefaultSharedPreferences(myContext).getString("USERID", "-1"))) {
+
+        if (!userId.equals(PreferenceManager.getDefaultSharedPreferences(myContext).getString("USERID", "-1"))) {
             TextView textView = (TextView) myContext.findViewById(R.id.profile_select_prompt);
             textView.setVisibility(View.GONE);
             String imageIdUrl = LoadBalancer.RequestServerAddress() + "/rest/login/GetPropertyFromNode/" + userId + "/CoverPhotoId";
@@ -494,7 +410,6 @@ public class ProfilePageViewer extends AppCompatActivity  implements DatePickerD
     @Override
     protected void onResume() {
         super.onResume();
-        setHeaderPic();
     }
 
     // Load the trail data to add chips to the
@@ -684,4 +599,5 @@ public class ProfilePageViewer extends AppCompatActivity  implements DatePickerD
     protected void onDestroy() {
         super.onDestroy();
     }
+
 }

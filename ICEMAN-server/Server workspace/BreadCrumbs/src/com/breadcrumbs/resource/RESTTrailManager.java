@@ -30,6 +30,8 @@ public class RESTTrailManager {
 	/* The problem heere is that 
 	 * I need to know the last trailSaved. How does the client know this?
 	 * I need to be able to save the last
+    
+           @Depreciated been some massive changes client side. This is no longer required.
 	 * */
 	@POST
 	@Consumes(MediaType.APPLICATION_JSON)
@@ -41,6 +43,9 @@ public class RESTTrailManager {
 		return trail.SaveJSONOfTrailPoints(TrailPointsJSON);
 	}
 	
+        /*
+            Get the number of days this trail took.
+        */
 	@GET
 	@Path("/GetDurationOfTrailInDays/{TrailId}")
 	public String GetDurationOfTrailInDays(@PathParam("TrailId") String TrailId) {
@@ -57,6 +62,9 @@ public class RESTTrailManager {
 		   return Integer.toString(days);
 	}
 	
+        /*
+            Fetch a list of all the trails for a user. Pretty sure this returns more than ids.
+        */
 	@GET
 	@Path("/GetAllTrailsForAUser/{UserId}")
 	public String GetAllTrailsForAUser(@PathParam("UserId") String UserId) {
@@ -83,10 +91,10 @@ public class RESTTrailManager {
 	@GET
 	@Path("/SetCoverPhotoForTrail/{TrailId}/{ImageId}")
 	public String SetCoverPhotoForTrailByGivingItThePhotoId(@PathParam("TrailId") String TrailId,
-															@PathParam("ImageId") String ImageId) {
+                                                                @PathParam("ImageId") String ImageId) {
 		Trail trail = new Trail();
 		trail.SetCoverPhoto(TrailId, ImageId);
-		return "Success";
+		return "200";
 	}
 	
 	// Add a view to a trail.

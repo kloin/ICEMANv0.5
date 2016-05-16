@@ -1,6 +1,5 @@
 package com.teamunemployment.breadcrumbs.Trails;
 
-import android.app.Activity;
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
@@ -8,25 +7,22 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.location.Location;
 import android.location.LocationListener;
 import android.os.Bundle;
 import android.os.Environment;
 import android.preference.PreferenceManager;
-import android.util.Base64;
 import android.util.Log;
 
 import com.teamunemployment.breadcrumbs.BackgroundServices.StopTrackingIntent;
 import com.teamunemployment.breadcrumbs.BreadcrumbsActivityAPI;
 import com.teamunemployment.breadcrumbs.BreadcrumbsLocationAPI;
 import com.teamunemployment.breadcrumbs.Crumb;
-import com.teamunemployment.breadcrumbs.Location.PlaceManager;
 import com.teamunemployment.breadcrumbs.Network.LoadBalancer;
 import com.teamunemployment.breadcrumbs.Network.ServiceProxy.AsyncDataRetrieval;
-import com.teamunemployment.breadcrumbs.Network.ServiceProxy.AsyncImageFetch;
 import com.teamunemployment.breadcrumbs.Network.ServiceProxy.AsyncSendLargeJsonParam;
 import com.teamunemployment.breadcrumbs.Network.ServiceProxy.AsyncUploadVideo;
+import com.teamunemployment.breadcrumbs.Network.ServiceProxy.UploadFile;
 import com.teamunemployment.breadcrumbs.PreferencesAPI;
 import com.teamunemployment.breadcrumbs.R;
 import com.teamunemployment.breadcrumbs.caching.TextCaching;
@@ -36,7 +32,6 @@ import org.joda.time.DateTime;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.net.URLEncoder;
 import java.text.MessageFormat;
 import java.util.Iterator;
 
@@ -51,7 +46,6 @@ public class TrailManagerWorker {
     public static final int GPS = 4;
     public static final int ACTIVITY_CHANGE = 5;
 
-
     public static final int DRIVING = 0;
     public static final int ON_FOOT = 1;
 
@@ -63,26 +57,25 @@ public class TrailManagerWorker {
         mContext = context;
         mDbc = new DatabaseController(context);
         mPreferences = PreferenceManager.getDefaultSharedPreferences(context);
-        mPreferencesAPI = PreferencesAPI.GetInstance(mContext);
+        mPreferencesAPI = new PreferencesAPI(mContext);
     }
 
     // This is the method that extracts all our saved data about the server and saves it to the server.
     public void SaveEntireTrail(String trailId) {
         DatabaseController dbc = new DatabaseController(mContext);
         try {
-            int localTrailId = PreferencesAPI.GetInstance(mContext).GetLocalTrailId();
+            int localTrailId = mPreferencesAPI.GetLocalTrailId();
             String localTrailString = "";
             if (localTrailId != -1) {
                 localTrailString = Integer.toString(localTrailId);
             }
 
-            int index = PreferencesAPI.GetInstance(mContext).GetCurrentIndex();
+            int index = mPreferencesAPI.GetCurrentIndex();
 
             // Fetch metadata
-            JSONObject metadataJson = dbc.fetchMetadataFromDB(localTrailString);
+            JSONObject metadataJson = dbc.fetchMetadataFromDB(localTrailString, true);
             JSONObject metadataPackage = new JSONObject();
             JSONObject trailSummary = dbc.GetTrailSummary(trailId);
-
             metadataPackage.put("Events", metadataJson);
             metadataPackage.put("TrailId", trailId);
             metadataPackage.put("StartDate", dbc.GetStartDateForCurrentTrail());
@@ -90,7 +83,7 @@ public class TrailManagerWorker {
             metadataPackage.put("StartingIndex", index);
 
             // Fetch crumb data
-            int crumbsIndex = PreferencesAPI.GetInstance(mContext).GetLastSavedMediaCrumbIndex();
+            int crumbsIndex = mPreferencesAPI.GetLastSavedMediaCrumbIndex();
             JSONObject crumbsWithMedia = dbc.GetCrumbsWithMedia(localTrailString, crumbsIndex);
 
             // Fetch RestZones
@@ -102,7 +95,6 @@ public class TrailManagerWorker {
             Iterator iterator = crumbsWithMedia.keys();
             Log.d("TRAIL_SAVE_TEST", "saving " + iterator.toString());
             while (iterator.hasNext()) {
-
                 try {
                     String key = iterator.next().toString();
                     JSONObject crumbJSON = crumbsWithMedia.getJSONObject(key);
@@ -183,7 +175,7 @@ public class TrailManagerWorker {
                 LoadBalancer.RequestServerAddress(),
                 " ",
                 crumb.GetUserId(),
-                mPreferencesAPI.GetServerTrailId(),
+                Integer.toString(mPreferencesAPI.GetServerTrailId()),
                 Double.toString(crumb.GetLatitude()),
                 Double.toString(crumb.GetLongitude()),
                 " ",
@@ -196,7 +188,7 @@ public class TrailManagerWorker {
         url = url.replaceAll(" ",
          "%20");
         final int index = crumb.GetIndex();
-        final Bitmap media = getCrumbBitmap(crumb.GetEventId());
+        final String filename = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES).toString() + "/"+ crumb.GetEventId() + ".jpg";
         final String eventId = crumb.GetEventId();
         AsyncDataRetrieval asyncDataRetrieval  = new AsyncDataRetrieval(url, new AsyncDataRetrieval.RequestListener() {
 
@@ -210,15 +202,16 @@ public class TrailManagerWorker {
                 }
                 Log.d("TRAIL_SAVE", "saving ID : " + result);
 
-                saveImage(media, result, index, eventId);
+                saveImage(filename, result, index, eventId);
             }
         }, mContext);
         asyncDataRetrieval.execute();
     }
 
     private Bitmap getCrumbBitmap(String eventId) {
-
+        String filename = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES).toString() + "/"+ eventId + ".jpg";
         // Grab the bitmap that we have saved to the pictures/breadcrumbs/eventId.png directory
+
         return null;
     }
 
@@ -247,8 +240,9 @@ public class TrailManagerWorker {
 
     }
 
-    private void saveImage(Bitmap media, String crumbId, final int index, final String eventId) {
-        AsyncImageFetch imagesave = new AsyncImageFetch(media, crumbId , new AsyncImageFetch.RequestListener() {
+    private void saveImage(String fileName, String crumbId, final int index, final String eventId) {
+        String url = LoadBalancer.RequestServerAddress() + "/rest/login/savecrumb/"+ crumbId;
+        UploadFile imagesave = new UploadFile(url, fileName, new UploadFile.RequestListener() {
 
             /*
              * Override for the
@@ -276,7 +270,7 @@ public class TrailManagerWorker {
     public void CreateEventMetadata(int eventType, Location location) {
         // Fetch placeId
 
-        String trailId = Integer.toString(PreferencesAPI.GetInstance(mContext).GetLocalTrailId());
+        String trailId = Integer.toString(mPreferencesAPI.GetLocalTrailId());
         int eventId = mPreferences.getInt("EVENTID", -1);
 
         if (trailId.equals("-1")) {
@@ -313,7 +307,7 @@ public class TrailManagerWorker {
         mPreferencesAPI.RemoveTrailBasedValues();
         DatabaseController dbc = new DatabaseController(mContext);
 
-        // Start our trail.
+        // Start our trail. note that the local trial id is saved to preferences inside this method
         dbc.SaveTrailStart(null, DateTime.now().toString());
         BreadcrumbsLocationAPI locationAPI = new BreadcrumbsLocationAPI();
 

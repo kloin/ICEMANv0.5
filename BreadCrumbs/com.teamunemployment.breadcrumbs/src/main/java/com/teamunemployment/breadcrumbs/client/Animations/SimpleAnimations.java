@@ -2,6 +2,8 @@ package com.teamunemployment.breadcrumbs.client.Animations;
 
 import android.app.ActionBar;
 import android.content.Context;
+import android.content.res.ColorStateList;
+import android.graphics.Color;
 import android.support.design.widget.FloatingActionButton;
 import android.view.View;
 import android.view.animation.AccelerateInterpolator;
@@ -61,7 +63,6 @@ public class SimpleAnimations {
         ScaleAnimation shrink =  new ScaleAnimation(1f, 0.2f, 1f, 0.2f, Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f);
         shrink.setDuration(150);     // animation duration in milliseconds
         shrink.setInterpolator(new DecelerateInterpolator());
-
         shrink.setAnimationListener(new Animation.AnimationListener() {
             @Override
             public void onAnimationStart(Animation animation) {
@@ -71,8 +72,8 @@ public class SimpleAnimations {
             @Override
             public void onAnimationEnd(Animation animation) {
                 // Change FAB color and icon
-               // fab.setBackgroundTintList(context.getResources().getColorStateList(colorIntArray[position]));
-               // fab.setImageDrawable(context.getResources().getDrawable(iconIntArray[position], null));
+                // fab.setBackgroundTintList(context.getResources().getColorStateList(colorIntArray[position]));
+                // fab.setImageDrawable(context.getResources().getDrawable(iconIntArray[position], null));
                 fab.setVisibility(View.GONE);
                 menuFab.setVisibility(View.VISIBLE);
                 // Scale up animation
@@ -88,6 +89,40 @@ public class SimpleAnimations {
             }
         });
         fab.startAnimation(shrink);
+    }
+
+    public static void ShrinkUnshrinkStandardFab(final FloatingActionButton floatingActionButton) {
+
+        // do first half of shink
+        floatingActionButton.clearAnimation();
+        ScaleAnimation shrink =  new ScaleAnimation(1f, 0.2f, 1f, 0.2f, Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f);
+        shrink.setDuration(150);     // animation duration in milliseconds
+        shrink.setInterpolator(new DecelerateInterpolator());
+        shrink.setAnimationListener(new Animation.AnimationListener() {
+            @Override
+            public void onAnimationStart(Animation animation) {
+
+            }
+
+            @Override
+            public void onAnimationEnd(Animation animation) {
+
+                // Change FAB color and icon
+                // Scale up animation
+                // expand back to full size
+                ScaleAnimation expand = new ScaleAnimation(0.2f, 1f, 0.2f, 1f, Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f);
+                expand.setDuration(100);     // animation duration in milliseconds
+                expand.setInterpolator(new AccelerateInterpolator());
+                floatingActionButton.startAnimation(expand);
+            }
+
+            @Override
+            public void onAnimationRepeat(Animation animation) {
+
+            }
+        });
+        floatingActionButton.startAnimation(shrink);
+
     }
 
 }

@@ -38,7 +38,7 @@ public class UploadTrail extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.create_trail);
         mContext = this;
-        mPreferencesAPI = PreferencesAPI.GetInstance(this);
+        mPreferencesAPI = new PreferencesAPI(this);
         setClickHandlers();
         setTrailNameView();
     }
@@ -137,7 +137,7 @@ public class UploadTrail extends Activity {
     public void saveNewTrailName() {
 
         // save to database
-        int trailId = PreferencesAPI.GetInstance(mContext).GetServerTrailId();
+        int trailId = mPreferencesAPI.GetServerTrailId();
         String trailName = fetchTrailNameFromCard();
         if (trailId == -1) {
             // Am just returning because when I publish for the first time we will create a trail using the name in the edit text/textview.

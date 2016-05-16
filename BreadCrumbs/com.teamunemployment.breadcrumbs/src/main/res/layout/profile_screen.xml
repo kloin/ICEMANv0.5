@@ -31,7 +31,7 @@
                     android:id="@+id/headerPicture"
                     android:layout_alignParentLeft="true"
                     android:scaleType="centerCrop"
-                    android:background="@drawable/profileblank"
+                    android:background="@color/accentLight"
                     android:layout_alignParentStart="true" />
 
                 <TextView

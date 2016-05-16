@@ -20,8 +20,9 @@ public class DisplayCrumb implements ClusterItem {
     private final String description;
     private final Bitmap thumbNail;
     private int iconDrawable;
+    private int isLocal;
 
-    public DisplayCrumb(double lat, double lng, String extension, String id, int iconDrawable, String placeId, String suburb, String city, String country, String timeStamp, String description, Bitmap thumbNail) {
+    public DisplayCrumb(double lat, double lng, String extension, String id, int iconDrawable, String placeId, String suburb, String city, String country, String timeStamp, String description, Bitmap thumbNail, int isLocal) {
         mPosition = new LatLng(lat, lng);
         this.extension = extension;
         this.id = id;
@@ -33,6 +34,7 @@ public class DisplayCrumb implements ClusterItem {
         this.timeStamp = timeStamp;
         this.description = description;
         this.thumbNail = thumbNail;
+        this.isLocal = isLocal;
     }
 
     @Override
@@ -79,5 +81,7 @@ public class DisplayCrumb implements ClusterItem {
     public Bitmap getThumbNail() {
         return thumbNail;
     }
+
+    public int GetIsLocal() {return isLocal;}
 }
 

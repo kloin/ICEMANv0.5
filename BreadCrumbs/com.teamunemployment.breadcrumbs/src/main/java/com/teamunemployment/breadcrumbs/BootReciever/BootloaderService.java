@@ -22,7 +22,7 @@ public class BootloaderService extends Service{
         Toast.makeText(this, "Service Started", Toast.LENGTH_LONG).show();
         boolean isTracking = PreferenceManager.getDefaultSharedPreferences(this).getBoolean("TRACKING", false);
         BreadCrumbsFusedLocationProvider breadCrumbsFusedLocationProvider = new BreadCrumbsFusedLocationProvider(this);
-        int localTrailId = PreferencesAPI.GetInstance(this).GetLocalTrailId();
+        int localTrailId = new PreferencesAPI(this).GetLocalTrailId();
         if (localTrailId != -1 && isTracking) {
             breadCrumbsFusedLocationProvider.StartBackgroundGPSService();
         }

@@ -4,6 +4,8 @@ import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.os.Environment;
+import android.support.annotation.Nullable;
 import android.support.v7.widget.RecyclerView;
 import android.util.Base64;
 import android.util.Log;
@@ -12,6 +14,7 @@ import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.model.LatLngBounds;
 import com.teamunemployment.breadcrumbs.Location.BreadCrumbsFusedLocationProvider;
 import com.teamunemployment.breadcrumbs.Network.ServiceProxy.AsyncFetchThumbnail;
+import com.teamunemployment.breadcrumbs.RandomUsefulShit.Utils;
 import com.teamunemployment.breadcrumbs.caching.GlobalContainer;
 import com.teamunemployment.breadcrumbs.R;
 import com.teamunemployment.breadcrumbs.client.Cards.CrumbCardDataObject;
@@ -32,6 +35,7 @@ import com.teamunemployment.breadcrumbs.client.StoryBoard.StoryBoardActivity;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Iterator;
 
@@ -54,6 +58,10 @@ public class MapDisplayManager implements GoogleMap.OnMarkerClickListener, Googl
         mDataObjects = new ArrayList<>();
         setUpClusterManager();
 
+    }
+
+    public ArrayList<CrumbCardDataObject> GetDataObjects() {
+        return mDataObjects;
     }
 
     /*
@@ -150,7 +158,7 @@ public class MapDisplayManager implements GoogleMap.OnMarkerClickListener, Googl
                 int videoCount = 0;
                 while (crumbIterator.hasNext()) {
                     DisplayCrumb next = crumbIterator.next();
-                    CrumbCardDataObject object = new CrumbCardDataObject(next.getExtension(), next.getId(), next.getPlaceId(), next.getPosition().latitude, next.getPosition().longitude);
+                    CrumbCardDataObject object = new CrumbCardDataObject(next.getExtension(), next.getId(), next.getPlaceId(), next.getPosition().latitude, next.getPosition().longitude, next.GetIsLocal());
                     crumbObjects.add(object);
                     if (next.getExtension().equals(".jpg")) {
                         photoCount += 1;
@@ -159,9 +167,10 @@ public class MapDisplayManager implements GoogleMap.OnMarkerClickListener, Googl
                     }
                 }
 
-                // Is parcebale expesive?
                 viewCrumbsIntent.putExtra("StartingObject", crumbObjects.get(0));
-                viewCrumbsIntent.putParcelableArrayListExtra("CrumbArray", mDataObjects); // Note - this is currently using serializable - shoiuld use parcelable for speed
+                boolean isOwnTrail = crumbObjects.get(0).GetIsLocal() == 0;
+                viewCrumbsIntent.putExtra("UserOwnsTrail", isOwnTrail);
+                viewCrumbsIntent.putParcelableArrayListExtra("CrumbArray", mDataObjects);
                 viewCrumbsIntent.putExtra("TrailId", trailId);
                 context.startActivityForResult(viewCrumbsIntent, 1);
                 return true;
@@ -188,10 +197,12 @@ public class MapDisplayManager implements GoogleMap.OnMarkerClickListener, Googl
                 Intent viewCrumbsIntent = new Intent(context, StoryBoardActivity.class);
                 ArrayList<CrumbCardDataObject> crumbs = new ArrayList<>();
 
-                CrumbCardDataObject tempCard = new CrumbCardDataObject(clusterItem.getExtension(), clusterItem.getId(), clusterItem.getPlaceId(), clusterItem.getPosition().latitude, clusterItem.getPosition().longitude);
+                CrumbCardDataObject tempCard = new CrumbCardDataObject(clusterItem.getExtension(), clusterItem.getId(), clusterItem.getPlaceId(), clusterItem.getPosition().latitude, clusterItem.getPosition().longitude, clusterItem.GetIsLocal());
                 crumbs.add(tempCard);
-                viewCrumbsIntent.putExtra("StartingObject", new CrumbCardDataObject(clusterItem.getExtension(), clusterItem.getId(), clusterItem.getPlaceId(),clusterItem.getPosition().latitude, clusterItem.getPosition().longitude));
+                viewCrumbsIntent.putExtra("StartingObject", new CrumbCardDataObject(clusterItem.getExtension(), clusterItem.getId(), clusterItem.getPlaceId(),clusterItem.getPosition().latitude, clusterItem.getPosition().longitude, clusterItem.GetIsLocal()));
                 viewCrumbsIntent.putParcelableArrayListExtra("CrumbArray", mDataObjects);
+                boolean isOwnTrail = clusterItem.GetIsLocal() == 0;
+                viewCrumbsIntent.putExtra("UserOwnsTrail", isOwnTrail);
                 viewCrumbsIntent.putExtra("TrailId", trailId);
                 context.startActivityForResult(viewCrumbsIntent, 1);
                 final String placeId = clusterItem.getPlaceId();
@@ -266,14 +277,14 @@ public class MapDisplayManager implements GoogleMap.OnMarkerClickListener, Googl
         final String country = crumb.getString("Country");
         final String timeStamp = crumb.getString("TimeStamp");
         final String description = crumb.getString("Chat");
-        mDataObjects.add(new CrumbCardDataObject(mediaType, id, placeId, Latitude, Longitude));
+        mDataObjects.add(new CrumbCardDataObject(mediaType, id, placeId, Latitude, Longitude, 1));
 
         if (!local) {
             AsyncFetchThumbnail asyncDataRetrieval = new AsyncFetchThumbnail(id, new AsyncFetchThumbnail.RequestListener() {
                 @Override
                 public void onFinished(Bitmap result) {
                     //mapInstance.setMyLocationEnabled(false);
-                    DisplayCrumb displayCrumb = new DisplayCrumb(Latitude, Longitude, mediaType, id, R.drawable.wine_glass, placeId,suburb, city, country, timeStamp, description, result);
+                    DisplayCrumb displayCrumb = new DisplayCrumb(Latitude, Longitude, mediaType, id, R.drawable.wine_glass, placeId,suburb, city, country, timeStamp, description, result, 1);
                     clusterManager.addItem(displayCrumb);
                     clusterManager.cluster();
                 }
@@ -287,34 +298,53 @@ public class MapDisplayManager implements GoogleMap.OnMarkerClickListener, Googl
         }
     }
 
-    public void DrawLocalCrumbFromJson(JSONObject crumb, String id) throws JSONException {
+    public void DrawLocalCrumbFromJson(JSONObject crumb) throws JSONException {
         mapInstance = PassTheMapPlease(); // Shit code
 
 
         String url = "";
         // Get our variables
+        final String id = crumb.getString("id");
         final Double Latitude = crumb.getDouble("latitude");
         final Double Longitude = crumb.getDouble("longitude");
-        String media = crumb.getString("media");
         final String mediaType = crumb.getString("mime");
+        final String eventId = crumb.getString("eventId");
         final String placeId = crumb.getString("placeId");
         final String suburb = crumb.getString("suburb");
         final String city = crumb.getString("city");
         final String country = "nz";
         final String timeStamp = crumb.getString("timeStamp");
         final String description = crumb.getString("description");
+        mDataObjects.add(new CrumbCardDataObject(mediaType, id, placeId, Latitude, Longitude, 0));
 
-        // Convert media
-        byte[] mediaBytes = Base64.decode(media, Base64.DEFAULT);
-        Bitmap bitmap = BitmapFactory.decodeByteArray(mediaBytes, 0, mediaBytes.length);
+        Bitmap bitmap = fetchBitmapFromLocalFile(eventId, mediaType);
 
-
-        DisplayCrumb displayCrumb = new DisplayCrumb(Latitude, Longitude, mediaType, id, R.drawable.wine_glass, placeId,suburb, city, country, timeStamp, description, bitmap);
+        DisplayCrumb displayCrumb = new DisplayCrumb(Latitude, Longitude, mediaType, id, R.drawable.wine_glass, placeId,suburb, city, country, timeStamp, description, bitmap, 0);
         clusterManager.addItem(displayCrumb);
-        clusterManager.cluster();
 
+        //Cluster manager doesnt normally update unless you change the map. This method forces it to update.
+        clusterManager.cluster();
     }
 
+    /*
+        Grab a bitmap to display on the map as a thumbnail. Returns null if shit goes wrong
+     */
+    @Nullable
+    private Bitmap fetchBitmapFromLocalFile(String eventId, String mediaType) {
+        Bitmap bitmap = null;
+        // If video, idk what we are going to do.
+        if (mediaType.equals(".mp4")) {
+            // show a default thumbnail
+        } else {
+            // Grab the
+            String fileName = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES).toString() + "/"+eventId + ".jpg";
+            bitmap = Utils.FetchScaledBitmapFromFile(fileName, 60, 60);
+
+        }
+
+        return bitmap;
+
+    }
     /*
      * Load up the crumb viewing intent.
      */

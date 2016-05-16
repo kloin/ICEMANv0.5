@@ -49,10 +49,11 @@ public class DatabaseController extends SQLiteOpenHelper {
     private Context mContext;
 	private SQLiteDatabase db;
 
-	//private SQLiteDatabase db;
+    private PreferencesAPI mPreferencesApi;
 	public DatabaseController(Context context) {
 		super(context, "users", null, 1);
         this.mContext = context;
+        mPreferencesApi = new PreferencesAPI(context);
 	}
 
 	@Override
@@ -325,7 +326,7 @@ public class DatabaseController extends SQLiteOpenHelper {
         SQLiteDatabase localDb = getWritableDatabase();
         localDb.insert(CRUMBS, null, cv);
         localDb.close();
-        AddMetadata(eventId, timeStamp, latitude, longitude, trailId, TrailManagerWorker.CRUMB, PreferencesAPI.GetInstance(mContext).GetTransportMethod());
+        AddMetadata(eventId, timeStamp, latitude, longitude, trailId, TrailManagerWorker.CRUMB, mPreferencesApi.GetTransportMethod());
     }
 
     public void SaveVideoCrumb(String trailId, String userId, int eventId, double latitude, double longitude, String mime, String timeStamp, String icon,String placeId, String suburb, String city,
@@ -378,7 +379,7 @@ public class DatabaseController extends SQLiteOpenHelper {
         localDb.insert(RESTZONES, null, cv);
         localDb.close();
 
-        AddMetadata(eventId, timeStamp, latitude, longitude, trailId, TrailManagerWorker.REST_ZONE, PreferencesAPI.GetInstance(mContext).GetTransportMethod());
+        AddMetadata(eventId, timeStamp, latitude, longitude, trailId, TrailManagerWorker.REST_ZONE, mPreferencesApi.GetTransportMethod());
     }
 
     public JSONObject GetAllRestZonesForATrail(String trailId) {
@@ -496,21 +497,25 @@ public class DatabaseController extends SQLiteOpenHelper {
                 "TrailId TEXT," +
                 "TrailName TEXT," +
                 "SavedIndex INTEGER," +
-                "StartDate TIMESTAMP);");
+                "CoverPhotoId TEXT," +
+                "StartDate TIMESTAMP," +
+                "IsPublished INTEGER);");
     }
 
     public int SaveTrailStart(String trailId, String startDate) {
         ContentValues cv = new ContentValues();
         cv.put("StartDate", startDate);
         cv.put("TrailId", "0");
-        cv.put("TrailName", "This is a trail");
+        cv.put("CoverPhotoId", "0");
+        cv.put("TrailName", "");
         cv.put("SavedIndex", 0);
+        cv.put("IsPublished", 1); // 0 means published
 
        // cv.put("EndDate", ""); // End date is unkown - we can change this later.
 
         SQLiteDatabase localDb = getWritableDatabase();
         long localId = localDb.insert(TRAIL_SUMMARY, null, cv);
-        PreferencesAPI.GetInstance(mContext).SaveCurrentLocalTrailId((int) localId);
+        mPreferencesApi.SaveCurrentLocalTrailId((int) localId);
         localDb.close();
         return (int) localId;
     }
@@ -558,7 +563,7 @@ public class DatabaseController extends SQLiteOpenHelper {
 	}
 
     public int GetSavedIndexForTrail(String trailId) {
-        Cursor constantsCursor=getReadableDatabase().rawQuery("SELECT * FROM " + TRAIL_SUMMARY + " WHERE TrailId =" + trailId + " ORDER BY _id",
+        Cursor constantsCursor=getReadableDatabase().rawQuery("SELECT * FROM " + TRAIL_SUMMARY + " WHERE _id =" + trailId + " ORDER BY _id",
                 null);
         if (constantsCursor.moveToFirst()) {
             int count = constantsCursor.getInt(constantsCursor.getColumnIndex("SavedIndex"));
@@ -567,10 +572,14 @@ public class DatabaseController extends SQLiteOpenHelper {
         return 0;
     }
 
-    public JSONObject fetchMetadataFromDB(String trailId) {
+    /*
+        Fetchs the metadata from the database. Metadata is the info that describes events, but no data of
+        actual events
+     */
+    public JSONObject fetchMetadataFromDB(String trailId, boolean incrementFlag) {
         // We generally want to save the first point as a rest zone every time, even if it is not.
         boolean firstPoint = true;
-        int currentIndex = PreferencesAPI.GetInstance(mContext).GetCurrentIndex();
+        int currentIndex = mPreferencesApi.GetCurrentIndex();
 
         JSONObject metadata = new JSONObject();
         Cursor constantsCursor=getReadableDatabase().rawQuery("SELECT * FROM "+METADATA+" WHERE trailId ="+trailId+" AND _id >"+ currentIndex + " ORDER BY _id",
@@ -642,8 +651,11 @@ public class DatabaseController extends SQLiteOpenHelper {
             nullPointer.printStackTrace();
         }
 
-        // Update our current "save point" in the database.
-        updateTrailSavedPoint(trailId, currentIndex);
+        if (incrementFlag) {
+            // Update our current "save point" in the database.
+            updateTrailSavedPoint(trailId, currentIndex);
+        }
+
         Log.i("BC.DatabaseController", "Found Trail Points: " + metadata.toString());
         return metadata;
     }
@@ -656,24 +668,28 @@ public class DatabaseController extends SQLiteOpenHelper {
         localDb.update(TRAIL_SUMMARY, cv, "TrailId=" + trailId, null);
         localDb.close();
 
-        PreferencesAPI.GetInstance(mContext).SetCurrentIndex(count);
+        mPreferencesApi.SetCurrentIndex(count);
     }
 
     public JSONObject GetTrailSummary(String trailId) {
         JSONObject metadata = new JSONObject();
-        Cursor constantsCursor=getReadableDatabase().rawQuery("SELECT * FROM " + TRAIL_SUMMARY + " WHERE TrailId =" + trailId + " ORDER BY _id",
+        Cursor constantsCursor=getReadableDatabase().rawQuery("SELECT * FROM " + TRAIL_SUMMARY + " WHERE _id =" + trailId + " ORDER BY _id",
                 null);
         while (constantsCursor.moveToNext()) {
             JSONObject trailSummaryNode = new JSONObject();
 
             //Get all columns
             String startDate = constantsCursor.getString(constantsCursor.getColumnIndex("StartDate"));
+           /// int isPublished = constantsCursor.getInt(constantsCursor.getColumnIndex("IsPublished"));
+            String trailName = constantsCursor.getString(constantsCursor.getColumnIndex("TrailName"));
             //int index = constantsCursor.getInt(constantsCursor.getColumnIndex("trailIndex"));
             // Save our single point as a single node, and add it to the overall object that is
             // going to be sent to the server.
             try {
                 trailSummaryNode.put("TrailId", trailId);
+             ///   trailSummaryNode.put("TrailName", trailName);
                 trailSummaryNode.put("StartDate", startDate);
+             ///   trailSummaryNode.put("IsPublished", isPublished == 0);
                 return trailSummaryNode;
             } catch (JSONException e) {
                 e.printStackTrace();
@@ -759,20 +775,21 @@ public class DatabaseController extends SQLiteOpenHelper {
                 e.printStackTrace();
             }
             int finalIndex = index + count;
-            PreferencesAPI.GetInstance(mContext).SetLastSavedMediaCrumbIndex(finalIndex);
+            mPreferencesApi.SetLastSavedMediaCrumbIndex(finalIndex);
         }
         return returnObject;
     }
 
-    public JSONObject GetAllCrumbs(String id) {
+    public JSONObject GetAllCrumbs(String trailId) {
         JSONObject returnObject = new JSONObject();
-        Cursor constantsCursor=getReadableDatabase().rawQuery("SELECT * FROM "+CRUMBS+" WHERE trailId ="+id+" ORDER BY _id",
+        Cursor constantsCursor=getReadableDatabase().rawQuery("SELECT * FROM "+CRUMBS+" WHERE trailId ="+trailId+" ORDER BY _id",
                 null);
         int count = 0;
         while (constantsCursor.moveToNext()) {
             JSONObject node = new JSONObject();
 
             //Get all columns
+            String id = constantsCursor.getString(constantsCursor.getColumnIndex("_id"));
             String eventId = constantsCursor.getString(constantsCursor.getColumnIndex("eventId"));
             String description = constantsCursor.getString(constantsCursor.getColumnIndex("description"));
             Double latitude = constantsCursor.getDouble(constantsCursor.getColumnIndex("latitude"));
@@ -785,6 +802,7 @@ public class DatabaseController extends SQLiteOpenHelper {
             String city = constantsCursor.getString(constantsCursor.getColumnIndex("city"));
             String mime = constantsCursor.getString(constantsCursor.getColumnIndex("mime"));
             try {
+
                 TextCaching textCaching = new TextCaching(mContext);
                 String base64String = textCaching.FetchCachedText(eventId);
                 Log.d("Base64", "base64 retrieved");
@@ -800,6 +818,7 @@ public class DatabaseController extends SQLiteOpenHelper {
                 node.put("suburb", suburb);
                 node.put("city", city);
                 node.put("mime", mime);
+                node.put("id", id);
 
                 returnObject.put(Integer.toString(count), node);
                 count += 1;
@@ -857,5 +876,21 @@ public class DatabaseController extends SQLiteOpenHelper {
         }finally {
             cursor.close();
         }
+    }
+
+    /*
+    =================================================================================================
+    =+++++++++++++++++++++++++++++ DELETE METHODS ++++++++++++++++++++++++++++++++++++++++++++++++++=
+    =================================================================================================
+     */
+
+    /*
+        Simple Delete sql script to delete from a database
+     */
+    public void DeleteCrumb(String crumbId) {
+        int target = Integer.parseInt(crumbId);
+        int result = getWritableDatabase().delete(CRUMBS, "trailId=" + target, null);
+        Log.d("DBC", "Requested deletion of crumb with id: " + crumbId + ", deleted " + result + " row(s)");
+//getWritableDatabase().rawQuery("DELETE FROM " + CRUMBS + " WHERE eventId=" + crumbId, null)
     }
 }

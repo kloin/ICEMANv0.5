@@ -36,7 +36,7 @@ public class SplashScreen extends Activity {
                 }
 
                 if (!result.equals("0") && !result.equals("")) {
-                    PreferencesAPI.GetInstance(context).SaveCurrentLocalTrailId(Integer.parseInt(result));
+                    new PreferencesAPI(context).SaveCurrentLocalTrailId(Integer.parseInt(result));
 
                 }
 
