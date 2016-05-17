@@ -405,7 +405,7 @@ public class RetrieveData {
    @Path("/SaveStringPropertyToNode/{NodeId}/{Property}/{PropertyValue}")
    public String SaveStringPropertyToNode(@PathParam("NodeId") String nodeId, @PathParam("Property") String property, @PathParam("PropertyValue") String propertyValue) {
 	   DBMaster dbMaster = DBMaster.GetAnInstanceOfDBMaster();
-	   dbMaster.updateNode(nodeId, property, propertyValue);
+	   dbMaster.UpdateNodeWithCypherQuery(nodeId, property, propertyValue);
 	   return "200 - ok";
    }
     
