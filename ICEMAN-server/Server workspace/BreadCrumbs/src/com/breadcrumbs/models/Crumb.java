@@ -26,6 +26,7 @@ import com.breadcrumbs.database.DBMaster.myLabels;
 import com.breadcrumbs.database.DBMaster.myRelationships;
 import com.sun.jersey.multipart.BodyPart;
 import com.sun.jersey.multipart.BodyPartEntity;
+import java.io.FileInputStream;
 public class Crumb {
 	
 	private DBMaster dbm;
@@ -99,19 +100,57 @@ public class Crumb {
         return result;
     }
     
+    /**
+     * This is a test version of the method {@link #ConvertAndSaveImage(java.io.InputStream, java.lang.String) 
+     * Used only for testing, with different save parameters.
+     * @param uploadImageStream
+     * @param crumbId
+     * @param isTest
+     * @return 
+     */
+    public int ConvertAndSaveImage(InputStream uploadImageStream, String crumbId, boolean isTest) {
+        int result = 0;
+        File targetFile = new File("C:\\Users\\jek40\\Desktop\\ICEMANv0.5\\ICEMAN-server\\Server workspace\\.metadata\\.plugins\\org.eclipse.wst.server.core\\tmp0\\wtpwebapps\\BreadCrumbs\\images\\"+crumbId+".jpg");
+        byte[] buffer = new byte[1024];
+        OutputStream outputStream;
+        try {    
+            outputStream = new FileOutputStream(targetFile);
+            int length;             
+            while((length = uploadImageStream.read(buffer)) > 0) {
+                outputStream.write(buffer, 0, length);      
+            }
+            
+            // Create a thumbnail. Note that this method closes the inputStream {@link #uploadImageStream}
+            InputStream targetStream = new FileInputStream(targetFile);
+            createAndSaveThumbnail(targetStream, crumbId, true);
+            outputStream.close(); 
+        } catch (FileNotFoundException e) {
+                result = 1;
+                // Delete what we had tried to save.
+                DeleteFile("/var/lib/tomcat7/webapps/images/"+crumbId+".jpg");
+                e.printStackTrace();
+        } catch (IOException e) {
+                result = 1;
+                DeleteFile("/var/lib/tomcat7/webapps/images/"+crumbId+".jpg");
+                e.printStackTrace();
+        }
+        return result;
+    }
     public int ConvertAndSaveImage(InputStream uploadImageStream, String crumbId) {
         int result = 0;
         File targetFile = new File("/var/lib/tomcat7/webapps/images/"+crumbId+".jpg");
         byte[] buffer = new byte[1024];
         OutputStream outputStream;
         try {    
-            // Create a thumbnail.
-            createAndSaveThumbnail(uploadImageStream, crumbId);
             outputStream = new FileOutputStream(targetFile);
             int length;             
             while((length = uploadImageStream.read(buffer)) > 0) {
                 outputStream.write(buffer, 0, length);      
             }
+            
+            // Create a thumbnail. Note that this method closes the inputStream {@link #uploadImageStream}
+            InputStream targetStream = new FileInputStream(targetFile);
+            createAndSaveThumbnail(targetStream, crumbId);
             outputStream.close(); 
         } catch (FileNotFoundException e) {
                 result = 1;
@@ -151,7 +190,15 @@ public class Crumb {
 			BufferedImage thumbnail = new BufferedImage(100, 100, BufferedImage.TYPE_INT_RGB);
 			thumbnail.createGraphics().drawImage(scaledImg,0,0,null);
 			ImageIO.write(thumbnail, "jpg", new File(Statics.StaticValues.serverAddress + crumbId+"T.jpg"));      
-
+        }
+        
+        // Create a thumbnail of an image.
+        private void createAndSaveThumbnail(InputStream uploadInputStream, String crumbId, boolean isTest) throws IOException {
+			BufferedImage img = ImageIO.read(uploadInputStream);
+			Image scaledImg = img.getScaledInstance(100, 100, Image.SCALE_SMOOTH);
+			BufferedImage thumbnail = new BufferedImage(100, 100, BufferedImage.TYPE_INT_RGB);
+			thumbnail.createGraphics().drawImage(scaledImg,0,0,null);
+			ImageIO.write(thumbnail, "jpg", new File(Statics.StaticValues.testingAddress + crumbId+"T.jpg"));      
         }
 
 	public String GetLatitudeAndLongitude(String crumbId) {
