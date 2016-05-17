@@ -14,14 +14,15 @@ import com.teamunemployment.breadcrumbs.BackgroundServices.MessageObjects.Single
 import com.teamunemployment.breadcrumbs.BackgroundServices.MessageObjects.TrailObject;
 import com.teamunemployment.breadcrumbs.Location.BreadcrumbsLocationProvider;
 import com.teamunemployment.breadcrumbs.PreferencesAPI;
+import com.teamunemployment.breadcrumbs.Trails.TrailManagerWorker;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 
 /**
- * Written By Josiah Kendall 2016.
+ * @author Josiah Kendall
  *
- * Purpose of this service is to manage the activity behaviour and location services.
+ * Background service for breadcrumbs. Manages many tasks and activities.
  */
 public class BackgroundService extends Service {
     private SharedPreferences mPreferences;
@@ -33,7 +34,7 @@ public class BackgroundService extends Service {
     public int onStartCommand(Intent intent, int flags, int startId) {
         mPreferencesApi = new PreferencesAPI(this);
         handleServiceStart();
-        return START_STICKY;
+        return START_STICKY; // Check if we need to restart the service when we end it.
     }
 
     // Here we check what we should be doing in terms of starting
@@ -45,6 +46,14 @@ public class BackgroundService extends Service {
             if (!mPreferencesApi.isDriving()) {
                 startPassiveGPS(600, 200);
             }
+
+        }
+
+        // If we were uploading when the app got killed, we should resume uploading.
+        if (mPreferencesApi.IsUploading()) {
+            TrailManagerWorker trailManagerWorker = new TrailManagerWorker(this);
+            String traildId = Integer.toString(mPreferencesApi.GetServerTrailId());
+            trailManagerWorker.SaveEntireTrail(traildId);
         }
         // Weather not being used
         //FetchWeatherForTheDayService.setLaunchTimeForWeatherRequest(this);
@@ -89,6 +98,11 @@ public class BackgroundService extends Service {
         getAccurateFreshGPSPositionNow(event.listener);
     }
 
+    /**
+     * Start listening to user activity such as walking, running, driving etc.
+     *
+     * @param event
+     */
     @Subscribe
     public void onStartListeningForUserActivity(UserActivity event) {
         startListeningForUserActivity();
@@ -103,7 +117,7 @@ public class BackgroundService extends Service {
      */
     @Subscribe
     public void UploadTrailToDatabase(TrailObject trailObject) {
-
+        SaveTrail(trailObject);
     }
 
     @Subscribe
@@ -140,6 +154,7 @@ public class BackgroundService extends Service {
 
     // This is the actual worker process for saving a trail to the database. see {@link #UploadTrailToDatabase(TrailObject)}
     private void SaveTrail(TrailObject trailObject) {
-
+        TrailManagerWorker trailManagerWorker = new TrailManagerWorker(this);
+        trailManagerWorker.SaveEntireTrail(trailObject.ServerTrail);
     }
 }

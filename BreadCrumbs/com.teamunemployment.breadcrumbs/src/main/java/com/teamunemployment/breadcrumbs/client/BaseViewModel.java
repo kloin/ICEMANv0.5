@@ -379,6 +379,7 @@ public class BaseViewModel extends AppCompatActivity {
                 rightLowerMenu.close(true);
                 mTrackingIcon.setImageDrawable(getResources().getDrawable(R.drawable.ic_action_location_searching));
                 locationAPI.StopLocationService();
+                // FIXME Stop listening to activity changes too, otherwise we will just start tracking again when we recognize walking.
                 mPreferencesApi.SetUserTracking(false);
             }
         };
@@ -759,7 +760,6 @@ public class BaseViewModel extends AppCompatActivity {
                     }
 
                     globalContainer.SetTrailIdsCurrentlyDisplayed(allIds);
-
                     mAdapter = new HomeCardAdapter(allIds, mContext);
                     mRecyclerView.setAdapter(mAdapter);
                     int difference = allIds.size() - oldIds.size();

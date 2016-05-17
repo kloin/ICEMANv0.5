@@ -19,7 +19,9 @@ import java.util.ArrayList;
 import java.util.Iterator;
 
 /**
- * Created by jek40 on 10/05/2016.
+ * @author Josiah Kendall
+ *
+ * Class that extends the {@link HomeTabFragment} to handle our profile tab.
  */
 public class MyStuffTab extends HomeTabFragment {
     private final String TAG = "MY_STUFF_TAB";
@@ -27,6 +29,16 @@ public class MyStuffTab extends HomeTabFragment {
     private PreferencesAPI preferencesAPI;
     private MeCardAdapter meCardAdapter;
     private boolean loaded = false;
+
+
+    /**
+     * Method that triggers the loading of trails. This is basically the "Load data" method that the
+     * super class uses. It is called loadTrails because the superclass called it that and the super
+     * class was originally the only tab and that tab loaded trails.
+     *
+     * @Override Overrides the load trails in the base class.
+     * FIXME: my shitty naming
+     */
     public void loadTrails() {
         preferencesAPI = new PreferencesAPI(context);
         String userId = preferencesAPI.GetUserId();
@@ -58,7 +70,12 @@ public class MyStuffTab extends HomeTabFragment {
         mRecyclerView.setAdapter(meCardAdapter);
     }
 
-    // Fetch the active
+    @Override
+    public void reloadTrails() {
+        //DO nothing
+    }
+
+    // Fetch our currently active trail.
     private void fetchMyActiveTrailId() {
         // Get active trail from database.
         // add it to list at position 1

@@ -63,9 +63,14 @@ public class AsyncSendLargeJsonParam extends AsyncTask<String, Integer, String> 
     }
 
 
-    /*
-     * This is our method we use to retrieve data using get (or store data.)
-     * Remember - GET is pretty shit, I need to do more research
+    /**
+     * Post our JSON object to the server. Remember that this method uses POST, and lots of the server
+     * methods are still expecting @GET. IF you POST to a method that expects GET, it will not work.
+     * Check the Url that you are targeting expects POST.
+     *
+     * @param url The url that you are sending the data too.
+     * @param json The json object that we want to post to the server. THis should contain your information.
+     * @return The result of our request.
      */
     public String SendDataRequest(String url, JSONObject json) {
 

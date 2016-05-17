@@ -12,6 +12,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.teamunemployment.breadcrumbs.BackgroundServices.MessageObjects.TrailObject;
 import com.teamunemployment.breadcrumbs.Network.LoadBalancer;
 import com.teamunemployment.breadcrumbs.Network.ServiceProxy.AsyncDataRetrieval;
 import com.teamunemployment.breadcrumbs.Network.ServiceProxy.HTTPRequestHandler;
@@ -20,15 +21,19 @@ import com.teamunemployment.breadcrumbs.R;
 import com.teamunemployment.breadcrumbs.Trails.TrailManagerWorker;
 import com.teamunemployment.breadcrumbs.database.DatabaseController;
 
+import org.greenrobot.eventbus.EventBus;
 import org.json.JSONException;
 
 import java.text.MessageFormat;
 
 /**
- * Created by jek40 on 19/04/2016.
+ * @author Josiah Kendall 2016
+ *
+ * Activity that handles the uploading of a trail
  */
 public class UploadTrail extends Activity {
 
+    EventBus bus = EventBus.getDefault();
     private PreferencesAPI mPreferencesAPI;
     private boolean isEditingTrailName = false;
     private Context mContext;
@@ -194,10 +199,14 @@ public class UploadTrail extends Activity {
         asyncDataRetrieval.execute();
     }
 
+    /**
+     * Push the changes for a trail to the server
+     * @param trailId
+     */
     private void publishTrail(String trailId) {
         // publishing needs :
         // get trail from current index to now.
-        TrailManagerWorker trailManager = new TrailManagerWorker(mContext);
-        trailManager.SaveEntireTrail(trailId);
+        TrailObject trailObject = new TrailObject(trailId);
+        bus.post(trailObject);
     }
 }

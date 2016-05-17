@@ -159,6 +159,14 @@ public class PreferencesAPI {
         mPreferences.edit().putString("UserName", userName).commit();
     }
 
+    public void SetIsUploading(boolean isUploading) {
+        mPreferences.edit().putBoolean("IsUploading", isUploading).commit();
+    }
+
+    public boolean IsUploading() {
+        return mPreferences.getBoolean("IsUploading", false);
+    }
+
     @Nullable
     public String GetUserName() {
         return mPreferences.getString("UserName", null);
