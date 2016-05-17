@@ -163,18 +163,13 @@
             android:screenOrientation="portrait">
         </activity>
         <activity android:name=".client.UploadTrail" android:screenOrientation="portrait"></activity>
-        <activity android:name=".client.NavMenu.Profile.ProfilePicChooser"
-            android:screenOrientation="portrait">
-        </activity>
-        <activity android:name=".client.EditExistingTrail"
-            android:screenOrientation="portrait">
-        </activity>
-        <activity android:name=".client.NavMenu.About"
-            android:screenOrientation="portrait">
-        </activity>
+
+        <activity android:name=".client.NavMenu.Profile.ProfilePicChooser" android:screenOrientation="portrait"/>
+        <activity android:name=".client.EditExistingTrail" android:screenOrientation="portrait"/>
+        <activity android:name=".client.NavMenu.About" android:screenOrientation="portrait"/>
+        <activity android:name=".client.TrailDetailsViewer" android:screenOrientation="portrait"/>
         <activity android:name=".client.StoryBoard.StoryBoardActivity" android:screenOrientation="portrait"></activity>
-        <activity android:name=".client.ImageChooser.TrailCoverImageSelector"
-            android:screenOrientation="portrait"></activity>
+        <activity android:name=".client.ImageChooser.TrailCoverImageSelector" android:screenOrientation="portrait"></activity>
 
         <activity android:name=".client.TestingVideo"></activity>
         <provider

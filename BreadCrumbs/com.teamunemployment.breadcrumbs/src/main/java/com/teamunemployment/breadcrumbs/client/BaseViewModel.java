@@ -649,7 +649,7 @@ public class BaseViewModel extends AppCompatActivity {
                 @Override
                 public void onClick(View v) {
                     if (NetworkConnectivityManager.IsNetworkAvailable(mContext)) {
-                        Intent intent = new Intent(mContext, UploadTrail.class);
+                        Intent intent = new Intent(mContext, TrailDetailsViewer.class);
                         mContext.startActivity(intent);
 
                     } else {
