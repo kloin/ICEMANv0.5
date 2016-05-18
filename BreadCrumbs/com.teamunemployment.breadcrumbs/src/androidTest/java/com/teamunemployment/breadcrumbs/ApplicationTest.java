@@ -123,7 +123,7 @@ public class ApplicationTest {
     public void TestThatMetadataCanBeStoredAndRetrieved() {
         trailManagerWorker.CreateEventMetadata(TrailManagerWorker.TRAIL_START, mockMeALocation());
         //db.AddMetadata("1", DateTime.now().toString(),123.000, -123.000, "0", );
-        JSONObject jsonObject = db.fetchMetadataFromDB(mockTrailId, );
+        JSONObject jsonObject = db.fetchMetadataFromDB(mockTrailId, false);
         assertTrue(jsonObject.length() > 0);
     }
 
@@ -152,7 +152,7 @@ public class ApplicationTest {
         trailManagerWorker.CreateEventMetadata(TrailManagerWorker.CRUMB, location);
         trailManagerWorker.CreateEventMetadata(TrailManagerWorker.TRAIL_END, location);
 
-        JSONObject jsonObject = db.fetchMetadataFromDB("12345678", );
+        JSONObject jsonObject = db.fetchMetadataFromDB("12345678", false);
         JSONObject jsonObject1 = jsonObject.getJSONObject("1");
         String id = jsonObject1.getString("id");
         Log.d("TEST", "Id : " + id);
@@ -264,7 +264,7 @@ public class ApplicationTest {
         trailManagerWorker.CreateEventMetadata(TrailManagerWorker.CRUMB, location2);
         // trailManagerWorker.CreateEventMetadata(TrailManagerWorker.GPS, mockMeALocation());
         trailManagerWorker.CreateEventMetadata(TrailManagerWorker.REST_ZONE, location3);
-        JSONObject jsonObject = db.fetchMetadataFromDB(trailId, );
+        JSONObject jsonObject = db.fetchMetadataFromDB(trailId, false);
         JSONObject wrapper = new JSONObject();
         wrapper.put("TrailId", trailId);
         wrapper.put("Events", jsonObject);
@@ -274,7 +274,7 @@ public class ApplicationTest {
     @Test
     public void TestThatSavingCrumbSavesMetadata() throws JSONException {
 //        db.SaveCrumb("1234","test", "1", 2, 0.0, 0.0, ".jpg", DateTime.now().toString(), null, "", "", "", "", "");
-        JSONObject jsonObject = db.fetchMetadataFromDB("1234", );
+        JSONObject jsonObject = db.fetchMetadataFromDB("1234", false);
         jsonObject = jsonObject.getJSONObject("0");
         assertTrue(jsonObject.getDouble("latitude") == 0.0);
     }
