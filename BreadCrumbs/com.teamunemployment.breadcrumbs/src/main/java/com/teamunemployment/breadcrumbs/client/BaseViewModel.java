@@ -989,7 +989,6 @@ public class BaseViewModel extends AppCompatActivity {
                 }, 250);
                 break;
         }
-:diffg LO
         mDrawerList.setSelection(position);
     }
 
