@@ -25,6 +25,8 @@ public class HTTPRequestHandler {
     //This is a request which doesnt need a custom callback, we just want to send something to the server. this does not return anything
     public void SendSimpleHttpRequest(String url, Context context) {
                 url = url.replaceAll(" ", "%20");
+                url = url.replaceAll("\n", "%0A");
+
                 clientRequestProxy  = new AsyncDataRetrieval(url, new AsyncDataRetrieval.RequestListener() {
                     @Override
                     public void onFinished(String result) {

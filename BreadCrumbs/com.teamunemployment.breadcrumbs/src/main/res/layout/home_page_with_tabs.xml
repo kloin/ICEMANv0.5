@@ -188,36 +188,6 @@
                 android:background="@color/my_divider"
                 android:alpha="0.45"
                 android:layout_height="1sp"></View>
-            <RelativeLayout
-                android:layout_width="match_parent"
-                android:id="@+id/upload"
-                android:layout_height="wrap_content"
-                android:visibility="gone"
-                android:padding="10dp">
-                <ImageView
-                    android:id="@+id/upload_icon"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentLeft="true"
-                    android:layout_alignParentTop="true"
-                    android:paddingRight="8dp"
-                    android:src="@drawable/ic_backup_black_24dp"
-                    android:alpha="0.5" />
-
-                <TextView
-                    android:id="@+id/upload_text"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:shadowRadius="2"
-                    style="@style/CodeFontDevider"
-                    android:layout_centerVertical="true"
-                    android:layout_toRightOf="@+id/upload_icon"
-                    android:paddingRight="10dp"
-                    android:textAppearance="?android:attr/textAppearanceListItemSmall"
-                    android:textColor="#67000000"
-                    android:text="Upload Trail" />
-
-            </RelativeLayout>
 
         </LinearLayout>
     </LinearLayout>

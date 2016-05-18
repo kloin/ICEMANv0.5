@@ -176,12 +176,14 @@ public class BaseViewModel extends AppCompatActivity {
         }; // Drawer Toggle Object Made
         mDrawerLayout.setDrawerListener(mDrawerToggle); // Drawer Listener set to the Drawer toggle
 
-        ObjectDrawerItem[] drawerItem = new ObjectDrawerItem[5];
+        ObjectDrawerItem[] drawerItem = new ObjectDrawerItem[6];
         drawerItem[0] = new ObjectDrawerItem(R.drawable.ic_perm_identity_black_24dp, "Profile");
         drawerItem[1] = new ObjectDrawerItem(R.drawable.ic_timeline_add_black_24px, "Create Trail");
         drawerItem[2] = new ObjectDrawerItem(R.drawable.ic_timeline_black_24dp, "My Trail");
         drawerItem[3] = new ObjectDrawerItem(R.drawable.ic_camera_alt_black_24dp, "Capture");
         drawerItem[4] = new ObjectDrawerItem(R.drawable.ic_settings_black_24dp, "Settings");
+        drawerItem[5] = new ObjectDrawerItem(R.drawable.ic_backup_black_24dp, "Upload Trail");
+
 
         DrawerItemCustomAdapter adapter = new DrawerItemCustomAdapter(this, R.layout.nav_drawer_item, drawerItem);
         mDrawerList.setAdapter(adapter);
@@ -632,31 +634,13 @@ public class BaseViewModel extends AppCompatActivity {
 
         final SwitchCompat trackingButton = (SwitchCompat) findViewById(R.id.tracking_toggle);
         final RelativeLayout trackingWrapper = (RelativeLayout) findViewById(R.id.tracking_toggle_wrapper);
-        RelativeLayout uploadButton = (RelativeLayout) findViewById(R.id.upload);
 
-        // If we do not yet have a trail, we need to set this as ivisible.
+        // If we do not yet have a trail, we need to set this as invisible.
         final int localTrailId = mPreferencesApi.GetLocalTrailId();
 
         if (localTrailId == -1) {
             trackingWrapper.setVisibility(View.GONE);
             return;
-        } else {
-            // Set visibility true and continue on.
-            //trackingWrapper.setVisibility(View.VISIBLE);
-            uploadButton.setVisibility(View.VISIBLE);
-            uploadButton.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    if (NetworkConnectivityManager.IsNetworkAvailable(mContext)) {
-                        Intent intent = new Intent(mContext, UploadTrail.class);
-                        mContext.startActivity(intent);
-
-                    } else {
-                        Toast.makeText(mContext, "Cannot upload - No internet Connection available", Toast.LENGTH_LONG).show();
-                    }
-
-                }
-            });
         }
 
         // Grab a fused location provider from our user class so we can track.
@@ -972,6 +956,15 @@ public class BaseViewModel extends AppCompatActivity {
                     @Override
                     public void run() {
                         newIntent.setClassName("com.teamunemployment.breadcrumbs", "com.teamunemployment.breadcrumbs.client.Settings");
+                        startActivity(newIntent);
+                    }
+                }, 250);
+                break;
+            case 5:
+                new Handler().postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        newIntent.setClassName("com.teamunemployment.breadcrumbs", "com.teamunemployment.breadcrumbs.client.UploadTrail");
                         startActivity(newIntent);
                     }
                 }, 250);

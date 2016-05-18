@@ -22,7 +22,7 @@
         android:layout_centerVertical="true"
         android:layout_toRightOf="@+id/imageViewIcon"
         android:paddingRight="10dp"
-        android:textAppearance="?android:attr/textAppearanceListItemSmall"
-        android:textColor="#67000000" />
+        style="@style/Base.TextAppearance.AppCompat.Menu"
+        android:textColor="#87000000" />
 
 </RelativeLayout>

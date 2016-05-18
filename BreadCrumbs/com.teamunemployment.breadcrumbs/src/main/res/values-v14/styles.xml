@@ -17,6 +17,9 @@
         <item name="spinBars">true</item>
         <item name="color">@color/white</item>
     </style>
+    <style name="Gone" >
+        <item name="android:textSize">0px</item>
+    </style>
     <style name="HeaderFont" >
         <item name="android:fontFamily">sans-serif-light</item>
         <item name="android:textColor">@color/white</item>
