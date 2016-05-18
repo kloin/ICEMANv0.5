@@ -6,7 +6,9 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.Nullable;
+import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.text.Editable;
 import android.util.Log;
@@ -41,6 +43,7 @@ public class TrailDetailsViewer extends AppCompatActivity {
     private PreferencesAPI preferencesAPI;
     private EventBus bus = EventBus.getDefault();
     private Context context;
+    private CoordinatorLayout coordinatorLayout;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -57,6 +60,12 @@ public class TrailDetailsViewer extends AppCompatActivity {
 
         SetUpPublishButton();
         setUpBackButton();
+
+        setUpCoordinatorLayout();
+    }
+
+    private void setUpCoordinatorLayout() {
+        coordinatorLayout = (CoordinatorLayout) findViewById(R.id.trail_details_cl);
     }
 
     /**
@@ -170,6 +179,7 @@ public class TrailDetailsViewer extends AppCompatActivity {
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
+                Snackbar.make(coordinatorLayout, "Your trail has been saved", Snackbar.LENGTH_LONG).show();
                 SimpleAnimations.ShrinkUnshrinkStandardFab(publishFab);
                 publishFab.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor("#00E676")));
                 publishFab.setImageDrawable(context.getResources().getDrawable(R.drawable.ic_cloud_done_white_24dp));
