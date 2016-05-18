@@ -960,13 +960,18 @@ public class BaseViewModel extends AppCompatActivity {
                 }, 250);
                 break;
             case 5:
-                new Handler().postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        newIntent.setClassName("com.teamunemployment.breadcrumbs", "com.teamunemployment.breadcrumbs.client.TrailDetailsViewer");
-                        startActivity(newIntent);
-                    }
-                }, 250);
+                if (localTrailId != -1) {
+                    new Handler().postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            newIntent.setClassName("com.teamunemployment.breadcrumbs", "com.teamunemployment.breadcrumbs.client.TrailDetailsViewer");
+                            startActivity(newIntent);
+                        }
+                    }, 250);
+                } else {
+                    // We need to show the user a dialog, and give them the option of creating a new trail
+                    showDialog("You have no trail to publish");
+                }
                 break;
         }
         mDrawerList.setSelection(position);

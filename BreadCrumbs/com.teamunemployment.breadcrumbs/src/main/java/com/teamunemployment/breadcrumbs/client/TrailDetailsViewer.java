@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.res.ColorStateList;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
@@ -126,7 +127,10 @@ public class TrailDetailsViewer extends AppCompatActivity {
             @Override
             public void onClick(View v) {
 
+                // Create the shell to hold our simple dialog.
+                final SimpleMaterialDesignDialog materialDesignDialog = SimpleMaterialDesignDialog.Build(context);
 
+                // Callback for the action button on the dialog.
                 IDialogCallback onAccept = new IDialogCallback() {
                     @Override
                     public void DoCallback() {
@@ -135,29 +139,43 @@ public class TrailDetailsViewer extends AppCompatActivity {
                         if (serverTrailId == -1) {
                             boolean result = handleFirstTimePublishing();
                             if (result) {
-                                SimpleAnimations.ShrinkUnshrinkStandardFab(publishFab);
-                                publishFab.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor("#00E676")));
-                                publishFab.setImageDrawable(context.getResources().getDrawable(R.drawable.ic_cloud_done_white_24dp));
-                                publishFab.setOnClickListener(null);
+                                toggleButton(publishFab);
                             }
                         } else {
-                            publishTrail(Integer.toString(serverTrailId));
+                            boolean result = publishTrail(Integer.toString(serverTrailId));
+                            if (result) {
+                                toggleButton(publishFab);
+                            }
                         }
-
-
                     }
                 };
 
-                // Show publish alert dialog
-                SimpleMaterialDesignDialog materialDesignDialog = SimpleMaterialDesignDialog.Build(context)
-                        .SetTitle("Publish Trip")
-                        .SetTextBody("This will publish your trip and make it visible to the world.")
-                        .SetActionWording("Publish")
-                        .SetCallBack(onAccept);
+                // Make the dialog look and work the way we want
+                materialDesignDialog.SetTitle("Publish Trip")
+                .SetTextBody("This will publish your trip and make it visible to the world.")
+                .SetActionWording("Publish")
+                .SetCallBack(onAccept);
 
+                // Show the dialog.
                 materialDesignDialog.Show();
             }
         });
+    }
+
+    /**
+     * Toggle our fab to indicat the save was successful.
+     * @param publishFab The fab that we are toggling.
+     */
+    private void toggleButton(final FloatingActionButton publishFab) {
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                SimpleAnimations.ShrinkUnshrinkStandardFab(publishFab);
+                publishFab.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor("#00E676")));
+                publishFab.setImageDrawable(context.getResources().getDrawable(R.drawable.ic_cloud_done_white_24dp));
+                publishFab.setOnClickListener(null);
+            }
+        }, 150);
     }
 
     /**
@@ -185,7 +203,7 @@ public class TrailDetailsViewer extends AppCompatActivity {
         // Save the trail name to the server too.
         HTTPRequestHandler httpRequestHandler = new HTTPRequestHandler();
         httpRequestHandler.SaveNodeProperty(Integer.toString(serverTrailId), "TrailName", trailName, context);
-        
+
         // get trail from current index to now.
         TrailObject trailObject = new TrailObject(trailId);
         bus.post(trailObject);

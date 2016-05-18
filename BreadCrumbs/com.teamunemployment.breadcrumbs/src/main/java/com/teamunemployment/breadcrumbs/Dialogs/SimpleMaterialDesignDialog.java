@@ -93,6 +93,7 @@ public class SimpleMaterialDesignDialog {
             @Override
             public void onClick(View v) {
                 callbackMethod.DoCallback();
+                mDialog.dismiss();
             }
         });
 
