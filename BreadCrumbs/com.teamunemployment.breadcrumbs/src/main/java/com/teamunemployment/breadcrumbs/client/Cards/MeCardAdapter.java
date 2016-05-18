@@ -38,7 +38,9 @@ import java.util.Iterator;
 import de.hdodenhof.circleimageview.CircleImageView;
 
 /**
- * Created by jek40 on 12/05/2016.
+ * @author Josiah Kendall
+ *
+ * The adapter for the {@link com.teamunemployment.breadcrumbs.client.tabs.MyStuffTab} recycler view.
  */
 public class MeCardAdapter extends RecyclerView.Adapter<MeCardAdapter.ViewHolder> {
 
@@ -49,6 +51,11 @@ public class MeCardAdapter extends RecyclerView.Adapter<MeCardAdapter.ViewHolder
     private final String TAG = "ME_CARD_ADAPTER";
     private DatabaseController databaseController;
     private String userId;
+
+    /**
+     * Class to hold the card view for the object we are about to display. Dont really know why this
+     * is neccessary tbh I just saw it on StackOverFlow.
+     */
     public static class ViewHolder extends RecyclerView.ViewHolder {
         // Each data item is just a string in this case
         public LinearLayout CardInner;
@@ -58,18 +65,28 @@ public class MeCardAdapter extends RecyclerView.Adapter<MeCardAdapter.ViewHolder
         }
     }
 
-    // Provide a suitable constructor (depends on the kind of dataset)
+    /**
+     * Constructor.
+     * @param myDataset The list of ids that we need to display on the recycler view. Each of these
+     *                  ids will be used to create a crumb and populate the data on it.
+     * @param context Our context.
+     */
     public MeCardAdapter(ArrayList<String> myDataset, Context context) {
-        // This is our JSONObject of trailData (id, name etc).
         dataSet = myDataset;
         this.context = context;
         userId = PreferenceManager.getDefaultSharedPreferences(context).getString("USERID", "-1");
         databaseController = new DatabaseController(context);
         preferencesAPI = new PreferencesAPI(context);
         userId = preferencesAPI.GetUserId();
-
     }
 
+    /**
+     * Override of the parent. Allows us to override the view creation for each object / card that
+     * the recycler view generates.
+     * @param parent The ViewGroup into which the new View will be added after it is bound to an adapter position.
+     * @param viewType The view type of the new View.
+     * @return The new card object view holder.
+     */
     @Override
     public MeCardAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View v = null;
@@ -78,8 +95,7 @@ public class MeCardAdapter extends RecyclerView.Adapter<MeCardAdapter.ViewHolder
             // First object, therefore we want to create a profile card.
             v  = LayoutInflater.from(parent.getContext())
                     .inflate(R.layout.profile_card_viewholder, parent, false);
-             card = (CardView) v.findViewById(R.id.me_card);
-
+            card = (CardView) v.findViewById(R.id.me_card);
         } else {
             v = LayoutInflater.from(parent.getContext())
                     .inflate(R.layout.home_base_card_base_view, parent, false);
@@ -95,31 +111,46 @@ public class MeCardAdapter extends RecyclerView.Adapter<MeCardAdapter.ViewHolder
     }
 
 
-
+    /**
+     * Called by the RecylcerView to display the data at the next postion, called when a card
+     * is about to be rendered (after being recycled. This method updates the contents of the
+     * item in our given View holder.
+     * @param holder The ViewHolder which should be updated to represent the contents of the item at
+     *               the given position in the data set.
+     * @param position The position of the item within the adapter's data set.
+     */
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
         String id = dataSet.get(position);
+
+        // We identify local trails by the "L" they have appended to the Id. This lets us know that
+        // they are local trails and should be loaded from the database, as they will not exist on
+        // the server.
         if (id.endsWith("L")) {
             Log.d(TAG, "Found local ID: " + id);
             FetchAndBindLocalObject(holder.CardInner, id, position);
         }
     }
 
+    /**
+     * Fetch the data that is to go on the trail and bind it to our card.
+     * @param card The card that was redered from our given view in {@link #onCreateViewHolder(ViewGroup, int)}
+     * @param trailId The local id of the trail that we are retrieving.
+     * @param position The positon this id is in the {@link #dataSet} of ids.
+     */
     private void FetchAndBindLocalObject(final LinearLayout card, String trailId, final int position) {
         Log.d(TAG, "Begin loading card at position : " + position);
-
-
         trailId = trailId.replace("L", "");
-        // If we dont have data we will need to fetch it. otherwise we can use the cache
-        // Probably not going to have any details unless it has been published
-        JSONObject result = databaseController.GetTrailSummary(trailId);
-        bindLocalCard(result, card, trailId, position);
 
-                    //Result is our card details. We need to go though and fetch these
+        // Pull the data from the local database.
+        JSONObject result = databaseController.GetTrailSummary(trailId);
+        bindLocalCard(result, card, trailId);
+
+        //Result is our card details. We need to go though and fetch these
 
        // setNumberOfCrumbsView(card, trailId);
 
-      //  setTempDeleteButton(card, trailId);
+        //  setTempDeleteButton(card, trailId);
         // Need to fetch description with the other data but icbf
 
     }
@@ -146,13 +177,16 @@ public class MeCardAdapter extends RecyclerView.Adapter<MeCardAdapter.ViewHolder
         return position;
     }
 
-    /*
-            Method to bind the local data that we have to the trail card. This method is for a local card,
-            where we have not uploaded data to the server.
-         */
-    private void bindLocalCard(JSONObject resultJSON, final LinearLayout card, final String trailId, final int position) {
+    /**
+     * Method to bind the local data that we have to the trail card. This method is for binding cards
+     * where the data is stored locally.
+     * @param trailSummaryJSON The JSONObject of the trail summary.
+     * @param card The card object that we are binding to.
+     * @param trailId The local trail id of the card we are currently binding.
+     */
+    private void bindLocalCard(JSONObject trailSummaryJSON, final LinearLayout card, final String trailId) {
         try {
-            String titleObject = resultJSON.getString("TrailName");
+            String titleObject = trailSummaryJSON.getString("TrailName");
             // Set up our trailTitle
             if (titleObject!= null && !titleObject.isEmpty()) {
                 Log.d(TAG, "Found trailName. Setting now");
@@ -168,7 +202,7 @@ public class MeCardAdapter extends RecyclerView.Adapter<MeCardAdapter.ViewHolder
 
             setUserNameForCard(card);
 
-            String coverPhotoId = resultJSON.getString("CoverPhotoId");
+            String coverPhotoId = trailSummaryJSON.getString("CoverPhotoId");
             if (coverPhotoId.equals("0")) {
                 // Grab a cover photo Id so that we can display a photo. Not diplaying a photo will be ugly.
                 coverPhotoId = fetchFirstImageAvailableFromDatabase(trailId);

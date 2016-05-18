@@ -687,7 +687,7 @@ public class DatabaseController extends SQLiteOpenHelper {
             // going to be sent to the server.
             try {
                 trailSummaryNode.put("TrailId", trailId);
-             ///   trailSummaryNode.put("TrailName", trailName);
+                trailSummaryNode.put("TrailName", trailName);
                 trailSummaryNode.put("StartDate", startDate);
              ///   trailSummaryNode.put("IsPublished", isPublished == 0);
                 return trailSummaryNode;
@@ -774,8 +774,7 @@ public class DatabaseController extends SQLiteOpenHelper {
                 Log.e("DBC", "failed to get crumbs with media");
                 e.printStackTrace();
             }
-            int finalIndex = index + count;
-            mPreferencesApi.SetLastSavedMediaCrumbIndex(finalIndex);
+
         }
         return returnObject;
     }

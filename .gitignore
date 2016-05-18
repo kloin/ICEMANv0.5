@@ -1,7 +1,7 @@
 dir_to_ignore/ICEMAN-client/com.breadcrumbs/build/*
 dir_to_ignore/ICEMAN-client/com.breadcrumbs/gen
 dir_to_ignore/ICEMAN-client/com.breadcrumbs/gradle
-dir_to_igonre/ICEMAN-server/Server workspace/.metadata
+dir_to_igonre/ICEMAN-server/Server workspace/.metadata/*
 dir_to_igonre/ICEMAN-server/Server workspace/RemoteSystemsTempFiles
 dir_to_igonre/ICEMAN-server/Server workspace/Servers
 dir_to_igonre/ICEMAN-server/Server workspace/BreadCrumbs/build

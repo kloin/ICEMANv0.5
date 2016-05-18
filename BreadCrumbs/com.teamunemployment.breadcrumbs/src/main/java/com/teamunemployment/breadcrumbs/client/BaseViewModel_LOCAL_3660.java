@@ -162,7 +162,8 @@ public class BaseViewModel extends AppCompatActivity {
         mDrawerView= (LinearLayout) findViewById(R.id.drawer_holder);
         mDrawerToggle = new ActionBarDrawerToggle(this,mDrawerLayout,toolbar,R.string.drawer_open,R.string.drawer_close){
             @Override
-            public void onDrawerOpened(View drawerView) {        super.onDrawerOpened(drawerView);
+            public void onDrawerOpened(View drawerView) {
+                super.onDrawerOpened(drawerView);
                 drawerIsOpen = true;
             }
 
@@ -380,7 +381,6 @@ public class BaseViewModel extends AppCompatActivity {
                 rightLowerMenu.close(true);
                 mTrackingIcon.setImageDrawable(getResources().getDrawable(R.drawable.ic_action_location_searching));
                 locationAPI.StopLocationService();
-                // FIXME Stop listening to activity changes too, otherwise we will just start tracking again when we recognize walking.
                 mPreferencesApi.SetUserTracking(false);
             }
         };
@@ -641,30 +641,10 @@ public class BaseViewModel extends AppCompatActivity {
         if (localTrailId == -1) {
             trackingWrapper.setVisibility(View.GONE);
             return;
-
-
-
-
-
-
-
-          
-                
-               
-
-          
-
-      
-
-
-
-     
-            
-
         }
 
         // Grab a fused location provider from our user class so we can track.
-       final BreadCrumbsFusedLocationProvider breadCrumbsFusedLocationProvider = new BreadCrumbsFusedLocationProvider(this);
+        final BreadCrumbsFusedLocationProvider breadCrumbsFusedLocationProvider = new BreadCrumbsFusedLocationProvider(this);
         GlobalContainer gc = GlobalContainer.GetContainerInstance();
         gc.SetBreadCrumbsFusedLocationProvider(breadCrumbsFusedLocationProvider);
         // Check if we were already tracking.
@@ -763,6 +743,7 @@ public class BaseViewModel extends AppCompatActivity {
                     }
 
                     globalContainer.SetTrailIdsCurrentlyDisplayed(allIds);
+
                     mAdapter = new HomeCardAdapter(allIds, mContext);
                     mRecyclerView.setAdapter(mAdapter);
                     int difference = allIds.size() - oldIds.size();
@@ -989,7 +970,8 @@ public class BaseViewModel extends AppCompatActivity {
                 }, 250);
                 break;
         }
-:diffg LO
+
+        mDrawerList.setItemChecked(position, true);
         mDrawerList.setSelection(position);
     }
 
@@ -1062,3 +1044,4 @@ public class BaseViewModel extends AppCompatActivity {
 }
 
 	
+

@@ -162,7 +162,8 @@ public class BaseViewModel extends AppCompatActivity {
         mDrawerView= (LinearLayout) findViewById(R.id.drawer_holder);
         mDrawerToggle = new ActionBarDrawerToggle(this,mDrawerLayout,toolbar,R.string.drawer_open,R.string.drawer_close){
             @Override
-            public void onDrawerOpened(View drawerView) {        super.onDrawerOpened(drawerView);
+            public void onDrawerOpened(View drawerView) {
+                super.onDrawerOpened(drawerView);
                 drawerIsOpen = true;
             }
 
@@ -641,30 +642,30 @@ public class BaseViewModel extends AppCompatActivity {
         if (localTrailId == -1) {
             trackingWrapper.setVisibility(View.GONE);
             return;
+<<<<<<< HEAD
+=======
+        } else {
+            // Set visibility true and continue on.
+            //trackingWrapper.setVisibility(View.VISIBLE);
+            uploadButton.setVisibility(View.VISIBLE);
+            uploadButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (NetworkConnectivityManager.IsNetworkAvailable(mContext)) {
+                        Intent intent = new Intent(mContext, TrailDetailsViewer.class);
+                        mContext.startActivity(intent);
 
+                    } else {
+                        Toast.makeText(mContext, "Cannot upload - No internet Connection available", Toast.LENGTH_LONG).show();
+                    }
 
-
-
-
-
-
-          
-                
-               
-
-          
-
-      
-
-
-
-     
-            
-
+                }
+            });
+>>>>>>> 1c9780e0f51b3d6ff477d583e915a177418e63f1
         }
 
         // Grab a fused location provider from our user class so we can track.
-       final BreadCrumbsFusedLocationProvider breadCrumbsFusedLocationProvider = new BreadCrumbsFusedLocationProvider(this);
+        final BreadCrumbsFusedLocationProvider breadCrumbsFusedLocationProvider = new BreadCrumbsFusedLocationProvider(this);
         GlobalContainer gc = GlobalContainer.GetContainerInstance();
         gc.SetBreadCrumbsFusedLocationProvider(breadCrumbsFusedLocationProvider);
         // Check if we were already tracking.
@@ -989,7 +990,8 @@ public class BaseViewModel extends AppCompatActivity {
                 }, 250);
                 break;
         }
-:diffg LO
+
+        mDrawerList.setItemChecked(position, true);
         mDrawerList.setSelection(position);
     }
 
@@ -1062,3 +1064,4 @@ public class BaseViewModel extends AppCompatActivity {
 }
 
 	
+

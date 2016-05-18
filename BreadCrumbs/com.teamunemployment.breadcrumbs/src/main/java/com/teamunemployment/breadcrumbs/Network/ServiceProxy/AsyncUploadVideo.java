@@ -53,10 +53,10 @@ public class AsyncUploadVideo extends AsyncTask<Void, Integer, String> {
     @Override
     protected void onProgressUpdate(Integer... progress) {
         // Making progress bar visible
-       // progressBar.setVisibility(View.VISIBLE);
+        // progressBar.setVisibility(View.VISIBLE);
 
         // updating progress bar value
-       // progressBar.setProgress(progress[0]);
+        // progressBar.setProgress(progress[0]);
 
         // updating percentage value
         //txtPercentage.setText(String.valueOf(progress[0]) + "%");
@@ -71,6 +71,10 @@ public class AsyncUploadVideo extends AsyncTask<Void, Integer, String> {
         try {
             File sourceFile = new File(filePath);
             Log.d("VIDEOSAVE", "File...::::" + sourceFile + " : " + sourceFile.exists());
+
+
+
+
             final MediaType MEDIA_TYPE_MP4 = MediaType.parse("video/mp4");
 
             RequestBody requestBody = new MultipartBuilder()

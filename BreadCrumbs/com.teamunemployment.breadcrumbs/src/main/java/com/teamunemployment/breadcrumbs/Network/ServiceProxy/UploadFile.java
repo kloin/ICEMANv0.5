@@ -10,6 +10,7 @@ import com.squareup.okhttp.OkHttpClient;
 import com.squareup.okhttp.Request;
 import com.squareup.okhttp.RequestBody;
 import com.squareup.okhttp.Response;
+import com.teamunemployment.breadcrumbs.Crumb;
 
 import java.io.File;
 import java.io.UnsupportedEncodingException;
@@ -23,7 +24,7 @@ public class UploadFile extends AsyncTask<Void, Integer, String> {
     private String filePath;
     private String url;
     private String fileType;
-
+    private Crumb crumb;
 
     @Override
     protected void onPreExecute() {
@@ -59,17 +60,26 @@ public class UploadFile extends AsyncTask<Void, Integer, String> {
         try {
             File sourceFile = new File(filePath);
             Log.d("IMAGESAVE", "File...::::" + sourceFile + " : " + sourceFile.exists());
-            final MediaType MEDIA_TYPE_JPG = MediaType.parse("image/jpg");
 
+            MediaType MEDIA_TYPE;
+            if (crumb.GetMediaType().equals(".mp4")) {
+                MEDIA_TYPE = MediaType.parse("image/mp4");
+            } else {
+                MEDIA_TYPE = MediaType.parse("image/jpg");
+            }
+
+
+            // Build up and send response
             RequestBody requestBody = new MultipartBuilder()
                     .type(MultipartBuilder.FORM)
-                    .addFormDataPart("file", "test.jpg", RequestBody.create(MEDIA_TYPE_JPG, sourceFile))
+                    .addFormDataPart("file", "data", RequestBody.create(MEDIA_TYPE, sourceFile))
                     .build();
 
             Request request = new Request.Builder()
                     .url(url)
                     .post(requestBody)
                     .build();
+
 
             OkHttpClient client = new OkHttpClient();
             Response response = client.newCall(request).execute();

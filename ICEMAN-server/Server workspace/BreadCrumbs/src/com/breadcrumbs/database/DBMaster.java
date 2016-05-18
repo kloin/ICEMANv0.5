@@ -320,9 +320,34 @@ public class DBMaster {
 		
 		return id;
 	}
+        
+        /**
+         * Update a node using a cypher query, as opposed to programatically using
+         * the {@link #updateNode(java.lang.String, java.lang.String, java.lang.String)}
+         * method. This is useful as it can add new properties to a node, where
+         * as the {@link #updateNode(java.lang.String, java.lang.String, java.lang.String)}
+         * method fails if the property does not exist on an already existing node.
+         * @param nodeId The id of the node that we are updating.
+         * @param propertyName The property of the node that we are updating.
+         * @param propertyValue The new value we are setting.
+         */
+        public void UpdateNodeWithCypherQuery(String nodeId, String propertyName, String propertyValue) {
+                String cypherQuery = "MATCH (node) "
+                                    +"WHERE ID(node) = " + nodeId + " " // appended space like that for readability.
+                                    +"SET node." + propertyName + " = '" + propertyValue + "'";
+                ExecuteCypherQueryNoReturn(cypherQuery);
+            
+        }
 	
+        /**
+         * Update an already existing property value.
+         * @param nodeId The id of the node to update.
+         * @param propertyName The name of the property to update.
+         * @param propertyValue The update value.
+         */
 	public void updateNode(String nodeId, String propertyName, String propertyValue) {
 		Node node = RetrieveNode(Integer.parseInt(nodeId));
+               
 		Transaction tx = _db.beginTx();
 		try {
 			node.setProperty(propertyName, propertyValue);

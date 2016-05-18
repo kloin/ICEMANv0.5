@@ -1,5 +1,6 @@
 package com.teamunemployment.breadcrumbs;
 
+import android.graphics.Bitmap;
 import android.util.Log;
 
 import org.json.JSONException;

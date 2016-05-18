@@ -4,6 +4,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.media.ExifInterface;
 import android.os.Environment;
+import android.os.Looper;
 import android.support.annotation.Nullable;
 
 import java.io.File;
@@ -99,5 +100,17 @@ public class Utils {
 
     public static String FetchLocalPathToVideoFile(String eventId) {
         return Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES).toString() + "/"+eventId + ".mp4";
+    }
+
+    /**
+     * A Simple method to determine if we are currently Running on the Ui Thread.
+     * @return True if we are on UI thread, false if we are not.
+     */
+    public static boolean WeAreRunningOnTheUIThread() {
+        if (Looper.getMainLooper().getThread() == Thread.currentThread()) {
+            return true;
+        } else {
+            return false;
+        }
     }
 }
