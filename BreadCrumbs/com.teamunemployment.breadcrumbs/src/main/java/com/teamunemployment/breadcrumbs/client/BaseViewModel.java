@@ -641,26 +641,6 @@ public class BaseViewModel extends AppCompatActivity {
         if (localTrailId == -1) {
             trackingWrapper.setVisibility(View.GONE);
             return;
-
-
-
-
-
-
-
-          
-                
-               
-
-          
-
-      
-
-
-
-     
-            
-
         }
 
         // Grab a fused location provider from our user class so we can track.
@@ -983,7 +963,7 @@ public class BaseViewModel extends AppCompatActivity {
                 new Handler().postDelayed(new Runnable() {
                     @Override
                     public void run() {
-                        newIntent.setClassName("com.teamunemployment.breadcrumbs", "com.teamunemployment.breadcrumbs.client.UploadTrail");
+                        newIntent.setClassName("com.teamunemployment.breadcrumbs", "com.teamunemployment.breadcrumbs.client.TrailDetailsViewer");
                         startActivity(newIntent);
                     }
                 }, 250);

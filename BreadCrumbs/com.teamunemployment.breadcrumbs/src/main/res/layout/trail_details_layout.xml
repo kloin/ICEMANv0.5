@@ -16,7 +16,7 @@
             android:gravity="center_vertical"
             android:textColor="@color/white"
             style="@style/TextAppearance.AppCompat.Headline"
-            android:text="Trail Summary"/>
+            android:text="Trip Summary"/>
 
         <ImageView
             android:id="@+id/back_button"
@@ -28,7 +28,7 @@
     </RelativeLayout>
     <android.support.design.widget.TextInputLayout
         android:id="@+id/trip_title"
-        android:layout_below="@+id/trail_details_header"
+        android:layout_below="@+id/trip_details_title"
         android:layout_width="match_parent"
         android:layout_margin="30dp"
         android:layout_height="wrap_content">
@@ -41,20 +41,14 @@
             android:hint="Trip Title" />
     </android.support.design.widget.TextInputLayout>
 
-    <View
-        android:id="@+id/horizontal_devider"
-        android:background="@color/background"
-        android:layout_below="@+id/trip_title"
-        android:layout_width="match_parent"
-        android:layout_margin="10dp"
-        android:layout_height="2dp"/>
 
     <TextView
         android:id="@+id/trip_details_title"
         android:text="Trip Details"
-        android:layout_margin="30dp"
+        android:layout_marginLeft="30dp"
+        android:layout_marginTop="30dp"
         android:alpha="0.87"
-        android:layout_below="@+id/horizontal_devider"
+        android:layout_below="@+id/trail_details_header"
         style="@style/Base.TextAppearance.AppCompat.Title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content" />
@@ -64,7 +58,7 @@
     <ImageView
         android:id="@+id/duration_icon"
         android:src="@drawable/ic_date_range_black_24dp"
-        android:layout_below="@+id/trip_details_title"
+        android:layout_below="@+id/trip_title"
         android:layout_marginLeft="30dp"
         android:alpha="0.54"
         android:layout_width="wrap_content"
@@ -198,9 +192,10 @@
     <android.support.design.widget.FloatingActionButton
         android:layout_alignParentBottom="true"
         android:layout_alignParentRight="true"
+
         android:src="@drawable/ic_backup_white_24dp"
         android:layout_margin="20dp"
-        android:id="@id/publish_trail"
+        android:id="@+id/publish_trail_fab"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content" />
 
