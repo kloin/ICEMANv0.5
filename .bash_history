@@ -60,3 +60,26 @@ git push origin master
 ls
 cd ..
 git clone https://github.com/TeamTravelJournal/AndroidTravelJournalApp.git
+cd $home
+;s
+ls
+git add *
+git commit -m "close to release boys"
+git push origin master
+git status
+git $home
+cd $home
+git add *
+git commit -m "added storyboard, video"
+git push origin master
+git push origin master
+ls
+cd $home
+;ls
+l;s
+ls
+git status
+cd $home
+git status
+git add ICEMAN-server/*
+git commit ICEMAN-server/*

@@ -48,26 +48,27 @@ import java.net.URL;
 import java.util.ArrayList;
 
 /**
- * Created by jek40 on 7/04/2016.
+ * @author Josiah Kendall
  */
 public class LocalPhotoImageSelector extends Activity {
-    private int currentlySelectedPosition;
     private View lastClickedView = null;
     private Activity mContext;
-    private GalleryFolder mGalleryFolder;
     private ArrayList<String> ids;
-    private static final String TAG = "Image Upload:";
+    private static final String TAG = "ImageUpload";
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.grid_image_layout_wrapper_with_toolbar);
         mContext = this;
-        //setShitUp();
         ids = getIntent().getStringArrayListExtra("Images");
         displayImages();
         setUpButtonListeners();
     }
 
+    /**
+     * Set the back button listener.
+     */
     private void setUpButtonListeners() {
         ImageView backButton = (ImageView) findViewById(R.id.back_button);
         backButton.setOnClickListener(new View.OnClickListener() {
@@ -78,7 +79,11 @@ public class LocalPhotoImageSelector extends Activity {
         });
     }
 
+    /**
+     * display the thumbnails in the grid.
+     */
     private void displayImages() {
+        // Placeholder - incase we have no ids (images) to display.
         TextView emptyGridInfo = (TextView) findViewById(R.id.empty_grid_placeholder);
         if(ids.size() == 0) {
             emptyGridInfo.setVisibility(View.VISIBLE);
@@ -86,6 +91,7 @@ public class LocalPhotoImageSelector extends Activity {
             simpleAnimations.FadeInView(emptyGridInfo);
         }
 
+        // Grab the gridview and set our custom adapter.
         final GridView gridview = (GridView)  findViewById(R.id.gridView1);
         LocalFilesGridViewAdapter adapter = new LocalFilesGridViewAdapter(ids, mContext);
         gridview.setAdapter(adapter);
@@ -97,12 +103,6 @@ public class LocalPhotoImageSelector extends Activity {
                 textView.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-
-                        // Need to save this photo to the server
-                        // Save our new selection locally too.
-                        //Intent returnIntent = new Intent();
-                        //activityContext.setResult(Activity.RESULT_OK,returnIntent);
-                        //UploadTheImage(position);
                         UploadProfileImage(position);
                         Uri images = MediaStore.Images.Media.EXTERNAL_CONTENT_URI;
                         final Uri uri = Uri.parse(images + "/" + ids.get(position));
@@ -128,6 +128,11 @@ public class LocalPhotoImageSelector extends Activity {
         });
     }
 
+    /**
+     * Upload an image to the server.
+     * @param position The position in the {@link #ids} dataset.
+     * @param url the url that we are
+     */
     private void uploadImage(int position, String url) {
 
         // BAND AID FOR POOR CODE
@@ -135,12 +140,9 @@ public class LocalPhotoImageSelector extends Activity {
 
         Uri uri = Uri.parse(images + "/" + ids.get(position));
         String stringUrl = getRealPathFromURI(mContext, uri);
-        File sourceFile = new File(stringUrl);
-        UploadFile imagesave = new UploadFile(url, stringUrl, new UploadFile.RequestListener() {
 
-            /*
-             * Override for the
-             */
+        // Request listener just there to prevent a nullPointer exception.
+        UploadFile imagesave = new UploadFile(url, stringUrl, new UploadFile.RequestListener() {
             @Override
             public void onFinished(String result) {
             }
@@ -148,6 +150,13 @@ public class LocalPhotoImageSelector extends Activity {
         imagesave.execute();
     }
 
+    /**
+     * Construct a real, usable string path from a {@link Uri}. Used because sometimes we need to
+     * fetch using a string path, and the {@link Uri#toString()} doesnt work.
+     * @param context Our context
+     * @param contentUri The {@link Uri} that we are converting to a string path.
+     * @return The path to the file represented by the {@Uri}.
+     */
     private String getRealPathFromURI(Context context, Uri contentUri) {
         String[] proj = { MediaStore.Audio.Media.DATA };
         CursorLoader loader = new CursorLoader(context, contentUri, proj, null, null, null);
@@ -157,6 +166,11 @@ public class LocalPhotoImageSelector extends Activity {
         return cursor.getString(column_index);
     }
 
+    /**
+     * Upload our profile image to the server.
+     * @param position The position of the saved item in the dataset. Used to find
+     *                 the id of the image so that we can grab it and send it to the server.
+     */
     private void UploadProfileImage(int position) {
 
         // Root of the local images folder.
@@ -188,6 +202,13 @@ public class LocalPhotoImageSelector extends Activity {
         mContext.finish();
     }
 
+    /**
+     * Construct a request {@link com.teamunemployment.breadcrumbs.Network.ServiceProxy.AsyncDataRetrieval.RequestListener}
+     * for handling the callback of saving the new coverphotoid.
+     * @param userId The userId we are saving the image for
+     * @param position The position we are in the dataset.
+     * @return A new {@link com.teamunemployment.breadcrumbs.Network.ServiceProxy.AsyncDataRetrieval.RequestListener}.
+     */
     private AsyncDataRetrieval.RequestListener getRequestListener(final String userId, final int position) {
         return new AsyncDataRetrieval.RequestListener() {
             @Override
@@ -208,58 +229,10 @@ public class LocalPhotoImageSelector extends Activity {
         };
     }
 
-    private void UploadTheImage(int position) {
-        try {
-            // Save our profile header pic.
-            Uri images = MediaStore.Images.Media.EXTERNAL_CONTENT_URI;
-            final Uri uri = Uri.parse(images + "/" + ids.get(position));
-
-            // FetchMedia
-            final String userId = PreferenceManager.getDefaultSharedPreferences(mContext).getString("USERID", "-1");
-            ImageLoadingManager imageLoadingManager = new ImageLoadingManager(mContext);
-            final Bitmap bitmap = imageLoadingManager.GetFull720Bitmap(uri);
-
-            // Save image to disk. This is done because I need to have a file to send the image via
-            // the gihub library for mutipart sending as a service that w are using to upload images.
-            final String file = com.teamunemployment.breadcrumbs.caching.Utils.getExternalCacheDir(mContext).getAbsolutePath();
-
-            final String otherFile = Utils.writeBitmapToDisk(bitmap, file+"/breadcrumbsprofile.png");
-
-            // Send url to save the Image Model
-            final String saveImageUrl = LoadBalancer.RequestServerAddress() + "/rest/Crumb/UploadProfileImage/"+ userId;
-            AsyncDataRetrieval asyncDataRetrieval = new AsyncDataRetrieval(saveImageUrl, new AsyncDataRetrieval.RequestListener() {
-                @Override
-                public void onFinished(String result) throws JSONException {
-                    Log.d(TAG, "Created image save with Id of: "+result);
-                    //First we need to save a crumb of for the selected photo. so we basically treat
-                    // this as if we were just saving a photo that had just been taken.
-                    String uploadImage= LoadBalancer.RequestServerAddress() + "/rest/login/savecrumb/"+result;
-                    try {
-                        new MultipartUploadRequest(mContext, uploadImage)
-                                .addFileToUpload(file + "/breadcrumbsprofile.png", "test")
-                                        .setNotificationConfig(new UploadNotificationConfig())
-                                        .setMaxRetries(2)
-                                        .startUpload();
-                    } catch (Exception exc) {
-                        Log.e("AndroidUploadService", exc.getMessage(), exc);
-                    }
-
-                    // Save our cover photo for opening a few activities later. When we return to profile page.
-                    PreferenceManager.getDefaultSharedPreferences(mContext).edit().putString("COVERPHOTOID",result).commit();
-                    HTTPRequestHandler simpleHttp = new HTTPRequestHandler();
-                    simpleHttp.SaveNodeProperty(userId, "CoverPhotoId", result, mContext);
-                    Intent returnIntent = new Intent();
-                    mContext.setResult(5, returnIntent);
-                    // Quiting on select for now.
-                   // mContext.finish();
-                }
-            }, mContext);
-            asyncDataRetrieval.execute();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
+    /**
+     * Add the tick to the image that we are selecting
+     * @param gridview The grid item (photo) that we are going to add a tick to.
+     */
     private void setItemAsClicked(View gridview) {
 
         gridview.findViewById(R.id.tick_for_image_select).setVisibility(View.VISIBLE);
