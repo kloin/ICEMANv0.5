@@ -61,13 +61,7 @@ public class UploadFile extends AsyncTask<Void, Integer, String> {
             File sourceFile = new File(filePath);
             Log.d("IMAGESAVE", "File...::::" + sourceFile + " : " + sourceFile.exists());
 
-            MediaType MEDIA_TYPE;
-            if (crumb.GetMediaType().equals(".mp4")) {
-                MEDIA_TYPE = MediaType.parse("image/mp4");
-            } else {
-                MEDIA_TYPE = MediaType.parse("image/jpg");
-            }
-
+            MediaType MEDIA_TYPE = MediaType.parse("image/jpg");
 
             // Build up and send response
             RequestBody requestBody = new MultipartBuilder()

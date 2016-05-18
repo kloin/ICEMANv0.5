@@ -165,7 +165,6 @@ public class LocalPhotoImageSelector extends Activity {
         // FetchMedia
         final String userId = PreferenceManager.getDefaultSharedPreferences(mContext).getString("USERID", "-1");
 
-
         // First we save the crumb to the database. We use a request listerner (getRequestListener) to  do the save once we have updated the profile image.
         final String saveImageUrl = LoadBalancer.RequestServerAddress() + "/rest/Crumb/UploadProfileImage/"+ userId;
         AsyncDataRetrieval asyncDataRetrieval = new AsyncDataRetrieval(saveImageUrl, getRequestListener(userId, position), mContext);
