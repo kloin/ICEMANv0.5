@@ -15,7 +15,7 @@ import java.util.Iterator;
  * This processes the metadata and makes some nice stats for us. This
  * could be done by recording this info when we publish a trail.
  */
-public class LocalTrailStatisticsModel {
+public class LocalTrailModel {
     private int numberOfPhotos = 0;
     private int numberOfVideos = 0;
     private int numberOfPOI = 0;
@@ -23,7 +23,7 @@ public class LocalTrailStatisticsModel {
     /**
      * @param trailMetadata The metadata for our local trail.
      */
-    public LocalTrailStatisticsModel(JSONObject trailMetadata) {
+    public LocalTrailModel(JSONObject trailMetadata) {
         processMetadataIntoVars(trailMetadata);
     }
 

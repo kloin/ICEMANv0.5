@@ -27,7 +27,7 @@ import com.teamunemployment.breadcrumbs.PreferencesAPI;
 import com.teamunemployment.breadcrumbs.R;
 import com.teamunemployment.breadcrumbs.client.Animations.SimpleAnimations;
 import com.teamunemployment.breadcrumbs.database.DatabaseController;
-import com.teamunemployment.breadcrumbs.database.Models.LocalTrailStatisticsModel;
+import com.teamunemployment.breadcrumbs.database.Models.LocalTrailModel;
 
 import org.greenrobot.eventbus.EventBus;
 import org.json.JSONException;
@@ -91,7 +91,7 @@ public class TrailDetailsViewer extends AppCompatActivity {
 
         // If we have data, we create a model for easy use.
         if (localTrailMetadata.length() > 0) {
-            LocalTrailStatisticsModel statisticsModel = new LocalTrailStatisticsModel(localTrailMetadata);
+            LocalTrailModel statisticsModel = new LocalTrailModel(localTrailMetadata);
             setLocalDetails(statisticsModel);
         }
 
@@ -105,7 +105,7 @@ public class TrailDetailsViewer extends AppCompatActivity {
      * A simple method to bind our trail stats to the view
      * @param statisticsModel The model which contains our data we are going to bind.
      */
-    private void setLocalDetails(LocalTrailStatisticsModel statisticsModel) {
+    private void setLocalDetails(LocalTrailModel statisticsModel) {
 
         // Textviews we bind to.
         TextView numberOfCrumbs = (TextView) findViewById(R.id.number_of_crumbs_details);

@@ -18,6 +18,7 @@ import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
 import com.teamunemployment.breadcrumbs.Crumb;
 import com.teamunemployment.breadcrumbs.CustomElements.FancyFollow;
 import com.teamunemployment.breadcrumbs.Network.LoadBalancer;
@@ -26,8 +27,11 @@ import com.teamunemployment.breadcrumbs.Network.ServiceProxy.SimpleNetworkApi;
 import com.teamunemployment.breadcrumbs.Network.ServiceProxy.UpdateViewElementWithProperty;
 import com.teamunemployment.breadcrumbs.PreferencesAPI;
 import com.teamunemployment.breadcrumbs.R;
+import com.teamunemployment.breadcrumbs.RandomUsefulShit.Utils;
 import com.teamunemployment.breadcrumbs.client.ElementLoadingManager.TextViewLoadingManager;
 import com.teamunemployment.breadcrumbs.database.DatabaseController;
+import com.teamunemployment.breadcrumbs.database.Models.LocalTrailModel;
+import com.teamunemployment.breadcrumbs.database.Models.TrailSummaryModel;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -144,15 +148,18 @@ public class MeCardAdapter extends RecyclerView.Adapter<MeCardAdapter.ViewHolder
 
         // Pull the data from the local database.
         JSONObject result = databaseController.GetTrailSummary(trailId);
-        bindLocalCard(result, card, trailId);
-
-        //Result is our card details. We need to go though and fetch these
-
-       // setNumberOfCrumbsView(card, trailId);
-
+        TrailSummaryModel trailSummaryModel = new TrailSummaryModel(result);
+        bindLocalCard(trailSummaryModel, card, trailId);
         //  setTempDeleteButton(card, trailId);
         // Need to fetch description with the other data but icbf
 
+    }
+
+    private void setNumberOfPOIS(LinearLayout card, String trailId) {
+        JSONObject crumbsJSON = databaseController.GetAllCrumbs(trailId);
+        LocalTrailModel localTrailModel = new LocalTrailModel(crumbsJSON);
+        TextView poisTextView = (TextView) card.findViewById(R.id.number_of_crumbs);
+        poisTextView.setText(Integer.toString(localTrailModel.getNumberOfPOI()));
     }
 
     /*
@@ -180,62 +187,65 @@ public class MeCardAdapter extends RecyclerView.Adapter<MeCardAdapter.ViewHolder
     /**
      * Method to bind the local data that we have to the trail card. This method is for binding cards
      * where the data is stored locally.
-     * @param trailSummaryJSON The JSONObject of the trail summary.
+     * @param trailSummaryModel The Local trail model to work with the data.
      * @param card The card object that we are binding to.
      * @param trailId The local trail id of the card we are currently binding.
      */
-    private void bindLocalCard(JSONObject trailSummaryJSON, final LinearLayout card, final String trailId) {
-        try {
-            String titleObject = trailSummaryJSON.getString("TrailName");
-            // Set up our trailTitle
-            if (titleObject!= null && !titleObject.isEmpty()) {
-                Log.d(TAG, "Found trailName. Setting now");
-                TextView titleTextView = (TextView) card.findViewById(R.id.Title);
-                Log.d(TAG, "Set trail Name as: " + titleObject);
-                titleTextView.setText(titleObject);
-            } else {
-                Log.d(TAG, "Failed to find trailName, setting as default.");
-                TextView titleTextView = (TextView) card.findViewById(R.id.Title);
-                titleTextView.setText("Snazzy Trail Name Goes Here!");
-                titleTextView.setTypeface(null, Typeface.ITALIC);
+    private void bindLocalCard(TrailSummaryModel trailSummaryModel, final LinearLayout card, final String trailId) {
+
+        setTrailName(trailSummaryModel, card);
+        setUserNameForCard(card);
+        SetTrailCoverPhoto(trailSummaryModel, card, trailId);
+        setUserProfileImage(card);
+        setNumberOfPOIS(card, trailId);
+        // Use the views texview to show we are not published
+        TextView viewsTextView = (TextView) card.findViewById(R.id.trail_views);
+        viewsTextView.setText("Trail not published");
+
+        final Activity act = (Activity) context;
+        final CoordinatorLayout coordinatorLayout = (CoordinatorLayout) act.findViewById(R.id.main_content);
+        final TextView detailsButton = (TextView) card.findViewById(R.id.details_button);
+        detailsButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // FIXME At the moment this is just loading the currently active trail by default. It would be better if we load
+                // FIXME ? On second thoughts this actually seems pretty reasonable. We should delete old trails if we create a new one while the old one has not been saved.
+                Intent TrailViewer = new Intent();
+                TrailViewer.setClassName("com.teamunemployment.breadcrumbs", "com.teamunemployment.breadcrumbs.client.Maps.MapHostBase");
+                context.startActivity(TrailViewer);
             }
+        });
+    }
 
-            setUserNameForCard(card);
+    private void SetTrailCoverPhoto(TrailSummaryModel trailSummaryModel, LinearLayout card, String trailId) {
 
-            String coverPhotoId = trailSummaryJSON.getString("CoverPhotoId");
-            if (coverPhotoId.equals("0")) {
-                // Grab a cover photo Id so that we can display a photo. Not diplaying a photo will be ugly.
-                coverPhotoId = fetchFirstImageAvailableFromDatabase(trailId);
-            }
+        String coverPhotoId = trailSummaryModel.GetCoverPhoto();
+        if (coverPhotoId == null) {
+            coverPhotoId = fetchFirstImageAvailableFromDatabase(trailId);
+        }
 
-            setCoverPhoto(card, coverPhotoId);
-            setUserProfileImage(card);
-            // Use the views texview to show we are not published
-            TextView viewsTextView = (TextView) card.findViewById(R.id.trail_views);
-            viewsTextView.setText("Trail not published");
+        // If we are still null at this point, then the user has not added any cover photos.
+        if (coverPhotoId ==  null) {
+            return;
+        }
 
-            final Activity act = (Activity) context;
-            final CoordinatorLayout coordinatorLayout = (CoordinatorLayout) act.findViewById(R.id.main_content);
-            final TextView detailsButton = (TextView) card.findViewById(R.id.details_button);
-            detailsButton.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    // FIXME At the moment this is just loading the currently active trail by default. It would be better if we load
-                    // FIXME ? On second thoughts this actually seems pretty reasonable. We should delete old trails if we create a new one while the old one has not been saved.
-                    Intent TrailViewer = new Intent();
-                    TrailViewer.setClassName("com.teamunemployment.breadcrumbs", "com.teamunemployment.breadcrumbs.client.Maps.MapHostBase");
-                    context.startActivity(TrailViewer);
-                }
-            });
-            // Load cover photo here and set it
+        // Set the cover photo to the card.
+        setCoverPhoto(card, coverPhotoId);
+    }
 
-        } catch (JSONException e) {
-            e.printStackTrace();
-            Log.e("JSON", "Error parsing json when loading trails");
-        } catch (NullPointerException nullPointerException) {
-            // Maybe I should be notifying the user here, but i would rather just not have this shit happen.
-            nullPointerException.printStackTrace();
-            Log.e("TRAIL", "null pointer exception loading trail");
+    private void setTrailName(TrailSummaryModel trailSummaryModel, LinearLayout card) {
+        String trailName = trailSummaryModel.GetTripName();
+        // Set up our trailTitle
+        if (trailName != null && !trailName.isEmpty()) {
+            Log.d(TAG, "Found trailName. Setting now");
+            TextView titleTextView = (TextView) card.findViewById(R.id.Title);
+            Log.d(TAG, "Set trail Name as: " + trailName);
+            titleTextView.setText(trailName);
+        } else {
+            Log.d(TAG, "Failed to find trailName, setting as default.");
+            TextView titleTextView = (TextView) card.findViewById(R.id.Title);
+            titleTextView.setText("Name your trip");
+            titleTextView.setTypeface(null, Typeface.ITALIC);
         }
     }
 
@@ -249,7 +259,7 @@ public class MeCardAdapter extends RecyclerView.Adapter<MeCardAdapter.ViewHolder
 
     // Simple method to return the id of the first image that we have in the database.
     private String fetchFirstImageAvailableFromDatabase(String trailId) {
-        JSONObject crumbsJson = databaseController.GetCrumbsWithMedia(trailId, 0); // Maybe we should grab without the images. Grabbing with the images may be slow.
+        JSONObject crumbsJson = databaseController.GetAllCrumbs(trailId); // Maybe we should grab without the images. Grabbing with the images may be slow.
         Iterator<String> keys = crumbsJson.keys();
         String result = null;
 
@@ -312,7 +322,8 @@ public class MeCardAdapter extends RecyclerView.Adapter<MeCardAdapter.ViewHolder
         });
 
        // Load local cover photo.
-        //Glide.with(context).load(LoadBalancer.RequestCurrentDataAddress() + "/images/"+coverId+".jpg").centerCrop().crossFade().into(trailCoverPhoto);
+        String localUrl = Utils.FetchLocalPathToImageFile(coverPhotoId);
+        Glide.with(context).load(localUrl).centerCrop().crossFade().into(trailCoverPhoto);
     }
 
     @Override
