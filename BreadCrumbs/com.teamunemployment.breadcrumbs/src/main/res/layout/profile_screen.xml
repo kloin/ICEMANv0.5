@@ -3,9 +3,11 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:card_view="http://schemas.android.com/tools"
     xmlns:fancy="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/coordinatorLayout"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    tools:context="com.teamunemployment.breadcrumbs.client.NavMenu.Profile.ProfilePageViewer">
 
     <android.support.design.widget.AppBarLayout
         android:id="@+id/app_bar_layout_profile"
@@ -183,9 +185,8 @@
                             android:paddingTop="7dp"
                             android:tag="0"
                             android:text="EDIT YOUR PROFILE"
-
-
                             android:textSize="14sp" />
+
                         <mehdi.sakout.fancybuttons.FancyButton
                             android:id="@+id/follow_button"
                             android:layout_width="match_parent"
@@ -361,6 +362,7 @@
                         android:layout_toRightOf="@+id/profile_trails_icon"
                         android:text="Trips"
                         />
+
 
                     <ProgressBar
                         android:id="@+id/profile_progress_bar"

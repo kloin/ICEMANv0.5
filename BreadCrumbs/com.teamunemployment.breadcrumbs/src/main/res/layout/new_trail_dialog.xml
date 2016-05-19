@@ -28,7 +28,7 @@
                     android:layout_height="100px"
                     android:id="@+id/new_trail_title"
                     android:background="#FFFFFF"
-                    android:hint="Trail title.." />
+                    android:hint="Trip title.." />
             </LinearLayout>
             <View
                 android:layout_width="1.5dp"
