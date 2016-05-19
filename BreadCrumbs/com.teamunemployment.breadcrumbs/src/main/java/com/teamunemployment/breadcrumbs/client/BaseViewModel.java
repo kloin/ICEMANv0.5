@@ -139,7 +139,6 @@ public class BaseViewModel extends AppCompatActivity {
         tabLayout = (TabLayout) findViewById(R.id.tabs);
         tabLayout.setupWithViewPager(viewPager);
         mContext = this;
-
         name = PreferenceManager.getDefaultSharedPreferences(this).getString("USERNAME", "");
 
         // This is going to happen after clearing the cache. Need to work out solution for multiple situations like this.
@@ -162,7 +161,8 @@ public class BaseViewModel extends AppCompatActivity {
         mDrawerView= (LinearLayout) findViewById(R.id.drawer_holder);
         mDrawerToggle = new ActionBarDrawerToggle(this,mDrawerLayout,toolbar,R.string.drawer_open,R.string.drawer_close){
             @Override
-            public void onDrawerOpened(View drawerView) {        super.onDrawerOpened(drawerView);
+            public void onDrawerOpened(View drawerView) {
+                super.onDrawerOpened(drawerView);
                 drawerIsOpen = true;
             }
 
