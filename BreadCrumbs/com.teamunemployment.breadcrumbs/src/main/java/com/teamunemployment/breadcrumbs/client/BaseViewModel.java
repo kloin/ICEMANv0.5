@@ -132,6 +132,7 @@ public class BaseViewModel extends AppCompatActivity {
         setContentView(R.layout.home_page_with_tabs);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         toolbar.setTitleTextAppearance(this, R.style.HeaderFont);
+        toolbar.setTitle("");
         setSupportActionBar(toolbar);
         viewPager = (ViewPager) findViewById(R.id.viewpager);
         setupViewPager(viewPager);
@@ -175,13 +176,13 @@ public class BaseViewModel extends AppCompatActivity {
         }; // Drawer Toggle Object Made
         mDrawerLayout.setDrawerListener(mDrawerToggle); // Drawer Listener set to the Drawer toggle
 
-        ObjectDrawerItem[] drawerItem = new ObjectDrawerItem[6];
+        ObjectDrawerItem[] drawerItem = new ObjectDrawerItem[4];
         drawerItem[0] = new ObjectDrawerItem(R.drawable.ic_perm_identity_black_24dp, "Profile");
-        drawerItem[1] = new ObjectDrawerItem(R.drawable.ic_timeline_add_black_24px, "Create Trail");
-        drawerItem[2] = new ObjectDrawerItem(R.drawable.ic_timeline_black_24dp, "My Trail");
-        drawerItem[3] = new ObjectDrawerItem(R.drawable.ic_camera_alt_black_24dp, "Capture");
-        drawerItem[4] = new ObjectDrawerItem(R.drawable.ic_settings_black_24dp, "Settings");
-        drawerItem[5] = new ObjectDrawerItem(R.drawable.ic_backup_black_24dp, "Upload Trail");
+        drawerItem[1] = new ObjectDrawerItem(R.drawable.ic_timeline_add_black_24dp, "Create Trail");
+//        drawerItem[2] = new ObjectDrawerItem(R.drawable.ic_timeline_black_24dp, "My Trail");
+//        drawerItem[3] = new ObjectDrawerItem(R.drawable.ic_camera_alt_black_24dp, "Capture");
+        drawerItem[2] = new ObjectDrawerItem(R.drawable.ic_settings_black_24dp, "Settings");
+        drawerItem[3] = new ObjectDrawerItem(R.drawable.ic_backup_black_24dp, "Upload Trail");
 
 
         DrawerItemCustomAdapter adapter = new DrawerItemCustomAdapter(this, R.layout.nav_drawer_item, drawerItem);
@@ -920,37 +921,37 @@ public class BaseViewModel extends AppCompatActivity {
                     }
                 }, 250);
                 break;
+//            case 2:
+//                if (localTrailId != -1) {
+//                    new Handler().postDelayed(new Runnable() {
+//                        @Override
+//                        public void run() {
+//                            newIntent.setClassName("com.teamunemployment.breadcrumbs", "com.teamunemployment.breadcrumbs.client.Maps.MapHostBase");
+//                            startActivity(newIntent);
+//                        }
+//                    }, 250);
+//                } else {
+//                    // We need to show the user a dialog, and give them the option of creating a new trail
+//                    showDialog("You have no trail to edit");
+//                }
+//                break;
+//            case 2:
+//                // Check if we have a trail created. If not we need to tell the user why we cannot take any photos
+//                if (localTrailId != -1) {
+//                    new Handler().postDelayed(new Runnable() {
+//                        @Override
+//                        public void run() {
+//                            newIntent.setClassName("com.teamunemployment.breadcrumbs", "com.teamunemployment.breadcrumbs.client.Camera.CameraCapture");
+//                            startActivity(newIntent);
+//                        }
+//                    }, 250);
+//
+//                } else {
+//                    // We need to show the user a dialog, and give them the option of creating a new trail
+//                    showDialog("You need to create a trail to add content");
+//                }
+//                break;
             case 2:
-                if (localTrailId != -1) {
-                    new Handler().postDelayed(new Runnable() {
-                        @Override
-                        public void run() {
-                            newIntent.setClassName("com.teamunemployment.breadcrumbs", "com.teamunemployment.breadcrumbs.client.Maps.MapHostBase");
-                            startActivity(newIntent);
-                        }
-                    }, 250);
-                } else {
-                    // We need to show the user a dialog, and give them the option of creating a new trail
-                    showDialog("You have no trail to edit");
-                }
-                break;
-            case 3:
-                // Check if we have a trail created. If not we need to tell the user why we cannot take any photos
-                if (localTrailId != -1) {
-                    new Handler().postDelayed(new Runnable() {
-                        @Override
-                        public void run() {
-                            newIntent.setClassName("com.teamunemployment.breadcrumbs", "com.teamunemployment.breadcrumbs.client.Camera.CameraCapture");
-                            startActivity(newIntent);
-                        }
-                    }, 250);
-
-                } else {
-                    // We need to show the user a dialog, and give them the option of creating a new trail
-                    showDialog("You need to create a trail to add content");
-                }
-                break;
-            case 4:
                 new Handler().postDelayed(new Runnable() {
                     @Override
                     public void run() {
@@ -959,7 +960,7 @@ public class BaseViewModel extends AppCompatActivity {
                     }
                 }, 250);
                 break;
-            case 5:
+            case 3:
                 if (localTrailId != -1) {
                     new Handler().postDelayed(new Runnable() {
                         @Override

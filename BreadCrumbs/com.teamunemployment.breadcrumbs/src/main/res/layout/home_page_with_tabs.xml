@@ -22,26 +22,26 @@
             <android.support.v7.widget.Toolbar
                 android:id="@+id/toolbar"
                 android:layout_width="match_parent"
-                android:layout_height="50dp"
+                android:layout_height="40dp"
                 android:background="?attr/colorPrimary"
                 app:layout_scrollFlags="enterAlways"
                 app:popupTheme="@style/ThemeOverlay.AppCompat.Light">
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:textSize="16sp"
-                    android:gravity="center"
-                    android:layout_gravity="right"
-                    android:textColor="@color/white"
-                    android:textStyle="italic"
-                    android:layout_marginRight="20dp"
-                    android:text="CLOSED BETA"/>
+                <!--<TextView-->
+                    <!--android:layout_width="wrap_content"-->
+                    <!--android:layout_height="match_parent"-->
+                    <!--android:textSize="16sp"-->
+                    <!--android:gravity="center"-->
+                    <!--android:layout_gravity="right"-->
+                    <!--android:textColor="@color/white"-->
+                    <!--android:textStyle="italic"-->
+                    <!--android:layout_marginRight="20dp"-->
+                    <!--android:text="CLOSED BETA"/>-->
             </android.support.v7.widget.Toolbar>
                 <android.support.design.widget.TabLayout
                     android:id="@+id/tabs"
                     android:layout_below="@+id/toolbar"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
+                    android:layout_height="40dp"
                     app:tabMode="fixed"
                     app:layout_scrollFlags="enterAlways|scroll"
                     app:tabGravity="fill"/>

@@ -31,7 +31,7 @@
         android:textColor="@color/my_divider"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Are you sure you want to delete this trail? This will delete all content (crumbs, comments, media) associated with this trail."
+        android:text="Are you sure you want to delete this trip? This will delete all content (crumbs, comments, media) associated with this trip."
         android:layout_gravity="center"/>
     <RelativeLayout
         android:layout_width="match_parent"
