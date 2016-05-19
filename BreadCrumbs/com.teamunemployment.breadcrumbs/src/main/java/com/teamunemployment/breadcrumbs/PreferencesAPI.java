@@ -169,7 +169,7 @@ public class PreferencesAPI {
 
     @Nullable
     public String GetUserName() {
-        return mPreferences.getString("UserName", null);
+        return mPreferences.getString("USERNAME", null);
     }
 
 }

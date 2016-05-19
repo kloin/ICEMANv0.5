@@ -132,13 +132,13 @@ public class BaseViewModel extends AppCompatActivity {
         setContentView(R.layout.home_page_with_tabs);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         toolbar.setTitleTextAppearance(this, R.style.HeaderFont);
+        toolbar.setTitle("");
         setSupportActionBar(toolbar);
         viewPager = (ViewPager) findViewById(R.id.viewpager);
         setupViewPager(viewPager);
         tabLayout = (TabLayout) findViewById(R.id.tabs);
         tabLayout.setupWithViewPager(viewPager);
         mContext = this;
-
 
         name = PreferenceManager.getDefaultSharedPreferences(this).getString("USERNAME", "");
 

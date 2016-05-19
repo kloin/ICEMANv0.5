@@ -43,6 +43,10 @@ public class MyStuffTab extends HomeTabFragment {
         preferencesAPI = new PreferencesAPI(context);
         String userId = preferencesAPI.GetUserId();
 
+        // Dont need the progress bar for this screen
+        ProgressBar progressBar = (ProgressBar) rootView.findViewById(R.id.explore_progress_bar);
+        progressBar.setVisibility(View.GONE);
+
         /*
             If we have already saved the user id, then we could assume that we have added all the others too
             This is not actually reasonable however - we may load up offline which will add the userId, and the

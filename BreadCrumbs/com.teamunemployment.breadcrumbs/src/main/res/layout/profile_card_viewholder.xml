@@ -24,53 +24,75 @@
 
             <TextView
                 android:id="@+id/user_name"
+
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="20dp"
-                android:layout_marginTop="20dp"
+                android:layout_marginTop="15dp"
                 android:layout_toRightOf="@id/profile_image"
-                android:gravity="center"
                 android:text="Josiah"
                 android:textSize="22sp" />
 
-            <RelativeLayout
-                android:id="@+id/card_details_holder"
-                android:layout_width="match_parent"
+
+            <ImageView
+                android:id="@+id/followers_icon"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/user_name"
-                android:layout_toRightOf="@id/profile_image"
-                android:gravity="center">
-
+                android:src="@drawable/ic_perm_identity_black_24dp"
+                android:alpha="0.54"
+                android:layout_toRightOf="@+id/profile_image"/>
                 <TextView
-                    android:id="@+id/following_count"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:id="@+id/followers_count"
                     android:layout_marginLeft="10dp"
-                    android:layout_toRightOf="@+id/following_header"
-                    android:text="19" />
-
-                <TextView
-                    android:id="@+id/follower_header"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="12dp"
-                    android:layout_toRightOf="@+id/following_count"
-                    android:text="Followers" />
+                    android:layout_alignTop="@id/followers_icon"
+                    android:layout_alignBottom="@+id/followers_icon"
+                    android:gravity="center"
+                    android:layout_below="@+id/user_name"
+                    android:layout_toRightOf="@+id/followers_icon"
+                    android:text="19 Followers" />
 
+            <ImageView
+                android:id="@+id/places_icon"
+                android:layout_toRightOf="@+id/profile_image"
+                android:layout_below="@id/followers_icon"
+                android:src="@drawable/ic_group_work_black_24dp"
+                android:alpha="0.54"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
                 <TextView
-                    android:id="@+id/following_header"
+                    android:id="@+id/places_description"
+                    android:layout_marginLeft="10dp"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Following" />
+                    android:layout_alignBottom="@+id/places_icon"
+                    android:layout_alignTop="@+id/places_icon"
+                    android:gravity="center"
+                    android:layout_below="@+id/followers_count"
+                    android:layout_toRightOf="@+id/places_icon"
+                    android:text="1.1k places" />
 
-                <TextView
-                    android:id="@+id/follower_count"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="15dp"
-                    android:layout_toRightOf="@id/follower_header"
-                    android:text="23" />
-            </RelativeLayout>
+            <ImageView
+                android:id="@+id/distance_icon"
+                android:src="@drawable/ic_routes_black_24dp"
+                android:layout_below="@+id/places_icon"
+                android:layout_toRightOf="@+id/profile_image"
+                android:alpha="0.54"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+            <TextView
+                android:id="@+id/distance_details"
+                android:text="1234 km"
+                android:layout_marginLeft="10dp"
+                android:layout_below="@id/places_description"
+                android:layout_toRightOf="@+id/distance_icon"
+                android:layout_width="wrap_content"
+                android:layout_alignBottom="@+id/distance_icon"
+                android:layout_alignTop="@id/distance_icon"
+                android:gravity="center"
+                android:layout_height="wrap_content" />
         </RelativeLayout>
+
     </android.support.v7.widget.CardView>
 </LinearLayout>

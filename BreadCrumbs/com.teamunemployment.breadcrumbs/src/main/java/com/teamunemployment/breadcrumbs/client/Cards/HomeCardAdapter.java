@@ -81,7 +81,6 @@ public class HomeCardAdapter extends RecyclerView.Adapter<HomeCardAdapter.ViewHo
         CardView card = (CardView) v.findViewById(R.id.card_view);
         card.setPreventCornerOverlap(false);
         ViewHolder vh = new ViewHolder(v);
-
         return vh;
     }
 
@@ -179,7 +178,6 @@ public class HomeCardAdapter extends RecyclerView.Adapter<HomeCardAdapter.ViewHo
            // TextView description = (TextView) card.findViewById(R.id.trail_description);
            // description.setText(cacheDescription);
         }
-
         updateViews(trailId, card);
     }
 
@@ -199,7 +197,6 @@ public class HomeCardAdapter extends RecyclerView.Adapter<HomeCardAdapter.ViewHo
                 requestHandler.SendSimpleHttpRequest(url,mContext);
             }
         });
-
     }
     // Update the cached version of t
     private void updateViews(String trailId, LinearLayout card) {

@@ -19,6 +19,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.squareup.picasso.Picasso;
 import com.teamunemployment.breadcrumbs.Crumb;
 import com.teamunemployment.breadcrumbs.CustomElements.FancyFollow;
 import com.teamunemployment.breadcrumbs.Network.LoadBalancer;
@@ -134,6 +135,50 @@ public class MeCardAdapter extends RecyclerView.Adapter<MeCardAdapter.ViewHolder
             Log.d(TAG, "Found local ID: " + id);
             FetchAndBindLocalObject(holder.CardInner, id, position);
         }
+
+        if (position == 0) {
+            fetchAndBindProfileCard(holder.CardInner, position);
+        }
+    }
+
+    /**
+     * Grab data about a user to show it on the
+     * @param card The profile card
+     * @param position The position in our dataset. THis will always be 0 for this method.
+     */
+    private void fetchAndBindProfileCard(LinearLayout card, int position) {
+        displayProfileImage(card);
+        displayFollowDetails(card);
+        displayStatistics(card);
+    }
+
+    /**
+     * Display the number of followers for a user.
+     * @param card The card to bind to.
+     */
+    private void displayFollowDetails(LinearLayout card) {
+        // grab number of followers
+       // String url =
+        //TextView followersCount = (TextView) card.findViewById(R.id.follower_count);
+       // SimpleNetworkApi.UpdateTextViewWithStringResponseFromAGivenUrl(followersCount);
+    }
+
+    /**
+     * Display the users profile image.
+     * @param card The profile card.
+     */
+    private void displayProfileImage(LinearLayout card) {
+        // Display profile image
+        CircleImageView profilePic = (CircleImageView) card.findViewById(R.id.profile_image);
+        setUserProfileImage(profilePic);
+    }
+
+    /**
+     * Displau the statistics about a user.
+     * @param card The profile card.
+     */
+    private void displayStatistics(LinearLayout card) {
+
     }
 
     /**
@@ -196,7 +241,8 @@ public class MeCardAdapter extends RecyclerView.Adapter<MeCardAdapter.ViewHolder
         setTrailName(trailSummaryModel, card);
         setUserNameForCard(card);
         SetTrailCoverPhoto(trailSummaryModel, card, trailId);
-        setUserProfileImage(card);
+        CircleImageView profilePic = (CircleImageView) card.findViewById(R.id.profilePicture);
+        setUserProfileImage(profilePic);
         setNumberOfPOIS(card, trailId);
         // Use the views texview to show we are not published
         TextView viewsTextView = (TextView) card.findViewById(R.id.trail_views);
@@ -249,12 +295,10 @@ public class MeCardAdapter extends RecyclerView.Adapter<MeCardAdapter.ViewHolder
         }
     }
 
-    private void setUserProfileImage(LinearLayout card) {
-        CircleImageView profilePic = (CircleImageView) card.findViewById(R.id.profilePicture);
-
+    private void setUserProfileImage(CircleImageView profileImage) {
         // This uses a cache, so (hopefully) it will work offline.
         String imageIdUrl = LoadBalancer.RequestServerAddress() + "/rest/login/GetPropertyFromNode/"+userId+"/CoverPhotoId";
-        TextViewLoadingManager.LoadCircularImageView(imageIdUrl, profilePic, context);
+        TextViewLoadingManager.LoadCircularImageView(imageIdUrl, profileImage, context);
     }
 
     // Simple method to return the id of the first image that we have in the database.
