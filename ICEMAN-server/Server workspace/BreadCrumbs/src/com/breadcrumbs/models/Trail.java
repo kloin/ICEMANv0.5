@@ -353,9 +353,11 @@ public class Trail {
 		
 		//Now we need to append this distance to the current distance on the trail.
 		addDistance(trailId, distance);
-		
 	}
 	
+        public void updateTrailTotalDistance(int additionalDistance, String trailId) {
+            addDistance(trailId, additionalDistance);
+        }
 	/*
 	 * Function to update the total distance a trail has been
 	 */

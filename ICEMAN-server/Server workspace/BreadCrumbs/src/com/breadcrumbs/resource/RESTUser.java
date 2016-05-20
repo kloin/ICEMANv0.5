@@ -47,6 +47,7 @@ public class RESTUser {
 		UserService userService = new UserService();
 		return userService.CheckForDetailsUsingEmailAddress(Email);
 	}
+        
 	@GET
 	@Path("GetAllPinnedUsersForAUser/{UserId}") 
 	public String GetAllPinnedUsersForAUser(@PathParam("UserId") String UserId) {
@@ -55,6 +56,14 @@ public class RESTUser {
 		return userService.GetAllPinnedUsers(UserId);
 	}
 	
+        @GET
+        @Path("GetNumberOfFollowersForAUser/{UserId}")
+        public String GetNumberOfFollowersForAUser(@PathParam("UserId") String UserId) {
+            UserService userService = new UserService();
+            String numberOfFollowers = userService.GetNumberOfUsersThatFollowUs(UserId);
+            return numberOfFollowers;
+        }
+        
 	@GET
 	@Path("GetAllHomePageTrailIdsForAUser/{UserId}")
 	public String GetAllHomePageTrailIdsForAUser(@PathParam("UserId") String UserId) {

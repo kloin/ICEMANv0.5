@@ -117,7 +117,7 @@ public class RESTTrailManager {
 	@GET
 	@Path("/UserLikesTrail/{UserId}/{TrailId}") 
 	public String UserLikesTrail(@PathParam("UserId") String UserId,
-									@PathParam("TrailId") String TrailId) {
+                                     @PathParam("TrailId") String TrailId) {
 		
 		Trail trail = new Trail();
 		trail.AddLike(UserId, TrailId);
@@ -200,9 +200,21 @@ public class RESTTrailManager {
     	TrailManager20 trailManager = new TrailManager20();
         JSONObject jsonObject = new JSONObject(metadataJSON);
         int startingIndex = jsonObject.getInt("StartingIndex");
-    	TrailMetadata metadata = trailManager.ProcessMetadata(jsonObject.getJSONObject("Events"), startingIndex);
+    	TrailMetadata metadata = trailManager.ProcessMetadata(jsonObject.getJSONObject("Events"), startingIndex, trailId);
         trailManager.SaveMetadata(metadata, Integer.parseInt(trailId));
      	return "200";
+    }
+    
+    @POST
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Path("/ProcessMetadataWithNoSave")
+    public String ProcessMetadataWithNoSave(String metadataJSON) {
+        TrailManager20 trailManager20 = new TrailManager20();
+        JSONObject metaJSONObject = new JSONObject(metadataJSON);
+        int startingIndex = metaJSONObject.getInt("StartingIndex");
+        TrailMetadata metaData = trailManager20.ProcessMetadata(metaJSONObject, startingIndex, "-1"); // -1 here is a hack. This needs to be fixed
+        // Need to implement this method.
+        return metaData.toString();
     }
     
     @POST
@@ -212,7 +224,7 @@ public class RESTTrailManager {
         TrailManager20 trailManager = new TrailManager20();
         JSONObject jsonObject = new JSONObject(metadataJSON);
         int startingIndex = jsonObject.getInt("StartingIndex");
-    	TrailMetadata metadata = trailManager.ProcessMetadata(jsonObject.getJSONObject("Events"), startingIndex);
+    	TrailMetadata metadata = trailManager.ProcessMetadata(jsonObject.getJSONObject("Events"), startingIndex, trailId);
         trailManager.SaveMetadata(metadata, Integer.parseInt(trailId));
         return trailManager.FetchMetadataFromTrail(trailId);
     }

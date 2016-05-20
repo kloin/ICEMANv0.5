@@ -85,7 +85,8 @@ public class DBMaster {
                 Image,
 		Point,
 		Comment,
-                Event
+                Event,
+                Place
 	}
 	//Return an a reference to the instance of the database
 	public GraphDatabaseService GetDatabaseInstance() {

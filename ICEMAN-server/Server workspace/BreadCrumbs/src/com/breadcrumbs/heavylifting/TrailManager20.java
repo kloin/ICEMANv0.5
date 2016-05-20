@@ -5,6 +5,7 @@ import com.breadcrumbs.database.DBMaster;
 import com.breadcrumbs.models.Event;
 import com.breadcrumbs.models.Location;
 import com.breadcrumbs.models.Polyline;
+import com.breadcrumbs.models.Trail;
 import com.breadcrumbs.models.TrailMetadata;
 import java.io.BufferedReader;
 import java.io.DataOutputStream;
@@ -25,9 +26,13 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 import org.neo4j.graphdb.Node;
 
+/**
+ * @author Josiah Kendall.
+ */
 public class TrailManager20 {
 
     private DBMaster dbm;
+    private String trailId;
     public TrailManager20() {
         dbm = DBMaster.GetAnInstanceOfDBMaster();
     }
@@ -72,8 +77,14 @@ public class TrailManager20 {
         
         keysAndItems.put("EventType", event.GetType());
         keysAndItems.put("TrailId", trailId);
-        // It will not always be a crumb.
-        int eventId = dbm.SaveNode(keysAndItems, DBMaster.myLabels.Event);   
+        int eventId;
+        //if (placeId != null) {
+            //eventId = dbm.SaveNode(keysAndItems, DBMaster.myLabels.Place);
+       // } else {
+             // It will not always be a crumb.
+        eventId = dbm.SaveNode(keysAndItems, DBMaster.myLabels.Event);  
+        //}
+        
         Node crumb = dbm.RetrieveNode(eventId);
         Node trail = dbm.RetrieveNode(trailId);
         if (trail != null) {
@@ -82,16 +93,16 @@ public class TrailManager20 {
     }
     
  
-	/*
+	/**
 	 * Purpose of this method is to process the meta data that we recieve. We want to sort out the bad/unnessesary gps points.
 	 * We want to use this method to "clean" the data that we get.
 	 * 
-	 * @param metadata 
 	 * This is basically the description of the entire trail. It contains all the gps points, as well as latitude/longitude of 
 	 * every place of interest (where we stay etc), as well as activity at the time etc. This should hopefully not be too much chatter.
 	 * We want to change this information into the road plots (as based on google maps directions) as well as 
 	 */
-	public TrailMetadata ProcessMetadata(JSONObject metadataObject, int startingIndex) {
+	public TrailMetadata ProcessMetadata(JSONObject metadataObject, int startingIndex, String trailId) {
+            this.trailId = trailId;
             // Events are the things that I draw to. These may be rest stops, places of interest, crumbs etc.            
             ArrayList<Event> events = new ArrayList<Event>();
             
@@ -263,10 +274,29 @@ public class TrailManager20 {
             }
             
             JSONObject routes = jsonResponse.getJSONArray("routes").getJSONObject(0);
+            // Uodate the trails total distance.
+            updateDistance(routes);
             JSONObject overviewPolyline = routes.getJSONObject("overview_polyline");
             String encodedPolyline = overviewPolyline.getString("points");
             
             return encodedPolyline;
+        }
+        
+        private void updateDistance(JSONObject routes) {
+            int totalDistance = 0;
+            JSONArray array = routes.getJSONArray("legs");
+            int index = 0;
+            while (index < array.length()) {
+                JSONObject leg = array.getJSONObject(index);
+                JSONObject distance = leg.getJSONObject("distance");
+                int value = distance.getInt("value");
+                totalDistance += value;
+                System.out.println("calculating distance: " + totalDistance + " m");
+            }
+            
+            // Save distance to databse
+            Trail trail = new Trail();
+           // trail.updateTrailTotalDistance(totalDistance, trailId);
         }
         
         private String getGoogleDirectionsWithWaypoints(Location location1, Location location2, ArrayList<Location> waypoints) {
@@ -278,6 +308,7 @@ public class TrailManager20 {
             }
             
             JSONObject routes = jsonResponse.getJSONArray("routes").getJSONObject(0);
+            updateDistance(routes);
             JSONObject overviewPolyline = routes.getJSONObject("overview_polyline");
             String encodedPolyline = overviewPolyline.getString("points");
             

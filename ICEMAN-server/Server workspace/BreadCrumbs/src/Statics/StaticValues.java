@@ -13,7 +13,7 @@ public class StaticValues {
         public static final int TRAIL_START = 0;
         public static final int TRAIL_END = 1;
         public static final int CRUMB = 2;
-        public static final int REST_ZONE = 3;
+        public static final int PLACE = 3;
         public static final int GPS = 4;
         public static final int ACTIVITY_CHANGE = 5;
 
