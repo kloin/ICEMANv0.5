@@ -43,6 +43,8 @@ public class HomeTabFragment extends Fragment {
     public Activity activityContext;
     public String userId;
     private final String TAG = "HOME_TAB";
+
+    private final ArrayList<String> ids = new ArrayList<>();
     public void onAttach(Activity activity) {
         activityContext= activity;
         super.onAttach(activity);
@@ -100,27 +102,6 @@ public class HomeTabFragment extends Fragment {
         });
     }
 
-    // Show a snackbar message to the user
-    public void displayMessage(String string) {
-
-        //final CoordinatorLayout coordinatorLayout = (CoordinatorLayout) rootView.findViewById(R.id.test);
-        //Snackbar snackbar = Snackbar.make(coordinatorLayout, string, Snackbar.LENGTH_LONG).setAction("UNDO", null);
-
-        // Set text color
-       // snackbar.setActionTextColor(Color.RED);
-
-        // Grab actual snackbar and set its color
-        //View snackbarView = snackbar.getView();
-       // snackbarView.setBackgroundColor(Color.DKGRAY);
-
-        // Grab our text view
-       // TextView textView = (TextView) snackbarView.findViewById(android.support.design.R.id.snackbar_text);
-       // textView.setTextColor(getResources().getColor(R.color.accent));
-
-        // Show our work
-       // snackbar.show();
-    }
-
     public void reloadTrails() {
         // Our url - just gets a json string of all trail ids.
         String url = LoadBalancer.RequestServerAddress() + "/rest/User/GetAllHomePageTrailIdsForAUser/"+userId;
@@ -135,7 +116,6 @@ public class HomeTabFragment extends Fragment {
 
                         simpleAnimations.FadeInView(networkIssueCard);
                         networkIssueCard.setVisibility(View.VISIBLE);
-                        ArrayList<String> ids = new ArrayList<>();
                         mAdapter = new HomeCardAdapter(ids, context);
                         mRecyclerView.setAdapter(mAdapter);
                         return;
@@ -210,69 +190,102 @@ public class HomeTabFragment extends Fragment {
         clientRequestProxy.execute();
     }
 
-    // Need this code but for now I am going to comment it out.
-    public void loadTrails() {
-        //final TextView noDataPlaceholder = (TextView) rootView.findViewById(R.id.no_data_placeholder);
+    public String ConstructDataUrl() {
         String url = LoadBalancer.RequestServerAddress() + "/rest/User/GetAllHomePageTrailIdsForAUser/"+userId;
         Log.d(TAG, "Attempting to load Trails with URL: " + url);
         url = url.replaceAll(" ", "%20");
+        return url;
+    }
+
+    private void hideLoadingSpinner() {
+        // Hide loading spinner
+        ProgressBar loadingSpinner = (ProgressBar) rootView.findViewById(R.id.explore_progress_bar);
+        loadingSpinner.setVisibility(View.GONE);
+    }
+
+    public void loadTrails() {
+        if (ids.isEmpty()) {
+            String url = ConstructDataUrl();
+            load(url);
+
+            return;
+        }
+        hideLoadingSpinner();
+        setAdapter();
+
+    }
+
+    public void load(String url) {
         clientRequestProxy  = new AsyncDataRetrieval(url, new AsyncDataRetrieval.RequestListener() {
             @Override
             public void onFinished(String result) {
-                try {
-                    Log.d(TAG, "Finished loading trails. Result : " + result);
-                    // Hide loading spinner
-                    ProgressBar loadingSpinner = (ProgressBar) rootView.findViewById(R.id.explore_progress_bar);
-                    loadingSpinner.setVisibility(View.GONE);
-                    CardView networkIssueCard = (CardView) rootView.findViewById(R.id.network_issue_placeholder);
-                    if (result.equals("NE1")) {
-                        simpleAnimations.FadeInView(networkIssueCard);
-                        networkIssueCard.setVisibility(View.VISIBLE);
-                        return;
-                    }
-                    networkIssueCard.setVisibility(View.GONE);
-                    // Get our arrayList for the card adapter
-                    JSONObject jsonResult = new JSONObject(result);
-                    ArrayList<String> ids = convertJSONToArrayList(jsonResult);
-                    if (ids.size() == 0) {
-                    Log.d(TAG, "Found some data, setting up placeholder visibility");
-                        // Hide placeholder.
-                        CardView cardPlaceholder = (CardView) rootView.findViewById(R.id.card_view_placeholder);
-                        simpleAnimations.FadeInView(cardPlaceholder);
-                        cardPlaceholder.setVisibility(View.VISIBLE);
-                       // simpleAnimations.FadeInView(noDataPlaceholder);
-                        //noDataPlaceholder.setVisibility(View.VISIBLE);
-                    }
-                    globalContainer.SetTrailIdsCurrentlyDisplayed(ids);
-                    // Create the adapter, and set it to the recyclerView so that it displays
-                    mAdapter = new HomeCardAdapter(ids, context);
-                    mRecyclerView.setAdapter(mAdapter);
-                } catch (JSONException e) {
-                   // simpleAnimations.FadeInView(noDataPlaceholder);
-                    // TODO Auto-generated catch block
-                    e.printStackTrace();
-                } catch (NullPointerException e) {
-                    Log.e("Cards", "Failed to convert String to json");
-                    //simpleAnimations.FadeInView(noDataPlaceholder);
-                }
+                resolveNetworkResponse(result);
             }
 
-            // Covert our json result into an arrayList
-            private ArrayList<String> convertJSONToArrayList(JSONObject result) {
-                ArrayList<String> ids = new ArrayList<String>();
-                Iterator<String> keys = result.keys();
-                while (keys.hasNext()) {
-                    String nextKey = keys.next();
-                    try {
-                        ids.add(result.getString(nextKey));
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                    }
-                }
-                return ids;
-            }
+
         }, context);
         clientRequestProxy.execute();
         Log.i("BASE", "Sending request to construct the cards");
+    }
+
+    private void resolveNetworkResponse(String result) {
+        try {
+            Log.d(TAG, "Finished loading trails. Result : " + result);
+
+
+            hideLoadingSpinner();
+
+            // Check for network error
+            CardView networkIssueCard = (CardView) rootView.findViewById(R.id.network_issue_placeholder);
+            if (result.equals("NE1")) {
+                simpleAnimations.FadeInView(networkIssueCard);
+                networkIssueCard.setVisibility(View.VISIBLE);
+                return;
+            }
+
+            // otherwise we want to ensure that the network issue card is not visible.
+            networkIssueCard.setVisibility(View.GONE);
+
+            // Add our json array to ids
+            JSONObject jsonResult = new JSONObject(result);
+            convertJSONToArrayList(jsonResult);
+
+            if (ids.size() == 0) {
+                Log.d(TAG, "Found some data, setting up placeholder visibility");
+                // Hide placeholder.
+                CardView cardPlaceholder = (CardView) rootView.findViewById(R.id.card_view_placeholder);
+                simpleAnimations.FadeInView(cardPlaceholder);
+                cardPlaceholder.setVisibility(View.VISIBLE);
+            }
+            setAdapter();
+
+        } catch (JSONException e) {
+            // simpleAnimations.FadeInView(noDataPlaceholder);
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        } catch (NullPointerException e) {
+            Log.e("Cards", "Failed to convert String to json");
+            //simpleAnimations.FadeInView(noDataPlaceholder);
+        }
+    }
+
+    private void setAdapter() {
+        // Create the adapter, and set it to the recyclerView so that it displays
+        mAdapter = new HomeCardAdapter(ids, context);
+        mRecyclerView.setAdapter(mAdapter);
+    }
+
+    // Covert our json result into an arrayList
+    private ArrayList<String> convertJSONToArrayList(JSONObject result) {
+        Iterator<String> keys = result.keys();
+        while (keys.hasNext()) {
+            String nextKey = keys.next();
+            try {
+                ids.add(result.getString(nextKey));
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
+        return ids;
     }
 }

@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/bottomBarItemOne"
+        android:icon="@drawable/ic_home_modern_black_24dp"
+        android:title="Home" />
+    <item
+        android:id="@+id/bottomBarItemTwo"
+        android:icon="@drawable/ic_action_search"
+        android:title="Home" />
+
+    <item
+        android:id="@+id/bottomBarItemThree"
+        android:icon="@drawable/ic_camera_alt_black_24dp"
+        android:title="Camera" />
+
+    <item
+        android:id="@+id/bottomBarItemFour"
+        android:icon="@drawable/ic_timeline_black_24dp"
+        android:title="Trip" />
+    <item
+        android:id="@+id/bottomBarItemFive"
+        android:icon="@drawable/ic_perm_identity_black_24dp"
+        android:title="Profile" />
+</menu>

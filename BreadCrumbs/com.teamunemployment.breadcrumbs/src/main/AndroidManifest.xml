@@ -130,6 +130,7 @@
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateHidden"> <!-- hide keyboard by default -->
         </activity>
+        <activity android:name=".client.Home.HomeActivity" android:screenOrientation="portrait"/>
         <activity android:name=".client.Camera.CameraCapture"
             android:screenOrientation="portrait">
         </activity>

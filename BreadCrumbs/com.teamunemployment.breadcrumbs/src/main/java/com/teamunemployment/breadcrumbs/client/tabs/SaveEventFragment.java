@@ -50,6 +50,7 @@ import com.google.android.gms.location.places.PlaceLikelihood;
 import com.google.android.gms.location.places.PlaceLikelihoodBuffer;
 import com.teamunemployment.breadcrumbs.caching.Utils;
 import com.teamunemployment.breadcrumbs.client.BaseViewModel;
+import com.teamunemployment.breadcrumbs.client.Home.HomeActivity;
 import com.teamunemployment.breadcrumbs.database.DatabaseController;
 
 import org.json.JSONException;
@@ -133,7 +134,7 @@ public class SaveEventFragment extends Activity {
 			@Override
 			public void onClick(View view) {
 				createNewEvent();
-				Intent myIntent = new Intent(context, BaseViewModel.class);
+				Intent myIntent = new Intent(context, HomeActivity.class);
 				myIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 				context.startActivity(myIntent);
 			}

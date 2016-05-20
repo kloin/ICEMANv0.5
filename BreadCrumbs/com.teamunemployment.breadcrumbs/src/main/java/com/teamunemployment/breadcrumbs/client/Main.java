@@ -155,7 +155,7 @@ public class Main extends AppCompatActivity {
             //Check that userId exists, else we need to get it out of the database
     	    if(autoLogin) {
     			Intent myIntent = new Intent();
-    			myIntent.setClassName("com.teamunemployment.breadcrumbs", "com.teamunemployment.breadcrumbs.client.BaseViewModel");
+    			myIntent.setClassName("com.teamunemployment.breadcrumbs", "com.teamunemployment.breadcrumbs.client.Home.HomeActivity");
     			startActivity(myIntent);
     		} else {
 				//handleLogin();
