@@ -49,7 +49,6 @@ import com.google.android.gms.location.places.Place;
 import com.google.android.gms.location.places.PlaceLikelihood;
 import com.google.android.gms.location.places.PlaceLikelihoodBuffer;
 import com.teamunemployment.breadcrumbs.caching.Utils;
-import com.teamunemployment.breadcrumbs.client.BaseViewModel;
 import com.teamunemployment.breadcrumbs.client.Home.HomeActivity;
 import com.teamunemployment.breadcrumbs.database.DatabaseController;
 

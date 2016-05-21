@@ -265,7 +265,6 @@ public class CameraController extends SurfaceView implements SurfaceHolder.Callb
         isPreviewRunning = true;
         mCamera.autoFocus(this);
 
-
         try {
             Display display = ((WindowManager)context.getSystemService(context.WINDOW_SERVICE)).getDefaultDisplay();
             CheckOrientationIsNotAllFuckingRetarded(parameters, display);

@@ -72,7 +72,7 @@
             android:src="@drawable/ic_date_range_black_24dp" />
 
         <TextView
-            android:id="@id/duration_details"
+            android:id="@+id/duration_details"
             style="@style/Base.TextAppearance.AppCompat.Subhead"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

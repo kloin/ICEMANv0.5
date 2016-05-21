@@ -469,14 +469,12 @@ public class ProfilePageViewer extends AppCompatActivity implements DatePickerDi
                 }
             }
         }, myContext);
-
         clientRequestProxy.execute();
     }
 
     private void hideProgressBar() {
         ProgressBar progressBar = (ProgressBar) findViewById(R.id.profile_progress_bar);
         progressBar.setVisibility(View.GONE);
-
     }
 
     private void beginProcessingTrailsIntoChips(JSONObject jsonResult) throws JSONException {

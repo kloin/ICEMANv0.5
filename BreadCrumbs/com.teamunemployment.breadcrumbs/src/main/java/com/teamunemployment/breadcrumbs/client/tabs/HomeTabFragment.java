@@ -157,20 +157,6 @@ public class HomeTabFragment extends Fragment {
                 }
             }
 
-           /* private ArrayList<HomeCardDataObject> convertHomeCardJSONToArrayList(JSONObject result) {
-                ArrayList<HomeCardDataObject> details = new ArrayList<HomeCardDataObject>();
-                Iterator<String> keys = result.keys();
-                while (keys.hasNext()) {
-                    String nextKey = keys.next();
-                    try {
-                        HomeCardDataObject dataObject
-                        ids.add(result.getString(nextKey));
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                    }
-                }
-                return ids;
-            }*/
 
             // Covert our json result into an arrayList
             private ArrayList<String> convertJSONToArrayList(JSONObject result) {
@@ -212,7 +198,6 @@ public class HomeTabFragment extends Fragment {
         }
         hideLoadingSpinner();
         setAdapter();
-
     }
 
     public void load(String url) {
@@ -221,8 +206,6 @@ public class HomeTabFragment extends Fragment {
             public void onFinished(String result) {
                 resolveNetworkResponse(result);
             }
-
-
         }, context);
         clientRequestProxy.execute();
         Log.i("BASE", "Sending request to construct the cards");

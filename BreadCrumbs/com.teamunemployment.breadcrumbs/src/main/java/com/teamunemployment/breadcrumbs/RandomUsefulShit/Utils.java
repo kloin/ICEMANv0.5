@@ -1,11 +1,13 @@
 package com.teamunemployment.breadcrumbs.RandomUsefulShit;
 
+import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.media.ExifInterface;
 import android.os.Environment;
 import android.os.Looper;
 import android.support.annotation.Nullable;
+import android.util.TypedValue;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -112,5 +114,10 @@ public class Utils {
         } else {
             return false;
         }
+    }
+
+    public int convertPixelToDp(int px, Context context) {
+        int convertedDpSize = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, px, context.getResources().getDisplayMetrics());
+        return convertedDpSize;
     }
 }

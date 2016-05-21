@@ -109,10 +109,6 @@
         <activity android:name=".client.TrailManager"
             android:screenOrientation="portrait">
         </activity>
-        <activity
-            android:name=".client.BaseViewModel"
-            android:screenOrientation="portrait">
-        </activity>
         <activity android:name=".client.CrumbViewer.CommentViewer"
             android:screenOrientation="portrait">
         </activity>

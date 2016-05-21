@@ -66,8 +66,8 @@ public class MapHostBase extends Activity implements
     }
 
     private void hideSlider() {
-        RelativeLayout slider = (RelativeLayout) findViewById(R.id.slider);
-        slider.setVisibility(View.GONE);
+      //  RelativeLayout slider = (RelativeLayout) findViewById(R.id.slider);
+        //slider.setVisibility(View.GONE);
     }
 
     @Override
@@ -324,19 +324,19 @@ public class MapHostBase extends Activity implements
     }
 
     private void setTrailClickHandlers(final String userId) {
-        CardView authorCard = (CardView) findViewById(R.id.author_view);
-        authorCard.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                // Load the users profile page.
-                Intent intent = new Intent();
-                intent.setClassName("com.teamunemployment.breadcrumbs", "com.teamunemployment.breadcrumbs.client.NavMenu.Profile.ProfilePageViewer");
-                intent.putExtra("userId", userId);
-                //intent.putExtra("name", name);
-                startActivity(intent);
-
-            }
-        });
+//        CardView authorCard = (CardView) findViewById(R.id.author_view);
+//        authorCard.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                // Load the users profile page.
+//                Intent intent = new Intent();
+//                intent.setClassName("com.teamunemployment.breadcrumbs", "com.teamunemployment.breadcrumbs.client.NavMenu.Profile.ProfilePageViewer");
+//                intent.putExtra("userId", userId);
+//                //intent.putExtra("name", name);
+//                startActivity(intent);
+//
+//            }
+//        });
     }
     private void getBaseDetailsForATrail(final String trailId) {
         String url = LoadBalancer.RequestServerAddress() + "/rest/TrailManager/GetBaseDetailsForATrail/"+trailId;

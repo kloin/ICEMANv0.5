@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.content.res.ColorStateList;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
@@ -16,7 +17,12 @@ import android.graphics.Typeface;
 import android.location.Location;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.support.annotation.NonNull;
+import android.support.design.widget.AppBarLayout;
+import android.support.design.widget.BottomSheetBehavior;
+import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.FloatingActionButton;
+import android.support.v4.widget.NestedScrollView;
 import android.support.v7.widget.CardView;
 import android.text.SpannableStringBuilder;
 import android.text.style.StyleSpan;
@@ -24,10 +30,15 @@ import android.text.style.StyleSpan;
 import android.transition.Fade;
 import android.transition.Slide;
 import android.transition.TransitionInflater;
+import android.util.DisplayMetrics;
 import android.util.Log;
+import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.View;
+import android.view.ViewGroup;
+import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -50,6 +61,7 @@ import com.teamunemployment.breadcrumbs.Network.ServiceProxy.HTTPRequestHandler;
 import com.teamunemployment.breadcrumbs.Network.ServiceProxy.UpdateViewElementWithProperty;
 import com.teamunemployment.breadcrumbs.Preferences.Preferences;
 import com.teamunemployment.breadcrumbs.PreferencesAPI;
+import com.teamunemployment.breadcrumbs.RandomUsefulShit.Utils;
 import com.teamunemployment.breadcrumbs.Trails.MyCurrentTrailDisplayManager;
 import com.teamunemployment.breadcrumbs.R;
 import com.google.android.gms.maps.GoogleMap;
@@ -62,6 +74,7 @@ import com.google.android.gms.maps.model.Marker;
 import com.sothree.slidinguppanel.SlidingUpPanelLayout;
 import com.teamunemployment.breadcrumbs.Trails.TrailManagerWorker;
 import com.teamunemployment.breadcrumbs.caching.GlobalContainer;
+import com.teamunemployment.breadcrumbs.client.Animations.SimpleAnimations;
 import com.teamunemployment.breadcrumbs.client.Cards.CrumbCardDataObject;
 import com.teamunemployment.breadcrumbs.client.StoryBoard.StoryBoardActivity;
 import com.teamunemployment.breadcrumbs.client.StoryBoard.StoryBoardItemData;
@@ -88,6 +101,19 @@ import java.util.List;
  */
 public class MapViewer extends Activity implements
 		OnMapClickListener, OnMapLongClickListener, OnMarkerClickListener {
+
+	private boolean HAVE_SCALED_IMAGE = false;
+
+	private int TRAIL_COVER_PHOTO_HEIGHT;
+	private int SCROLLABLE_HEIGHT = 0;
+	private int BOTTOM_SHEET_STATE = 0;
+
+	private boolean WE_LIKE = false;
+	private static final int EDIT_MODE = 1;
+	private static final int READ_ONLY_MODE = 0;
+	private boolean IS_OWN_TRAIL = false;
+
+	private Context context;
 	private GoogleMap mMap;
 	private JSONObject json;
 	private String TAG = "MapViewer";
@@ -98,6 +124,17 @@ public class MapViewer extends Activity implements
 	private ArrayList<DisplayCrumb> mCrumbs;
 	private String trailId;
 
+	private CoordinatorLayout coordinatorLayout;
+	private View bottomSheet;
+	private CardView bottomSheetToolbar;
+	private RelativeLayout imageCover;
+	private ImageView trailCoverPhoto;
+
+	// Fabs
+	private FloatingActionButton editToggleBottomSheetFab;
+	private FloatingActionButton playFab;
+	private NestedScrollView bottomSheetScrollView;
+
 	// variables for storyboard.
 	private int storyboardIndex = 0;
 	private int storyboardTimerTime = 0;
@@ -106,6 +143,7 @@ public class MapViewer extends Activity implements
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.home_map);
+		context = this;
         mMap = ((MapFragment) getFragmentManager().findFragmentById(R.id.map)).getMap();
 		mContext = this;
 		setListenersAndLoaders();
@@ -114,6 +152,300 @@ public class MapViewer extends Activity implements
 			fade.setDuration(1000);
 			getWindow().setExitTransition(fade);
 		}
+		setUpBottomSheet();
+		scaleImage(bottomSheet);
+		setVisibilityOfItems();
+	}
+
+	/**
+	 * Method to set Up the bottom sheet, and set listeners for state changes.
+	 */
+	private void setUpBottomSheet() {
+		coordinatorLayout = (CoordinatorLayout) findViewById(R.id.map_root_view);
+		bottomSheet = coordinatorLayout.findViewById(R.id.bottom_sheet);
+		bottomSheetToolbar = (CardView) bottomSheet.findViewById(R.id.bottom_sheet_header);
+
+		BottomSheetBehavior behavior = BottomSheetBehavior.from(bottomSheet);
+		behavior.setBottomSheetCallback(new BottomSheetBehavior.BottomSheetCallback() {
+			@Override
+			public void onStateChanged(@NonNull View bottomSheet, int newState) {
+				// React to state change
+				onBottomSheetChanged(bottomSheet, newState);
+			}
+			@Override
+			public void onSlide(@NonNull View bottomSheet, float slideOffset) {
+
+				onBottomSheetSlide(bottomSheet, slideOffset);
+				// React to dragging events
+			}
+		});
+	}
+
+	private void setVisibilityOfItems() {
+		if (!IS_OWN_TRAIL) {
+			findViewById(R.id.settings_my_trail).setVisibility(View.GONE);
+			findViewById(R.id.toggle_tracking).setVisibility(View.GONE);
+			findViewById(R.id.publish_trail).setVisibility(View.GONE);
+		}
+	}
+
+	// Handler for when the view is expanded.
+	private void onBottomSheetChanged(View bottomSheet, int state) {
+		switch (state) {
+			case BottomSheetBehavior.STATE_COLLAPSED:
+				setCollapsedToolbarState();
+				break;
+			case BottomSheetBehavior.STATE_DRAGGING:
+				// setDragging state - not required atm
+				break;
+			case BottomSheetBehavior.STATE_EXPANDED:
+				setExpandedBottomSheetState(bottomSheet);
+				break;
+			case BottomSheetBehavior.STATE_HIDDEN:
+				// set Hidden behaviour - not enabled
+				break;
+			case BottomSheetBehavior.STATE_SETTLING:
+				// set settliong behaviour
+				break;
+		}
+	}
+
+	private void setExpandedBottomSheetState(View bottomSheet) {
+		setScrollingBehaviour(bottomSheet);
+		// Set it up here so it works at runtime.
+		if (editToggleBottomSheetFab == null) {
+			editToggleBottomSheetFab = (FloatingActionButton) bottomSheet.findViewById(R.id.edit_toggle_fab);
+			setUpEditFabButtonToggle();
+
+			// Load details
+			UpdateViewElementWithProperty viewSetter = new UpdateViewElementWithProperty();
+
+			TextView days = (TextView) bottomSheet.findViewById(R.id.duration_details);
+			viewSetter.UpdateTextElementWithUrlAndAdditionalString(days, LoadBalancer.RequestServerAddress()+ "/rest/TrailManager/GetDurationOfTrailInDays/"+trailId, "Days", context);
+			TextView pois = (TextView) bottomSheet.findViewById(R.id.number_of_crumbs_details);
+			viewSetter.UpdateTextElementWithUrlAndAdditionalString(pois, LoadBalancer.RequestServerAddress() + "rest/TrailManager/GetAllSavedCrumbIdsForATrail" + trailId, "Points of Interest", context);
+		}
+
+		// shrink our fab.
+		if (editToggleBottomSheetFab.getVisibility() != View.VISIBLE) {
+			SimpleAnimations.ExpandFab(editToggleBottomSheetFab, 75);
+		}
+	}
+
+	/**
+	 * Setup the scrolling behavour for our bottom sheet, namely hiding the action button and
+	 * setting the toolbar when  scrolled up
+	 * @param bottomSheet
+     */
+	private void setScrollingBehaviour(View bottomSheet) {
+		if (bottomSheetScrollView == null) {
+			bottomSheetScrollView = (NestedScrollView) bottomSheet.findViewById(R.id.bottom_sheet_scroller);
+		}
+
+		bottomSheetScrollView.setOnScrollChangeListener(new NestedScrollView.OnScrollChangeListener() {
+			@Override
+			public void onScrollChange(NestedScrollView v, int scrollX, int scrollY, int oldScrollX, int oldScrollY) {
+				Log.d(TAG, "Scrolling bottom sheet content: ScrollX = " + scrollX + " ScrollY = " + scrollY + " oldScrollX = " + oldScrollX + " oldScrollY = " + oldScrollY );
+				if (SCROLLABLE_HEIGHT == 0) {
+					DisplayMetrics displayMetrics = context.getResources().getDisplayMetrics();
+					int toolbarHeightInPx = Math.round(60 * (displayMetrics.xdpi / DisplayMetrics.DENSITY_DEFAULT));
+					SCROLLABLE_HEIGHT = TRAIL_COVER_PHOTO_HEIGHT - toolbarHeightInPx;
+				}
+
+
+				float alpha = 0;
+				// percentage of the bitmap that we have scrolled to invisible
+				float scrollPostion = (float) scrollY / (float) SCROLLABLE_HEIGHT;
+				float adjustedScroll = scrollPostion - (float)0.5;
+				if (adjustedScroll > 0) {
+					alpha = adjustedScroll*2;
+				}
+				if (alpha >= 0.95) {
+					bottomSheetToolbar.setAlpha(1);
+				} else {
+					bottomSheetToolbar.setAlpha(0);
+				}
+				if (alpha!= 0) {
+					imageCover.setAlpha(alpha);
+				}
+				checkEditFabState(scrollY, oldScrollY, scrollPostion);
+
+			}
+		});
+	}
+
+	/**
+	 * Check if we should display or hide our edit toggle fab.
+	 * @param scrollY The current Scroll position on the Y Axis, as measured in pixels from base position.
+	 * @param oldScrollY The precious scroll position on the Y Axis. Use this to determin direction.
+	 * @param imageScrollPercent What percentage of the image we have scrolled under our toolbar.
+     */
+	private void checkEditFabState(int scrollY, int oldScrollY, float imageScrollPercent) {
+		// This means that we are scrolling down the page and our fab is moving towards the toolbar.
+		if (imageScrollPercent > 0.7 && scrollY > oldScrollY && editToggleBottomSheetFab.getVisibility() == View.VISIBLE) {
+			SimpleAnimations.ShrinkFab(editToggleBottomSheetFab, 75);
+			editToggleBottomSheetFab.setVisibility(View.INVISIBLE);
+		}
+		// THis means that we are scrolling back up the page, so we will need to redisplay our fab.
+		else if (imageScrollPercent < 0.7 && scrollY < oldScrollY && editToggleBottomSheetFab.getVisibility() == View.INVISIBLE) {
+			SimpleAnimations.ExpandFab(editToggleBottomSheetFab, 75);
+			editToggleBottomSheetFab.setVisibility(View.VISIBLE);
+
+		}
+
+	}
+
+
+	private void setUpEditFabButtonToggle() {
+
+		if (!IS_OWN_TRAIL) {
+			if(!WE_LIKE) {
+				editToggleBottomSheetFab.setBackgroundTintList(ColorStateList.valueOf(Color.WHITE));
+				editToggleBottomSheetFab.setImageDrawable(context.getResources().getDrawable(R.drawable.ic_favorite_border_black_24dp));
+				WE_LIKE = true;
+			} else {
+				// Unlike
+				editToggleBottomSheetFab.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor("#FF4081")));
+				editToggleBottomSheetFab.setImageDrawable(context.getResources().getDrawable(R.drawable.ic_favorite_border_white_24dp));
+				WE_LIKE = false;
+			}
+		}
+
+		editToggleBottomSheetFab.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				if (IS_OWN_TRAIL) {
+					switch (BOTTOM_SHEET_STATE) {
+						case EDIT_MODE:
+							BOTTOM_SHEET_STATE = READ_ONLY_MODE;
+							setUpReadOnlyMode();
+							break;
+						case READ_ONLY_MODE:
+							BOTTOM_SHEET_STATE = EDIT_MODE;
+							setUpEditMode();
+							break;
+					}
+				} else {
+					// do llike
+					if(!WE_LIKE) {
+						editToggleBottomSheetFab.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor("#FF4081")));
+						editToggleBottomSheetFab.setImageDrawable(context.getResources().getDrawable(R.drawable.ic_favorite_border_white_24dp));
+						WE_LIKE = true;
+					} else {
+						// Unlike
+						editToggleBottomSheetFab.setBackgroundTintList(ColorStateList.valueOf(Color.WHITE));
+						editToggleBottomSheetFab.setImageDrawable(context.getResources().getDrawable(R.drawable.ic_favorite_border_black_24dp));
+						WE_LIKE = false;
+					}
+
+
+				}
+
+			}
+		});
+	}
+
+
+	/**
+	 *
+	 */
+	private void setUpEditMode() {
+		Activity act = (Activity) context;
+		EditText trailName = (EditText) act.findViewById(R.id.trail_title_input);
+		trailName.setEnabled(true);
+
+		TextView tellThemToSelectACoverPhoto = (TextView) act.findViewById(R.id.cover_photo_prompt);
+		SimpleAnimations.FadeInView(tellThemToSelectACoverPhoto);
+
+		SimpleAnimations.ShrinkToggleAFab(editToggleBottomSheetFab, "#00E676", context.getResources().getDrawable(R.drawable.ic_action_accept));
+	}
+
+	private void setUpReadOnlyMode() {
+		Activity act = (Activity) context;
+		EditText trailName = (EditText) act.findViewById(R.id.trail_title_input);
+		trailName.setEnabled(false);
+
+		TextView tellThemToSelectACoverPhoto = (TextView) act.findViewById(R.id.cover_photo_prompt);
+		SimpleAnimations.FadeOutView(tellThemToSelectACoverPhoto);
+
+		SimpleAnimations.ShrinkToggleAFab(editToggleBottomSheetFab, "#FF4081", context.getResources().getDrawable(R.drawable.ic_edit_white_24dp));
+	}
+
+	/**
+	 *
+	 * @param bottomSheet
+	 * @param slideOffset
+     */
+	private void onBottomSheetSlide(View bottomSheet, float slideOffset) {
+		float newAlpha = 1 - slideOffset*2; //
+		if (newAlpha < 0) {
+			newAlpha = 0;
+		}
+
+		//bottomSheetToolbar.setAlpha(newAlpha);
+		if (newAlpha == 1) {
+			bottomSheetToolbar.setAlpha(1);
+		} else {
+			bottomSheetToolbar.setAlpha(0);
+		}
+		imageCover.setAlpha(newAlpha);
+
+		if (playFab == null) {
+			setUpPlayButton();
+		}
+		if (playFab.getVisibility() == View.VISIBLE) {
+			SimpleAnimations.ShrinkFab(playFab, 75);
+		}
+	}
+
+	/**
+	 * We want our trail cover photo to be the same height as it is width, however we cannot know
+	 * this until runtime. I dont know if this should be done at runtime - it might slow things down?
+	 * @param bottomSheet The bottom sheet where we can find the imageView.
+     */
+	private void scaleImage(View bottomSheet) {
+		if (trailCoverPhoto == null) {
+			trailCoverPhoto = (ImageView) bottomSheet.findViewById(R.id.trail_cover_photo);
+
+			// Set the imageView height to be the same as the width.
+			ViewGroup.LayoutParams layoutParams = trailCoverPhoto.getLayoutParams();
+			TRAIL_COVER_PHOTO_HEIGHT = calculateScreenWidth();
+			layoutParams.height = TRAIL_COVER_PHOTO_HEIGHT;
+			trailCoverPhoto.setLayoutParams(layoutParams);
+			HAVE_SCALED_IMAGE = true;
+
+			// We also want the image to turn blue as it gets scrolled out of view, so we place this cover.
+			imageCover = (RelativeLayout) bottomSheet.findViewById(R.id.image_view_cover);
+			ViewGroup.LayoutParams toolbarLayoutParams = imageCover.getLayoutParams();
+			toolbarLayoutParams.height = TRAIL_COVER_PHOTO_HEIGHT;
+			imageCover.setLayoutParams(toolbarLayoutParams);
+		}
+	}
+
+	private void setCollapsedToolbarState() {
+		// Expand play button
+		if (playFab == null) {
+			setUpPlayButton();
+		}
+		SimpleAnimations.ExpandFab(playFab, 75);
+
+		if (editToggleBottomSheetFab == null) {
+			editToggleBottomSheetFab = (FloatingActionButton) bottomSheet.findViewById(R.id.edit_toggle_fab);
+		}
+
+		editToggleBottomSheetFab.setVisibility(View.INVISIBLE);
+		// show text view
+	}
+
+	/**
+	 * Simple method which calculates the width of the screen.
+	 * @return The screen width of the device in pixels.
+     */
+	private int calculateScreenWidth() {
+		DisplayMetrics displaymetrics = new DisplayMetrics();
+		getWindowManager().getDefaultDisplay().getMetrics(displaymetrics);
+		int height = displaymetrics.widthPixels;
+		return height;
 	}
 
 	@Override
@@ -140,8 +472,8 @@ public class MapViewer extends Activity implements
 	}
 
 	private void setUpPlayButton() {
-		FloatingActionButton floatingActionButton = (FloatingActionButton) findViewById(R.id.play_button);
-		floatingActionButton.setOnClickListener(new View.OnClickListener() {
+		playFab = (FloatingActionButton) findViewById(R.id.play_button);
+		playFab.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
 				// Load at first crumb.
@@ -193,19 +525,19 @@ public class MapViewer extends Activity implements
 	}
 
 	private void setTrailClickHandlers(final String userId) {
-		CardView authorCard = (CardView) findViewById(R.id.author_view);
-		authorCard.setOnClickListener(new View.OnClickListener() {
-			@Override
-			public void onClick(View v) {
-				// Load the users profile page.
-				Intent intent = new Intent();
-				intent.setClassName("com.teamunemployment.breadcrumbs", "com.teamunemployment.breadcrumbs.client.NavMenu.Profile.ProfilePageViewer");
-				intent.putExtra("userId", userId);
-				//intent.putExtra("name", name);
-				startActivity(intent);
-
-			}
-		});
+//		CardView authorCard = (CardView) findViewById(R.id.author_view);
+//		authorCard.setOnClickListener(new View.OnClickListener() {
+//			@Override
+//			public void onClick(View v) {
+//				// Load the users profile page.
+//				Intent intent = new Intent();
+//				intent.setClassName("com.teamunemployment.breadcrumbs", "com.teamunemployment.breadcrumbs.client.NavMenu.Profile.ProfilePageViewer");
+//				intent.putExtra("userId", userId);
+//				//intent.putExtra("name", name);
+//				startActivity(intent);
+//
+//			}
+//		});
 	}
 
 	private void getBaseDetailsForATrail(final String trailId) {
@@ -239,22 +571,22 @@ public class MapViewer extends Activity implements
 
 		TextView duration = (TextView) findViewById(R.id.duration_details);
 		TextView distance = (TextView) findViewById(R.id.distance_details);
-		TextView followers = (TextView) findViewById(R.id.followers_details);
+//		TextView followers = (TextView) findViewById(R.id.followers_details);
 		String followerCountUrl = LoadBalancer.RequestServerAddress() + "/rest/TrailManager/GetNumberOfFollowersForATrail/"+trailId;
 		String durationUrl = LoadBalancer.RequestServerAddress() + "/rest/TrailManager/GetDurationOfTrailInDays/"+ trailId;
 		updateViewElementWithProperty.UpdateTextViewWithElementAndExtraString(distance, trailId, "Distance", " km",mContext );
 		updateViewElementWithProperty.UpdateTextElementWithUrlAndAdditionalString(duration, durationUrl, "Days", mContext);
-		updateViewElementWithProperty.UpdateTextElementWithUrlAndAdditionalString(followers, followerCountUrl, "Followers", mContext);
+//		updateViewElementWithProperty.UpdateTextElementWithUrlAndAdditionalString(followers, followerCountUrl, "Followers", mContext);
 	}
 
 	private void setTrailDescription(String trailDescription) {
-		TextView textView = (TextView) findViewById(R.id.about_trail_overlay);
-		if (trailDescription.equals(" ")) {
-			textView.setText("No description given.");
-			textView.setTypeface(null, Typeface.ITALIC);
-		} else {
-			textView.setText(trailDescription);
-		}
+//		TextView textView = (TextView) findViewById(R.id.about_trail_overlay);
+//		if (trailDescription.equals(" ")) {
+//			textView.setText("No description given.");
+//			textView.setTypeface(null, Typeface.ITALIC);
+//		} else {
+//			textView.setText(trailDescription);
+//		}
 	}
 
 
@@ -280,17 +612,17 @@ public class MapViewer extends Activity implements
 
 	private void setUserNames(String userId) {
 		TextView userName = (TextView) findViewById(R.id.username_map_overlay);
-		TextView author = (TextView) findViewById(R.id.author_overlay);
+		//TextView author = (TextView) findViewById(R.id.author_overlay);
 		ArrayList<TextView> arrayList = new ArrayList<>();
 		arrayList.add(userName);
-		arrayList.add(author);
-		UpdateViewElementWithProperty updateViewElementWithProperty = new UpdateViewElementWithProperty();
-		updateViewElementWithProperty.UpdateMultipleViews(arrayList, userId, "Username", mContext);
+	//	arrayList.add(author);
+		//UpdateViewElementWithProperty updateViewElementWithProperty = new UpdateViewElementWithProperty();
+		//updateViewElementWithProperty.UpdateMultipleViews(arrayList, userId, "Username", mContext);
 	}
 
 	private void setTrailHeader(String trailName) {
-		TextView trailTitle = (TextView) findViewById(R.id.map_trail_header);
-		trailTitle.setText(trailName);
+		//TextView trailTitle = (TextView) findViewById(R.id.map_trail_header);
+		//trailTitle.setText(trailName);
 	}
 
 	private void setToggleSatellite() {

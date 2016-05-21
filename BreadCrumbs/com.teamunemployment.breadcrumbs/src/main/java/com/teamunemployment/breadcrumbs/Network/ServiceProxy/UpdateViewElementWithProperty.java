@@ -52,6 +52,9 @@ public class UpdateViewElementWithProperty {
             @Override
             public void onFinished(String result) {
                 if (result != null && !result.isEmpty())
+                    if (viewElementToUpdate == null) {
+                        return;
+                    }
                     viewElementToUpdate.setText(result + extra);
             }
         }, context);
@@ -128,7 +131,7 @@ public class UpdateViewElementWithProperty {
         AsyncDataRetrieval fetchDescription = new AsyncDataRetrieval(url, new AsyncDataRetrieval.RequestListener() {
             @Override
             public void onFinished(String result) {
-                if (result != null) {
+                if (viewElementToUpdate!= null && result != null) {
                     viewElementToUpdate.setText(result + " " + extra);
                 }
             }
