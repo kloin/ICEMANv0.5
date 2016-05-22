@@ -62,7 +62,7 @@ public class MapHostBase extends Activity implements
         mPreferencesApi = new PreferencesAPI(mContext);
         myCurrentTrailDisplayManager = new MyCurrentTrailDisplayManager(mMap,(Activity) mContext);
         setListenersAndLoaders();
-        hideSlider();
+        //hideSlider();
     }
 
     private void hideSlider() {

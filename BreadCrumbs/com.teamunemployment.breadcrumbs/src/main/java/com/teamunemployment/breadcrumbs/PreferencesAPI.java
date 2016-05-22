@@ -139,6 +139,14 @@ public class PreferencesAPI {
         mPreferences.edit().remove("STATE").commit();
     }
 
+    public String GetCurrentTrailCoverPhoto() {
+        return mPreferences.getString("TrailCoverPhoto", null);
+    }
+
+    public void SetCurrentTrailCoverPhoto(String id) {
+        mPreferences.edit().putString("TrailCoverPhoto", id).commit();
+    }
+
     public int GetEventId() {
         return mPreferences.getInt("EVENTID", -1);
     }

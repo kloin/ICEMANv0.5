@@ -12,6 +12,7 @@ import android.preference.PreferenceManager;
 import android.util.Base64;
 import android.util.Log;
 
+import com.teamunemployment.breadcrumbs.Models;
 import com.teamunemployment.breadcrumbs.Network.LoadBalancer;
 import com.teamunemployment.breadcrumbs.Network.ServiceProxy.AsyncPost;
 import com.teamunemployment.breadcrumbs.Preferences.Preferences;
@@ -324,8 +325,12 @@ public class DatabaseController extends SQLiteOpenHelper {
         cv.put("latitude", latitude);
 
         SQLiteDatabase localDb = getWritableDatabase();
-        localDb.insert(CRUMBS, null, cv);
+        long id = localDb.insert(CRUMBS, null, cv);
         localDb.close();
+        // If we dont have any cover photo, we want to save one.
+        if (mPreferencesApi.GetCurrentTrailCoverPhoto() == null) {
+            mPreferencesApi.SetCurrentTrailCoverPhoto(Long.toString(id) + "L");
+        }
         AddMetadata(eventId, timeStamp, latitude, longitude, trailId, TrailManagerWorker.CRUMB, mPreferencesApi.GetTransportMethod());
     }
 
@@ -690,6 +695,7 @@ public class DatabaseController extends SQLiteOpenHelper {
                 trailSummaryNode.put("TrailName", trailName);
                 trailSummaryNode.put("StartDate", startDate);
              ///   trailSummaryNode.put("IsPublished", isPublished == 0);
+
                 return trailSummaryNode;
             } catch (JSONException e) {
                 e.printStackTrace();
@@ -779,7 +785,45 @@ public class DatabaseController extends SQLiteOpenHelper {
         return returnObject;
     }
 
+    public void SaveTrailName(String trailName, int trailId) {
+        String query = "UPDATE "+TRAIL_SUMMARY + " SET TrailName='"+trailName + "' WHERE _id=0";
+        Cursor cursor = getWritableDatabase().rawQuery(query, null);
+        cursor.close();
+    }
+
+    /**
+     * Fetch all the Crumb objects (which are jsonobjects)  for a trail, in the order they were saved to the database initally. If you
+     * pass null, it will give you our current trails id.
+     *
+     * @return A JSON object of all our selected trails ids.
+     */
     public JSONObject GetAllCrumbs(String trailId) {
+
+        // If we aren't given a trail id we grab our current trail id from the preferences.
+        if (trailId == null) {
+            trailId = Integer.toString(mPreferencesApi.GetLocalTrailId());
+        }
+        // Fetch our crumbs.
+        return fetchCrumbs(trailId);
+    }
+
+    public String GetCurrentTrailName() {
+        Cursor cursor = null;
+        String trailName = "";
+        try{
+            cursor = getReadableDatabase().rawQuery("SELECT * FROM " + TRAIL_SUMMARY + " ORDER BY _id", null);
+            // WE just want the latest trail.
+            if(cursor.getCount() > 0) {
+                cursor.moveToLast();
+                trailName = cursor.getString(cursor.getColumnIndex("TrailName"));
+            }
+            return trailName;
+        }finally {
+            cursor.close();
+        }
+    }
+
+    private JSONObject fetchCrumbs(String trailId) {
         JSONObject returnObject = new JSONObject();
         Cursor constantsCursor=getReadableDatabase().rawQuery("SELECT * FROM "+CRUMBS+" WHERE trailId ="+trailId+" ORDER BY _id",
                 null);
@@ -802,22 +846,19 @@ public class DatabaseController extends SQLiteOpenHelper {
             String mime = constantsCursor.getString(constantsCursor.getColumnIndex("mime"));
             try {
 
-                TextCaching textCaching = new TextCaching(mContext);
-                String base64String = textCaching.FetchCachedText(eventId);
                 Log.d("Base64", "base64 retrieved");
                 node.put("eventId", eventId);
-                node.put("latitude", latitude);
-                node.put("longitude", longitude);
-                node.put("timeStamp", timeStamp);
-                node.put("description", description);
-                node.put("userId", userId);
-                node.put("icon", icon);
-                node.put("media", base64String);
-                node.put("placeId", placeId);
-                node.put("suburb", suburb);
-                node.put("city", city);
+                node.put(Models.Crumb.LATITUDE, latitude);
+                node.put(Models.Crumb.LONGITUDE, longitude);
+                node.put(Models.Crumb.TIMESTAMP, timeStamp);
+                node.put(Models.Crumb.DESCRIPTION   , description);
+                node.put("UserId", userId);
+                node.put("Icon", icon);
+                node.put(Models.Crumb.PLACEID, placeId);
+                node.put(Models.Crumb.SUBURB, suburb);
+                node.put(Models.Crumb.CITY, city);
                 node.put("mime", mime);
-                node.put("id", id);
+                node.put(Models.Crumb.ID, id);
 
                 returnObject.put(Integer.toString(count), node);
                 count += 1;
@@ -827,22 +868,6 @@ public class DatabaseController extends SQLiteOpenHelper {
             }
         }
         return returnObject;
-    }
-
-    public String GetCurrentTrailName() {
-        Cursor cursor = null;
-        String trailName = "";
-        try{
-            cursor = getReadableDatabase().rawQuery("SELECT * FROM " + TRAIL_SUMMARY + " ORDER BY _id", null);
-            // WE just want the latest trail.
-            if(cursor.getCount() > 0) {
-                cursor.moveToLast();
-                trailName = cursor.getString(cursor.getColumnIndex("TrailName"));
-            }
-            return trailName;
-        }finally {
-            cursor.close();
-        }
     }
 
     public void SetCurrentTrailName(String trailName) {

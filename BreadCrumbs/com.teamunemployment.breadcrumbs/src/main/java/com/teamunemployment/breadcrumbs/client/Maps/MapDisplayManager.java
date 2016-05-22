@@ -291,9 +291,13 @@ public class MapDisplayManager implements GoogleMap.OnMarkerClickListener, Googl
             });
             asyncDataRetrieval.execute();
         }
-
         else {
+            // Local trail should always have an eventId.
+            final String eventId = crumb.getString("eventId");
+            Bitmap bitmap = fetchBitmapFromLocalFile(eventId, mediaType);
 
+            DisplayCrumb displayCrumb = new DisplayCrumb(Latitude, Longitude, mediaType, id, R.drawable.wine_glass, placeId,suburb, city, country, timeStamp, description, bitmap, 0);
+            clusterManager.addItem(displayCrumb);
 
         }
     }

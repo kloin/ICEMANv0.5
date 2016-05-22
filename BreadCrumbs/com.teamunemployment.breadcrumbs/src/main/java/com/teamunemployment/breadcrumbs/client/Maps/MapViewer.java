@@ -13,12 +13,10 @@ import android.graphics.PorterDuff;
 import android.graphics.PorterDuffXfermode;
 import android.graphics.Rect;
 import android.graphics.RectF;
-import android.graphics.Typeface;
 import android.location.Location;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
-import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.BottomSheetBehavior;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.FloatingActionButton;
@@ -27,13 +25,8 @@ import android.support.v7.widget.CardView;
 import android.text.SpannableStringBuilder;
 import android.text.style.StyleSpan;
 
-import android.transition.Fade;
-import android.transition.Slide;
-import android.transition.TransitionInflater;
 import android.util.DisplayMetrics;
 import android.util.Log;
-import android.util.TypedValue;
-import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
@@ -44,7 +37,6 @@ import android.widget.Toast;
 
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationRequest;
-import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.UiSettings;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
@@ -59,10 +51,7 @@ import com.teamunemployment.breadcrumbs.Network.ServiceProxy.AsyncDataRetrieval;
 import com.teamunemployment.breadcrumbs.Network.ServiceProxy.AsyncPost;
 import com.teamunemployment.breadcrumbs.Network.ServiceProxy.HTTPRequestHandler;
 import com.teamunemployment.breadcrumbs.Network.ServiceProxy.UpdateViewElementWithProperty;
-import com.teamunemployment.breadcrumbs.Preferences.Preferences;
 import com.teamunemployment.breadcrumbs.PreferencesAPI;
-import com.teamunemployment.breadcrumbs.RandomUsefulShit.Utils;
-import com.teamunemployment.breadcrumbs.Trails.MyCurrentTrailDisplayManager;
 import com.teamunemployment.breadcrumbs.R;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.GoogleMap.OnMapClickListener;
@@ -73,7 +62,6 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.sothree.slidinguppanel.SlidingUpPanelLayout;
 import com.teamunemployment.breadcrumbs.Trails.TrailManagerWorker;
-import com.teamunemployment.breadcrumbs.caching.GlobalContainer;
 import com.teamunemployment.breadcrumbs.client.Animations.SimpleAnimations;
 import com.teamunemployment.breadcrumbs.client.Cards.CrumbCardDataObject;
 import com.teamunemployment.breadcrumbs.client.StoryBoard.StoryBoardActivity;
@@ -103,41 +91,47 @@ public class MapViewer extends Activity implements
 		OnMapClickListener, OnMapLongClickListener, OnMarkerClickListener {
 
 	private boolean HAVE_SCALED_IMAGE = false;
-
-	private int TRAIL_COVER_PHOTO_HEIGHT;
-	private int SCROLLABLE_HEIGHT = 0;
-	private int BOTTOM_SHEET_STATE = 0;
+	private MapDisplayManager mapDisplayManager;
+	private ArrayList<StoryBoardItemData> mStoryBoardItems;
+	public DatabaseController databaseController;
+	public int TRAIL_COVER_PHOTO_HEIGHT;
+	public int SCROLLABLE_HEIGHT = 0;
+	public int BOTTOM_SHEET_STATE = 0;
 
 	private boolean WE_LIKE = false;
-	private static final int EDIT_MODE = 1;
-	private static final int READ_ONLY_MODE = 0;
+	public static final int EDIT_MODE = 1;
+	public static final int READ_ONLY_MODE = 0;
 	private boolean IS_OWN_TRAIL = false;
 
-	private Context context;
+	public Context context;
 	private GoogleMap mMap;
 	private JSONObject json;
-	private String TAG = "MapViewer";
+	public final static String TAG = "MapViewer";
 	private AsyncDataRetrieval clientRequestProxy;
 	private boolean requestingImage = false;
-    private MyCurrentTrailDisplayManager myCurrentTrailManager;
 	private Activity mContext;
 	private ArrayList<DisplayCrumb> mCrumbs;
 	private String trailId;
 
 	private CoordinatorLayout coordinatorLayout;
-	private View bottomSheet;
-	private CardView bottomSheetToolbar;
+	public View bottomSheet;
+	public CardView bottomSheetToolbar;
 	private RelativeLayout imageCover;
 	private ImageView trailCoverPhoto;
 
+	private BottomSheetBehavior bottomSheetBehavior;
+
 	// Fabs
-	private FloatingActionButton editToggleBottomSheetFab;
+	public FloatingActionButton bottomSheetFab;
 	private FloatingActionButton playFab;
 	private NestedScrollView bottomSheetScrollView;
 
 	// variables for storyboard.
 	private int storyboardIndex = 0;
 	private int storyboardTimerTime = 0;
+
+	// Made public as we need to access this from the local subclass.
+	public MyCurrentTrailDisplayManager myCurrentTrailManager;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -146,15 +140,31 @@ public class MapViewer extends Activity implements
 		context = this;
         mMap = ((MapFragment) getFragmentManager().findFragmentById(R.id.map)).getMap();
 		mContext = this;
-		setListenersAndLoaders();
-		if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
-			Slide fade = new Slide();
-			fade.setDuration(1000);
-			getWindow().setExitTransition(fade);
+
+		trailId = this.getIntent().getStringExtra("TrailId");
+
+		//
+		if (trailId != null && trailId.endsWith("L")) {
+			IS_OWN_TRAIL = true;
 		}
+
 		setUpBottomSheet();
+		setListenersAndLoaders();
 		scaleImage(bottomSheet);
-		setVisibilityOfItems();
+		setUpTrailState();
+
+		// What we do if we are looking at our own trail.
+	/*	new Handler().postDelayed(new Runnable() {
+			@Override
+			public void run() {
+				bottomSheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
+			}
+		}, 500);*/
+
+	}
+
+	private void setUpTrailState() {
+		SetUpDetailsItems();
 	}
 
 	/**
@@ -165,28 +175,29 @@ public class MapViewer extends Activity implements
 		bottomSheet = coordinatorLayout.findViewById(R.id.bottom_sheet);
 		bottomSheetToolbar = (CardView) bottomSheet.findViewById(R.id.bottom_sheet_header);
 
-		BottomSheetBehavior behavior = BottomSheetBehavior.from(bottomSheet);
-		behavior.setBottomSheetCallback(new BottomSheetBehavior.BottomSheetCallback() {
+		bottomSheetBehavior = BottomSheetBehavior.from(bottomSheet);
+		bottomSheetBehavior.setBottomSheetCallback(new BottomSheetBehavior.BottomSheetCallback() {
 			@Override
 			public void onStateChanged(@NonNull View bottomSheet, int newState) {
 				// React to state change
 				onBottomSheetChanged(bottomSheet, newState);
 			}
+
 			@Override
 			public void onSlide(@NonNull View bottomSheet, float slideOffset) {
-
-				onBottomSheetSlide(bottomSheet, slideOffset);
+				onBottomSheetSlide(slideOffset);
 				// React to dragging events
 			}
 		});
 	}
 
-	private void setVisibilityOfItems() {
-		if (!IS_OWN_TRAIL) {
+	/**
+	 * Set up the details for the trail. Made public so that we can override for local trails.
+	 */
+	public void SetUpDetailsItems() {
 			findViewById(R.id.settings_my_trail).setVisibility(View.GONE);
 			findViewById(R.id.toggle_tracking).setVisibility(View.GONE);
 			findViewById(R.id.publish_trail).setVisibility(View.GONE);
-		}
 	}
 
 	// Handler for when the view is expanded.
@@ -210,25 +221,23 @@ public class MapViewer extends Activity implements
 		}
 	}
 
+	/**
+	 * Defin what happens when the bottom sheet expands.
+	 * @param bottomSheet our bottom sheet view.
+     */
 	private void setExpandedBottomSheetState(View bottomSheet) {
 		setScrollingBehaviour(bottomSheet);
 		// Set it up here so it works at runtime.
-		if (editToggleBottomSheetFab == null) {
-			editToggleBottomSheetFab = (FloatingActionButton) bottomSheet.findViewById(R.id.edit_toggle_fab);
-			setUpEditFabButtonToggle();
+		if (bottomSheetFab == null) {
+			bottomSheetFab = (FloatingActionButton) bottomSheet.findViewById(R.id.edit_toggle_fab);
+			SetUpBottomSheetFab();
 
-			// Load details
-			UpdateViewElementWithProperty viewSetter = new UpdateViewElementWithProperty();
 
-			TextView days = (TextView) bottomSheet.findViewById(R.id.duration_details);
-			viewSetter.UpdateTextElementWithUrlAndAdditionalString(days, LoadBalancer.RequestServerAddress()+ "/rest/TrailManager/GetDurationOfTrailInDays/"+trailId, "Days", context);
-			TextView pois = (TextView) bottomSheet.findViewById(R.id.number_of_crumbs_details);
-			viewSetter.UpdateTextElementWithUrlAndAdditionalString(pois, LoadBalancer.RequestServerAddress() + "rest/TrailManager/GetAllSavedCrumbIdsForATrail" + trailId, "Points of Interest", context);
 		}
 
 		// shrink our fab.
-		if (editToggleBottomSheetFab.getVisibility() != View.VISIBLE) {
-			SimpleAnimations.ExpandFab(editToggleBottomSheetFab, 75);
+		if (bottomSheetFab.getVisibility() != View.VISIBLE) {
+			SimpleAnimations.ExpandFab(bottomSheetFab, 75);
 		}
 	}
 
@@ -269,7 +278,6 @@ public class MapViewer extends Activity implements
 					imageCover.setAlpha(alpha);
 				}
 				checkEditFabState(scrollY, oldScrollY, scrollPostion);
-
 			}
 		});
 	}
@@ -282,117 +290,88 @@ public class MapViewer extends Activity implements
      */
 	private void checkEditFabState(int scrollY, int oldScrollY, float imageScrollPercent) {
 		// This means that we are scrolling down the page and our fab is moving towards the toolbar.
-		if (imageScrollPercent > 0.7 && scrollY > oldScrollY && editToggleBottomSheetFab.getVisibility() == View.VISIBLE) {
-			SimpleAnimations.ShrinkFab(editToggleBottomSheetFab, 75);
-			editToggleBottomSheetFab.setVisibility(View.INVISIBLE);
+		if (imageScrollPercent > 0.7 && scrollY > oldScrollY && bottomSheetFab.getVisibility() == View.VISIBLE) {
+			SimpleAnimations.ShrinkFab(bottomSheetFab, 75);
+			bottomSheetFab.setVisibility(View.INVISIBLE);
 		}
 		// THis means that we are scrolling back up the page, so we will need to redisplay our fab.
-		else if (imageScrollPercent < 0.7 && scrollY < oldScrollY && editToggleBottomSheetFab.getVisibility() == View.INVISIBLE) {
-			SimpleAnimations.ExpandFab(editToggleBottomSheetFab, 75);
-			editToggleBottomSheetFab.setVisibility(View.VISIBLE);
-
+		else if (imageScrollPercent < 0.7 && scrollY < oldScrollY && bottomSheetFab.getVisibility() == View.INVISIBLE) {
+			SimpleAnimations.ExpandFab(bottomSheetFab, 75);
+			bottomSheetFab.setVisibility(View.VISIBLE);
 		}
-
 	}
 
+	/**
+	 * Set up the edit toggle button. This is not just the edit, but the like button too (depending
+	 * on whether it is our trail or not) so I think that really needs a rename.
+	 */
+	public void SetUpBottomSheetFab() {
 
-	private void setUpEditFabButtonToggle() {
-
-		if (!IS_OWN_TRAIL) {
-			if(!WE_LIKE) {
-				editToggleBottomSheetFab.setBackgroundTintList(ColorStateList.valueOf(Color.WHITE));
-				editToggleBottomSheetFab.setImageDrawable(context.getResources().getDrawable(R.drawable.ic_favorite_border_black_24dp));
-				WE_LIKE = true;
-			} else {
-				// Unlike
-				editToggleBottomSheetFab.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor("#FF4081")));
-				editToggleBottomSheetFab.setImageDrawable(context.getResources().getDrawable(R.drawable.ic_favorite_border_white_24dp));
-				WE_LIKE = false;
-			}
+		if(!WE_LIKE) {
+			bottomSheetFab.setBackgroundTintList(ColorStateList.valueOf(Color.WHITE));
+			bottomSheetFab.setImageDrawable(context.getResources().getDrawable(R.drawable.ic_favorite_border_black_24dp));
+			WE_LIKE = true;
+		} else {
+			// Unlike
+			bottomSheetFab.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor("#FF4081")));
+			bottomSheetFab.setImageDrawable(context.getResources().getDrawable(R.drawable.ic_favorite_border_white_24dp));
+			WE_LIKE = false;
 		}
 
-		editToggleBottomSheetFab.setOnClickListener(new View.OnClickListener() {
+		bottomSheetFab.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				if (IS_OWN_TRAIL) {
-					switch (BOTTOM_SHEET_STATE) {
-						case EDIT_MODE:
-							BOTTOM_SHEET_STATE = READ_ONLY_MODE;
-							setUpReadOnlyMode();
-							break;
-						case READ_ONLY_MODE:
-							BOTTOM_SHEET_STATE = EDIT_MODE;
-							setUpEditMode();
-							break;
-					}
-				} else {
-					// do llike
-					if(!WE_LIKE) {
-						editToggleBottomSheetFab.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor("#FF4081")));
-						editToggleBottomSheetFab.setImageDrawable(context.getResources().getDrawable(R.drawable.ic_favorite_border_white_24dp));
-						WE_LIKE = true;
-					} else {
-						// Unlike
-						editToggleBottomSheetFab.setBackgroundTintList(ColorStateList.valueOf(Color.WHITE));
-						editToggleBottomSheetFab.setImageDrawable(context.getResources().getDrawable(R.drawable.ic_favorite_border_black_24dp));
-						WE_LIKE = false;
-					}
-
-
-				}
-
+				DoBottomSheetClick();
 			}
 		});
 	}
 
+	public void DoBottomSheetClick() {
 
-	/**
-	 *
-	 */
-	private void setUpEditMode() {
-		Activity act = (Activity) context;
-		EditText trailName = (EditText) act.findViewById(R.id.trail_title_input);
-		trailName.setEnabled(true);
-
-		TextView tellThemToSelectACoverPhoto = (TextView) act.findViewById(R.id.cover_photo_prompt);
-		SimpleAnimations.FadeInView(tellThemToSelectACoverPhoto);
-
-		SimpleAnimations.ShrinkToggleAFab(editToggleBottomSheetFab, "#00E676", context.getResources().getDrawable(R.drawable.ic_action_accept));
+		if(!WE_LIKE) {
+			bottomSheetFab.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor("#FF4081")));
+			bottomSheetFab.setImageDrawable(context.getResources().getDrawable(R.drawable.ic_favorite_border_white_24dp));
+			WE_LIKE = true;
+		} else {
+			// Unlike
+			bottomSheetFab.setBackgroundTintList(ColorStateList.valueOf(Color.WHITE));
+			bottomSheetFab.setImageDrawable(context.getResources().getDrawable(R.drawable.ic_favorite_border_black_24dp));
+			WE_LIKE = false;
+		}
 	}
 
-	private void setUpReadOnlyMode() {
-		Activity act = (Activity) context;
-		EditText trailName = (EditText) act.findViewById(R.id.trail_title_input);
-		trailName.setEnabled(false);
 
-		TextView tellThemToSelectACoverPhoto = (TextView) act.findViewById(R.id.cover_photo_prompt);
-		SimpleAnimations.FadeOutView(tellThemToSelectACoverPhoto);
-
-		SimpleAnimations.ShrinkToggleAFab(editToggleBottomSheetFab, "#FF4081", context.getResources().getDrawable(R.drawable.ic_edit_white_24dp));
-	}
 
 	/**
-	 *
-	 * @param bottomSheet
-	 * @param slideOffset
+	 * Define what we do when the bottom sheet is slid up.
+	 * @param slideOffset How far we have slid.
      */
-	private void onBottomSheetSlide(View bottomSheet, float slideOffset) {
-		float newAlpha = 1 - slideOffset*2; //
+	private void onBottomSheetSlide(float slideOffset) {
+
+		// Simple formula to calculate our toolbar visibility. The purpose of this is to make
+		// the image start fading into a blue toolbar when it is below half way scrolled.
+		float newAlpha = 1 - slideOffset*2; // zero alpha reached when we are at halfway.
+
+		// Safety check.
 		if (newAlpha < 0) {
 			newAlpha = 0;
 		}
 
-		//bottomSheetToolbar.setAlpha(newAlpha);
-		if (newAlpha == 1) {
+		// If else loop to display the bottom sheet card toolbar. This is done because the imageview
+		// fades, and when it reaches one we display our card with a shadow. Anything before this we
+		// just want to fade the image cover.
+		if (newAlpha >= 1) {
 			bottomSheetToolbar.setAlpha(1);
 		} else {
 			bottomSheetToolbar.setAlpha(0);
 		}
 		imageCover.setAlpha(newAlpha);
 
+		// Safety check as we are initialising these buttons at runtime to speed things up.
 		if (playFab == null) {
 			setUpPlayButton();
 		}
+		// If our pay fab is visible, we need to hide it.
 		if (playFab.getVisibility() == View.VISIBLE) {
 			SimpleAnimations.ShrinkFab(playFab, 75);
 		}
@@ -422,6 +401,9 @@ public class MapViewer extends Activity implements
 		}
 	}
 
+	/**
+	 * Sewt the state of our toolbar when it is collapsed.
+	 */
 	private void setCollapsedToolbarState() {
 		// Expand play button
 		if (playFab == null) {
@@ -429,12 +411,11 @@ public class MapViewer extends Activity implements
 		}
 		SimpleAnimations.ExpandFab(playFab, 75);
 
-		if (editToggleBottomSheetFab == null) {
-			editToggleBottomSheetFab = (FloatingActionButton) bottomSheet.findViewById(R.id.edit_toggle_fab);
+		if (bottomSheetFab == null) {
+			bottomSheetFab = (FloatingActionButton) bottomSheet.findViewById(R.id.edit_toggle_fab);
 		}
 
-		editToggleBottomSheetFab.setVisibility(View.INVISIBLE);
-		// show text view
+		bottomSheetFab.setVisibility(View.INVISIBLE);
 	}
 
 	/**
@@ -459,36 +440,207 @@ public class MapViewer extends Activity implements
 	private void setListenersAndLoaders() {
 		createCurrentTrailManager(mMap);
 
-		// Button listeners, do as they say.
 		setToggleSatellite();
 		setBackButtonListener();
 		setUpPlayButton();
-		/* Grab the trail Id, which is used to load the details of the map and */
-		trailId = this.getIntent().getStringExtra("TrailId");
-		getBaseDetailsForATrail(trailId);
-		myCurrentTrailManager.StartCrumbDisplay(trailId);
-		myCurrentTrailManager.GetAndDisplayTrailOnMap(trailId);
+
+		// Local map will override this method and do its own load.
+		SetBaseDetailsForATrail(trailId);
+		StartCrumbDisplay(trailId);
+		GetAndDisplayTrailOnMap(trailId);
 		addViewToTrail(trailId);
 	}
 
+
+	/*
+        *    Method that triggers the the start of displaying crumbs on the map.
+
+        *    @Param trailId : The id of the trail that we want to view. Used to get all the crumb Ids for
+        *    displaying on the map.
+        */
+	public void StartCrumbDisplay(String trailId) {
+		mStoryBoardItems = new ArrayList<>();
+		String url = MessageFormat.format("{0}/rest/login/getAllCrumbsForATrail/{1}",
+				LoadBalancer.RequestServerAddress(),
+				trailId);
+		//setMapListener();
+		url = url.replaceAll(" ", "%20");
+
+		// This creates the async request with a callback method of what I want completed when the
+		// request is finished.
+		clientRequestProxy  = new AsyncDataRetrieval(url, new AsyncDataRetrieval.RequestListener() {
+			@Override
+			public void onFinished(String result) {
+				//Initialise our object, and attempt to construct it from the string.
+				JSONObject returnedCrumbs = null;
+				try {
+					returnedCrumbs = new JSONObject(result);
+
+					// All the crumbs are under the object that has the id "Title".
+					JSONArray crumbListJSON = new JSONArray(returnedCrumbs.getString("Title"));
+
+					DisplayObjects(crumbListJSON);
+
+				} catch (JSONException e) {
+					// TODO Auto-generated catch block
+					Log.e("BC.MAP", "A JsonException was thrown during the display process for a crumb." +
+							"This probably means that you are missing a field on your json. Stacktrace follows");
+					e.printStackTrace();
+				}
+			}
+		}, context);
+
+		clientRequestProxy.execute();
+		Log.i("MAP", "Finished Loading crumbs and displaying them on the map");
+	}
+
+	public void DisplayObjects (JSONArray objects) throws JSONException {
+		JSONObject next = null;
+		for (int index=0; index<objects.length(); index += 1 ) {
+			// The next node to get data from and Draw.
+			next =  objects.getJSONObject(index);
+
+			mapDisplayManager.DrawCrumbFromJson(next, false);
+		}
+	}
+
+	public void GetAndDisplayTrailOnMap(String trailId) {
+
+		// First construct our url that we want:
+		mapDisplayManager = new MapDisplayManager(mMap, (Activity) context, trailId);
+
+		// fetch metadata first
+		final String fetchMetadataUrl = LoadBalancer.RequestServerAddress() + "/rest/TrailManager/FetchMetadata/" + trailId;
+		clientRequestProxy = new AsyncDataRetrieval(fetchMetadataUrl, new AsyncDataRetrieval.RequestListener() {
+			@Override
+			public void onFinished(String result) throws JSONException {
+				JSONObject jsonObject = new JSONObject(result);
+				displayMetadata(jsonObject);
+			}
+		}, context);
+		clientRequestProxy.execute();
+	}
+
+	public void displayMetadata(JSONObject metadata) throws JSONException {
+		// Get an iterator of all the event nodes.
+		Iterator<String> keys = metadata.keys();
+		LatLng endOfLastPolyline = null;
+		int index = 0;
+		while (keys.hasNext()) {
+			String nodeString = metadata.getString(Integer.toString(index));
+			JSONObject node = new JSONObject(nodeString);
+			// testIfNeedToDrawDay(nodeString);
+			// This is to stop the bug where the different lines dont connect up.
+			endOfLastPolyline = drawOnMap(node, endOfLastPolyline);
+			drawNodeOnMap(node);
+			index += 1;
+			keys.next();
+		}
+		// Get fisrt object and display it when we are ready to animate over the photos.
+	}
+
+	private void drawNodeOnMap(JSONObject node) throws JSONException {
+		String type = node.getString("EventType");
+		int eventType = Integer.parseInt(type);
+		IconGenerator iconFactory = new IconGenerator(context);
+		iconFactory.setColor(Color.CYAN);
+		// If we have a rest zone we want to draw a little circle on the map.
+		if (eventType == TrailManagerWorker.REST_ZONE) {
+			String latitude = node.getString("Latitude");
+			String longitude = node.getString("Longitude");
+
+			LatLng location = new LatLng(Double.parseDouble(latitude), Double.parseDouble(longitude));
+			mMap.addMarker(new MarkerOptions()
+					.position(location)
+					.icon(BitmapDescriptorFactory.fromResource(R.drawable.player_sprite)));
+		}
+		else if (eventType == TrailManagerWorker.CRUMB) {
+			// Draw crumb type on the map.
+
+		}
+	}
+
+
+	private LatLng drawOnMap(JSONObject node, LatLng endOfLastLine) throws JSONException {
+		List<LatLng> listOfPoints;
+		if (node.has("PolylineString")) {
+			String polyLineString = node.getString("PolylineString");
+			if (node.getString("PolylineIsEncoded").equals("0")) {
+				listOfPoints = PolyUtil.decode(polyLineString);
+			} else {
+				listOfPoints = parseNonEncodedPolyline(polyLineString);
+				drawDashedPoly(listOfPoints);
+				return listOfPoints.get(0);
+			}
+			if (endOfLastLine != null) {
+				// listOfPoints.add(endOfLastLine);
+			}
+			DrawPolyline(listOfPoints);
+			return listOfPoints.get(0);
+		}
+
+		return null;
+	}
+
+	private void drawDashedPoly(List<LatLng> list) {
+		DrawPolyline(list);
+	}
+
+	private List<LatLng> parseNonEncodedPolyline(String polylineString) {
+		ArrayList<LatLng> listOfPoints = new ArrayList<>();
+		String[] pointsString = polylineString.split("\\|");
+		for (int index = 0; index < pointsString.length; index += 1 ) {
+			try {
+				// Points are store in string array like lat,long so we need to spit it again for each point.
+				String[] latAndLong = pointsString[index].split(",");
+				LatLng latLng = new LatLng(Double.parseDouble(latAndLong[0]), Double.parseDouble(latAndLong[1]));
+				listOfPoints.add(latLng);
+			} catch(NumberFormatException ex) {
+				ex.printStackTrace();
+			}
+		}
+		return listOfPoints;
+	}
+
+	public void DrawPolyline(List<LatLng> listOfPoints) {
+		PolylineOptions options = new PolylineOptions().width(12).color(Color.parseColor("#E57373")).geodesic(true);
+		for (int z = 0; z < listOfPoints.size(); z++) {
+			LatLng point = listOfPoints.get(z);
+			options.add(point);
+		}
+
+		mMap.addPolyline(options);
+	}
+
+	/**
+	 * setUp our play button.
+	 */
 	private void setUpPlayButton() {
 		playFab = (FloatingActionButton) findViewById(R.id.play_button);
 		playFab.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
 				// Load at first crumb.
-				Intent viewCrumbsIntent = new Intent(mContext, StoryBoardActivity.class);
-				ArrayList<CrumbCardDataObject> crumbObjects = myCurrentTrailManager.getDataObjects();
-				viewCrumbsIntent.putExtra("StartingObject", crumbObjects.get(0));
-				viewCrumbsIntent.putExtra("Index", storyboardIndex);
-				viewCrumbsIntent.putParcelableArrayListExtra("CrumbArray", crumbObjects); // Note - this is currently using serializable - shoiuld use parcelable for speed
-				viewCrumbsIntent.putExtra("TrailId", trailId);
-				viewCrumbsIntent.putExtra("Timer", storyboardTimerTime);
-				mContext.startActivityForResult(viewCrumbsIntent, 1);
+				playFabClickHandler();
 			}
 		});
 	}
 
+	public void playFabClickHandler() {
+		Intent viewCrumbsIntent = new Intent(mContext, StoryBoardActivity.class);
+		ArrayList<CrumbCardDataObject> crumbObjects = myCurrentTrailManager.getDataObjects();
+		viewCrumbsIntent.putExtra("StartingObject", crumbObjects.get(0));
+		viewCrumbsIntent.putExtra("Index", storyboardIndex);
+		viewCrumbsIntent.putParcelableArrayListExtra("CrumbArray", crumbObjects); // Note - this is currently using serializable - shoiuld use parcelable for speed
+		viewCrumbsIntent.putExtra("TrailId", trailId);
+		viewCrumbsIntent.putExtra("Timer", storyboardTimerTime);
+		mContext.startActivityForResult(viewCrumbsIntent, 1);
+	}
+
+	/**
+	 * When we view this trail, we need to add a view to it.
+	 * @param trailId The trail to add a view to.
+     */
 	private void addViewToTrail(String trailId) {
 		clientRequestProxy  = new AsyncDataRetrieval(LoadBalancer.RequestServerAddress() +
 				"/rest/TrailManager/AddTrailView/"+trailId,
@@ -540,28 +692,16 @@ public class MapViewer extends Activity implements
 //		});
 	}
 
-	private void getBaseDetailsForATrail(final String trailId) {
-		String url = LoadBalancer.RequestServerAddress() + "/rest/TrailManager/GetBaseDetailsForATrail/"+trailId;
-		AsyncDataRetrieval asyncDataRetrieval = new AsyncDataRetrieval(url, new AsyncDataRetrieval.RequestListener() {
-			@Override
-			public void onFinished(String result) {
-					if (result != null) {
-					try {
-						JsonHandler jsonHandler = new JsonHandler();
-						json = jsonHandler.convertJsonStringToJsonObject(result);
-						setTrailHeader(json.getString("trailName"));
-						setUserNames(json.getString("userId"));
-						setTrailClickHandlers(json.getString("userId"));
+	public void SetBaseDetailsForATrail(final String trailId) {
+		// Load details
+		UpdateViewElementWithProperty viewSetter = new UpdateViewElementWithProperty();
 
-						setTrailDescription(json.getString("description"));
-						setTrailDetails(trailId);
-					} catch (JSONException e) {
-						e.printStackTrace();
-					}
-				}
-			}
-		}, this);
-		asyncDataRetrieval.execute();
+		TextView days = (TextView) bottomSheet.findViewById(R.id.duration_details);
+		viewSetter.UpdateTextElementWithUrlAndAdditionalString(days, LoadBalancer.RequestServerAddress()+ "/rest/TrailManager/GetDurationOfTrailInDays/"+trailId, "Days", context);
+		TextView pois = (TextView) bottomSheet.findViewById(R.id.number_of_crumbs_details);
+		viewSetter.UpdateTextElementWithUrlAndAdditionalString(pois, LoadBalancer.RequestServerAddress() + "/rest/TrailManager/GetNumberOfCrumbsForATrail/" + trailId, "Points of Interest", context);
+
+
 	}
 
 
@@ -723,11 +863,10 @@ public class MapViewer extends Activity implements
 		private LocationRequest locationrequest;
 		private Intent mIntentService;
 		private PendingIntent mPendingIntent;
-		private MapDisplayManager mapDisplayManager;
+
 		private float currentZoom = -1;
 		private boolean alreadyFocused = false;
 		private int mDayOfYear = 0;
-		private ArrayList<StoryBoardItemData> mStoryBoardItems;
 		private PreferencesAPI mPreferencesApi;
 		/*
         Display a single trail and its crumbs
@@ -761,45 +900,7 @@ public class MapViewer extends Activity implements
 			});
 		}
 
-		// Redraw the map
-		public void redraw() {
-			DisplayTrailOnMap(GlobalContainer.GetContainerInstance().GetTrailsJSON().toString());
-		}
 
-		public void GetAndDisplayTrailOnMap(String trailId) {
-			setOnMapCameraChangedListener();
-			// First construct our url that we want:
-			mapDisplayManager = new MapDisplayManager(map, context, trailId);
-
-			// fetch metadata first
-			final String fetchMetadataUrl = LoadBalancer.RequestServerAddress() + "/rest/TrailManager/FetchMetadata/" + trailId;
-			clientRequestProxy = new AsyncDataRetrieval(fetchMetadataUrl, new AsyncDataRetrieval.RequestListener() {
-				@Override
-				public void onFinished(String result) throws JSONException {
-					JSONObject jsonObject = new JSONObject(result);
-					displayMetadata(jsonObject);
-				}
-			}, context);
-			clientRequestProxy.execute();
-		}
-
-		public void displayMetadata(JSONObject metadata) throws JSONException {
-			// Get an iterator of all the event nodes.
-			Iterator<String> keys = metadata.keys();
-			LatLng endOfLastPolyline = null;
-			int index = 0;
-			while (keys.hasNext()) {
-				String nodeString = metadata.getString(Integer.toString(index));
-				JSONObject node = new JSONObject(nodeString);
-				// testIfNeedToDrawDay(nodeString);
-				// This is to stop the bug where the different lines dont connect up.
-				endOfLastPolyline = drawOnMap(node, endOfLastPolyline);
-				drawNodeOnMap(node);
-				index += 1;
-				keys.next();
-			}
-			// Get fisrt object and display it when we are ready to animate over the photos.
-		}
 
 		// Draw a day label on the map.
 		private void testIfNeedToDrawDay(String node) {
@@ -832,78 +933,8 @@ public class MapViewer extends Activity implements
 			map.animateCamera(CameraUpdateFactory.newLatLngZoom(lastPoint, 10.0f));
 		}
 
-		private void drawNodeOnMap(JSONObject node) throws JSONException {
-			String type = node.getString("EventType");
-			int eventType = Integer.parseInt(type);
-			IconGenerator iconFactory = new IconGenerator(context);
-			iconFactory.setColor(Color.CYAN);
-			// If we have a rest zone we want to draw a little circle on the map.
-			if (eventType == TrailManagerWorker.REST_ZONE) {
-				String latitude = node.getString("Latitude");
-				String longitude = node.getString("Longitude");
-
-				LatLng location = new LatLng(Double.parseDouble(latitude), Double.parseDouble(longitude));
-				map.addMarker(new MarkerOptions()
-						.position(location)
-						.icon(BitmapDescriptorFactory.fromResource(R.drawable.player_sprite)));
-			}
-			else if (eventType == TrailManagerWorker.CRUMB) {
-				// Draw crumb type on the map.
-
-			}
-		}
 
 
-		private LatLng drawOnMap(JSONObject node, LatLng endOfLastLine) throws JSONException {
-			List<LatLng> listOfPoints;
-			if (node.has("PolylineString")) {
-				String polyLineString = node.getString("PolylineString");
-				if (node.getString("PolylineIsEncoded").equals("0")) {
-					listOfPoints = PolyUtil.decode(polyLineString);
-				} else {
-					listOfPoints = parseNonEncodedPolyline(polyLineString);
-					drawDashedPoly(listOfPoints);
-					return listOfPoints.get(0);
-				}
-				if (endOfLastLine != null) {
-					// listOfPoints.add(endOfLastLine);
-				}
-				DrawPolyline(listOfPoints);
-				return listOfPoints.get(0);
-			}
-
-			return null;
-		}
-
-		private void drawDashedPoly(List<LatLng> list) {
-			DrawPolyline(list);
-		}
-
-		private List<LatLng> parseNonEncodedPolyline(String polylineString) {
-			ArrayList<LatLng> listOfPoints = new ArrayList<>();
-			String[] pointsString = polylineString.split("\\|");
-			for (int index = 0; index < pointsString.length; index += 1 ) {
-				try {
-					// Points are store in string array like lat,long so we need to spit it again for each point.
-					String[] latAndLong = pointsString[index].split(",");
-					LatLng latLng = new LatLng(Double.parseDouble(latAndLong[0]), Double.parseDouble(latAndLong[1]));
-					listOfPoints.add(latLng);
-				} catch(NumberFormatException ex) {
-					ex.printStackTrace();
-				}
-			}
-			return listOfPoints;
-		}
-
-		public void DrawPolyline(List<LatLng> listOfPoints) {
-			PolylineOptions options = new PolylineOptions().width(12).color(Color.parseColor("#E57373")).geodesic(true);
-			for (int z = 0; z < listOfPoints.size(); z++) {
-				LatLng point = listOfPoints.get(z);
-				options.add(point);
-			}
-
-			map.addPolyline(options);
-		}
 
 		// DOnt think this is used anymroe.
 		public void DisplayTrailOnMap(String trailsJSONString) {
@@ -943,69 +974,6 @@ public class MapViewer extends Activity implements
 				Log.e("TRAIL", "Failed to draw trail on the map - Likey an issue finding the correct json Point");
 				e.printStackTrace();
 			}
-		}
-
-		/*
-        *    Method that triggers the the start of displaying crumbs on the map.
-
-        *    @Param trailId : The id of the trail that we want to view. Used to get all the crumb Ids for
-        *    displaying on the map.
-        */
-		public void StartCrumbDisplay(String trailId) {
-			mStoryBoardItems = new ArrayList<>();
-			String url = MessageFormat.format("{0}/rest/login/getAllCrumbsForATrail/{1}",
-					LoadBalancer.RequestServerAddress(),
-					trailId);
-			//setMapListener();
-			url = url.replaceAll(" ", "%20");
-
-			// This creates the async request with a callback method of what I want completed when the
-			// request is finished.
-			clientRequestProxy  = new AsyncDataRetrieval(url, new AsyncDataRetrieval.RequestListener() {
-				@Override
-				public void onFinished(String result) {
-					//Initialise our object, and attempt to construct it from the string.
-					JSONObject returnedCrumbs = null;
-					try {
-						returnedCrumbs = new JSONObject(result);
-
-						// All the crumbs are under the object that has the id "Title".
-						JSONArray crumbListJSON = new JSONArray(returnedCrumbs.getString("Title"));
-						JSONObject next = null;
-						for (int index=0; index<crumbListJSON.length(); index += 1 ) {
-							// The next node to get data from and Draw.
-							next =  crumbListJSON.getJSONObject(index);
-							//mStoryBoardItems.add(buildStoryBoardItem(next));
-
-							mapDisplayManager.DrawCrumbFromJson(next, false);
-						}
-
-						// Now that we are done, we want to set the focus to the last crumb added
-						Double Latitude = next.getDouble("Latitude");
-						Double Longitude = next.getDouble("Longitude");
-
-						CameraPosition position = new CameraPosition(new LatLng(Latitude, Longitude), 10, 72, 0);
-						CameraUpdate first = CameraUpdateFactory.newCameraPosition(position);
-
-						CameraUpdate center=
-								CameraUpdateFactory.newLatLng(new LatLng(Latitude,
-										Longitude));
-						CameraUpdate zoom=CameraUpdateFactory.zoomTo(12);
-						// Move/animate camera to location
-						map.moveCamera(first);
-						map.animateCamera(zoom);
-
-					} catch (JSONException e) {
-						// TODO Auto-generated catch block
-						Log.e("BC.MAP", "A JsonException was thrown during the display process for a crumb." +
-								"This probably means that you are missing a field on your json. Stacktrace follows");
-						e.printStackTrace();
-					}
-				}
-			}, context);
-
-			clientRequestProxy.execute();
-			Log.i("MAP", "Finished Loading crumbs and displaying them on the map");
 		}
 
 		// Simple method to build story board item out of jsonObject.

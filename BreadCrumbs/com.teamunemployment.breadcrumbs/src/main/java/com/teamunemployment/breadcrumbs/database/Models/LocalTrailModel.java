@@ -21,10 +21,10 @@ public class LocalTrailModel {
     private int numberOfPOI = 0;
 
     /**
-     * @param trailMetadata The metadata for our local trail.
+     * @param crumbs The crumbs for our local trail, fetched by {@link com.teamunemployment.breadcrumbs.database.DatabaseController#GetAllCrumbs(String)}
      */
-    public LocalTrailModel(JSONObject trailMetadata) {
-        processMetadataIntoVars(trailMetadata);
+    public LocalTrailModel(JSONObject crumbs) {
+        processMetadataIntoVars(crumbs);
     }
 
     /**

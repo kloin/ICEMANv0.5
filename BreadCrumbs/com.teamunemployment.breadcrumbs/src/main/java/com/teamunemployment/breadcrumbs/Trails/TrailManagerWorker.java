@@ -198,12 +198,16 @@ public class TrailManagerWorker {
      * Handle the create trail call from the user. This method handles setting up and starting a trail.
      */
     public void StartLocalTrail() {
-        mPreferencesAPI.RemoveTrailBasedValues();
         DatabaseController dbc = new DatabaseController(mContext);
+        BreadcrumbsLocationAPI locationAPI = new BreadcrumbsLocationAPI();
+
+        // clean up any old trail data that may exist.
+        locationAPI.RemoveGeofences();
+        mPreferencesAPI.RemoveTrailBasedValues();
+        mPreferencesAPI.SetUserTracking(true);
 
         // Start our trail. note that the local trial id is saved to preferences inside this method
         dbc.SaveTrailStart(null, DateTime.now().toString());
-        BreadcrumbsLocationAPI locationAPI = new BreadcrumbsLocationAPI();
 
         // Doesnt work for some reason.
         Intent stopIntent = new Intent(mContext.getApplicationContext(), StopTrackingIntent.class);

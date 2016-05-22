@@ -140,6 +140,7 @@
         <activity android:name=".client.Maps.MapViewer"
             android:screenOrientation="portrait">
         </activity>
+        <activity android:name=".client.Maps.LocalMap" android:screenOrientation="portrait"/>
         <activity android:name=".client.SplashScreen"
             android:screenOrientation="portrait">
         </activity>
