@@ -13,6 +13,7 @@ import android.util.Log;
 import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.model.LatLngBounds;
 import com.teamunemployment.breadcrumbs.Location.BreadCrumbsFusedLocationProvider;
+import com.teamunemployment.breadcrumbs.Models;
 import com.teamunemployment.breadcrumbs.Network.ServiceProxy.AsyncFetchThumbnail;
 import com.teamunemployment.breadcrumbs.RandomUsefulShit.Utils;
 import com.teamunemployment.breadcrumbs.caching.GlobalContainer;
@@ -298,28 +299,26 @@ public class MapDisplayManager implements GoogleMap.OnMarkerClickListener, Googl
 
             DisplayCrumb displayCrumb = new DisplayCrumb(Latitude, Longitude, mediaType, id, R.drawable.wine_glass, placeId,suburb, city, country, timeStamp, description, bitmap, 0);
             clusterManager.addItem(displayCrumb);
-
         }
     }
 
     public void DrawLocalCrumbFromJson(JSONObject crumb) throws JSONException {
         mapInstance = PassTheMapPlease(); // Shit code
 
-
         String url = "";
         // Get our variables
-        final String id = crumb.getString("id");
-        final Double Latitude = crumb.getDouble("latitude");
-        final Double Longitude = crumb.getDouble("longitude");
-        final String mediaType = crumb.getString("mime");
-        final String eventId = crumb.getString("eventId");
-        final String placeId = crumb.getString("placeId");
-        final String suburb = crumb.getString("suburb");
-        final String city = crumb.getString("city");
-        final String country = "nz";
-        final String timeStamp = crumb.getString("timeStamp");
-        final String description = crumb.getString("description");
-        mDataObjects.add(new CrumbCardDataObject(mediaType, id, placeId, Latitude, Longitude, 0));
+        final String id = crumb.getString(Models.Crumb.ID);
+        final Double Latitude = crumb.getDouble(Models.Crumb.LATITUDE);
+        final Double Longitude = crumb.getDouble(Models.Crumb.LONGITUDE);
+        final String mediaType = crumb.getString(Models.Crumb.EXTENSION);
+        final String eventId = crumb.getString(Models.Crumb.EVENT_ID);
+        final String placeId = crumb.getString(Models.Crumb.PLACEID);
+        final String suburb = crumb.getString(Models.Crumb.SUBURB);
+        final String city = crumb.getString(Models.Crumb.CITY);
+        final String country = crumb.getString(Models.Crumb.COUNTRY);
+        final String timeStamp = crumb.getString(Models.Crumb.TIMESTAMP);
+        final String description = crumb.getString(Models.Crumb.DESCRIPTION);
+        mDataObjects.add(new CrumbCardDataObject(mediaType, eventId, placeId, Latitude, Longitude, 0));
 
         Bitmap bitmap = fetchBitmapFromLocalFile(eventId, mediaType);
 

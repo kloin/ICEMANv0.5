@@ -191,7 +191,7 @@ public class TrailManagerWorker {
         }
 
         // This is where we increment The event id for the next event.
-        mPreferences.edit().putInt("EVENTID", eventId+1).commit();
+        mPreferencesAPI.SetEventId(eventId+1);
     }
 
     /**

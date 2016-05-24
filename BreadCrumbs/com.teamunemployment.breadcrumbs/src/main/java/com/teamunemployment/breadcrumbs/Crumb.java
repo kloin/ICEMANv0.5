@@ -74,7 +74,7 @@ public class Crumb {
 
     public String GetUserId() {
         try {
-            return mCrumb.getString("userId");
+            return mCrumb.getString("UserId");
         } catch (JSONException e) {
             Log.d("CrumbModel", "Failed to find the parameter UserId");
             e.printStackTrace();
@@ -84,7 +84,7 @@ public class Crumb {
 
     public String GetPlaceId() {
         try {
-            return mCrumb.getString("placeId");
+            return mCrumb.getString(Models.Crumb.PLACEID);
         } catch (JSONException e) {
             Log.d("CrumbModel", "Failed to find the parameter PlaceId");
             e.printStackTrace();
@@ -94,7 +94,7 @@ public class Crumb {
 
     public String GetSuburb() {
         try {
-            return mCrumb.getString("suburb");
+            return mCrumb.getString(Models.Crumb.SUBURB);
         } catch (JSONException e) {
             Log.d("CrumbModel", "Failed to find the parameter Suburb");
             e.printStackTrace();
@@ -104,7 +104,7 @@ public class Crumb {
 
     public String GetCity() {
         try {
-            return mCrumb.getString("city");
+            return mCrumb.getString(Models.Crumb.CITY);
         } catch (JSONException e) {
             Log.d("CrumbModel", "Failed to find the parameter City");
             e.printStackTrace();
@@ -114,7 +114,7 @@ public class Crumb {
 
     public String GetCountry() {
         try {
-            return mCrumb.getString("country");
+            return mCrumb.getString(Models.Crumb.COUNTRY);
         } catch (JSONException e) {
             Log.d("CrumbModel", "Failed to find the parameter Country");
             e.printStackTrace();
@@ -124,7 +124,7 @@ public class Crumb {
 
     public String GetMediaType() {
         try {
-            return mCrumb.getString("mime");
+            return mCrumb.getString(Models.Crumb.EXTENSION);
         } catch (JSONException e) {
             Log.d("CrumbModel", "Failed to find the parameter Mime");
             e.printStackTrace();

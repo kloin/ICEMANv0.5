@@ -586,9 +586,9 @@ public class StoryBoardController {
     public void DeleteCurrentItem() {
         // Local use case
         if (mLastObject.CrumbData != null && mLastObject.CrumbData.GetIsLocal() == 0) {
-            doLocalDelete(mLastObject);
+            doLocalDelete(displayModel);
         } else if (mLastObject.CrumbData!= null && mLastObject.CrumbData.GetIsLocal() == 1) {
-            doServerDelete(mLastObject);
+            doServerDelete(displayModel);
         }
     }
 

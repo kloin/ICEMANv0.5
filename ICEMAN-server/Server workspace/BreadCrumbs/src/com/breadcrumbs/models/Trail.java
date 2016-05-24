@@ -465,6 +465,20 @@ public class Trail {
 		String cypherQuery = "start n =node("+trailId+") match (crumb:Crumb)--(n) Return count(*)";
 		return dbMaster.ExecuteCypherQueryReturnCount(cypherQuery);
 	}
+        
+        public int GetNumberOfPhotoCrumbsForATrail(String trailId) {
+            DBMaster dbMaster = DBMaster.GetAnInstanceOfDBMaster();
+            String cypherQuery = "MATCH (crumb:Crumb) WHERE crumb.TrailId = '"+trailId+"' AND crumb.Extension = '.jpg' RETURN crumb";	
+            JSONObject jsonObject = new JSONObject(dbMaster.ExecuteCypherQueryJSONStringReturnJustIds(cypherQuery)); // Throws json exception
+            return jsonObject.length();
+        }
+        
+        public int GetNumberOfVideosForATrail(String trailId) {
+            DBMaster dbMaster = DBMaster.GetAnInstanceOfDBMaster();
+            String cypherQuery = "MATCH (crumb:Crumb) WHERE crumb.TrailId = '"+trailId+"' AND crumb.Extension = '.mp4' RETURN crumb";	
+            JSONObject jsonObject = new JSONObject(dbMaster.ExecuteCypherQueryJSONStringReturnJustIds(cypherQuery)); // Throws json exception
+            return jsonObject.length();
+        }
 
 	public void setCoverPhotoId(Node trail, int crumbId) {
 		// TODO Auto-generated method stub
@@ -473,9 +487,27 @@ public class Trail {
 
 	public String GetAllCrumbIdsForATrail(String trailId) {
 		DBMaster dbMaster = DBMaster.GetAnInstanceOfDBMaster();
-		String cypherQuery = "MATCH (crumb:Crumb) WHERE crumb.TrailId = '"+trailId+"' RETURN crumb";	
+		String cypherQuery = "MATCH (crumb:Crumb) WHERE crumb.TrailId = '"+trailId+"' RETURN crumb.TrailName";	
 		return dbMaster.ExecuteCypherQueryJSONStringReturnJustIds(cypherQuery);
 	}
+        
+        /**
+         * Get all the photos that have been saved to a certain crumb.
+         * @param trailId The trail Id that we are looking for data 
+         * @return The ids of our photos.
+         */
+        public String GetAllPhotoIdsForATrail(String trailId) {
+		DBMaster dbMaster = DBMaster.GetAnInstanceOfDBMaster();
+		String cypherQuery = "MATCH (crumb:Crumb) WHERE crumb.TrailId = '"+trailId+"' AND crumb.Extension = '.jpg' RETURN crumb";	
+		return dbMaster.ExecuteCypherQueryJSONStringReturnJustIds(cypherQuery);
+	}
+        
+        public String GetAllVideoIdsForATrail(String trailId) {
+		DBMaster dbMaster = DBMaster.GetAnInstanceOfDBMaster();
+		String cypherQuery = "MATCH (crumb:Crumb) WHERE crumb.TrailId = '"+trailId+"' AND crumb.Extension = '.mp4' RETURN crumb";	
+		return dbMaster.ExecuteCypherQueryJSONStringReturnJustIds(cypherQuery);
+	}
+        
        
 	public String GetSimpleDetailsForATrail(String trailId) {
 		DBMaster dbMaster = DBMaster.GetAnInstanceOfDBMaster();
@@ -483,6 +515,10 @@ public class Trail {
 		return dbMaster.ExecuteCypherQueryReturnTrailDetails(cypherQuery);
 	}
 
+        /**
+         * Fetch all the trails in the database. Obviously I do not want to use this for the long term.
+         * @return 
+         */
 	public String GetAllTrailIds() {
 		DBMaster dbMaster = DBMaster.GetAnInstanceOfDBMaster();
 		String cypherQuery = "MATCH (n:Trail) RETURN n LIMIT 100";	
@@ -517,12 +553,42 @@ public class Trail {
 		return dbMaster.ExecuteCypherQueryJSONStringReturnCrumbCardDetails(cypherQuery);
         }
 
+    /**
+     * Get the details for a trail. This is a pretty poor way of fetching - 
+     * I should really go via the Trail node to get all the crumbs, but I dont.
+     * @param trailId
+     * @return 
+     */
     public String GetAllCrumbCardDetailsForATrail(String trailId) {
         DBMaster dbMaster = DBMaster.GetAnInstanceOfDBMaster();
         String cypherQuery = "MATCH (crumb:Crumb) WHERE crumb.TrailId = '"+trailId+"' RETURN crumb";	
         return dbMaster.ExecuteCypherQueryJSONStringReturnCrumbCardDetails(cypherQuery);    
     }
+    
+    public String GetNumberOfVideosInATrail(String trailId) {
+        DBMaster dbMaster = DBMaster.GetAnInstanceOfDBMaster();
+        String cypherQuery = "MATCH (crumb:Crumb) WHERE crumb.TrailId = '"+trailId+"' RETURN crumb";	
+        return dbMaster.ExecuteCypherQueryJSONStringReturnCrumbCardDetails(cypherQuery);    
+    }
+
+    public String GetDisplayVariablesForATrail(String TrailId) {
         
+        // Grab the varaibles
+        JSONObject result = new JSONObject();
+        int numberOfPhotos = GetNumberOfPhotoCrumbsForATrail(TrailId);
+        int numberOfVideos = GetNumberOfVideosForATrail(TrailId);
+        String numberOfCrumbs = GetNumberOfCrumbsForATrail(TrailId);
+        String numberOfViews = GetNumberOfViewsForATrail(TrailId);
+        
+        // Add the variables
+        result.put("PhotosCount", Integer.toString(numberOfPhotos));
+        result.put("VideoCount", Integer.toString(numberOfVideos));
+        result.put("CrumbCount", numberOfCrumbs);
+        result.put("ViewCount", numberOfViews);
+        
+        // Retrun the json result as a string.
+        return result.toString();
+    }
         
         
         

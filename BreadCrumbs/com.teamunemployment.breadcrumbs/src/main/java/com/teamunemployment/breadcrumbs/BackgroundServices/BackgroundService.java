@@ -33,6 +33,7 @@ public class BackgroundService extends Service {
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         mPreferencesApi = new PreferencesAPI(this);
+        bus.register(this);
         handleServiceStart();
         return START_STICKY; // Check if we need to restart the service when we end it.
     }
@@ -46,7 +47,6 @@ public class BackgroundService extends Service {
             if (!mPreferencesApi.isDriving()) {
                 startPassiveGPS(600, 200);
             }
-
         }
 
         // If we were uploading when the app got killed, we should resume uploading.
@@ -113,7 +113,7 @@ public class BackgroundService extends Service {
      * the trail information, and uploads the information to the server. The actual uploading process
      * occurs in several steps and can take some time, so we need to run this in a background service.
      *
-     * @Param trailObject: The object that contains the information about the trail
+     * @Param trailObject: The object that contains the information about the trail.
      */
     @Subscribe
     public void UploadTrailToDatabase(TrailObject trailObject) {

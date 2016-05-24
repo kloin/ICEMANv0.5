@@ -233,7 +233,7 @@ public class RetrieveData {
         BodyPartEntity bpe = (BodyPartEntity) parts.get(0).getEntity();
         InputStream stream = bpe.getInputStream();
         
-        int savingMediaResult = crumb.saveMedia(stream, extension, id);
+        int savingMediaResult = crumb.saveMedia(stream, extension, id, trailId);
         if (savingMediaResult == 0) {
             return "200"; 
         } else {

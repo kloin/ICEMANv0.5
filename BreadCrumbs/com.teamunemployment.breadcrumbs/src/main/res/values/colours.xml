@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <color name="home">#3F51B5</color>
-    <color name="accent">#FF4081</color>
+    <color name="accent">#F06292</color>
     <color name="accentLight">#F06292</color>
     <color name="home_pressed">#BA68C8</color>
     <color name="good_to_go">#00E676</color>

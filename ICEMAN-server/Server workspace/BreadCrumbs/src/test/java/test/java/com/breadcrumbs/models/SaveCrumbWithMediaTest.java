@@ -22,10 +22,10 @@ public class SaveCrumbWithMediaTest {
     // Testing to see if bitmap can be saved locally.
     @Test
     public void TestThatIcanSaveBitmap() throws FileNotFoundException {
-        Crumb crumb = new Crumb();
-        File file = new File("C:/Users/jek40/Desktop/test.jpg");
-        InputStream targetStream = new FileInputStream(file);
-        int result = crumb.ConvertAndSaveImage(targetStream, "1", true);
-        Assert.assertTrue(result ==0);
+        //Crumb crumb = new Crumb();
+        //File file = new File("C:/Users/jek40/Desktop/test.jpg");
+        //InputStream targetStream = new FileInputStream(file);
+       // int result = crumb.ConvertAndSaveImage(targetStream, "1", true);
+        //Assert.assertTrue(result ==0);
     }
 }

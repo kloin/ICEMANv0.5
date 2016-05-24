@@ -3,8 +3,26 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
     android:layout_width="match_parent"
+    android:background="@android:color/transparent"
     android:layout_height="match_parent"
     android:id="@+id/root">
+
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/activity_contact_fab"
+        android:layout_height="wrap_content"
+        android:layout_width="wrap_content"
+        android:layout_centerInParent="true"
+        android:transitionName="transition_reveal_contact"
+        app:fabSize="normal"
+        app:pressedTranslationZ="8dp"
+        app:elevation="0dp"
+        app:backgroundTint="@color/accent"/>
+
+    <RelativeLayout
+        android:id="@+id/activity_storyboard_ll_container"
+        android:visibility="invisible"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
     <ImageView
         android:id="@+id/image_01"
         android:visibility="gone"
@@ -147,15 +165,16 @@
         android:layout_marginRight="20dp"
         android:layout_marginTop="60dp"
         app:fabSize="mini"
-        android:src="@drawable/ic_delete_white_24dp"
-        app:backgroundTint="#60000000"
+        android:src="@drawable/ic_delete_black_24dp"
+        app:backgroundTint="@color/white"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content" />
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/previous_storyboard_item"
-        app:backgroundTint="#60000000"
+        app:backgroundTint="@color/white"
         android:layout_margin="20dp"
-        android:src="@drawable/exomedia_ic_skip_previous_white"
+        android:visibility="gone"
+        android:src="@drawable/exomedia_ic_skip_previous_black"
         app:fabSize="mini"
         android:layout_gravity="right"
         android:layout_alignParentRight="true"
@@ -164,10 +183,10 @@
         android:layout_height="wrap_content" />
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/next_storyboard_item"
-        app:backgroundTint="#60000000"
+        app:backgroundTint="@color/white"
         android:layout_marginRight="20dp"
         android:layout_marginBottom="20dp"
-        android:src="@drawable/exomedia_ic_skip_next_white"
+        android:src="@drawable/exomedia_ic_skip_next_black"
         app:fabSize="mini"
         android:layout_gravity="right"
         android:layout_alignParentRight="true"
@@ -177,19 +196,14 @@
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/back_to_map"
         android:layout_width="wrap_content"
-        app:backgroundTint="#60000000"
+        app:backgroundTint="@color/white"
         android:layout_marginRight="20dp"
         android:layout_marginBottom="30dp"
         app:fabSize="mini"
-        android:src="@drawable/ic_layers_white_24dp"
+        android:src="@drawable/ic_map_black_24dp"
         android:layout_alignParentBottom="true"
         android:layout_alignParentRight="true"
         android:layout_height="wrap_content" />
+    </RelativeLayout>
 
-    <RelativeLayout
-        android:id="@+id/bottom_bar_storyboard"
-        android:layout_alignParentBottom="true"
-        android:layout_width="match_parent"
-        android:layout_height="50dp"
-        android:background="#60000000"></RelativeLayout>
 </RelativeLayout>

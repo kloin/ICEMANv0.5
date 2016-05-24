@@ -292,11 +292,12 @@ public class TrailManager20 {
                 int value = distance.getInt("value");
                 totalDistance += value;
                 System.out.println("calculating distance: " + totalDistance + " m");
+                index += 1;
             }
             
             // Save distance to databse
             Trail trail = new Trail();
-           // trail.updateTrailTotalDistance(totalDistance, trailId);
+           // trail.updateTrailTotalDistance(totalDistance, trailId); // TODO fix me
         }
         
         private String getGoogleDirectionsWithWaypoints(Location location1, Location location2, ArrayList<Location> waypoints) {

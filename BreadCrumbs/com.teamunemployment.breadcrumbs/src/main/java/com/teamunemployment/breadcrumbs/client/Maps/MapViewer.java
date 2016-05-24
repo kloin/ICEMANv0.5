@@ -1,6 +1,7 @@
 package com.teamunemployment.breadcrumbs.client.Maps;
 
 import android.app.Activity;
+import android.app.ActivityOptions;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
@@ -14,12 +15,16 @@ import android.graphics.PorterDuffXfermode;
 import android.graphics.Rect;
 import android.graphics.RectF;
 import android.location.Location;
+import android.location.LocationListener;
+import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
 import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomSheetBehavior;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.Snackbar;
 import android.support.v4.widget.NestedScrollView;
 import android.support.v7.widget.CardView;
 import android.text.SpannableStringBuilder;
@@ -37,6 +42,7 @@ import android.widget.Toast;
 
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationRequest;
+import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.UiSettings;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
@@ -46,6 +52,8 @@ import com.google.android.gms.maps.model.PolylineOptions;
 import com.google.maps.android.PolyUtil;
 import com.google.maps.android.ui.IconGenerator;
 import com.teamunemployment.breadcrumbs.Framework.JsonHandler;
+import com.teamunemployment.breadcrumbs.Location.BreadcrumbsLocationProvider;
+import com.teamunemployment.breadcrumbs.Models;
 import com.teamunemployment.breadcrumbs.Network.LoadBalancer;
 import com.teamunemployment.breadcrumbs.Network.ServiceProxy.AsyncDataRetrieval;
 import com.teamunemployment.breadcrumbs.Network.ServiceProxy.AsyncPost;
@@ -62,6 +70,7 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.sothree.slidinguppanel.SlidingUpPanelLayout;
 import com.teamunemployment.breadcrumbs.Trails.TrailManagerWorker;
+import com.teamunemployment.breadcrumbs._HAX.ExceptionHandler;
 import com.teamunemployment.breadcrumbs.client.Animations.SimpleAnimations;
 import com.teamunemployment.breadcrumbs.client.Cards.CrumbCardDataObject;
 import com.teamunemployment.breadcrumbs.client.StoryBoard.StoryBoardActivity;
@@ -72,6 +81,7 @@ import static android.graphics.Typeface.BOLD;
 import static android.graphics.Typeface.ITALIC;
 import static android.text.Spannable.SPAN_EXCLUSIVE_EXCLUSIVE;
 
+import org.greenrobot.eventbus.EventBus;
 import org.joda.time.DateTime;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -91,7 +101,7 @@ public class MapViewer extends Activity implements
 		OnMapClickListener, OnMapLongClickListener, OnMarkerClickListener {
 
 	private boolean HAVE_SCALED_IMAGE = false;
-	private MapDisplayManager mapDisplayManager;
+	public MapDisplayManager mapDisplayManager;
 	private ArrayList<StoryBoardItemData> mStoryBoardItems;
 	public DatabaseController databaseController;
 	public int TRAIL_COVER_PHOTO_HEIGHT;
@@ -104,14 +114,14 @@ public class MapViewer extends Activity implements
 	private boolean IS_OWN_TRAIL = false;
 
 	public Context context;
-	private GoogleMap mMap;
+	public GoogleMap mMap;
 	private JSONObject json;
 	public final static String TAG = "MapViewer";
 	private AsyncDataRetrieval clientRequestProxy;
 	private boolean requestingImage = false;
 	private Activity mContext;
 	private ArrayList<DisplayCrumb> mCrumbs;
-	private String trailId;
+	public String trailId;
 
 	private CoordinatorLayout coordinatorLayout;
 	public View bottomSheet;
@@ -133,6 +143,10 @@ public class MapViewer extends Activity implements
 	// Made public as we need to access this from the local subclass.
 	public MyCurrentTrailDisplayManager myCurrentTrailManager;
 
+	public boolean LOOKIING_AT_MAP = true;
+	public boolean HAVE_ZOOMED = false;
+
+	private FloatingActionButton locateMe;
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -140,28 +154,34 @@ public class MapViewer extends Activity implements
 		context = this;
         mMap = ((MapFragment) getFragmentManager().findFragmentById(R.id.map)).getMap();
 		mContext = this;
-
+		Thread.setDefaultUncaughtExceptionHandler(new ExceptionHandler());
 		trailId = this.getIntent().getStringExtra("TrailId");
 
 		//
 		if (trailId != null && trailId.endsWith("L")) {
 			IS_OWN_TRAIL = true;
+			// Get rid of the L
+			trailId = trailId.substring(0, trailId.length()-1);
+			LOOKIING_AT_MAP = false;
 		}
-
+		setLocateMeClickHandler();
 		setUpBottomSheet();
 		setListenersAndLoaders();
 		scaleImage(bottomSheet);
 		setUpTrailState();
 
 		// What we do if we are looking at our own trail.
-	/*	new Handler().postDelayed(new Runnable() {
-			@Override
-			public void run() {
-				bottomSheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
-			}
-		}, 500);*/
-
+		if (IS_OWN_TRAIL) {
+			new Handler().postDelayed(new Runnable() {
+				@Override
+				public void run() {
+					bottomSheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
+				}
+			}, 500);
+		}
 	}
+
+
 
 	private void setUpTrailState() {
 		SetUpDetailsItems();
@@ -231,7 +251,6 @@ public class MapViewer extends Activity implements
 		if (bottomSheetFab == null) {
 			bottomSheetFab = (FloatingActionButton) bottomSheet.findViewById(R.id.edit_toggle_fab);
 			SetUpBottomSheetFab();
-
 
 		}
 
@@ -310,12 +329,12 @@ public class MapViewer extends Activity implements
 		if(!WE_LIKE) {
 			bottomSheetFab.setBackgroundTintList(ColorStateList.valueOf(Color.WHITE));
 			bottomSheetFab.setImageDrawable(context.getResources().getDrawable(R.drawable.ic_favorite_border_black_24dp));
-			WE_LIKE = true;
+			WE_LIKE = false;
 		} else {
 			// Unlike
 			bottomSheetFab.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor("#FF4081")));
 			bottomSheetFab.setImageDrawable(context.getResources().getDrawable(R.drawable.ic_favorite_border_white_24dp));
-			WE_LIKE = false;
+			WE_LIKE = true;
 		}
 
 		bottomSheetFab.setOnClickListener(new View.OnClickListener() {
@@ -331,6 +350,7 @@ public class MapViewer extends Activity implements
 		if(!WE_LIKE) {
 			bottomSheetFab.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor("#FF4081")));
 			bottomSheetFab.setImageDrawable(context.getResources().getDrawable(R.drawable.ic_favorite_border_white_24dp));
+			Snackbar.make(coordinatorLayout, "Liked +1", Snackbar.LENGTH_SHORT).show();
 			WE_LIKE = true;
 		} else {
 			// Unlike
@@ -338,6 +358,7 @@ public class MapViewer extends Activity implements
 			bottomSheetFab.setImageDrawable(context.getResources().getDrawable(R.drawable.ic_favorite_border_black_24dp));
 			WE_LIKE = false;
 		}
+
 	}
 
 
@@ -374,6 +395,7 @@ public class MapViewer extends Activity implements
 		// If our pay fab is visible, we need to hide it.
 		if (playFab.getVisibility() == View.VISIBLE) {
 			SimpleAnimations.ShrinkFab(playFab, 75);
+			SimpleAnimations.ShrinkFab(locateMe, 75);
 		}
 	}
 
@@ -404,13 +426,13 @@ public class MapViewer extends Activity implements
 	/**
 	 * Sewt the state of our toolbar when it is collapsed.
 	 */
-	private void setCollapsedToolbarState() {
+	public void setCollapsedToolbarState() {
 		// Expand play button
 		if (playFab == null) {
 			setUpPlayButton();
 		}
 		SimpleAnimations.ExpandFab(playFab, 75);
-
+		SimpleAnimations.ExpandFab(locateMe, 75);
 		if (bottomSheetFab == null) {
 			bottomSheetFab = (FloatingActionButton) bottomSheet.findViewById(R.id.edit_toggle_fab);
 		}
@@ -448,7 +470,7 @@ public class MapViewer extends Activity implements
 		SetBaseDetailsForATrail(trailId);
 		StartCrumbDisplay(trailId);
 		GetAndDisplayTrailOnMap(trailId);
-		addViewToTrail(trailId);
+		//addViewToTrail(trailId);
 	}
 
 
@@ -494,18 +516,72 @@ public class MapViewer extends Activity implements
 		Log.i("MAP", "Finished Loading crumbs and displaying them on the map");
 	}
 
+	public void FetchMyLocation() {
+		LocationListener locationListener = new LocationListener() {
+			@Override
+			public void onLocationChanged(Location location) {
+				mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(
+						new LatLng(location.getLatitude(), location.getLongitude()), 13));
+
+				if (LOOKIING_AT_MAP) {
+					CameraPosition cameraPosition = new CameraPosition.Builder()
+							.target(new LatLng(location.getLatitude(), location.getLongitude()))      // Sets the center of the map to location user
+							.zoom(17)                   // Sets the zoom
+							.bearing(90)                // Sets the orientation of the camera to east
+							.tilt(40)                   // Sets the tilt of the camera to 30 degrees
+							.build();                   // Creates a CameraPosition from the builder
+					mMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
+					HAVE_ZOOMED = true;
+				}
+
+			}
+
+			@Override
+			public void onStatusChanged(String provider, int status, Bundle extras) {
+
+			}
+
+			@Override
+			public void onProviderEnabled(String provider) {
+
+			}
+
+			@Override
+			public void onProviderDisabled(String provider) {
+
+			}
+		};
+
+		BreadcrumbsLocationProvider.getInstance(mContext).requestLocationUpdate(locationListener);
+	}
+
 	public void DisplayObjects (JSONArray objects) throws JSONException {
 		JSONObject next = null;
 		for (int index=0; index<objects.length(); index += 1 ) {
 			// The next node to get data from and Draw.
 			next =  objects.getJSONObject(index);
-
+			if (index == 0) {
+				Double latitude = next.getDouble(Models.Crumb.LATITUDE);
+				Double longitude = next.getDouble(Models.Crumb.LONGITUDE);
+				LatLng latLng = new LatLng(latitude, longitude);
+				SetMapPosition(latLng);
+			}
 			mapDisplayManager.DrawCrumbFromJson(next, false);
 		}
 	}
 
-	public void GetAndDisplayTrailOnMap(String trailId) {
+	public void SetMapPosition(LatLng latLng) {
+		CameraPosition camPos = new CameraPosition.Builder()
+				.target(latLng)
+				.zoom(18)
+				.bearing(40)
+				.tilt(70)
+				.build();
+		CameraUpdate camUpd3 = CameraUpdateFactory.newCameraPosition(camPos);
+		mMap.animateCamera(camUpd3);
+	}
 
+	public void GetAndDisplayTrailOnMap(String trailId) {
 		// First construct our url that we want:
 		mapDisplayManager = new MapDisplayManager(mMap, (Activity) context, trailId);
 
@@ -627,14 +703,29 @@ public class MapViewer extends Activity implements
 	}
 
 	public void playFabClickHandler() {
+
 		Intent viewCrumbsIntent = new Intent(mContext, StoryBoardActivity.class);
 		ArrayList<CrumbCardDataObject> crumbObjects = myCurrentTrailManager.getDataObjects();
+
+		// Just exit quietly.
+		if (crumbObjects.size() == 0) {
+			return;
+		}
 		viewCrumbsIntent.putExtra("StartingObject", crumbObjects.get(0));
+
 		viewCrumbsIntent.putExtra("Index", storyboardIndex);
 		viewCrumbsIntent.putParcelableArrayListExtra("CrumbArray", crumbObjects); // Note - this is currently using serializable - shoiuld use parcelable for speed
 		viewCrumbsIntent.putExtra("TrailId", trailId);
 		viewCrumbsIntent.putExtra("Timer", storyboardTimerTime);
-		mContext.startActivityForResult(viewCrumbsIntent, 1);
+
+		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+			ActivityOptions options = ActivityOptions.makeSceneTransitionAnimation(mContext, playFab, playFab.getTransitionName());
+			mContext.startActivityForResult(viewCrumbsIntent, 1 , options.toBundle());
+
+		} else {
+			mContext.startActivityForResult(viewCrumbsIntent, 1);
+
+		}
 	}
 
 	/**
@@ -701,6 +792,30 @@ public class MapViewer extends Activity implements
 		TextView pois = (TextView) bottomSheet.findViewById(R.id.number_of_crumbs_details);
 		viewSetter.UpdateTextElementWithUrlAndAdditionalString(pois, LoadBalancer.RequestServerAddress() + "/rest/TrailManager/GetNumberOfCrumbsForATrail/" + trailId, "Points of Interest", context);
 
+		TextView photos = (TextView) bottomSheet.findViewById(R.id.number_of_photos_details);
+		viewSetter.UpdateTextElementWithUrlAndAdditionalString(photos, LoadBalancer.RequestServerAddress() + "/rest/TrailManager/GetNumberOfPhotosInATrail/" + trailId, "Photos", context);
+
+		TextView videos = (TextView) bottomSheet.findViewById(R.id.number_of_videos_details);
+		viewSetter.UpdateTextElementWithUrlAndAdditionalString(videos, LoadBalancer.RequestServerAddress() + "/rest/TrailManager/GetNumberOfPhotosInATrail/" + trailId, "Videos", context);
+
+		TextView views = (TextView) bottomSheet.findViewById(R.id.view_count);
+		viewSetter.UpdateTextElementWithUrlAndAdditionalString(views, LoadBalancer.RequestServerAddress() + "/rest/TrailManager/GetTrailViews/" + trailId, "Views", context);
+
+		EditText trailName = (EditText) bottomSheet.findViewById(R.id.trail_title_input);
+		viewSetter.UpdateEditTextElement(trailName, trailId, "TrailName", context);
+
+		TextView textView = (TextView) bottomSheet.findViewById(R.id.bottom_sheet_trail_title);
+		viewSetter.UpdateTextViewElement(textView, trailId, "TrailName", context);
+
+		ImageView trailCover = (ImageView) bottomSheet.findViewById(R.id.trail_cover_photo);
+		viewSetter.UpdateImageViewElement(trailCover, trailId, "CoverPhotoId", context);
+	}
+
+	/**
+	 * Zoom the to where the map should be.
+	 */
+	public void SetFocusForMap() {
+		// Load the location where the app should be loaded.
 
 	}
 
@@ -811,8 +926,18 @@ public class MapViewer extends Activity implements
 		}
 	}
 
+	@Override
+	protected void onRestart() {
+		super.onRestart();
+	}
+
+	@Override
+	protected void onResume() {
+		super.onResume();
+	}
+
 	private void setBackButtonListener() {
-		ImageView backButton = (ImageView) findViewById(R.id.backButtonCapture);
+		FloatingActionButton backButton = (FloatingActionButton) findViewById(R.id.map_back);
 		backButton.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
@@ -1053,13 +1178,13 @@ public class MapViewer extends Activity implements
 		private void fetchTrailPointDataAndSaveItToTheServer() {
 			final String trailPointsId;
 			// HACZ - cos im just testing.
-			final DatabaseController dbc = new DatabaseController(context);
+			databaseController = new DatabaseController(context);
 			// But how will I actually know this?
 			final String localTrailId = Integer.toString(mPreferencesApi.GetLocalTrailId());
 
 			// Dont want to be saving a non existent trail - I will do other shit with it first
 			if (!localTrailId.equals("-1")) {
-				JSONObject jsonObject = dbc.getAllSavedTrailPoints(localTrailId);
+				JSONObject jsonObject = databaseController.getAllSavedTrailPoints(localTrailId);
 				HTTPRequestHandler saver = new HTTPRequestHandler();
 
 				// Save our trails.
@@ -1067,7 +1192,7 @@ public class MapViewer extends Activity implements
 				AsyncPost post = new AsyncPost(url, new AsyncPost.RequestListener() {
 					@Override
 					public void onFinished(String result) {
-						dbc.DeleteAllSavedTrailPoints(localTrailId);
+						databaseController.DeleteAllSavedTrailPoints(localTrailId);
 					}
 				}, jsonObject);
 
@@ -1114,6 +1239,17 @@ public class MapViewer extends Activity implements
 		}
 
 
+	}
+
+
+	private void setLocateMeClickHandler() {
+		locateMe = (FloatingActionButton) findViewById(R.id.where_am_i);
+		locateMe.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				FetchMyLocation();
+			}
+		});
 	}
 
 }

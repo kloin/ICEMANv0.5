@@ -332,24 +332,29 @@ public class CameraController extends SurfaceView implements SurfaceHolder.Callb
 
         recorder.setAudioSource(MediaRecorder.AudioSource.DEFAULT);
         recorder.setVideoSource(MediaRecorder.VideoSource.DEFAULT);
-        CamcorderProfile cpHigh = CamcorderProfile.get(CamcorderProfile.QUALITY_HIGH);
-
+        CamcorderProfile cpHigh = CamcorderProfile.get(CamcorderProfile.QUALITY_480P);
         if (backCameraOpen) {
             recorder.setOrientationHint(90);
         } else {
             recorder.setOrientationHint(270);
         }
-        recorder.setVideoEncodingBitRate(3000000);
+        recorder.setVideoEncodingBitRate(1400000);
         recorder.setOutputFormat(MediaRecorder.OutputFormat.DEFAULT);
         Camera.Size size = getOptimalVideoSize(supportedSizes);
         recorder.setVideoSize(size.width, size.height);
 
         recorder.setAudioEncoder(MediaRecorder.AudioEncoder.AMR_NB);
-        recorder.setVideoEncoder(MediaRecorder.VideoEncoder.H264);
+
+        // Mp4 makes file size significantly smaller.
+        recorder.setVideoEncoder(MediaRecorder.VideoEncoder.MPEG_4_SP);
+        //recorder.setProfile(cpHigh);
 
         fileName =  Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES).toString();
         int eventId = new PreferencesAPI(context).GetEventId();
         //eventId += 1;
+        if (eventId == -1) {
+            eventId = 0;
+        }
         // I Add the +1 because later in the piece(before saving, I increment the event Id. This entire class needs a rework.
         fileName += "/"+ eventId+ ".mp4"; //
         recorder.setOutputFile(fileName);

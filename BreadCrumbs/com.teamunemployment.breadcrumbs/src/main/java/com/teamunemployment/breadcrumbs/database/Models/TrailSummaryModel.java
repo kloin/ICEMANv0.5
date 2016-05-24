@@ -30,7 +30,7 @@ public class TrailSummaryModel {
                 datatimeString = summaryJSON.getString("StartDate");
                 DateTime dateTime = new DateTime(datatimeString);
                 DateTime currentDate = DateTime.now();
-                Days.daysBetween(dateTime.toLocalDate(), currentDate.toLocalDate()).getDays();
+                return Days.daysBetween(dateTime.toLocalDate(), currentDate.toLocalDate()).getDays();
             } catch (JSONException e) {
                 // Should never get here because of if check.
                 e.printStackTrace();
@@ -75,6 +75,20 @@ public class TrailSummaryModel {
             }
         }
 
+        return null;
+    }
+
+    public DateTime GetLastUpdate() {
+        if (summaryJSON.has("LastUpdate")) {
+            try {
+                String lastUpdate = summaryJSON.getString("LastUpdate");
+                DateTime dateTime = new DateTime(lastUpdate);
+                return dateTime;
+            } catch (JSONException e) {
+                // Should never get here because of if check.
+                e.printStackTrace();
+            }
+        }
         return null;
     }
 }

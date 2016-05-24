@@ -196,6 +196,9 @@ public class SaveVideoActivity  extends Activity implements TextureView.SurfaceT
                 // We need to wait
                 String fileName = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES).toString();
                 int eventId = mPreferencesApi.GetEventId();
+                if (eventId == -1) {
+                    eventId = 0;
+                }
                 fileName += "/" + eventId + ".mp4";
                 createNewCrumb(" ", userId, TrailId, location, "icon", ".mp4", placeId, suburb, finalCity, finalCountry, timeStamp, fileName);
             }

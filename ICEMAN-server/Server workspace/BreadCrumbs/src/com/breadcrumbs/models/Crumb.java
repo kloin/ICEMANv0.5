@@ -22,11 +22,14 @@ import org.json.JSONObject;
 import org.neo4j.graphdb.Node;
 
 import com.breadcrumbs.database.*;
+import com.breadcrumbs.database.DBMaster.TransactionCallback;
 import com.breadcrumbs.database.DBMaster.myLabels;
 import com.breadcrumbs.database.DBMaster.myRelationships;
 import com.sun.jersey.multipart.BodyPart;
 import com.sun.jersey.multipart.BodyPartEntity;
 import java.io.FileInputStream;
+import org.neo4j.graphdb.GraphDatabaseService;
+import org.neo4j.graphdb.Transaction;
 public class Crumb {
 	
 	private DBMaster dbm;
@@ -89,16 +92,52 @@ public class Crumb {
      * @param crumbId The crumb id we are saving against. Used in fileName
      * @return The result (success or failure)
      */
-    public int saveMedia (InputStream inputStream, String mime, String crumbId) {
+    public int saveMedia (InputStream inputStream, String mime, String crumbId, String trailId) {
         int result = 0; // Success = 0, failure = 1;
         if (mime.equals(".mp4")) {
             result = ConvertAndSaveVideo(inputStream, crumbId);
         } else {
             result = ConvertAndSaveImage(inputStream, crumbId);
+           updateCoverPhoto(trailId, crumbId);
         }
         
         return result;
     }
+    public void updateCoverPhoto(String trailId, String coverId) {
+         if (trailHasCoverPhoto(trailId)) {
+                // Set trail as cover photo
+            dbm.UpdateNodeWithCypherQuery(trailId, "CoverPhotoId", coverId);
+            }
+    }
+    
+    public boolean trailHasCoverPhoto(String trailId) {
+        if (dbm == null) {
+            dbm = DBMaster.GetAnInstanceOfDBMaster();
+        }
+        Node trail = dbm.RetrieveNode(Long.parseLong(trailId));
+        GraphDatabaseService _db = dbm.GetDatabaseInstance();
+        Transaction tx = _db.beginTx();
+        try {
+            if (trail.hasProperty("CoverPhotoId")) {
+                tx.success();
+                return true;
+            }
+        } catch (Exception ex) {
+                System.out.println("Failed to do callback transaction.");
+                ex.printStackTrace();
+                tx.failure();
+        } finally {
+                tx.finish();
+                tx.close();
+        }
+        return false;
+    }
+    
+    
+   
+    
+    
+   
     
     /**
      * This is a test version of the method {@link #ConvertAndSaveImage(java.io.InputStream, java.lang.String) 
@@ -136,6 +175,7 @@ public class Crumb {
         }
         return result;
     }
+    
     public int ConvertAndSaveImage(InputStream uploadImageStream, String crumbId) {
         int result = 0;
         File targetFile = new File("/var/lib/tomcat7/webapps/images/"+crumbId+".jpg");
@@ -151,7 +191,7 @@ public class Crumb {
             // Create a thumbnail. Note that this method closes the inputStream {@link #uploadImageStream}
             InputStream targetStream = new FileInputStream(targetFile);
             createAndSaveThumbnail(targetStream, crumbId);
-            outputStream.close(); 
+            outputStream.close();
         } catch (FileNotFoundException e) {
                 result = 1;
                 // Delete what we had tried to save.

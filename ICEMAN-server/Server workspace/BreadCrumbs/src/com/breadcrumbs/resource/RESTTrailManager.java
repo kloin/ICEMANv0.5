@@ -43,6 +43,12 @@ public class RESTTrailManager {
 		return trail.SaveJSONOfTrailPoints(TrailPointsJSON);
 	}
 	
+        @GET
+        @Path("/GetTripName/{TripId}")
+        public String GetTripName(@PathParam("TripId") Striung tripId) {
+            Trail trail = new Trail();
+            return trail.TrailName();
+        }
         /*
             Get the number of days this trail took.
         */
@@ -137,6 +143,20 @@ public class RESTTrailManager {
 		Trail trail = new Trail();
 		return trail.GetNumberOfCrumbsForATrail(TrailId);
 	}
+        
+//        @GET
+//        @Path("/GetAllPhotoCrumbsForATrail/{TrailId")
+//        public String GetAllPhotoCrumbsForATrail(@PathParam("TrailId") String TrailId) {
+//		Trail trail = new Trail();
+//		return trail.GetAllPhotoIdsForATrail(TrailId);
+//	}
+        
+        @GET
+        @Path("/GetNumberOfPhotosInATrail/{TrailId}")
+        public String GetNumberOfPhotosInATrail(@PathParam("TrailId") String TrailId) {
+            Trail trail = new Trail();
+            return Integer.toString(trail.GetNumberOfPhotoCrumbsForATrail(TrailId));
+        }
 	
 	@GET
 	@Path("/GetNumberOfTrailsAUserOwns/{UserId}") 
@@ -146,7 +166,7 @@ public class RESTTrailManager {
 	}
 	
 	@GET
-	@Path("GetAllSavedCrumbIdsForATrail/{TrailId}")
+	@Path("/GetAllSavedCrumbIdsForATrail/{TrailId}")
 	public String GetAllCrumbIdsForAUser(@PathParam("TrailId") String TrailId) {
 		UserService userService = new UserService();
 		Trail trailService = new Trail();
@@ -170,7 +190,20 @@ public class RESTTrailManager {
 		Trail trail = new Trail();
 		return trail.GetSimpleDetailsForATrail(TrailId);
 	}
+        
+        @GET
+        @Path("/GetDisplayVariablesForATrail/{TrailId}")
+        public String GetDisplayVariablesForATrail(@PathParam("TrailId") String TrailId) {
+            Trail trail = new Trail();
+            return trail.GetDisplayVariablesForATrail(TrailId);
+        }
 	
+        @GET
+        @Path("/GetNumberOfVideosInATrail/{TrailId}")
+        public String GetNumberOfVideosInATrail(@PathParam("TrailId") String TrailId) {
+            Trail trail = new Trail();
+            return trail.GetNumberOfVideosInATrail(TrailId);
+        }
 	@GET
 	@Path("DeleteAllTrails") 
 	public void DeleteAllTrails() {

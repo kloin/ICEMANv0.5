@@ -88,6 +88,10 @@ public class DBMaster {
                 Event,
                 Place
 	}
+        
+        public interface TransactionCallback {
+            void doTransaction();
+        }
 	//Return an a reference to the instance of the database
 	public GraphDatabaseService GetDatabaseInstance() {
 		return  _db;
@@ -113,6 +117,27 @@ public class DBMaster {
 		
 	}
 
+        /**
+        * A callback to do work inside a transaction, so that we dont have to 
+        * deal with messy transactions every time we want to grab info from a node.
+        * @param callback 
+        */
+ 
+        public void DoTransaction(TransactionCallback callback) {
+            Transaction tx = _db.beginTx();
+            try {
+                    callback.doTransaction();
+                    tx.success();
+                } catch (Exception ex) {
+			System.out.println("Failed to do callback transaction.");
+			ex.printStackTrace();
+			tx.failure();
+		} finally {
+			tx.finish();
+                        tx.close();
+		}
+        }
+        
 	public Node RetrieveNode(long id) {
 		Transaction tx = _db.beginTx();
 		Node node = null;

@@ -74,6 +74,7 @@ dependencies {
     compile('com.mapbox.mapboxsdk:mapbox-android-sdk:0.7.3@aar') {
         transitive = true
     }
+    compile 'com.jakewharton:butterknife:7.0.1'
     compile 'com.squareup.okhttp3:okhttp:3.2.0'
     compile 'com.getbase:floatingactionbutton:1.9.0'
     compile 'com.squareup.picasso:picasso:2.5.2'

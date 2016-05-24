@@ -504,13 +504,21 @@ public class DatabaseController extends SQLiteOpenHelper {
                 "SavedIndex INTEGER," +
                 "CoverPhotoId TEXT," +
                 "StartDate TIMESTAMP," +
+                "LastUpdate TIMESTAMP," +
                 "IsPublished INTEGER);");
     }
 
     public int SaveTrailStart(String trailId, String startDate) {
         ContentValues cv = new ContentValues();
+        int trailIdInt = 1;
+        if (trailId != null) {
+         trailIdInt = Integer.parseInt(trailId);
+            trailIdInt+= 1;
+        }
+
         cv.put("StartDate", startDate);
-        cv.put("TrailId", "0");
+        cv.put("TrailId", Integer.toString(trailIdInt));
+        cv.put("LastUpdate", "");
         cv.put("CoverPhotoId", "0");
         cv.put("TrailName", "");
         cv.put("SavedIndex", 0);
@@ -519,10 +527,10 @@ public class DatabaseController extends SQLiteOpenHelper {
        // cv.put("EndDate", ""); // End date is unkown - we can change this later.
 
         SQLiteDatabase localDb = getWritableDatabase();
-        long localId = localDb.insert(TRAIL_SUMMARY, null, cv);
-        mPreferencesApi.SaveCurrentLocalTrailId((int) localId);
+        localDb.insert(TRAIL_SUMMARY, null, cv);
+        mPreferencesApi.SaveCurrentLocalTrailId((int) trailIdInt);
         localDb.close();
-        return (int) localId;
+        return (int) trailIdInt;
     }
 
     public void AddWeather(String weatherId, String travelDay, String weatherDesc, Double latitude, Double longitude, String city, String temperature) {
@@ -685,15 +693,18 @@ public class DatabaseController extends SQLiteOpenHelper {
 
             //Get all columns
             String startDate = constantsCursor.getString(constantsCursor.getColumnIndex("StartDate"));
-           /// int isPublished = constantsCursor.getInt(constantsCursor.getColumnIndex("IsPublished"));
+            String lastUpdate = constantsCursor.getString(constantsCursor.getColumnIndex("LastUpdate"));
             String trailName = constantsCursor.getString(constantsCursor.getColumnIndex("TrailName"));
-            //int index = constantsCursor.getInt(constantsCursor.getColumnIndex("trailIndex"));
+
             // Save our single point as a single node, and add it to the overall object that is
             // going to be sent to the server.
             try {
                 trailSummaryNode.put("TrailId", trailId);
                 trailSummaryNode.put("TrailName", trailName);
                 trailSummaryNode.put("StartDate", startDate);
+                if (!lastUpdate.isEmpty()) {
+                    trailSummaryNode.put("LastUpdate", lastUpdate);
+                }
              ///   trailSummaryNode.put("IsPublished", isPublished == 0);
 
                 return trailSummaryNode;
@@ -705,6 +716,17 @@ public class DatabaseController extends SQLiteOpenHelper {
         return null;
     }
 
+    public void SetLastUpdate(String trailId, String timestamp) {
+        String query = "UPDATE "+TRAIL_SUMMARY + " SET LastUpdate='"+ timestamp+ "' WHERE _id = "+trailId;
+        db = getWritableDatabase();
+        Cursor cursor = db.rawQuery(query, null);
+
+        // WHY DOES THIS MAKE IT WORK? I FUCKING HATE SQL. If you remove this line, it wont update the row.
+        cursor.getCount();
+
+        cursor.close();
+        db.close();
+    }
 
     public JSONObject getCrumbsWithoutMedia(String trailId) {
         JSONObject returnObject = new JSONObject();
@@ -786,9 +808,15 @@ public class DatabaseController extends SQLiteOpenHelper {
     }
 
     public void SaveTrailName(String trailName, int trailId) {
-        String query = "UPDATE "+TRAIL_SUMMARY + " SET TrailName='"+trailName + "' WHERE _id=0";
-        Cursor cursor = getWritableDatabase().rawQuery(query, null);
+
+        String query = "UPDATE "+TRAIL_SUMMARY + " SET TrailName='"+trailName + "' WHERE _id = "+Integer.toString(trailId);
+        db = getWritableDatabase();
+        Cursor cursor = db.rawQuery(query, null);
+
+        // WHY DOES THIS MAKE IT WORK? I FUCKING HATE SQL. If you remove this line, it wont update the row.
+        cursor.getCount();
         cursor.close();
+        db.close();
     }
 
     /**
@@ -847,7 +875,7 @@ public class DatabaseController extends SQLiteOpenHelper {
             try {
 
                 Log.d("Base64", "base64 retrieved");
-                node.put("eventId", eventId);
+                node.put(Models.Crumb.EVENT_ID, eventId);
                 node.put(Models.Crumb.LATITUDE, latitude);
                 node.put(Models.Crumb.LONGITUDE, longitude);
                 node.put(Models.Crumb.TIMESTAMP, timeStamp);
@@ -857,7 +885,8 @@ public class DatabaseController extends SQLiteOpenHelper {
                 node.put(Models.Crumb.PLACEID, placeId);
                 node.put(Models.Crumb.SUBURB, suburb);
                 node.put(Models.Crumb.CITY, city);
-                node.put("mime", mime);
+                node.put(Models.Crumb.COUNTRY, "NZ");
+                node.put(Models.Crumb.EXTENSION, mime);
                 node.put(Models.Crumb.ID, id);
 
                 returnObject.put(Integer.toString(count), node);
@@ -913,7 +942,7 @@ public class DatabaseController extends SQLiteOpenHelper {
      */
     public void DeleteCrumb(String crumbId) {
         int target = Integer.parseInt(crumbId);
-        int result = getWritableDatabase().delete(CRUMBS, "trailId=" + target, null);
+        int result = getWritableDatabase().delete(CRUMBS, "_id=" + target, null);
         Log.d("DBC", "Requested deletion of crumb with id: " + crumbId + ", deleted " + result + " row(s)");
 //getWritableDatabase().rawQuery("DELETE FROM " + CRUMBS + " WHERE eventId=" + crumbId, null)
     }

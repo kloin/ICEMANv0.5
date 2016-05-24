@@ -553,12 +553,13 @@ public class BreadcrumbsLocationProvider implements LocationListener {
         public void onLocationChanged(Location location) {
             DatabaseController dbc = new DatabaseController(mContext);
             if (location.getAccuracy() <= 60) {
-                String localTrailId = Integer.toString(PreferencesAPI.GetInstance(mContext).GetLocalTrailId());
+                PreferencesAPI preferencesApi = new PreferencesAPI(mContext);
+                String localTrailId = Integer.toString(preferencesApi.GetLocalTrailId());
                 String userId = PreferenceManager.getDefaultSharedPreferences(mContext).getString("USERID", "-1");
                 if (!localTrailId.equals("-1") || !userId.equals("-1")) {
                     // Save our trail point to the db.
                     int eventId = PreferenceManager.getDefaultSharedPreferences(mContext).getInt("EVENTID", 0);
-                    int transportMethod = PreferencesAPI.GetInstance(mContext).GetTransportMethod();
+                    int transportMethod = preferencesApi.GetTransportMethod();
                     // Save our event metadata
                     dbc.AddMetadata(eventId,DateTime.now().toString(),location.getLatitude(), location.getLongitude(),localTrailId, TrailManagerWorker.GPS, transportMethod);
                 }

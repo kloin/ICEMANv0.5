@@ -7,7 +7,6 @@ import org.joda.time.DateTime;
  */
 public class Models {
     public class Crumb {
-
         // Globals to be used instead of string keys so I dont keep getting confused.
         public static final String LATITUDE = "Latitude";
         public static final String LONGITUDE = "Longitude";
@@ -19,6 +18,7 @@ public class Models {
         public static final String CITY = "City";
         public static final String TIMESTAMP = "TimeStamp";
         public static final String DESCRIPTION = "Chat";
+        public static final String EVENT_ID = "EventId";
     }
 
 }

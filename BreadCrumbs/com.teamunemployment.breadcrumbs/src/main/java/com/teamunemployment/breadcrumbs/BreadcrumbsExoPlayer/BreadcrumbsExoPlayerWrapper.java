@@ -54,6 +54,7 @@ public class BreadcrumbsExoPlayerWrapper implements BreadcrumbsExoPlayer.Listene
     public interface WrapperInterface {
         void stateChangedListener(boolean playWhenReady, int state, int id);
     }
+
     public BreadcrumbsExoPlayerWrapper(SurfaceView surfaceView, Context context, int id) {
         this.context = context;
         Activity tempActivity = (Activity) context;

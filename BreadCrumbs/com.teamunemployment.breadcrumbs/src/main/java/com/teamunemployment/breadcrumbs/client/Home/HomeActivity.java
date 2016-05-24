@@ -86,20 +86,7 @@ public class HomeActivity extends AppCompatActivity {
         });
     }
 
-    private void setUpListenerForNewTrailButton() {
-        findViewById(R.id.create_new_trail).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                SimpleMaterialDesignDialog.Build(context)
-                        .SetTitle("No Trail Found")
-                        .SetTextBody("This is where you view your trip progress. Do you wan to create a trip now?")
-                        .SetActionWording("Create trail")
-                        .UseCancelButton(true)
-                        .SetCallBack(createNewTrailWithNoAction())
-                        .Show();
-            }
-        });
-    }
+
 
     private void launchMyTripViewer() {
         int localTrail = preferencesAPI.GetLocalTrailId();
@@ -117,6 +104,8 @@ public class HomeActivity extends AppCompatActivity {
         }
         else {
             Intent newIntent = new Intent();
+            String localTrailString = Integer.toString(localTrail) + "L";
+            newIntent.putExtra("TrailId", localTrailString);
             newIntent.setClassName("com.teamunemployment.breadcrumbs", "com.teamunemployment.breadcrumbs.client.Maps.LocalMap");
             startActivity(newIntent);
         }
@@ -140,6 +129,9 @@ public class HomeActivity extends AppCompatActivity {
                 TrailManagerWorker trailManagerWorker = new TrailManagerWorker(context);
                 trailManagerWorker.StartLocalTrail();
                 Intent newIntent = new Intent();
+                int localTrail = preferencesAPI.GetLocalTrailId();
+                String localTrailString = Integer.toString(localTrail) + "L";
+                newIntent.putExtra("TrailId", localTrailString);
                 newIntent.setClassName("com.teamunemployment.breadcrumbs", "com.teamunemployment.breadcrumbs.client.Maps.LocalMap");
                 startActivity(newIntent);
             }

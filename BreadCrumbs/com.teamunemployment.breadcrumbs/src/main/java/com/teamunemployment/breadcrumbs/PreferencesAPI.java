@@ -24,13 +24,6 @@ public class PreferencesAPI {
         mPreferences = PreferenceManager.getDefaultSharedPreferences(context);
     }
 
-    public static PreferencesAPI GetInstance(Context context) {
-        if (mPreferencesApi == null) {
-            mPreferencesApi =  new PreferencesAPI(context);
-        }
-        return mPreferencesApi;
-    }
-
     public boolean isWalking() {
         return mPreferences.getString(SAVED_ACTIVITY_KEY, null).equals(PathSenseActivityManager.WALKING);
     }

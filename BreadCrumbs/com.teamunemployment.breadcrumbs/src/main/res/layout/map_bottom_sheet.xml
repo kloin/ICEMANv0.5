@@ -12,7 +12,8 @@
 	<android.support.v4.widget.NestedScrollView
         android:id="@+id/bottom_sheet_scroller"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:layout_above="@+id/bottom_sheet_bottom_bar">
 
         <RelativeLayout
             android:layout_width="match_parent"
@@ -38,7 +39,7 @@
                 android:layout_height="wrap_content" />
             <RelativeLayout
                 android:id="@+id/image_view_cover"
-                android:background="@color/ColorPrimary"
+                android:background="@color/white"
                 android:layout_width="match_parent"
                 android:layout_height="1dp"></RelativeLayout>
 
@@ -96,7 +97,7 @@
                 android:layout_marginTop="6dp"
 
                 android:layout_below="@+id/settings_my_trail"
-                android:text="Track my path"
+                android:text="Active"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content" />
             </RelativeLayout>
@@ -126,7 +127,6 @@
             <CheckBox
                 android:id="@+id/stat1_enabled"
                 android:visibility="gone"
-
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/trail_title_input"
@@ -283,65 +283,45 @@
                 android:alpha="0.54"
                 android:gravity="center"
                 android:text="174 photos" />
-
-            <View
-                android:id="@+id/horizontal_devider_second"
-                android:layout_width="match_parent"
-                android:layout_height="2dp"
-                android:layout_below="@+id/number_of_photos_details"
-                android:layout_marginLeft="10dp"
-                android:layout_marginRight="10dp"
-                android:layout_marginTop="30dp"
-                android:background="@color/background" />
-
-            <TextView
-                android:id="@+id/sharable_title"
-                style="@style/Base.TextAppearance.AppCompat.Title"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_below="@+id/horizontal_devider_second"
-                android:layout_margin="30dp"
-                android:alpha="0.87"
-                android:text="Share" />
-
             <ImageView
-                android:id="@+id/sharable_link_icon"
+                android:id="@+id/number_of_views"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_below="@+id/sharable_title"
-                android:layout_marginLeft="30dp"
-                android:alpha="0.54"
-                android:visibility="gone"
-                android:src="@drawable/ic_screen_share_black_24dp" />
-
+                android:layout_marginTop="10dp"
+                android:src="@drawable/ic_visibility_black_24dp"
+                android:layout_below="@id/number_of_photos_icon"
+                android:layout_alignRight="@+id/number_of_photos_icon"
+                android:layout_alignLeft="@+id/number_of_photos_icon"
+                android:alpha="0.54"/>
             <TextView
-                android:id="@+id/sharable_link_details"
-                android:visibility="gone"
+                android:id="@+id/view_count"
                 style="@style/Base.TextAppearance.AppCompat.Subhead"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignBottom="@id/sharable_link_icon"
-                android:layout_alignTop="@id/sharable_link_icon"
-                android:layout_marginLeft="10dp"
-                android:layout_toRightOf="@id/sharable_link_icon"
+                android:text="test"
+                android:layout_toRightOf="@+id/number_of_views"
                 android:alpha="0.54"
-                android:gravity="center"
-                android:text="Create Shareable Link" />
+                android:layout_marginLeft="10dp"
+                android:layout_alignBottom="@+id/number_of_views"
+                android:layout_alignTop="@id/number_of_views"
+                android:layout_below="@id/number_of_photos_icon"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
         </RelativeLayout>
     </android.support.v4.widget.NestedScrollView>
 
     <android.support.v7.widget.CardView
         app:cardCornerRadius="0dp"
         app:cardElevation="4dp"
-        app:cardBackgroundColor="@color/ColorPrimary"
+        app:cardBackgroundColor="@color/white"
         android:id="@+id/bottom_sheet_header"
         android:layout_width="match_parent"
         android:layout_height="60dp">
         <TextView
             android:id="@+id/bottom_sheet_trail_title"
-            android:text="Shippies"
-            android:textColor="@color/white"
-            style="@style/Base.TextAppearance.AppCompat.Subhead"
+            android:text="My Trip"
+            style="@style/Base.TextAppearance.AppCompat.Title"
+            android:textColor="@color/ColorPrimary"
+            android:singleLine="true"
+            android:ellipsize="end"
             android:gravity="center|left"
             android:layout_marginLeft="20dp"
             android:layout_width="match_parent"
@@ -355,13 +335,26 @@
         android:layout_width="match_parent"
         android:layout_alignParentBottom="true"
         android:layout_height="60dp">
+        <RelativeLayout
+            android:id="@+id/botton_card"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
         <TextView
             android:id="@+id/publish_prompt"
-            android:layout_width="match_parent"
-            android:text="Last update - 3 days ago"
+            android:layout_width="wrap_content"
+            android:text="Last update - "
             android:layout_marginLeft="12dp"
             android:gravity="center|left"
             android:layout_height="match_parent" />
+        <TextView
+            android:id="@+id/last_update"
+            android:text="Never"
+            android:layout_marginLeft="2dp"
+            android:gravity="center"
+            android:layout_toRightOf="@+id/publish_prompt"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent" />
+        </RelativeLayout>
         <mehdi.sakout.fancybuttons.FancyButton
             android:id="@+id/publish_trail"
             android:tag="1234"

@@ -2,6 +2,7 @@ package com.teamunemployment.breadcrumbs.client.tabs;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
@@ -15,9 +16,14 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ProgressBar;
 
+import com.teamunemployment.breadcrumbs.Dialogs.IDialogCallback;
+import com.teamunemployment.breadcrumbs.Dialogs.SimpleMaterialDesignDialog;
 import com.teamunemployment.breadcrumbs.Network.LoadBalancer;
 import com.teamunemployment.breadcrumbs.Network.ServiceProxy.AsyncDataRetrieval;
+import com.teamunemployment.breadcrumbs.Preferences.Preferences;
+import com.teamunemployment.breadcrumbs.PreferencesAPI;
 import com.teamunemployment.breadcrumbs.R;
+import com.teamunemployment.breadcrumbs.Trails.TrailManagerWorker;
 import com.teamunemployment.breadcrumbs.caching.GlobalContainer;
 import com.teamunemployment.breadcrumbs.client.Animations.SimpleAnimations;
 import com.teamunemployment.breadcrumbs.client.Cards.HomeCardAdapter;
@@ -44,6 +50,8 @@ public class HomeTabFragment extends Fragment {
     public String userId;
     private final String TAG = "HOME_TAB";
 
+    private PreferencesAPI preferencesAPI;
+
     private final ArrayList<String> ids = new ArrayList<>();
     public void onAttach(Activity activity) {
         activityContext= activity;
@@ -63,6 +71,7 @@ public class HomeTabFragment extends Fragment {
         userId = PreferenceManager.getDefaultSharedPreferences(activityContext).getString("USERID", "-1");
         rootView = inflater.inflate(R.layout.home_tab_fragment, container, false);
         context = rootView.getContext();
+        preferencesAPI = new PreferencesAPI(context);
         setShitUp();
         return rootView;
     }
@@ -80,6 +89,33 @@ public class HomeTabFragment extends Fragment {
         mLayoutManager = new LinearLayoutManager(context);
         mRecyclerView.setLayoutManager(mLayoutManager);
         loadTrails();
+        setUpListenerForNewTrailButton();
+    }
+
+    private void setUpListenerForNewTrailButton() {
+        rootView.findViewById(R.id.create_new_trail).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                SimpleMaterialDesignDialog.Build(context)
+                        .SetTitle("New Trip")
+                        .SetTextBody("Are you sure you want to create a new trip?")
+                        .SetActionWording("Create Trip")
+                        .UseCancelButton(true)
+                        .SetCallBack(createNewTrailWithNoAction())
+                        .Show();
+            }
+        });
+    }
+
+    private IDialogCallback createNewTrailWithNoAction() {
+        return new IDialogCallback() {
+            @Override
+            public void DoCallback() {
+                TrailManagerWorker worker = new TrailManagerWorker(context);
+                worker.StartLocalTrail();
+            }
+        };
+
     }
 
     public void setUpRefreshLayout() {
