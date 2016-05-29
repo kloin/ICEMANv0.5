@@ -16,6 +16,9 @@ public class StaticValues {
         public static final int PLACE = 3;
         public static final int GPS = 4;
         public static final int ACTIVITY_CHANGE = 5;
+        
+        public static final int ON_FOOT = 7;
+        public static final int IN_VEHICLE = 0;
 
 
 }

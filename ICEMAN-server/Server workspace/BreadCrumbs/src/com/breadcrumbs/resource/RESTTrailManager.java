@@ -43,12 +43,6 @@ public class RESTTrailManager {
 		return trail.SaveJSONOfTrailPoints(TrailPointsJSON);
 	}
 	
-        @GET
-        @Path("/GetTripName/{TripId}")
-        public String GetTripName(@PathParam("TripId") Striung tripId) {
-            Trail trail = new Trail();
-            return trail.TrailName();
-        }
         /*
             Get the number of days this trail took.
         */
@@ -273,9 +267,15 @@ public class RESTTrailManager {
     @Path("/SaveRestZones/{zones}/{trailId}")
     public String SaveRestZonesForTrail(@PathParam("zones") String zones, @PathParam("trailId") String trailId) {
     	
-        
-    	
     	return "200";
+    }
+    
+    @POST
+    @Path("/SavePath/{PathData}/{TrailId}")
+    public String SavePath(@PathParam("PathData") String pathData,
+                            @PathParam("TrailId") String trailId) {
+        
+        return "";
     }
     
     

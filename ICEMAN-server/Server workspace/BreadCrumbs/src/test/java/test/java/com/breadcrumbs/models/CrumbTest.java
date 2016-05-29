@@ -64,7 +64,7 @@ public class CrumbTest {
         Transaction tx = _db.beginTx();
 				
         try {
-            Assert.assertTrue(node.getProperty("PropertyTest").equals("rest"));
+            Assert.assertTrue(node.getProperty("Username").equals("rest"));
 
         } catch (Exception ex) {
             System.out.println("DBMaster - Line 343: Failed to update"

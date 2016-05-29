@@ -278,7 +278,7 @@ public class TrailManager20 {
             updateDistance(routes);
             JSONObject overviewPolyline = routes.getJSONObject("overview_polyline");
             String encodedPolyline = overviewPolyline.getString("points");
-            
+          
             return encodedPolyline;
         }
         

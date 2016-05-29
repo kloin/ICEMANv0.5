@@ -23,6 +23,15 @@ import com.breadcrumbs.database.NodeController;
 import com.breadcrumbs.gcm.GcmMessages;
 import com.breadcrumbs.gcm.GcmSender;
 import com.breadcrumbs.database.DBMaster.myRelationships;
+import com.breadcrumbs.heavylifting.TrailManager20;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.net.URLConnection;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class Trail {
 		
@@ -589,6 +598,35 @@ public class Trail {
         // Retrun the json result as a string.
         return result.toString();
     }
+    
+    private JSONObject fetchDirectionsFromGoogle(String urlString) {
+            try {
+                // Create the connection
+                URL url = new URL(urlString);
+                URLConnection conn = url.openConnection();
+                BufferedReader in = new BufferedReader(new InputStreamReader(conn.getInputStream()));
+                String inputLine;
+
+                StringBuilder response = new StringBuilder(); 
+                while ((inputLine = in.readLine()) != null)  {
+                    System.out.println(inputLine);
+                    response.append(inputLine);
+                    response.append('\r');                    
+                }
+                
+                in.close();
+                JSONObject jsonResponse = new JSONObject(response.toString());
+                return jsonResponse;
+
+                
+            } catch (MalformedURLException ex) {
+                Logger.getLogger(TrailManager20.class.getName()).log(Level.SEVERE, null, ex);
+            } catch (IOException ex) {
+                Logger.getLogger(TrailManager20.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            
+            return null;
+        }
         
         
         
