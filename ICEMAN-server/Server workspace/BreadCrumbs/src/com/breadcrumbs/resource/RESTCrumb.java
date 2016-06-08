@@ -14,7 +14,13 @@ import com.breadcrumbs.search.Search;
 import Statics.StaticValues;
 import com.breadcrumbs.database.NodeController;
 import com.breadcrumbs.models.Trail;
+import com.sun.jersey.multipart.BodyPart;
+import com.sun.jersey.multipart.BodyPartEntity;
+import com.sun.jersey.multipart.MultiPart;
+import java.io.InputStream;
 import java.util.Hashtable;
+import java.util.List;
+import javax.ws.rs.POST;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import org.neo4j.graphdb.Node;
@@ -118,6 +124,20 @@ public class RESTCrumb {
 		Crumb crumb = new Crumb();
 		return crumb.GetNumberOfLikesForACrumb(CrumbId);
 	}
+        
+        @POST
+        @Path("/SaveImageToDatabase/{FileName}")
+            public String SaveImage(MultiPart data, @PathParam("FileName") String fileName) {
+                // Save an image
+                // Now save the multipart data (our image/video).
+            List<BodyPart> parts = data.getBodyParts();
+            BodyPartEntity bpe = (BodyPartEntity) parts.get(0).getEntity();
+            InputStream stream = bpe.getInputStream();
+            Crumb crumb = new Crumb();
+            crumb.ConvertAndSaveImage(stream, fileName);
+        return "200";
+        }
+        
         
         
 }

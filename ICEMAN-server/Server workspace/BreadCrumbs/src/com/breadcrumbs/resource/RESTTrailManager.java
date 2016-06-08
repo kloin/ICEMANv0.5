@@ -20,9 +20,12 @@ import org.json.JSONObject;
 
 import com.breadcrumbs.database.DBMaster;
 import com.breadcrumbs.heavylifting.TrailManager20;
+import com.breadcrumbs.heavylifting.TripManager;
+import com.breadcrumbs.models.Polyline2;
 import com.breadcrumbs.models.Trail;
 import com.breadcrumbs.models.TrailMetadata;
 import com.breadcrumbs.models.UserService;
+import java.util.ArrayList;
 
 @Path("/TrailManager")
 public class RESTTrailManager {
@@ -151,6 +154,13 @@ public class RESTTrailManager {
             Trail trail = new Trail();
             return Integer.toString(trail.GetNumberOfPhotoCrumbsForATrail(TrailId));
         }
+        
+        @GET
+        @Path("/GetAllPhotoIdsForATrail/{TrailId}")
+        public String GetAllPhotoIdsForATrail(@PathParam("TrailId") String TrailId) {
+            Trail trail = new Trail();
+            return trail.GetAllPhotoIdsForATrail(TrailId);
+        }
 	
 	@GET
 	@Path("/GetNumberOfTrailsAUserOwns/{UserId}") 
@@ -271,11 +281,31 @@ public class RESTTrailManager {
     }
     
     @POST
-    @Path("/SavePath/{PathData}/{TrailId}")
-    public String SavePath(@PathParam("PathData") String pathData,
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Path("/SavePath/{TrailId}")
+    public String SavePath( String pathData,
                             @PathParam("TrailId") String trailId) {
         
-        return "";
+        TripManager tripManager = new TripManager();
+        tripManager.SavePath(trailId, pathData);
+        return "200";
+    }
+    
+    @POST
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Path("/CalculatePath/{TrailId}")
+    public String CalculatePath(String pathData, @PathParam("TrailId") String trailId) {
+        TripManager tripManager = new TripManager();
+        JSONObject result = tripManager.CalculatePath(trailId, pathData);
+        return result.toString();
+    }
+    
+    @GET
+    @Path("/GetSavedPath/{TrailId}")
+    public String GetSavedPathForTrail(@PathParam("TrailId") String trailId) {
+        TripManager tripManager = new TripManager();
+        JSONObject jsonObject = tripManager.FetchPathForTrip(trailId);
+        return jsonObject.toString();
     }
     
     

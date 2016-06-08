@@ -20,5 +20,9 @@ public class StaticValues {
         public static final int ON_FOOT = 7;
         public static final int IN_VEHICLE = 0;
 
+        public static final String LATITUDE_KEY = "Latitude";
+        public static final String LONGITUDE_KEY = "Longitude";
+        public static final String CURRENT_ACTIVITY_KEY = "CurrentActivity";
+        public static final String PAST_ACTIVITY_KEY = "LastActivity";
 
 }

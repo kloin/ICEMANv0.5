@@ -5,9 +5,12 @@
  */
 package test.java.test.java.com.breadcrumbs.models;
 
-import com.breadcrumbs.models.Path;
+import com.breadcrumbs.heavylifting.Path;
+import com.breadcrumbs.heavylifting.TripManager;
 import com.breadcrumbs.models.Polyline2;
+import com.breadcrumbs.resource.RetrieveData;
 import java.util.ArrayList;
+import java.util.Iterator;
 import org.json.JSONObject;
 import org.junit.Assert;
 import org.junit.Test;
@@ -36,7 +39,7 @@ public class CalculatePathTest {
      *  (W)(D)(W)(W) (Live);
      */
     @Test
-    public void DrivingNodePattern1() {
+    public void LiveDrivingPattern() {
          
         JSONObject walking1 = new JSONObject();
         walking1.put(LATITUDE_KEY, -36.888227);
@@ -73,8 +76,6 @@ public class CalculatePathTest {
         Assert.assertTrue(lines.size() == 2);
         Assert.assertTrue(lines.get(0).isEncoded);
         Assert.assertTrue(!lines.get(1).isEncoded);
-
-
         //Path path = new Path()
     }
      private ArrayList<Polyline2> getFakeLines(String csvOfTestIndicators) {
@@ -84,16 +85,15 @@ public class CalculatePathTest {
         for (int index = 0; index < csvs.length; index += 1) {
             String item = csvs[index];
             if (item.equals("W")) {
-                lines.add(new Polyline2("MOCK", false));
+                lines.add(new Polyline2("MOCK", false, 0));
             } else {
-                lines.add(new Polyline2("MOCK", true));
+                lines.add(new Polyline2("MOCK", true, 0));
             }
         }
         return lines;
     }
     
-    
-     private boolean isDriving(Polyline2 line) {
+    private boolean isDriving(Polyline2 line) {
         return line.isEncoded;
     }
     
@@ -192,6 +192,76 @@ public class CalculatePathTest {
     public  void DrivingNodePattern5() {
         
     }
+    
+    @Test
+    public void TestThatWeCanMaintainIndex() {
+        JSONObject wrapper = new JSONObject();
+        wrapper.put("1", Walking());
+        wrapper.put("2", Walking());
+        wrapper.put("3", Driving());
+        wrapper.put("4", Walking());
+        wrapper.put("5", Driving());
+        wrapper.put("6", Walking());
+        wrapper.put("7", Walking());
+        Path path = new Path(wrapper);
+        // Tell it we are testing, so that we dont send requests to the metered api.
+        ArrayList<Polyline2> lines = path.CalculatePolylines(true);
+        Iterator<Polyline2> lineIterator = lines.iterator();
+        int count = 0;
+        while (lineIterator.hasNext()) {
+            count += 1;
+            Polyline2 next = lineIterator.next();
+            Assert.assertTrue(count == next.index);
+        }
+
+    }
+     @Test
+    public void TestThatWeCanSaveAndFetchWithIndex() {
+        
+        JSONObject wrapper = new JSONObject();
+        wrapper.put("1", Walking());
+        wrapper.put("2", Walking());
+        wrapper.put("3", Driving());
+        wrapper.put("4", Walking());
+        wrapper.put("5", Driving());
+        wrapper.put("6", Walking());
+        wrapper.put("8", Walking());
+        wrapper.put("9", Walking());
+        wrapper.put("10", Walking());
+        wrapper.put("11", Walking());
+        wrapper.put("12", Walking());
+        wrapper.put("13", Walking());
+        wrapper.put("14", Walking());
+        wrapper.put("15", Walking());
+        wrapper.put("16", Walking());
+        
+        
+        TripManager tripManager = new TripManager();
+        RetrieveData retrieve = new RetrieveData();
+        String id = retrieve.CreateNewUser("Josiah", "7873", "23", "M", "1", "testing@gmail.com", "1234567");
+        String tripId = retrieve.SaveTrail("OOOHRAA", "just testing yo", id);
+        tripManager.SavePath(tripId, wrapper.toString());
+        JSONObject tripObjects = tripManager.FetchPathForTrip(tripId);
+    }
+    
+    @Test
+    public void TestThatWeCanSaveHeadAndBaseOfEncodedPolylines() {
+         JSONObject wrapper = new JSONObject();
+        wrapper.put("1", Walking());
+        wrapper.put("2", Walking());
+        wrapper.put("3", Driving());
+        wrapper.put("4", Walking());
+         TripManager tripManager = new TripManager();
+        RetrieveData retrieve = new RetrieveData();
+        String id = retrieve.CreateNewUser("Josiah", "7873", "23", "M", "1", "testing@gmail.com", "1234567");
+        String tripId = retrieve.SaveTrail("OOOHRAA", "just testing yo", id);
+        tripManager.SavePath(tripId, wrapper.toString());
+        JSONObject tripObjects = tripManager.FetchPathForTrip(tripId);
+        JSONObject encodedLine = tripObjects.getJSONObject("1");
+        Double headLatitude = encodedLine.getDouble("HA");
+        Assert.assertTrue(headLatitude == -36.888227); 
+    }
+   
     
     
 //    @Test 

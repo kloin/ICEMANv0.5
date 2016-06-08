@@ -235,12 +235,12 @@ public class RetrieveData {
         
         int savingMediaResult = crumb.saveMedia(stream, extension, id, trailId);
         if (savingMediaResult == 0) {
-            return "200"; 
+            return id; 
         } else {
             // Delete crumb metadata that we have saved.
             DeleteNode(id);
+            return "Error";
         }
-        return "500";
         
     }
     

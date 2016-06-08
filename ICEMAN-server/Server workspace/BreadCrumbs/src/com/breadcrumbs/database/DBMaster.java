@@ -86,7 +86,8 @@ public class DBMaster {
 		Point,
 		Comment,
                 Event,
-                Place
+                Place,
+                Polyline
 	}
         
         public interface TransactionCallback {
@@ -147,6 +148,7 @@ public class DBMaster {
 			System.out.println("Failed to retrieve node");
 			ex.printStackTrace();
 			tx.failure();
+                        return null;
 		} finally {
 			tx.finish();
 		}
@@ -538,7 +540,7 @@ public class DBMaster {
 		Node trail = this.RetrieveNode(Integer.parseInt(trailId));
 		Transaction tx = _db.beginTx();
 		try {
-			trail.setProperty("CoverPhotoId", imageId);
+			trail.setProperty("coverPhotoId", imageId);
 			tx.success();			
 		}
 		catch(NotFoundException ex) {

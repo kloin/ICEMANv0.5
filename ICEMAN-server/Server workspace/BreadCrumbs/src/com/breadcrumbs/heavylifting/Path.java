@@ -3,10 +3,13 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package com.breadcrumbs.models;
+package com.breadcrumbs.heavylifting;
 
 import Statics.StaticValues;
 import com.breadcrumbs.heavylifting.TrailManager20;
+import com.breadcrumbs.models.Location;
+import com.breadcrumbs.models.PathNode;
+import com.breadcrumbs.models.Polyline2;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -27,8 +30,10 @@ import org.json.JSONObject;
  */
 public class Path {
    
+    private int polylineIndex;
     private ArrayList<PathNode> pathNodes;
     public Path(JSONObject pathData) {
+        polylineIndex = 0;
         pathNodes = processDataIntoNodes(pathData);
     }
     
@@ -42,14 +47,17 @@ public class Path {
                 JSONObject tempObject = pathData.getJSONObject(Integer.toString(id)); 
                 PathNode node = new PathNode(tempObject);
                 nodes.add(id-1,node);
+                id += 1;
+
             } catch (JSONException ex) {
                 /*Log the error - might be important. If this happens its a sign
                 of bad data, so we need to know about it. It would be cool if
                 we could raise an alert here.
                 */
+                System.out.println("Failed to process jsonobject into node. Error follows: ");
+                ex.printStackTrace();
                 
             }
-            id += 1;
         }
         
         return nodes;
@@ -84,7 +92,6 @@ public class Path {
         boolean started = false;
         while (nodeIterator.hasNext()) {
             System.out.println("About to start");
-            
             if (!started) {
                 // First time through use case.
                // Grab the next node off the iterator. Assign our currentNode to
@@ -100,16 +107,18 @@ public class Path {
             // This is first time use. No need to do any checking.
             if (previousNode != null) {
                 // Check If both current and previous events are walking events, we want to save the event to the database
-                if (currentNode.GetActivity() == StaticValues.ON_FOOT && previousNode.GetActivity()== StaticValues.ON_FOOT) {
+                if (currentNode.GetActivity() == StaticValues.ON_FOOT /*&& previousNode.GetActivity()== StaticValues.ON_FOOT*/) {
                     if (haveBeenDriving) {
                         // We want to calculate a driving event.
-                        Polyline2 polyline = calculateDrivingEvent(baseNode, previousNode);
+                        Polyline2 polyline = calculateDrivingEvent(baseNode, currentNode);
+                        baseNode = currentNode;
                         lineList.add(polyline);
-                    } 
-                    
-                    Polyline2 polyline = calculateWalkingEvent(baseNode, previousNode);
-                    lineList.add(polyline);
-                    
+                    } else {
+                        Polyline2 polyline = calculateUnencodedPolyline(baseNode, currentNode);
+                        baseNode = currentNode;
+                        lineList.add(polyline);
+                    }
+                    haveBeenDriving = false;
                 } else if (currentNode.GetActivity() == StaticValues.IN_VEHICLE) {
                     // do next
                    haveBeenDriving = true; 
@@ -184,11 +193,13 @@ public class Path {
     }
     
     private Polyline2 getMockDrivingEvent() {
-        return new Polyline2("gfd43tgfr60gfd03#$%^%", true);
+        polylineIndex += 1;
+        return new Polyline2("gfd43tgfr60gfd03#$%^%", true, polylineIndex);
     }
     
     private Polyline2 getMockWalkingEvent() {
-        return new Polyline2("MOck", false);
+        polylineIndex += 1;
+        return new Polyline2("MOck", false, polylineIndex);
     }
     
     /**
@@ -211,10 +222,20 @@ public class Path {
         Location baseLocation = new Location(baseNode.GetLatitude(), baseNode.GetLongitude());
         Location headLocation = new Location(destinationNode.GetLatitude(), destinationNode.GetLongitude());
         String encodedPolyline = getGoogleDirectionsWithNoWaypoints(baseLocation, headLocation);
-        return new Polyline2(encodedPolyline, true);
+        if (encodedPolyline == null) {
+            return calculateUnencodedPolyline(baseNode, baseNode);
+        }
+        polylineIndex += 1;
+        return new Polyline2(encodedPolyline, true, polylineIndex, baseLocation, headLocation);
     }
     
-    
+    /**
+     * Get directrions from a -> b using google directions api. This method
+     * does not accept or use waypoints.
+     * @param location1 point A
+     * @param location2 point B
+     * @return The encoded polyline string.
+     */
     private String getGoogleDirectionsWithNoWaypoints(Location location1, Location location2) {
             ArrayList<Location> locationList = new ArrayList();
             
@@ -265,7 +286,6 @@ public class Path {
             String baseUrl = "https://maps.googleapis.com/maps/api/directions/json?origin=";//-44.9439635,168.8379247&destination=-43.4721,170.017685&key=AIzaSyC3zYs82SyMaMlj2Xbss9b51FuoWJEVF-E"
             
             // Fetch the destination and origin of our trail.
-            
             String oLatString = Double.toString(origin.GetLatitude());
             String oLonString = Double.toString(origin.GetLongitude());
             String dLatString = Double.toString(destination.GetLatitude());
@@ -304,13 +324,38 @@ public class Path {
      * @param headNode Where we are driving to.
      * @return The {@link Polyline2} object with the walking line.
      */
-    private Polyline2 calculateWalkingEvent(PathNode baseNode, PathNode headNode) {
+    private Polyline2 calculateUnencodedPolyline(PathNode baseNode, PathNode headNode) {
+        String unEncodedPath = getWalkingPolyline(baseNode, headNode);
+        polylineIndex += 1;
+        return new Polyline2(unEncodedPath, false, polylineIndex);
+    }
+    
+    private String getWalkingPolyline(PathNode baseNode, PathNode headNode) {
         String lat1 = Double.toString(baseNode.GetLatitude());
         String lat2 = Double.toString(headNode.GetLatitude());
         String lon1 = Double.toString(baseNode.GetLongitude());
         String lon2 = Double.toString(headNode.GetLongitude());
         String unEncodedPath =  lat1+","+lon1+"|"+lat2+","+lon2;
-        return new Polyline2(unEncodedPath, false);
+        return unEncodedPath;
     }
     
+    private double calculateDistance(double lat1, double lat2, double lon1,
+	        double lon2, double el1, double el2) {
+
+	    final int R = 6371; // Radius of the earth
+
+	    Double latDistance = Math.toRadians(lat2 - lat1);
+	    Double lonDistance = Math.toRadians(lon2 - lon1);
+	    Double a = Math.sin(latDistance / 2) * Math.sin(latDistance / 2)
+	            + Math.cos(Math.toRadians(lat1)) * Math.cos(Math.toRadians(lat2))
+	            * Math.sin(lonDistance / 2) * Math.sin(lonDistance / 2);
+	    Double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+	    double distance = R * c * 1000; // convert to meters
+
+	    double height = el1 - el2;
+
+	    distance = Math.pow(distance, 2) + Math.pow(height, 2);
+
+	    return Math.sqrt(distance);
+	}
 }
