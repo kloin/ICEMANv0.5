@@ -14,14 +14,16 @@ import com.teamunemployment.breadcrumbs.client.Maps.DisplayCrumb;
 public class CrumbCardDataObject implements Parcelable{
     private String dataType;
     private String crumbId;
+    private String placeName;
     private String placeId;
     private Double latitude;
     private Double longitude;
     private int isLocal; // 0 is local, 1 is server
 
-    public CrumbCardDataObject(String dataType, String crumbId, String placeId, Double latitude, Double longitude, int isLocal) {
+    public CrumbCardDataObject(String dataType, String crumbId, String placeId, Double latitude, Double longitude, int isLocal, String placeName) {
         this.dataType = dataType;
         this.crumbId = crumbId;
+        this.placeName = placeName;
         this.placeId = placeId;
         this.longitude = longitude;
         this.latitude = latitude;
@@ -31,6 +33,7 @@ public class CrumbCardDataObject implements Parcelable{
     protected CrumbCardDataObject(Parcel in) {
         dataType = in.readString();
         crumbId = in.readString();
+        placeName = in.readString();
         placeId = in.readString();
         longitude = in.readDouble();
         latitude = in.readDouble();
@@ -72,6 +75,9 @@ public class CrumbCardDataObject implements Parcelable{
 
     public int GetIsLocal() {return isLocal; }
 
+    public String GetPlaceName() {
+        return placeName;
+    }
     @Override
     public int describeContents() {
         return 0;
@@ -81,6 +87,7 @@ public class CrumbCardDataObject implements Parcelable{
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeString(dataType);
         dest.writeString(crumbId);
+        dest.writeString(placeName);
         dest.writeString(placeId);
         dest.writeDouble(latitude);
         dest.writeDouble(longitude);

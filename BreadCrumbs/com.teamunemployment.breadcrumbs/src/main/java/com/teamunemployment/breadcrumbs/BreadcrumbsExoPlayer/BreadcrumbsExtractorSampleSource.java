@@ -681,7 +681,11 @@ public class BreadcrumbsExtractorSampleSource implements SampleSource, SampleSou
         if (!prepared) {
             loadable = createLoadableFromStart();
         } else {
-            Assertions.checkState(isPendingReset());
+            try {
+                Assertions.checkState(isPendingReset());
+            } catch (IllegalStateException ex) {
+                ex.printStackTrace();
+            }
             if (maxTrackDurationUs != C.UNKNOWN_TIME_US && pendingResetPositionUs >= maxTrackDurationUs) {
                 loadingFinished = true;
                 pendingResetPositionUs = NO_RESET_PENDING;

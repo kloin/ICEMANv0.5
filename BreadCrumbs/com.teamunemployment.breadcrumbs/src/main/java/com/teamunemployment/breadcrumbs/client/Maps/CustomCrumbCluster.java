@@ -42,7 +42,7 @@ public class CustomCrumbCluster extends DefaultClusterRenderer<DisplayCrumb> {
     private GoogleMap map;
     private View multiProfile;
     private String crumbId = null;
-    public CustomCrumbCluster(Activity context, GoogleMap map, ClusterManager<DisplayCrumb> clusterManager) {
+    public CustomCrumbCluster(final Activity context, GoogleMap map, ClusterManager<DisplayCrumb> clusterManager) {
         super(context, map, clusterManager);
         this.context = context;
         this.map = map;
@@ -52,6 +52,7 @@ public class CustomCrumbCluster extends DefaultClusterRenderer<DisplayCrumb> {
         mImageView = new ImageView(context);
         circularImageView = (CircleImageView) multiProfile.findViewById(R.id.crumb_cluster_image);
         mIconGenerator.setContentView(multiProfile);
+
         mIconGenerator.setBackground(makeClusterBackground());
         // Do more custom stuff here
     }
@@ -79,31 +80,27 @@ public class CustomCrumbCluster extends DefaultClusterRenderer<DisplayCrumb> {
     protected void onClusterItemRendered(DisplayCrumb clusterItem, Marker marker) {
         super.onClusterItemRendered(clusterItem, marker);
         //circularImageView.setImageResource(R.drawable.background3);
-
     }
 
     // Make the background white (for the single images)
     private LayerDrawable makeClusterBackground() {
-       // Drawable drawable = ContextCompat.getDrawable(context.getApplicationContext(),R.drawable.background);
-       // drawable.setColorFilter(0x333 , PorterDuff.Mode.DARKEN);
-        UpdateViewElementWithProperty updateViewElementWithProperty = new UpdateViewElementWithProperty();
-        //circularImageView.setImageResource(R.drawable.background2);
-        ShapeDrawable mColoredCircleBackground = new ShapeDrawable(new OvalShape());
+       ShapeDrawable mColoredCircleBackground = new ShapeDrawable(new OvalShape());
         mColoredCircleBackground.getPaint().setColor(0x009688);
         ShapeDrawable outline = new ShapeDrawable(new OvalShape());
         //updateViewElementWithProperty.UpdateCircularViewWithUrl(circularImageView, LoadBalancer.RequestCurrentDataAddress() + "/images/"+crumbId+".jpg");
-       // circularImageView.setImageResource(R.drawable.background2);
+        // circularImageView.setImageResource(R.drawable.background2);
         outline.getPaint().setColor(0x00ffffff); // Transparent white.
         LayerDrawable background = new LayerDrawable(new Drawable[]{outline, mColoredCircleBackground});
         int strokeWidth = (int) (15 * 3);
         background.setLayerInset(1, strokeWidth, strokeWidth, strokeWidth, strokeWidth);
         return background;
+
     }
 
     @Override
     protected boolean shouldRenderAsCluster(Cluster cluster) {
         // Always render clusters.
-        return cluster.getSize() > 1;
+        return cluster.getSize() > 3;
     }
 
 

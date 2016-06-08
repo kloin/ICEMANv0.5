@@ -1,5 +1,6 @@
 package com.teamunemployment.breadcrumbs.client.tabs;
 
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.CardView;
 import android.util.Log;
 import android.view.View;
@@ -28,6 +29,27 @@ public class ExploreTabFragment extends HomeTabFragment {
         Log.d(TAG, "Attempting to load Trails with URL: " + url);
         url = url.replaceAll(" ", "%20");
         return url;
+    }
+
+    @Override
+    public void setUpRefreshLayout() {
+        // do nothing, not sure what we are doing here yet.
+        mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                // Refresh items
+                refresh();
+            }
+            public void refresh() {
+                // Load all trails here
+                //reloadTrails();
+                onLoaded();
+            }
+
+            private void onLoaded() {
+                mSwipeRefreshLayout.setRefreshing(false);
+            }
+        });
     }
 }
 

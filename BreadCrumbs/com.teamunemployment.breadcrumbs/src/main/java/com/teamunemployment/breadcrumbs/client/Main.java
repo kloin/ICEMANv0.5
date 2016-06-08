@@ -2,12 +2,16 @@ package com.teamunemployment.breadcrumbs.client;
 
 import android.app.Activity;
 import android.app.Dialog;
+import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
+import android.content.pm.Signature;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
@@ -15,6 +19,7 @@ import android.preference.PreferenceManager;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AppCompatActivity;
 import android.text.Editable;
+import android.util.Base64;
 import android.util.Log;
 import android.view.Menu;
 import android.view.View;
@@ -34,12 +39,15 @@ import com.facebook.appevents.AppEventsLogger;
 import com.facebook.login.LoginManager;
 import com.facebook.login.LoginResult;
 import com.facebook.login.widget.LoginButton;
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.location.ActivityRecognition;
 import com.sromku.simple.fb.Permission;
 import com.sromku.simple.fb.SimpleFacebook;
 import com.sromku.simple.fb.SimpleFacebookConfiguration;
 import com.sromku.simple.fb.entities.Profile;
 import com.sromku.simple.fb.listeners.OnLoginListener;
 import com.sromku.simple.fb.listeners.OnProfileListener;
+import com.teamunemployment.breadcrumbs.ActivityRecognition.ActivityHandler;
 import com.teamunemployment.breadcrumbs.Facebook.AccountManager;
 import com.teamunemployment.breadcrumbs.GCM.RegistrationIntentService;
 import com.teamunemployment.breadcrumbs.Network.LoadBalancer;
@@ -54,6 +62,8 @@ import com.teamunemployment.breadcrumbs.database.DatabaseController;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
 
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.text.MessageFormat;
 import java.util.Arrays;
 import java.util.List;
@@ -93,8 +103,9 @@ public class Main extends AppCompatActivity {
 			.add(Profile.Properties.ID)
 			.add(Profile.Properties.FIRST_NAME)
 			.add(Profile.Properties.EMAIL)
-			.add(Profile.Properties.PICTURE)
 			.build();
+
+	private GoogleApiClient googleApiClient;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -103,6 +114,7 @@ public class Main extends AppCompatActivity {
 				.setAppId(appId)
 				.setNamespace("com.teamunemployment.breadcrumbs")
 				.setPermissions(permissions)
+				.setAppSecret("535359abe98d1dbf91e9c1a9227d1cfd")
 				.build();
 		SimpleFacebook.setConfiguration(configuration);
 
@@ -182,11 +194,13 @@ public class Main extends AppCompatActivity {
 
 			@Override
 			public void onFail(String reason) {
+				Log.e(TAG, "Failed to log in with simple facebook. Reason: " + reason);
 				// failed to login
 			}
 
 			@Override
 			public void onException(Throwable throwable) {
+				throwable.printStackTrace();
 				// exception from facebook
 			}
 
@@ -450,7 +464,7 @@ public class Main extends AppCompatActivity {
 					Intent myIntent = new Intent();
 					myIntent.putExtra("UserName", userName);
 					PreferenceManager.getDefaultSharedPreferences(context).edit().putString("USERNAME", userName).commit();
-					myIntent.setClassName("com.teamunemployment.breadcrumbs", "com.teamunemployment.breadcrumbs.client.BaseViewModel");
+					myIntent.setClassName("com.teamunemployment.breadcrumbs", "com.teamunemployment.breadcrumbs.client.Home.HomeActivity");
 					startActivity(myIntent);
 				}
 			}
@@ -666,6 +680,8 @@ public class Main extends AppCompatActivity {
 		dialog.show();
 	}
 
+
+
 	private void showForgottenDetailsPopup() {
 		final Dialog dialog = new Dialog(context);
 		dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
@@ -689,7 +705,11 @@ public class Main extends AppCompatActivity {
 		});
 		dialog.show();
 	}
-     
+
+	/**
+	 *
+	 */
+
 }
 
 	

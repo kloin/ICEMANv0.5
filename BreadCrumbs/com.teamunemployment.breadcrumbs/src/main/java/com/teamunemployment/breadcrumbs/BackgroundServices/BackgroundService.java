@@ -34,7 +34,7 @@ public class BackgroundService extends Service {
     public int onStartCommand(Intent intent, int flags, int startId) {
         mPreferencesApi = new PreferencesAPI(this);
         bus.register(this);
-        handleServiceStart();
+      //  handleServiceStart();
         return START_STICKY; // Check if we need to restart the service when we end it.
     }
 

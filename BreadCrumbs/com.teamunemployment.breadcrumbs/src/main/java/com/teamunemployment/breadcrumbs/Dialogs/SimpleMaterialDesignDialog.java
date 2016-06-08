@@ -2,6 +2,7 @@ package com.teamunemployment.breadcrumbs.Dialogs;
 
 import android.app.Dialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.view.View;
 import android.view.Window;
 import android.widget.TextView;
@@ -20,6 +21,7 @@ public class SimpleMaterialDesignDialog {
     private String mBody;
     private static Dialog mDialog;
     private static SimpleMaterialDesignDialog mInstance;
+    private IDialogCallback cancelCallback;
 
     private SimpleMaterialDesignDialog() {
         setUpOkButton();
@@ -40,11 +42,31 @@ public class SimpleMaterialDesignDialog {
         return mInstance;
     }
 
+    public SimpleMaterialDesignDialog SetCancelCallback(final IDialogCallback callback) {
+        cancelCallback = callback;
+        mDialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
+            @Override
+            public void onDismiss(DialogInterface dialog) {
+                callback.DoCallback();
+            }
+        });
+        return mInstance;
+    }
+
     public SimpleMaterialDesignDialog UseCancelButton(boolean isVisible) {
         TextView cancelButton = (TextView) mDialog.findViewById(R.id.header_cancel_button);
 
         if (isVisible) {
             cancelButton.setVisibility(View.VISIBLE);
+            cancelButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (cancelCallback != null) {
+                        cancelCallback.DoCallback();
+                    }
+                    mDialog.dismiss();
+                }
+            });
             return mInstance;
         }
 
@@ -96,7 +118,6 @@ public class SimpleMaterialDesignDialog {
                 mDialog.dismiss();
             }
         });
-
         return mInstance;
     }
 }

@@ -1,12 +1,17 @@
 package com.teamunemployment.breadcrumbs.client.tabs;
 
+import android.Manifest;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -15,11 +20,14 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
 import com.teamunemployment.breadcrumbs.Dialogs.IDialogCallback;
 import com.teamunemployment.breadcrumbs.Dialogs.SimpleMaterialDesignDialog;
 import com.teamunemployment.breadcrumbs.Network.LoadBalancer;
 import com.teamunemployment.breadcrumbs.Network.ServiceProxy.AsyncDataRetrieval;
+import com.teamunemployment.breadcrumbs.Network.ServiceProxy.UpdateViewElementWithProperty;
 import com.teamunemployment.breadcrumbs.Preferences.Preferences;
 import com.teamunemployment.breadcrumbs.PreferencesAPI;
 import com.teamunemployment.breadcrumbs.R;
@@ -33,6 +41,8 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.Iterator;
+
+import de.hdodenhof.circleimageview.CircleImageView;
 
 /**
  * Created by jek40 on 3/03/2016.
@@ -51,6 +61,7 @@ public class HomeTabFragment extends Fragment {
     private final String TAG = "HOME_TAB";
 
     private PreferencesAPI preferencesAPI;
+    private static final int REQUESTED_LOCATION_WITH_START_TRAIL_QUEUED = 8;
 
     private final ArrayList<String> ids = new ArrayList<>();
     public void onAttach(Activity activity) {
@@ -73,7 +84,38 @@ public class HomeTabFragment extends Fragment {
         context = rootView.getContext();
         preferencesAPI = new PreferencesAPI(context);
         setShitUp();
+        setUpHeaderShit();
         return rootView;
+    }
+
+    private void setUpHeaderShit() {
+
+        final CircleImageView profilePic = (CircleImageView) rootView.findViewById(R.id.profile_image_home);
+        String userId = preferencesAPI.GetUserId();
+
+        TextView userName = (TextView) rootView.findViewById(R.id.user_name_header);
+        UpdateViewElementWithProperty updateViewElementWithProperty = new UpdateViewElementWithProperty();
+        updateViewElementWithProperty.UpdateTextViewElement(userName, userId, "Username",context);
+        String coverPhotoId = PreferenceManager.getDefaultSharedPreferences(context).getString("COVERPHOTOID", "-1");
+
+        if (!userId.equals(PreferenceManager.getDefaultSharedPreferences(context).getString("USERID", "-1"))) {
+            String imageIdUrl = LoadBalancer.RequestServerAddress() + "/rest/login/GetPropertyFromNode/" + userId + "/CoverPhotoId";
+            AsyncDataRetrieval asyncDataRetrieval = new AsyncDataRetrieval(imageIdUrl, new AsyncDataRetrieval.RequestListener() {
+                @Override
+                public void onFinished(String result) {
+                    if (result != null || !result.isEmpty()) {
+                        try {
+                            Glide.with(context).load(LoadBalancer.RequestCurrentDataAddress() + "/images/" + result + ".jpg").centerCrop().placeholder(R.drawable.profileblank).crossFade().into(profilePic);
+                        } catch (IllegalArgumentException ex) {
+                            Log.d("PROF", "caught glide exception in profile page. Probably due to activity being destroyed before load was finished");
+                        }
+                    }
+                }
+            }, context);
+            asyncDataRetrieval.execute();
+        } else {
+            Glide.with(context).load(LoadBalancer.RequestCurrentDataAddress() + "/images/" + coverPhotoId + ".jpg").centerCrop().placeholder(R.drawable.profileblank).crossFade().into(profilePic);
+        }
     }
 
     public void setShitUp() {
@@ -101,7 +143,7 @@ public class HomeTabFragment extends Fragment {
                         .SetTextBody("Are you sure you want to create a new trip?")
                         .SetActionWording("Create Trip")
                         .UseCancelButton(true)
-                        .SetCallBack(createNewTrailWithNoAction())
+                        .SetCallBack(createTrailCallback())
                         .Show();
             }
         });
@@ -118,14 +160,50 @@ public class HomeTabFragment extends Fragment {
 
     }
 
+    private IDialogCallback createTrailCallback() {
+        return new IDialogCallback() {
+            @Override
+            public void DoCallback() {
+                // If permissions are all good, go ahead and create the trail. If permissions are not all good,
+                int coarseLocation = ContextCompat.checkSelfPermission(context, Manifest.permission.ACCESS_COARSE_LOCATION);
+                int fineLocation = ContextCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION);
+
+                if (coarseLocation == PackageManager.PERMISSION_GRANTED && fineLocation == PackageManager.PERMISSION_GRANTED) {
+                    TrailManagerWorker trailManagerWorker = new TrailManagerWorker(context);
+                    trailManagerWorker.StartLocalTrail();
+                    Intent newIntent = new Intent();
+                    int localTrail = preferencesAPI.GetLocalTrailId();
+                    String localTrailString = Integer.toString(localTrail) + "L";
+                    newIntent.putExtra("TrailId", localTrailString);
+                    newIntent.setClassName("com.teamunemployment.breadcrumbs", "com.teamunemployment.breadcrumbs.client.Maps.LocalMap");
+                    startActivity(newIntent);
+                } else {
+                    if (coarseLocation == PackageManager.PERMISSION_DENIED && fineLocation == PackageManager.PERMISSION_DENIED) {
+                        String[] permissions = {Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION};
+                        AppCompatActivity appCompatActivity = (AppCompatActivity) context;
+                        ActivityCompat.requestPermissions(appCompatActivity, permissions, REQUESTED_LOCATION_WITH_START_TRAIL_QUEUED);
+                    } else if(coarseLocation == PackageManager.PERMISSION_DENIED) {
+                        String[] permissions = {Manifest.permission.ACCESS_COARSE_LOCATION};
+                        AppCompatActivity appCompatActivity = (AppCompatActivity) context;
+                        ActivityCompat.requestPermissions(appCompatActivity, permissions, REQUESTED_LOCATION_WITH_START_TRAIL_QUEUED);
+                    } else if (fineLocation == PackageManager.PERMISSION_DENIED) {
+                        String[] permissions = {Manifest.permission.ACCESS_FINE_LOCATION};
+                        AppCompatActivity appCompatActivity = (AppCompatActivity) context;
+                        ActivityCompat.requestPermissions(appCompatActivity, permissions, REQUESTED_LOCATION_WITH_START_TRAIL_QUEUED);
+                    }
+                }
+            }
+        };
+    }
+
     public void setUpRefreshLayout() {
 
         mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-            @Override
-            public void onRefresh() {
-                // Refresh items
-                refresh();
-            }
+                @Override
+                public void onRefresh() {
+                    // Refresh items
+                    refresh();
+                }
             public void refresh() {
                 // Load all trails here
                 reloadTrails();
@@ -183,7 +261,7 @@ public class HomeTabFragment extends Fragment {
                     mAdapter = new HomeCardAdapter(allIds, context);
                     mRecyclerView.setAdapter(mAdapter);
                     // Hide the placeholder
-                    CardView placeholder = (CardView) rootView.findViewById(R.id.card_view_placeholder);
+                    TextView placeholder = (TextView) rootView.findViewById(R.id.no_favs_placeholder);
                     placeholder.setVisibility(View.GONE);
                 } catch (JSONException e) {
                     // TODO Auto-generated catch block
@@ -272,7 +350,7 @@ public class HomeTabFragment extends Fragment {
             if (ids.size() == 0) {
                 Log.d(TAG, "Found some data, setting up placeholder visibility");
                 // Hide placeholder.
-                CardView cardPlaceholder = (CardView) rootView.findViewById(R.id.card_view_placeholder);
+                TextView cardPlaceholder = (TextView) rootView.findViewById(R.id.no_favs_placeholder);
                 simpleAnimations.FadeInView(cardPlaceholder);
                 cardPlaceholder.setVisibility(View.VISIBLE);
             }
@@ -306,5 +384,27 @@ public class HomeTabFragment extends Fragment {
             }
         }
         return ids;
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode,
+                                           String permissions[], int[] grantResults) {
+        switch (requestCode) {
+            case REQUESTED_LOCATION_WITH_START_TRAIL_QUEUED: {
+                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    Intent newIntent = new Intent();
+                    TrailManagerWorker trailManagerWorker = new TrailManagerWorker(context);
+                    trailManagerWorker.StartLocalTrail();
+                    int localTrail = preferencesAPI.GetLocalTrailId();
+                    String localTrailString = Integer.toString(localTrail) + "L";
+                    newIntent.putExtra("TrailId", localTrailString);
+                    newIntent.setClassName("com.teamunemployment.breadcrumbs", "com.teamunemployment.breadcrumbs.client.Maps.LocalMap");
+                    startActivity(newIntent);
+                }
+            }
+
+            // other 'case' lines to check for other
+            // permissions this app might request
+        }
     }
 }

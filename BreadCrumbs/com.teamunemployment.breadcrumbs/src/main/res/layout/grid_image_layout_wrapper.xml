@@ -8,11 +8,20 @@
         android:layout_width="match_parent"
         android:layout_height="60dp">
         <ImageView
+            android:id="@+id/trail_cover_photo_back_button"
             android:layout_gravity="center_vertical"
             android:layout_marginLeft="8dp"
-            android:src="@drawable/ic_action_back"
+            android:src="@drawable/ic_arrow_back_black_24dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
+        <TextView
+            android:id="@+id/select_cover_photo_image"
+            android:text="Select Cover photo"
+
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            style="@style/Base.TextAppearance.Widget.AppCompat.Toolbar.Title"
+            android:gravity="center"/>
 
     </android.support.v7.widget.CardView>
 

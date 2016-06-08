@@ -8,6 +8,7 @@ import android.preference.PreferenceManager;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.GridView;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.teamunemployment.breadcrumbs.Framework.JsonHandler;
@@ -35,7 +36,6 @@ public class TrailCoverImageSelector extends Activity {
     public ArrayList<String> idsArray;
     private Context context;
 
-
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -49,6 +49,7 @@ public class TrailCoverImageSelector extends Activity {
     public void setShitUp() {
         emptyGridInfo = (TextView) findViewById(R.id.empty_grid_placeholder);
         SetUpGridView();
+        goBackListener();
     }
 
     /**
@@ -56,10 +57,9 @@ public class TrailCoverImageSelector extends Activity {
      */
     public void SetUpGridView() {
         int trailId = new PreferencesAPI(context).GetServerTrailId();
-
         emptyGridInfo = (TextView) findViewById(R.id.empty_grid_placeholder);
         final GridView gridview = (GridView) findViewById(R.id.gridView1);
-        String allImagesUrl = LoadBalancer.RequestServerAddress() + "/rest/TrailManager/GetAllSavedCrumbIdsForATrail/" + trailId;
+        String allImagesUrl = LoadBalancer.RequestServerAddress() + "/rest/TrailManager/GetAllPhotoIdsForATrail/" + trailId;
 
         fetchLocalImages();
         if (trailId != -1) {
@@ -75,8 +75,6 @@ public class TrailCoverImageSelector extends Activity {
         ImageChooserGridViewAdapter adapter = new ImageChooserGridViewAdapter(idsArray, context);
         gridview.setAdapter(adapter);
         setGridViewItemClickHandler(gridview);
-
-
     }
 
     private void fetchRemoteImages(String url, final GridView gridView) {
@@ -87,7 +85,6 @@ public class TrailCoverImageSelector extends Activity {
                 // Convert the json result to an array;
                 JsonHandler jsonHandler = new JsonHandler();
                 idsArray.addAll(jsonHandler.ConvertJSONStringToArrayList(result));
-
                 // Error use case.
                 if (idsArray.size() < 1) {
                     // We want to show the placeholder.
@@ -119,6 +116,16 @@ public class TrailCoverImageSelector extends Activity {
 
     }
 
+    private void goBackListener() {
+        ImageView goBackImageView = (ImageView) findViewById(R.id.trail_cover_photo_back_button);
+        goBackImageView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+        });
+    }
+
     // Append the crumbs to our json.
     private void appendLocalImages(JSONObject crumbs) {
         Iterator<String> keys = crumbs.keys();
@@ -128,10 +135,13 @@ public class TrailCoverImageSelector extends Activity {
             String key = keys.next();
             try {
                 JSONObject tempObject = crumbs.getJSONObject(key);
-                String id = tempObject.getString(Models.Crumb.ID);
+                String id = tempObject.getString(Models.Crumb.EVENT_ID);
+                // Filter out videos.
+                if (tempObject.getString(Models.Crumb.EXTENSION).endsWith("g")) {
+                    /// Have to add a local flag so we know its local.
+                    idsArray.add(id + "L");
+                }
 
-                /// Have to add a local flag so we know its local.
-                idsArray.add(id + "L");
 
             } catch (JSONException e) {
                 e.printStackTrace();
@@ -143,7 +153,7 @@ public class TrailCoverImageSelector extends Activity {
         gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             public void onItemClick(AdapterView<?> parent, View v, int position, long id) {
                 // Save our profile header pic.
-                String newPicId = idsArray.get(position);
+                String newPicId = idsArray.get(position); // Bug should occur here. This is a sketchy way to grab id.
 
                 // Save our new selection locally too.
                 new PreferencesAPI(context).SetCurrentTrailCoverPhoto(newPicId);

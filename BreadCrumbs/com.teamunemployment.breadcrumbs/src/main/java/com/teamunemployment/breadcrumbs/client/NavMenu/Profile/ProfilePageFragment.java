@@ -1,16 +1,23 @@
 package com.teamunemployment.breadcrumbs.client.NavMenu.Profile;
 
+import android.Manifest;
 import android.app.Activity;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.Color;
+import android.net.Uri;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.provider.ContactsContract;
+import android.provider.MediaStore;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CollapsingToolbarLayout;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.Editable;
@@ -37,15 +44,18 @@ import com.teamunemployment.breadcrumbs.R;
 import com.teamunemployment.breadcrumbs.Network.ServiceProxy.AsyncDataRetrieval;
 import com.teamunemployment.breadcrumbs.Network.ServiceProxy.HTTPRequestHandler;
 import com.teamunemployment.breadcrumbs.Network.ServiceProxy.UpdateViewElementWithProperty;
+import com.teamunemployment.breadcrumbs.Trails.TrailManagerWorker;
 import com.teamunemployment.breadcrumbs.caching.GlobalContainer;
 import com.teamunemployment.breadcrumbs.caching.TextCaching;
 import com.teamunemployment.breadcrumbs.client.DialogWindows.DatePickerDialog;
 import com.bumptech.glide.Glide;
 import com.teamunemployment.breadcrumbs.client.DialogWindows.DatePickerDialog.DatePickerDialogListener;
+import com.teamunemployment.breadcrumbs.client.Image.ImageLoadingManager;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.IOException;
 import java.util.Iterator;
 
 import mehdi.sakout.fancybuttons.FancyButton;
@@ -54,6 +64,8 @@ import mehdi.sakout.fancybuttons.FancyButton;
  * Created by Josiah Kendall on 4/21/2015.
  */
 public class ProfilePageFragment extends Fragment {
+    private final static int LOCAL = 0;
+    private final static int REMOTE = 1;
     private String userId;
     private AppCompatActivity myContext;
     private boolean isDirty = false;
@@ -68,6 +80,8 @@ public class ProfilePageFragment extends Fragment {
     private View rootView;
     private PreferencesAPI preferencesAPI;
 
+    private static final int WRITE_EXTERNAL_STORAGE_REQUEST = 5;
+
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -75,7 +89,6 @@ public class ProfilePageFragment extends Fragment {
 
         userId = PreferenceManager.getDefaultSharedPreferences(getActivity()).getString("USERID", "-1");
         rootView = inflater.inflate(R.layout.profile_screen, container, false);
-
 
         if (rootView != null) {
             ViewGroup parent = (ViewGroup) rootView.getParent();
@@ -103,14 +116,6 @@ public class ProfilePageFragment extends Fragment {
     // Toolbar button listeners - save and back
     private void setButtonListeners() {
         // Save button listener.
-        TextView saveButton = (TextView) rootView.findViewById(R.id.profile_save);
-        saveButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                save();
-            }
-        });
-
         // back button listener
         ImageButton button = (ImageButton) rootView.findViewById(R.id.profile_back_button);
         button.setOnClickListener(new View.OnClickListener() {
@@ -160,8 +165,6 @@ public class ProfilePageFragment extends Fragment {
 
     private void setEditButtonVisibility() {
         Log.d(TAG, "Setting up edit button visiblity");
-        TextView saveButton = (TextView) rootView.findViewById(R.id.profile_save);
-        saveButton.setVisibility(View.GONE);
         if (!isOwnProfile) {
             Log.d(TAG, "Not our local user - need to hide the edit/save buttons");
             // Hide the edsit button, and the Save button.
@@ -213,7 +216,6 @@ public class ProfilePageFragment extends Fragment {
         updater.UpdateTextViewElement(ageDisplay, userId, "Age", myContext);
         updater.UpdateTextViewElement(aboutTextView, userId, "About", myContext);
         updater.UpdateTextViewElement(websiteTextView, userId, "Web", myContext);
-
     }
 
     private void setUpFollowing() {
@@ -230,7 +232,6 @@ public class ProfilePageFragment extends Fragment {
             public void onClick(View v) {
                 // Send request to follow user
                 Log.d(TAG, "Sending follow request to server");
-
                 if (!currentUserId.equals("-1")) {
                     //followButton.setTextColor(getResources().getColor(R.color.accent));
                     followButton.setText("Following");
@@ -276,10 +277,46 @@ public class ProfilePageFragment extends Fragment {
         });
     }
 
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        final ImageView header = (ImageView) rootView.findViewById(R.id.headerPicture);
+        if (resultCode == LOCAL && requestCode ==PICK_PROFILE_REQUEST) { // 0 for local flag.
+            // This means that it is the result that we are looking for.
+            String id = data.getStringExtra("ProfileId");
+            if (id == null) {
+                return;
+            }
+            Uri images = MediaStore.Images.Media.EXTERNAL_CONTENT_URI;
+
+            final Uri uri = Uri.parse(images + "/" + id);
+            // Fetch the bitmap and set it to our header pic
+            ImageLoadingManager imageLoadingManager = new ImageLoadingManager(myContext);
+            Bitmap bitmap = null;
+            try {
+                bitmap = imageLoadingManager.GetFull720Bitmap(uri);
+            } catch (IOException e) {
+                e.printStackTrace();
+                // Fuck all we can do here. Maybe show some sort of error.
+                return;
+            }
+            header.setImageBitmap(bitmap);
+        }
+
+        // User has selected a remote image, need to load and display said photo.
+        if (resultCode == REMOTE && requestCode == PICK_PROFILE_REQUEST) {
+            // get id
+            String id = data.getStringExtra("ProfileId");
+            if (id == null) {
+                return;
+            }
+            Glide.with(myContext).load(LoadBalancer.RequestCurrentDataAddress() + "/images/" + id + ".jpg").centerCrop().crossFade().into(header);
+
+        }
+    }
+
     // Save our changes age, gender and Nationality
     private void save() {
         // Just going to save all values, cos fuck it.
-
         EditText bio = (EditText) rootView.findViewById(R.id.bio_edit_text);
         String about = bio.getText().toString();
         //String genderInfo = gender.getText().toString();
@@ -292,34 +329,6 @@ public class ProfilePageFragment extends Fragment {
         simpleSaver.SendSimpleHttpRequestAndReturnString(aboutInfoUrl, myContext);
     }
 
-//    @Override
-//    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-//        super.onActivityResult(requestCode, resultCode, data);
-//        Bitmap bitmap = null;
-//        if (data != null) {
-//            bitmap = data.getParcelableExtra("bitmap");
-//            if (bitmap == null) {
-//                bitmap = GlobalContainer.GetContainerInstance().GetBitMap();
-//            }
-//        }
-//        // This is the check for when we return with no data. Usually when the user hits the back button
-//        if (requestCode == 1) {
-//            if (resultCode == Activity.RESULT_OK) {
-//                refreshed = true;
-//                ImageView header = (ImageView) findViewById(R.id.headerPicture);
-//                if (bitmap != null) {
-//                    header.setImageBitmap(bitmap);
-//                } else {
-//                    String id = PreferenceManager.getDefaultSharedPreferences(myContext).getString("COVERPHOTOID", "-1");
-//                    Glide.with(myContext).load(LoadBalancer.RequestCurrentDataAddress() + "/images/" + id + ".jpg").centerCrop().crossFade().into(header);
-//                }
-//            }
-//            if (resultCode == Activity.RESULT_CANCELED) {
-//                //Write your code if there's no result
-//            }
-//        }
-//    }
-
     // Try to set the profile picture for a user
     private void setHeaderPic() {
 
@@ -330,7 +339,7 @@ public class ProfilePageFragment extends Fragment {
         int width = displaymetrics.widthPixels;
         layoutParams.height = width;
         header.setLayoutParams(layoutParams);
-        String coverPhotoId = PreferenceManager.getDefaultSharedPreferences(myContext).getString("COVERPHOTOID", "-1");
+        String coverPhotoId = PreferenceManager.getDefaultSharedPreferences(myContext).getString("PersonalCoverPhoto", "-1");
 
         if (!userId.equals(PreferenceManager.getDefaultSharedPreferences(myContext).getString("USERID", "-1"))) {
             TextView textView = (TextView) rootView.findViewById(R.id.profile_select_prompt);
@@ -341,7 +350,7 @@ public class ProfilePageFragment extends Fragment {
                 public void onFinished(String result) {
                     if (result != null || !result.isEmpty()) {
                         try {
-                            Glide.with(myContext).load(LoadBalancer.RequestCurrentDataAddress() + "/images/" + result + ".jpg").centerCrop().crossFade().into(header);
+                            Glide.with(myContext).load(LoadBalancer.RequestCurrentDataAddress() + "/images/" + result + ".jpg").centerCrop().placeholder(R.drawable.profileblank).crossFade().into(header);
                         } catch (IllegalArgumentException ex) {
                             Log.d("PROF", "caught glide exception in profile page. Probably due to activity being destroyed before load was finished");
                         }
@@ -354,16 +363,30 @@ public class ProfilePageFragment extends Fragment {
             if (!coverPhotoId.equals("-1")) {
                 textView.setVisibility(View.GONE);
             }
-            Glide.with(myContext).load(LoadBalancer.RequestCurrentDataAddress() + "/images/" + coverPhotoId + ".jpg").centerCrop().crossFade().into(header);
+            Glide.with(myContext).load(LoadBalancer.RequestCurrentDataAddress() + "/images/" + coverPhotoId + ".jpg").centerCrop().placeholder(R.drawable.profileblank).crossFade().into(header);
             header.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Intent intent = new Intent();
-                    intent.setClassName("com.teamunemployment.breadcrumbs", "com.teamunemployment.breadcrumbs.client.ImageChooser.ImageChooserTabWrapper");
-                    startActivityForResult(intent, PICK_PROFILE_REQUEST);
+                    // If we dont have permission we need to ask for it.
+                    // If permissions are all good, go ahead and create the trail. If permissions are not all good,
+                    int permissionCheckWriteToExternalStorage = ContextCompat.checkSelfPermission(myContext, Manifest.permission.WRITE_EXTERNAL_STORAGE);
+                    if (permissionCheckWriteToExternalStorage == PackageManager.PERMISSION_GRANTED) {
+                        Intent intent = new Intent();
+                        intent.setClassName("com.teamunemployment.breadcrumbs", "com.teamunemployment.breadcrumbs.client.ImageChooser.ImageChooserTabWrapper");
+                        startActivityForResult(intent, PICK_PROFILE_REQUEST);
+                    } else {
+                        ActivityCompat.requestPermissions(myContext,
+                                new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
+                                WRITE_EXTERNAL_STORAGE_REQUEST);
+                    }
+
                 }
             });
         }
+    }
+
+    private void checkPermissions() {
+// There is a crash here that i need to find.
     }
 
     // Used when the user wants to toggle edit mode for their profile - this makes the text views dissapear and the editTexts appear.
@@ -464,7 +487,6 @@ public class ProfilePageFragment extends Fragment {
     private void hideProgressBar() {
         ProgressBar progressBar = (ProgressBar) rootView.findViewById(R.id.profile_progress_bar);
         progressBar.setVisibility(View.GONE);
-
     }
 
     private void beginProcessingTrailsIntoChips(JSONObject jsonResult) throws JSONException {
@@ -617,4 +639,16 @@ public class ProfilePageFragment extends Fragment {
         };
     }
 
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        if (requestCode == WRITE_EXTERNAL_STORAGE_REQUEST) {
+            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                Intent intent = new Intent();
+                intent.setClassName("com.teamunemployment.breadcrumbs", "com.teamunemployment.breadcrumbs.client.ImageChooser.ImageChooserTabWrapper");
+                startActivityForResult(intent, PICK_PROFILE_REQUEST);
+            } else {
+                Toast.makeText(myContext, "Cannot select a profile image as app does not have suffucient permissions.", Toast.LENGTH_LONG).show();
+            }
+        }
+    }
 }

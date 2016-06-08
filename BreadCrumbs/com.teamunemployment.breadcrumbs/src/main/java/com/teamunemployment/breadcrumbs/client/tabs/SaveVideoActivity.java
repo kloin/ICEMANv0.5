@@ -2,6 +2,7 @@ package com.teamunemployment.breadcrumbs.client.tabs;
 
 import android.app.ActionBar;
 import android.app.Activity;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Matrix;
 import android.graphics.SurfaceTexture;
@@ -32,6 +33,7 @@ import com.google.android.gms.common.api.ResultCallback;
 import com.google.android.gms.location.places.Place;
 import com.google.android.gms.location.places.PlaceLikelihood;
 import com.google.android.gms.location.places.PlaceLikelihoodBuffer;
+import com.teamunemployment.breadcrumbs.BackgroundServices.SaveCrumbService;
 import com.teamunemployment.breadcrumbs.Location.BreadCrumbsFusedLocationProvider;
 import com.teamunemployment.breadcrumbs.Location.PlaceManager;
 import com.teamunemployment.breadcrumbs.Network.LoadBalancer;
@@ -136,11 +138,21 @@ public class SaveVideoActivity  extends Activity implements TextureView.SurfaceT
             }
         });
 
-        FloatingActionButton newTrailButton = (FloatingActionButton) findViewById(R.id.save_video);
-        newTrailButton.setOnClickListener(new View.OnClickListener() {
+        FloatingActionButton save = (FloatingActionButton) findViewById(R.id.save_video);
+        save.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                createNewEvent();
+                if (mPreferencesApi == null) {
+                    mPreferencesApi = new PreferencesAPI(context);
+                }
+                int eventId = mPreferencesApi.GetEventId();
+
+                // Launch background service to save to video.
+                Intent saveCrumbService = new Intent(context, SaveCrumbService.class);
+                saveCrumbService.putExtra("EventId", eventId);
+                saveCrumbService.putExtra("IsPhoto", false);
+                context.startService(saveCrumbService);
+                Toast.makeText(context, "Saved to trip", Toast.LENGTH_SHORT).show();
                 t.cancel();
                 finish();
             }

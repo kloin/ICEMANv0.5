@@ -30,6 +30,9 @@ import android.media.AudioManager;
 import android.media.MediaCodec;
 import android.net.Uri;
 import android.os.Handler;
+import android.util.Log;
+
+import org.joda.time.DateTime;
 
 /**
  * A {@link BreadcrumbsExoPlayer.RendererBuilder} for streams that can be read using an {@link Extractor}.
@@ -43,6 +46,7 @@ public class ExtractorRendererBuilder implements BreadcrumbsExoPlayer.RendererBu
     private final String userAgent;
     private final Uri uri;
     private final boolean isLocal;
+    public HttpProxyCacheServer proxyCacheServer;
 
     public ExtractorRendererBuilder(Context context, String userAgent, Uri uri, boolean isLocal) {
         this.context = context;
@@ -62,8 +66,12 @@ public class ExtractorRendererBuilder implements BreadcrumbsExoPlayer.RendererBu
         // If its not a local datasource, we use the proxy cache. If it is local, just load from the local uri
         Uri proxyUri;
         if (!isLocal) {
-            HttpProxyCacheServer proxyCacheServer = Mp4ProxyCache.GetProxy(context);
+            Log.d("TIME", "Time Is: " + DateTime.now().getMillis());
+            proxyCacheServer = Mp4ProxyCache.GetProxy(context);
+            Log.d("TIME", "Time Is: " + DateTime.now().getMillis());
             String proxyUrl = proxyCacheServer.getProxyUrl(uri.toString());
+            Log.d("TIME", "Time Is: " + DateTime.now().getMillis());
+
             proxyUri= Uri.parse(proxyUrl);
         } else {
             proxyUri = uri;

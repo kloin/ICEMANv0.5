@@ -4,9 +4,9 @@
     xmlns:fancy="http://schemas.android.com/apk/res-auto"
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/com.teamunemployment.breadcrumbs.test"
+    android:id="@+id/test"
     android:layout_width="match_parent"
-    android:layout_height="fill_parent"
+    android:layout_height="match_parent"
     android:fitsSystemWindows="false">
     <RelativeLayout
         android:layout_width="match_parent"
@@ -29,8 +29,8 @@
             android:layout_height="40dp" />
         <TextView
             android:id="@+id/user_name_header"
-            android:text="Josiah"
-            style="@style/TextAppearance.AppCompat.Body1"
+            style="@style/Base.TextAppearance.AppCompat.Title"
+            android:textColor="@color/ColorPrimary"
             android:gravity="center|left"
             android:layout_marginLeft="10dp"
             android:layout_toRightOf="@+id/profile_image_home"
@@ -77,33 +77,13 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"/>
-    <android.support.v7.widget.CardView
-        android:id="@+id/card_view_placeholder"
-        android:layout_margin="10dp"
-        android:visibility="gone"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-        <RelativeLayout
-            android:layout_width="wrap_content"
-            android:padding="30dp"
-            android:layout_height="wrap_content">
-            <TextView
-                android:id="@+id/header"
-                android:textColor="@color/ColorPrimary"
-                android:textSize="20sp"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Welcome to your Homepage!"/>
-            <TextView
-                android:id="@+id/content"
-                android:layout_width="wrap_content"
-                android:textSize="14sp"
-                android:layout_marginTop="40dp"
-                android:layout_height="wrap_content"
-                android:text="Trips that you favorite and users that you follow will appear here."
-                android:layout_below="@+id/header"/>
-        </RelativeLayout>
-    </android.support.v7.widget.CardView>
+  <TextView
+      android:id="@+id/no_favs_placeholder"
+      android:gravity="center"
+      android:visibility="gone"
+      android:text="You have no favourites"
+      android:layout_width="match_parent"
+      android:layout_height="match_parent" />
 
     <android.support.v7.widget.CardView
         android:id="@+id/network_issue_placeholder"

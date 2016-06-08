@@ -25,8 +25,7 @@ import java.net.URLConnection;
 public class AsyncSendLargeJsonParam extends AsyncTask<String, Integer, String> {
     private String url;
     private JSONObject json;
-    public static final MediaType JSON
-            = MediaType.parse("application/json; charset=utf-8");
+    public static final MediaType JSON = MediaType.parse("application/json; charset=utf-8");
     // jsonResult was losing a variable some how, so im testing with this to see what happens.
 
     // This is the interface for the callback method to use.

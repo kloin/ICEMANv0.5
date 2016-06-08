@@ -17,6 +17,7 @@ public class BreadcrumbsVideoProgressTimer {
     private int duration = 0;
     private boolean isRunning = false;
     private ITimer iTimer;
+    private boolean paused = false;
     public BreadcrumbsVideoProgressTimer(ProgressBar progressBar) {
         this.progressBar = progressBar;
     }
@@ -30,34 +31,40 @@ public class BreadcrumbsVideoProgressTimer {
         startTimer();
     }
 
+    /**
+     * <p>True = pause, false = unpause.</p>
+     * @param state
+     */
+    public void setTimerPauseState(boolean state) {
+        paused = state;
+    }
+
     public void startTimer() {
         if (isRunning) {
             // Think we should throw an exception here because it will break
             return;
         }
-
         t=new Timer();
-
         isRunning = true;
         t.scheduleAtFixedRate(new TimerTask() {
             @Override
             public void run() {
-                videoTimer += 50;
-                if (videoTimer < duration) {
-                    progressBar.setProgress(videoTimer);
-                } else {
-                    Log.d("TIMER", "Finished loop, starting next");
-                    // Stop video, and go to the next page
-                    videoTimer = 0;
+                if (!paused) {
+                    videoTimer += 50;
+                    if (videoTimer < duration) {
+                        progressBar.setProgress(videoTimer);
+                    } else {
+                        Log.d("TIMER", "Finished loop, starting next");
+                        // Stop video, and go to the next page
+                        videoTimer = 0;
+                        // Do our callback
+                        if (iTimer != null ) {
+                            iTimer.OnFinished();
+                        }
 
-                    // Do our callback
-                    if (iTimer != null ) {
-                        iTimer.OnFinished();
+                        // Stop this timer propogating by cancelling it here. Not sure this is the best strategy so I will need to test this when Im not so tired.
+                        t.cancel();
                     }
-
-                    // Stop this timer propogating by cancelling it here. Not sure this is the best strategy so I will need to test this when Im not so tired.
-                    t.cancel();
-
                 }
             }
         }, 50, 50);

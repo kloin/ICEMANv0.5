@@ -25,6 +25,9 @@ public class TrailSummaryModel {
      */
     public int GetDaysDuration() {
         String datatimeString = "";
+        if (summaryJSON == null) {
+            return 0;
+        }
         if (summaryJSON.has("StartDate")) {
             try {
                 datatimeString = summaryJSON.getString("StartDate");

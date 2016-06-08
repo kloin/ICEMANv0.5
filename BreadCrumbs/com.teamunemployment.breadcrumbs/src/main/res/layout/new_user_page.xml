@@ -10,6 +10,7 @@
     android:padding="20dp">
 
     <ImageView
+        android:id="@+id/logo"
         android:layout_width="140dp"
         android:layout_height="140dp"
         android:layout_centerHorizontal="true"
@@ -19,6 +20,7 @@
         android:id="@+id/breadcrumbs_header"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:visibility="gone"
         android:layout_marginTop="165dp"
         android:gravity="center"
         android:text="BreadCrumbs"
@@ -32,7 +34,7 @@
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
-        android:layout_below="@id/breadcrumbs_header"
+        android:layout_below="@id/logo"
         android:layout_marginTop="5dp"
         android:hint="Username"
         android:imeOptions="actionDone"
@@ -127,7 +129,8 @@
         android:id="@+id/create_an_account"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
+        android:layout_marginTop="10dp"
+        android:layout_below="@+id/facebook_login_button"
         android:layout_centerInParent="true"
         android:text="Dont have an account? Sign up"
         android:textColor="@color/white_pressed" />

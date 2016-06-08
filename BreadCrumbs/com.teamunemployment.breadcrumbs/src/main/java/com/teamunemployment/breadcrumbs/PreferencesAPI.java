@@ -130,6 +130,7 @@ public class PreferencesAPI {
         mPreferences.edit().remove("SERVER_TRAIL").commit();
         mPreferences.edit().remove("LOCAL_TRAIL").commit();
         mPreferences.edit().remove("STATE").commit();
+        mPreferences.edit().remove("TrailCoverPhoto").commit();
     }
 
     public String GetCurrentTrailCoverPhoto() {
@@ -141,7 +142,7 @@ public class PreferencesAPI {
     }
 
     public int GetEventId() {
-        return mPreferences.getInt("EVENTID", -1);
+        return mPreferences.getInt("EVENTID", 0);
     }
 
     public void SetEventId(int eventId) {
@@ -173,4 +174,27 @@ public class PreferencesAPI {
         return mPreferences.getString("USERNAME", null);
     }
 
+    public int GetLastActivity() {
+        return mPreferences.getInt("LastActivity", -1);
+    }
+
+    public void SetLastActivity(int lastActivity) {
+        mPreferences.edit().putInt("LastActivity", lastActivity).commit();
+    }
+
+    public void SetCurrentTab(int tab) {
+        mPreferences.edit().putInt("HOME_TAB", tab).commit();
+    }
+
+    public int GetCurrentTab() {
+        return mPreferences.getInt("HOME_TAB",-1);
+    }
+
+    public void SetUserCoverPhoto(String s) {
+        mPreferences.edit().putString("PersonalCoverPhoto",s).commit();
+    }
+
+    public String GetUserCoverPhoto() {
+        return mPreferences.getString("PersonalCoverPhoto", null);
+    }
 }

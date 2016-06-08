@@ -1,11 +1,16 @@
 package com.teamunemployment.breadcrumbs.client.Maps;
 
 import android.app.Activity;
+import android.app.ActivityOptions;
+import android.content.ContentResolver;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.os.Build;
 import android.os.Environment;
+import android.provider.MediaStore;
 import android.support.annotation.Nullable;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v7.widget.RecyclerView;
 import android.util.Base64;
 import android.util.Log;
@@ -51,6 +56,7 @@ public class MapDisplayManager implements GoogleMap.OnMarkerClickListener, Googl
     private RecyclerView mRecyclerView;
     private String trailId;
     private ArrayList<CrumbCardDataObject> mDataObjects;
+    private final static String TAG = "MapDisplayManager";
 
     public MapDisplayManager( GoogleMap map, Activity context, String trailId) {
         this.mapInstance = map;
@@ -131,6 +137,7 @@ public class MapDisplayManager implements GoogleMap.OnMarkerClickListener, Googl
         }
         return result;
     }
+
     private LatLngBounds getBounds(Cluster<DisplayCrumb> displayCrumbCluster) {
         LatLngBounds.Builder builder = new LatLngBounds.Builder();
         for (DisplayCrumb crumb :  displayCrumbCluster.getItems()) {
@@ -150,7 +157,6 @@ public class MapDisplayManager implements GoogleMap.OnMarkerClickListener, Googl
 
             @Override
             public boolean onClusterClick(Cluster<DisplayCrumb> displayCrumbCluster) {
-
                 final Intent viewCrumbsIntent = new Intent(context, StoryBoardActivity.class);
                 ArrayList<DisplayCrumb> crumbs = (ArrayList<DisplayCrumb>) displayCrumbCluster.getItems();
                 final ArrayList<CrumbCardDataObject> crumbObjects = new ArrayList<>();
@@ -159,7 +165,7 @@ public class MapDisplayManager implements GoogleMap.OnMarkerClickListener, Googl
                 int videoCount = 0;
                 while (crumbIterator.hasNext()) {
                     DisplayCrumb next = crumbIterator.next();
-                    CrumbCardDataObject object = new CrumbCardDataObject(next.getExtension(), next.getId(), next.getPlaceId(), next.getPosition().latitude, next.getPosition().longitude, next.GetIsLocal());
+                    CrumbCardDataObject object = new CrumbCardDataObject(next.getExtension(), next.getId(), next.getPlaceId(), next.getPosition().latitude, next.getPosition().longitude, next.GetIsLocal(), next.getSuburb());
                     crumbObjects.add(object);
                     if (next.getExtension().equals(".jpg")) {
                         photoCount += 1;
@@ -168,12 +174,19 @@ public class MapDisplayManager implements GoogleMap.OnMarkerClickListener, Googl
                     }
                 }
 
+                // Start
                 viewCrumbsIntent.putExtra("StartingObject", crumbObjects.get(0));
                 boolean isOwnTrail = crumbObjects.get(0).GetIsLocal() == 0;
                 viewCrumbsIntent.putExtra("UserOwnsTrail", isOwnTrail);
                 viewCrumbsIntent.putParcelableArrayListExtra("CrumbArray", mDataObjects);
                 viewCrumbsIntent.putExtra("TrailId", trailId);
-                context.startActivityForResult(viewCrumbsIntent, 1);
+                FloatingActionButton playFab = (FloatingActionButton) context.findViewById(R.id.play_button);
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                    ActivityOptions options = ActivityOptions.makeSceneTransitionAnimation(context, playFab, playFab.getTransitionName());
+                    context.startActivityForResult(viewCrumbsIntent , 1, options.toBundle());
+                } else {
+                    context.startActivityForResult(viewCrumbsIntent, 1);
+                }
                 return true;
                 // Zoom into ever
                 /*
@@ -198,14 +211,21 @@ public class MapDisplayManager implements GoogleMap.OnMarkerClickListener, Googl
                 Intent viewCrumbsIntent = new Intent(context, StoryBoardActivity.class);
                 ArrayList<CrumbCardDataObject> crumbs = new ArrayList<>();
 
-                CrumbCardDataObject tempCard = new CrumbCardDataObject(clusterItem.getExtension(), clusterItem.getId(), clusterItem.getPlaceId(), clusterItem.getPosition().latitude, clusterItem.getPosition().longitude, clusterItem.GetIsLocal());
+                CrumbCardDataObject tempCard = new CrumbCardDataObject(clusterItem.getExtension(), clusterItem.getId(), clusterItem.getPlaceId(), clusterItem.getPosition().latitude, clusterItem.getPosition().longitude, clusterItem.GetIsLocal(), clusterItem.getSuburb());
                 crumbs.add(tempCard);
-                viewCrumbsIntent.putExtra("StartingObject", new CrumbCardDataObject(clusterItem.getExtension(), clusterItem.getId(), clusterItem.getPlaceId(),clusterItem.getPosition().latitude, clusterItem.getPosition().longitude, clusterItem.GetIsLocal()));
+                viewCrumbsIntent.putExtra("StartingObject", new CrumbCardDataObject(clusterItem.getExtension(), clusterItem.getId(), clusterItem.getPlaceId(),clusterItem.getPosition().latitude, clusterItem.getPosition().longitude, clusterItem.GetIsLocal(), clusterItem.getSuburb()));
                 viewCrumbsIntent.putParcelableArrayListExtra("CrumbArray", mDataObjects);
                 boolean isOwnTrail = clusterItem.GetIsLocal() == 0;
                 viewCrumbsIntent.putExtra("UserOwnsTrail", isOwnTrail);
                 viewCrumbsIntent.putExtra("TrailId", trailId);
-                context.startActivityForResult(viewCrumbsIntent, 1);
+
+                FloatingActionButton playFab = (FloatingActionButton) context.findViewById(R.id.play_button);
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                    ActivityOptions options = ActivityOptions.makeSceneTransitionAnimation(context, playFab, playFab.getTransitionName());
+                    context.startActivityForResult(viewCrumbsIntent , 1, options.toBundle());
+                } else {
+                    context.startActivityForResult(viewCrumbsIntent, 1);
+                }
                 final String placeId = clusterItem.getPlaceId();
                 final String suburb = clusterItem.getSuburb();
                 BreadCrumbsFusedLocationProvider locationProvider = new BreadCrumbsFusedLocationProvider(context);
@@ -268,17 +288,27 @@ public class MapDisplayManager implements GoogleMap.OnMarkerClickListener, Googl
 
         String url = "";
         // Get our variables
-        final Double Latitude = crumb.getDouble("Latitude");
-        final Double Longitude = crumb.getDouble("Longitude");
-        final String id = crumb.getString("Id");
-        final String mediaType = crumb.getString("Extension");
-        final String placeId = crumb.getString("PlaceId");
-        final String suburb = crumb.getString("Suburb");
-        final String city = crumb.getString("City");
-        final String country = crumb.getString("Country");
-        final String timeStamp = crumb.getString("TimeStamp");
-        final String description = crumb.getString("Chat");
-        mDataObjects.add(new CrumbCardDataObject(mediaType, id, placeId, Latitude, Longitude, 1));
+        // TODO Move this so that only variables required at this point are here. Others we can fetch when looking at the object.
+        final Double Latitude = crumb.getDouble("Latitude"); // required
+        final Double Longitude = crumb.getDouble("Longitude"); // Required
+        final String id = crumb.getString("Id"); // required - The actual database node id.
+        final String mediaType = crumb.getString("Extension"); // Required (?)
+        final String placeId = crumb.getString("PlaceId"); // Not required
+        final String suburb = crumb.getString("Suburb"); // Not required
+        final String city = crumb.getString("City"); // Not required
+        final String country = crumb.getString("Country"); // Not required
+        final String timeStamp = crumb.getString("TimeStamp"); // Not required
+        final String description = crumb.getString("Chat"); //Not required
+
+        String placeName = suburb;
+        if (suburb == null || suburb.isEmpty() || suburb.equals("null")) {
+            placeName = city;
+            if (placeName == null || placeName.isEmpty() || placeName.equals("null")) {
+                placeName = country;
+            }
+        }
+
+        mDataObjects.add(new CrumbCardDataObject(mediaType, id, placeId, Latitude, Longitude, 1, placeName));
 
         if (!local) {
             AsyncFetchThumbnail asyncDataRetrieval = new AsyncFetchThumbnail(id, new AsyncFetchThumbnail.RequestListener() {
@@ -302,31 +332,53 @@ public class MapDisplayManager implements GoogleMap.OnMarkerClickListener, Googl
         }
     }
 
+    private String fetchStringPropertyFromJSON(String property, JSONObject crumb) throws JSONException {
+        if (crumb.has(property)) {
+            return crumb.getString(property);
+        }
+        return null;
+    }
+
+    private Double fetchDoublePropertyFromJSON(String property, JSONObject crumb) throws JSONException {
+        if (crumb.has(property)) {
+            return crumb.getDouble(property);
+        }
+        return null;
+    }
+
     public void DrawLocalCrumbFromJson(JSONObject crumb) throws JSONException {
         mapInstance = PassTheMapPlease(); // Shit code
-
+        Log.d(TAG, "Starting to draw crumb. Time : " + System.currentTimeMillis());
         String url = "";
         // Get our variables
         final String id = crumb.getString(Models.Crumb.ID);
         final Double Latitude = crumb.getDouble(Models.Crumb.LATITUDE);
         final Double Longitude = crumb.getDouble(Models.Crumb.LONGITUDE);
         final String mediaType = crumb.getString(Models.Crumb.EXTENSION);
-        final String eventId = crumb.getString(Models.Crumb.EVENT_ID);
-        final String placeId = crumb.getString(Models.Crumb.PLACEID);
-        final String suburb = crumb.getString(Models.Crumb.SUBURB);
-        final String city = crumb.getString(Models.Crumb.CITY);
-        final String country = crumb.getString(Models.Crumb.COUNTRY);
-        final String timeStamp = crumb.getString(Models.Crumb.TIMESTAMP);
-        final String description = crumb.getString(Models.Crumb.DESCRIPTION);
-        mDataObjects.add(new CrumbCardDataObject(mediaType, eventId, placeId, Latitude, Longitude, 0));
+        final String eventId = fetchStringPropertyFromJSON(Models.Crumb.EVENT_ID, crumb);
+        final String placeId = fetchStringPropertyFromJSON(Models.Crumb.PLACEID, crumb);
+        final String suburb = fetchStringPropertyFromJSON(Models.Crumb.SUBURB, crumb);
+        final String city = fetchStringPropertyFromJSON(Models.Crumb.CITY, crumb);
+        final String country = fetchStringPropertyFromJSON(Models.Crumb.COUNTRY, crumb);
+        final String timeStamp = fetchStringPropertyFromJSON(Models.Crumb.TIMESTAMP, crumb);
+        final String description = fetchStringPropertyFromJSON(Models.Crumb.DESCRIPTION, crumb);
 
-        Bitmap bitmap = fetchBitmapFromLocalFile(eventId, mediaType);
-
+        String placeName = suburb;
+        if (suburb == null || suburb.isEmpty() || suburb.equals("null")) {
+            placeName = city;
+            if (placeName == null || placeName.isEmpty() || placeName.equals("null")) {
+                placeName = country;
+            }
+        }
+        mDataObjects.add(new CrumbCardDataObject(mediaType, eventId, placeId, Latitude, Longitude, 0, placeName));
+        Bitmap bitmap = fetchBitmapFromLocalFile(eventId, mediaType); // Needs to be async
         DisplayCrumb displayCrumb = new DisplayCrumb(Latitude, Longitude, mediaType, id, R.drawable.wine_glass, placeId,suburb, city, country, timeStamp, description, bitmap, 0);
         clusterManager.addItem(displayCrumb);
 
         //Cluster manager doesnt normally update unless you change the map. This method forces it to update.
         clusterManager.cluster();
+        Log.d(TAG, "Finished drawing crumb. Time : " + System.currentTimeMillis());
+
     }
 
     /*
@@ -338,9 +390,17 @@ public class MapDisplayManager implements GoogleMap.OnMarkerClickListener, Googl
         // If video, idk what we are going to do.
         if (mediaType.equals(".mp4")) {
             // show a default thumbnail
+            String fileName = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES).toString() + "/"+eventId + ".mp4";
+
+            long id = Utils.FetchContentIdFromFilePath(fileName, context.getContentResolver());
+            ContentResolver crThumb = context.getContentResolver();
+            BitmapFactory.Options options=new BitmapFactory.Options();
+            options.inSampleSize = 1;
+            bitmap = MediaStore.Video.Thumbnails.getThumbnail(crThumb, id, MediaStore.Video.Thumbnails.MICRO_KIND, options);
         } else {
             // Grab the
             String fileName = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES).toString() + "/"+eventId + ".jpg";
+
             bitmap = Utils.FetchScaledBitmapFromFile(fileName, 60, 60);
 
         }

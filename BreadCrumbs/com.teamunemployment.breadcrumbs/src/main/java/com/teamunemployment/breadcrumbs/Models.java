@@ -19,6 +19,8 @@ public class Models {
         public static final String TIMESTAMP = "TimeStamp";
         public static final String DESCRIPTION = "Chat";
         public static final String EVENT_ID = "EventId";
+        public static final String USER_ID = "UserId";
+
     }
 
 }

@@ -5,6 +5,7 @@ import android.content.Context;
 
 import com.teamunemployment.breadcrumbs.R;
 import com.teamunemployment.breadcrumbs._HAX.ExceptionHandler;
+import com.teamunemployment.breadcrumbs.client.Animations.SimpleAnimations;
 import com.teamunemployment.breadcrumbs.client.Cards.CrumbCardDataObject;
 
 import java.util.ArrayList;
@@ -14,10 +15,12 @@ import android.annotation.TargetApi;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
+import android.os.SystemClock;
 import android.support.design.widget.FloatingActionButton;
 import android.transition.Fade;
 import android.transition.Transition;
@@ -30,6 +33,7 @@ import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
+import android.widget.Toast;
 
 import com.teamunemployment.breadcrumbs.Dialogs.IDialogCallback;
 import com.teamunemployment.breadcrumbs.Dialogs.SimpleMaterialDesignDialog;
@@ -62,6 +66,8 @@ public class StoryBoardActivity extends Activity {
     private int index = 0;
     private int timer = 0;
 
+    private boolean paused = false;
+
     private boolean userOwnsTrail = false;
 
     @Override
@@ -69,19 +75,24 @@ public class StoryBoardActivity extends Activity {
         super.onCreate(savedInstanceState);
         context = this;
         setContentView(R.layout.story_board_view);
-        Thread.setDefaultUncaughtExceptionHandler(new ExceptionHandler());
         mRlContainer = (RelativeLayout) findViewById(R.id.root);
         mLlContainer = (RelativeLayout) findViewById(R.id.activity_storyboard_ll_container);
         mFab = (FloatingActionButton) findViewById(R.id.activity_contact_fab);
+        setUpPauseButton();
         if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             setupEnterAnimation();
             setupExitAnimation();
         } else {
             initViews();
         }
+
         Intent intent = getIntent();
+        Log.d("TIME", "Loading parcelable array List start at: " + SystemClock.currentThreadTimeMillis());
         mCrumbObjects = intent.getParcelableArrayListExtra("CrumbArray");
+        Log.d("TIME", "Loading parcelable array List finish at: " + SystemClock.currentThreadTimeMillis());
         mFirstObject = intent.getParcelableExtra("StartingObject");
+        Log.d("TIME", "Loading parcelable array starting object finish at: " + SystemClock.currentThreadTimeMillis());
+
         index = intent.getIntExtra("Index", -1);
         timer = intent.getIntExtra("Timer", 0);
         userOwnsTrail = intent.getBooleanExtra("UserOwnsTrail", false);
@@ -89,11 +100,13 @@ public class StoryBoardActivity extends Activity {
             Log.d("STORYBOARD_ACTIVITY", "Found saved state from ");
             restoreInstanceState(savedInstanceState);
         }
+        Log.d("TIME", "Starting set up of storyboard adapter: " + SystemClock.currentThreadTimeMillis());
         initialiseStoryBoardAdapter();
+        Log.d("TIME", "Finished set up of storyboard adapter: " + SystemClock.currentThreadTimeMillis());
         setUpDeleteButton();
         setUpNextClickListener();
-        storyBoardController.SetUpRestoredTimer(timer);
-        storyBoardController.Start();
+        setUpBackButton();
+        Log.d("TIME", "Buttons set up complete: " + SystemClock.currentThreadTimeMillis());
     }
 
     /**
@@ -158,12 +171,14 @@ public class StoryBoardActivity extends Activity {
         @Override
         public void run() {
             Animation animation = AnimationUtils.loadAnimation(context, android.R.anim.fade_in);
-            animation.setDuration(300);
+           animation.setDuration(300);
+            storyBoardController.SetUpRestoredTimer(timer);
+            storyBoardController.Start();
             mLlContainer.startAnimation(animation);
             mLlContainer.setVisibility(View.VISIBLE);
-
         }
     };
+
     /**
      * Restore where we are in the in the video.
      * @param instanceState
@@ -192,9 +207,7 @@ public class StoryBoardActivity extends Activity {
             index = fetchIndex();
         }
 
-        storyBoardController = new StoryBoardController(mCrumbObjects, imageViews, this, index);
-        FrameLayout frameLayoutOverlay = (FrameLayout) findViewById(R.id.storyboard_overlay);
-        storyBoardController.SetForewardButton(frameLayoutOverlay);
+        storyBoardController = new StoryBoardController(mCrumbObjects, imageViews, this, index, getFinshedListener());
 
         // Listener for when we return to te
         setMapButtonClickListener();
@@ -208,19 +221,29 @@ public class StoryBoardActivity extends Activity {
             deleteFab.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
+                    storyBoardController.Pause();
                     SimpleMaterialDesignDialog.Build(context)
                             .SetTitle("Really?")
                             .SetTextBody("Are you sure you want to delete this photo? \n This action is not reversible.")
                             .SetActionWording("DELETE")
                             .SetCallBack(GetDeleteCallback())
+                            .SetCancelCallback(GetCancelDialogCallback())
                             .Show();
                 }
             });
-
-
         } else {
             deleteFab.setVisibility(View.GONE);
         }
+    }
+
+    private IDialogCallback GetCancelDialogCallback() {
+        return new IDialogCallback() {
+            @Override
+            public void DoCallback() {
+                storyBoardController.Unpause();
+
+            }
+        };
     }
 
     /*
@@ -262,54 +285,75 @@ public class StoryBoardActivity extends Activity {
     private void setUpNextClickListener() {
         FloatingActionButton nextButton = (FloatingActionButton) findViewById(R.id.next_storyboard_item);
         storyBoardController.SetForewardButton(nextButton);
-
     }
+
     // Pass back variables like last object, index and timer position so that we can pass them back if we hit the play button again
     private void doFinishShit() {
-
         Intent intent = new Intent();
         intent.putExtra("LastObject", storyBoardController.GetCurrentObject());
         intent.putExtra("Index", storyBoardController.GetCurrentIndex());
         intent.putExtra("TimerPosition", storyBoardController.GetTimerPosition());
-
-        storyBoardController.Stop();
+        intent.putParcelableArrayListExtra("DeletedCrumbs", storyBoardController.GetDeletedCrumbs());
         setResult(RESULT_OK, intent);
-        finish();
+       // finish();
     }
+
     @Override
     public void onBackPressed() {
-        GUIUtils.animateRevealHide(context, mRlContainer, R.color.accent, mFab.getWidth() / 2,
+        backPressedHandler();
+    }
+
+    // Set the listener for the pause button
+    private void setUpBackButton() {
+        FloatingActionButton pauseButton = (FloatingActionButton) findViewById(R.id.back_to_map);
+        pauseButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                backPressedHandler();
+            }
+        });
+    }
+
+    // We have a back pressed handler as we have two entry points to this bit of code.
+    private void backPressedHandler() {
+        storyBoardController.Stop();
+        // finish();
+        GUIUtils.animateRevealHide(context, mRlContainer, R.color.white, mFab.getWidth() / 2,
                 new OnRevealAnimationListener() {
                     @Override
                     public void onRevealHide() {
-                        backPressed();
+                        mLlContainer.setVisibility(View.GONE);
+                        Intent intent = new Intent();
+                        intent.putExtra("LastObject", storyBoardController.GetCurrentObject());
+                        intent.putExtra("Index", storyBoardController.GetCurrentIndex());
+                        intent.putExtra("TimerPosition", storyBoardController.GetTimerPosition());
+                        setResult(RESULT_OK, intent);
+                        //finish();
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                            backPressed();
+                        } else {
+                            finish();
+                        }
+                        //backPressed();
                     }
 
                     @Override
                     public void onRevealShow() {
-
+                        Toast.makeText(context, "Showing", Toast.LENGTH_LONG).show();
                     }
                 });
     }
-  //  @Override
-  //  protected void onSaveInstanceState(Bundle outState) {
-//        outState.putInt("Index", storyBoardController.GetCurrentIndex());
-//        outState.putInt("TimerPosition", storyBoardController.GetTimerPosition()); // This will be used for both video and image
-//        outState.putParcelable("LastObect", storyBoardController.GetCurrentObject());
-       // super.onSaveInstanceState(outState);
-
-   // }
 
     private void backPressed() {
-        //super.onBackPressed();
-        doFinishShit();
+        super.onBackPressed();
     }
 
     @TargetApi(Build.VERSION_CODES.LOLLIPOP)
     private void setupExitAnimation() {
-        Fade fade = new Fade();
+        Fade fade = new Fade(1);
+        getWindow().setExitTransition(fade);
         getWindow().setReturnTransition(fade);
-        fade.setDuration(getResources().getInteger(R.integer.animation_duration));
+        fade.setDuration(300);
     }
 
     @OnClick(R.id.back_to_map)
@@ -321,4 +365,40 @@ public class StoryBoardActivity extends Activity {
         }
     }
 
+    private void pause() {
+        storyBoardController.Pause();
+    }
+
+    private void setUpPauseButton() {
+        final Drawable playDrawable = context.getResources().getDrawable(R.drawable.exomedia_ic_play_arrow_black);
+        final Drawable pauseDrawable = context.getResources().getDrawable(R.drawable.exomedia_ic_pause_black);
+        final FloatingActionButton pauseFAB =  (FloatingActionButton) findViewById(R.id.pause_story_board);
+        pauseFAB.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (paused) {
+                    pauseFAB.setImageDrawable(pauseDrawable);
+                    storyBoardController.Unpause();
+                    paused = false;
+                    return;
+                }
+                paused = true;
+                pauseFAB.setImageDrawable(playDrawable);
+                storyBoardController.Pause();
+            }
+        });
+    }
+
+    private StoryBoardController.FinishedListener getFinshedListener() {
+        return new StoryBoardController.FinishedListener() {
+            @Override
+            public void onStoryboardFinished() {
+                if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                    backPressedHandler();
+                } else {
+                    backPressed();
+                }
+            }
+        };
+    }
 }

@@ -1,5 +1,6 @@
 package com.teamunemployment.breadcrumbs.Network.ServiceProxy;
 
+import android.graphics.Bitmap;
 import android.os.AsyncTask;
 import android.util.Log;
 import android.widget.ProgressBar;
@@ -11,6 +12,7 @@ import com.squareup.okhttp.Request;
 import com.squareup.okhttp.RequestBody;
 import com.squareup.okhttp.Response;
 import com.teamunemployment.breadcrumbs.Crumb;
+import com.teamunemployment.breadcrumbs.RandomUsefulShit.Utils;
 
 import java.io.File;
 import java.io.UnsupportedEncodingException;
@@ -25,6 +27,7 @@ public class UploadFile extends AsyncTask<Void, Integer, String> {
     private String url;
     private String fileType;
     private Crumb crumb;
+    private Bitmap bitmap;
 
     @Override
     protected void onPreExecute() {
@@ -46,6 +49,12 @@ public class UploadFile extends AsyncTask<Void, Integer, String> {
         this.requestListener = requestListener;
     }
 
+    public UploadFile(String url, RequestListener requestListener, Bitmap bitmap) {
+        this.url = url;
+        this.requestListener = requestListener;
+        this.bitmap = bitmap;
+    }
+
     @Override
     protected void onProgressUpdate(Integer... progress) {
 
@@ -53,6 +62,9 @@ public class UploadFile extends AsyncTask<Void, Integer, String> {
 
     @Override
     protected String doInBackground(Void... params) {
+        if (bitmap != null) {
+            return uploadFile(bitmap);
+        }
         return uploadFile();
     }
 
@@ -86,11 +98,44 @@ public class UploadFile extends AsyncTask<Void, Integer, String> {
         return null;
     }
 
+    private String uploadFile(Bitmap bitmap) {
+        try {
+            byte[] bites = Utils.ConvertBitmapToByteArray(bitmap);
+
+
+            MediaType MEDIA_TYPE = MediaType.parse("image/jpg");
+
+            // Build up and send response
+            RequestBody requestBody = new MultipartBuilder()
+                    .type(MultipartBuilder.FORM)
+                    .addFormDataPart("file", "data", RequestBody.create(MEDIA_TYPE, bites))
+                    .build();
+
+            Request request = new Request.Builder()
+                    .url(url)
+                    .post(requestBody)
+                    .build();
+
+
+            OkHttpClient client = new OkHttpClient();
+            Response response = client.newCall(request).execute();
+            return response.body().string();
+        } catch (UnknownHostException | UnsupportedEncodingException e) {
+            Log.e("IMAGESAVE", "Error: " + e.getLocalizedMessage());
+        } catch (Exception e) {
+            Log.e("IMAGESAVE", "Other Error: " + e.getLocalizedMessage());
+        }
+        return null;
+    }
+
     // We want to call our interface method that we defined where we called this class once done.
     // THis will allow us to manipulate the data in the way we want once finished.
     @Override
     protected void onPostExecute(String jsonResult) {
-        requestListener.onFinished(jsonResult);
+
+        if (requestListener != null) {
+            requestListener.onFinished(jsonResult);
+        }
     }
 
 }

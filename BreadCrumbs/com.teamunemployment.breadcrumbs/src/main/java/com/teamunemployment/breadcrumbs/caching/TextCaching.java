@@ -11,9 +11,10 @@ import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.Date;
 
 /**
- * Written by Josiah Kendall, 2015.
+ * @author Josiah Kendall
  */
 public class TextCaching {
 
@@ -37,6 +38,42 @@ public class TextCaching {
             e.printStackTrace();
             Log.e("CACHE", "Failed to cache text : " + textToCache + ". Refer to CacheText(key, text) method in TextCaching");
         }
+    }
+
+    /**
+     * Fetch an object that contains the string result of the cache key, and a flag for whether we
+     * should update our cache (based on the cache age).
+     * @param key The key for our cache object.
+     * @return The string result and a flag for whether or not we should update the cache.
+     */
+    public CacheResult FetchCacheObject(String key) {
+        String result = FetchCachedText(key);
+
+        // Ten minutes in millis
+        long tenMinutes = 600000;
+        boolean updateRequired = updateRequired(key, tenMinutes);
+
+        return new CacheResult(result, updateRequired);
+    }
+
+    // Simple method to return whether or not a cache is older than a given age.
+    private boolean updateRequired(String key, long ageInMillis) {
+        String path = Utils.getExternalCacheDir(context) + "/"+key+".txt";
+        File file = new File(path);
+
+        // If our file doesnt exist, we should be fetching it.
+        if (!file.exists()) {
+            return true;
+        }
+        // Create age limit
+        long limit = System.currentTimeMillis() - ageInMillis;
+
+        // Create an age object for the last modified time of our file.
+        Date date = new Date(file.lastModified());
+        long lastModified = date.getTime();
+
+        // If last modified is less than the limit, it means that it is older than our age limit.
+        return lastModified < limit;
     }
 
     // Fetch text/JSON that we have cached.

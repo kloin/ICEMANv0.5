@@ -18,7 +18,7 @@ public class Crumb {
 
     public String GetEventId() {
         try {
-            return mCrumb.getString("eventId");
+            return mCrumb.getString(Models.Crumb.EVENT_ID);
         } catch (JSONException e) {
             Log.d("CrumbModel", "Failed to find the parameter EventId");
             e.printStackTrace();
@@ -29,7 +29,7 @@ public class Crumb {
 
     public Double GetLatitude() {
         try {
-            return mCrumb.getDouble("latitude");
+            return mCrumb.getDouble(Models.Crumb.LATITUDE);
         } catch (JSONException e) {
             Log.d("CrumbModel", "Failed to find the parameter Latitude");
             e.printStackTrace();
@@ -39,7 +39,7 @@ public class Crumb {
 
     public Double GetLongitude() {
         try {
-            return mCrumb.getDouble("longitude");
+            return mCrumb.getDouble(Models.Crumb.LONGITUDE);
         } catch (JSONException e) {
             Log.d("CrumbModel", "Failed to find the parameter Longitude");
             e.printStackTrace();
@@ -49,7 +49,7 @@ public class Crumb {
 
     public String GetTimestamp() {
         try {
-            return mCrumb.getString("timeStamp");
+            return mCrumb.getString(Models.Crumb.TIMESTAMP);
         } catch (JSONException e) {
             Log.d("CrumbModel", "Failed to find the parameter TimeStamp");
             e.printStackTrace();
@@ -59,7 +59,7 @@ public class Crumb {
 
     public String GetDescription() {
         try {
-            return mCrumb.getString("description");
+            return mCrumb.getString(Models.Crumb.DESCRIPTION);
         } catch (JSONException e) {
             Log.d("CrumbModel", "Failed to find the parameter description");
             e.printStackTrace();

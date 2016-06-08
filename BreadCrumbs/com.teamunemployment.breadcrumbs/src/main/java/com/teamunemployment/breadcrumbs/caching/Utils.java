@@ -148,11 +148,10 @@ public class Utils {
         return true;
     }
 
-
     // Create byte array from bitmap. Saved as PNG format at full quality.
     public static boolean SaveBitmap(String fileName, Bitmap media) {
         ByteArrayOutputStream stream = new ByteArrayOutputStream();
-        media.compress(Bitmap.CompressFormat.JPEG, 75, stream);
+        media.compress(Bitmap.CompressFormat.JPEG, 80, stream);
         byte[] byteArray = stream.toByteArray();
         try{
             writeByteArrayToDisk(fileName + ".jpg", byteArray);
@@ -163,7 +162,6 @@ public class Utils {
         }
         return true;
     }
-
 
     public int convertPixelToDp(int px, Context context) {
         int convertedDpSize = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, px, context.getResources().getDisplayMetrics());

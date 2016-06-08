@@ -26,8 +26,7 @@ public class GUIUtils {
         int cy = (view.getTop() + view.getBottom()) / 2;
         int initialRadius = view.getWidth();
 
-        Animator anim =
-                ViewAnimationUtils.createCircularReveal(view, cx, cy, initialRadius, finalRadius);
+        Animator anim = ViewAnimationUtils.createCircularReveal(view, cx, cy, initialRadius, finalRadius);
         anim.addListener(new AnimatorListenerAdapter() {
             @Override
             public void onAnimationStart(Animator animation) {
@@ -38,8 +37,11 @@ public class GUIUtils {
             @Override
             public void onAnimationEnd(Animator animation) {
                 super.onAnimationEnd(animation);
-                listener.onRevealHide();
-                view.setVisibility(View.INVISIBLE);
+                // MIGHT BE THE BUG HERE
+               // view.setVisibility(View.GONE);
+                if (listener != null) {
+                    listener.onRevealHide();
+                }
             }
         });
         anim.setDuration(ctx.getResources().getInteger(R.integer.animation_duration));
@@ -53,7 +55,6 @@ public class GUIUtils {
         Animator anim =
                 ViewAnimationUtils.createCircularReveal(view, x, y, startRadius, finalRadius);
         anim.setDuration(ctx.getResources().getInteger(R.integer.animation_duration));
-        anim.setStartDelay(100);
         anim.setInterpolator(new AccelerateDecelerateInterpolator());
         anim.addListener(new AnimatorListenerAdapter() {
             @Override

@@ -47,14 +47,23 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.UiSettings;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.CameraPosition;
+import com.google.android.gms.maps.model.CircleOptions;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
 import com.google.maps.android.PolyUtil;
 import com.google.maps.android.ui.IconGenerator;
+import com.squareup.okhttp.OkHttpClient;
+import com.squareup.okhttp.Request;
+import com.squareup.okhttp.Response;
+import com.teamunemployment.breadcrumbs.AsyncWorkers.AsyncFetchCrumbList;
+import com.teamunemployment.breadcrumbs.AsyncWorkers.GenericAsyncWorker;
 import com.teamunemployment.breadcrumbs.Framework.JsonHandler;
 import com.teamunemployment.breadcrumbs.Location.BreadcrumbsLocationProvider;
+import com.teamunemployment.breadcrumbs.Location.SimpleGps;
 import com.teamunemployment.breadcrumbs.Models;
 import com.teamunemployment.breadcrumbs.Network.LoadBalancer;
+import com.teamunemployment.breadcrumbs.Network.NetworkConnectivityManager;
 import com.teamunemployment.breadcrumbs.Network.ServiceProxy.AsyncDataRetrieval;
 import com.teamunemployment.breadcrumbs.Network.ServiceProxy.AsyncPost;
 import com.teamunemployment.breadcrumbs.Network.ServiceProxy.HTTPRequestHandler;
@@ -71,6 +80,7 @@ import com.google.android.gms.maps.model.Marker;
 import com.sothree.slidinguppanel.SlidingUpPanelLayout;
 import com.teamunemployment.breadcrumbs.Trails.TrailManagerWorker;
 import com.teamunemployment.breadcrumbs._HAX.ExceptionHandler;
+import com.teamunemployment.breadcrumbs.caching.TextCaching;
 import com.teamunemployment.breadcrumbs.client.Animations.SimpleAnimations;
 import com.teamunemployment.breadcrumbs.client.Cards.CrumbCardDataObject;
 import com.teamunemployment.breadcrumbs.client.StoryBoard.StoryBoardActivity;
@@ -87,6 +97,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.IOException;
 import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -97,21 +108,22 @@ import java.util.List;
  * View model for the map. This shows all the points on the map, and loads up the photos when clicked.
  * Also due for a rework.
  */
-public class MapViewer extends Activity implements
-		OnMapClickListener, OnMapLongClickListener, OnMarkerClickListener {
+public class MapViewer extends Activity implements OnMapClickListener, OnMapLongClickListener, OnMarkerClickListener {
+
+	public static final int EDIT_MODE = 1;
+	public static final int READ_ONLY_MODE = 0;
+	private static final String FIRST_TIME_FLAG = "FIRST_TIME_BRO";
+
+	public int TRAIL_COVER_PHOTO_HEIGHT;
+	public int SCROLLABLE_HEIGHT = 0;
+	public int BOTTOM_SHEET_STATE = 0;
+	private boolean WE_LIKE = false;
+	private boolean IS_OWN_TRAIL = false;
 
 	private boolean HAVE_SCALED_IMAGE = false;
 	public MapDisplayManager mapDisplayManager;
 	private ArrayList<StoryBoardItemData> mStoryBoardItems;
 	public DatabaseController databaseController;
-	public int TRAIL_COVER_PHOTO_HEIGHT;
-	public int SCROLLABLE_HEIGHT = 0;
-	public int BOTTOM_SHEET_STATE = 0;
-
-	private boolean WE_LIKE = false;
-	public static final int EDIT_MODE = 1;
-	public static final int READ_ONLY_MODE = 0;
-	private boolean IS_OWN_TRAIL = false;
 
 	public Context context;
 	public GoogleMap mMap;
@@ -140,6 +152,9 @@ public class MapViewer extends Activity implements
 	private int storyboardIndex = 0;
 	private int storyboardTimerTime = 0;
 
+	private LatLng lastPoint;
+	private LatLng startBase;
+	private LatLng startHead;
 	// Made public as we need to access this from the local subclass.
 	public MyCurrentTrailDisplayManager myCurrentTrailManager;
 
@@ -147,6 +162,7 @@ public class MapViewer extends Activity implements
 	public boolean HAVE_ZOOMED = false;
 
 	private FloatingActionButton locateMe;
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -154,9 +170,10 @@ public class MapViewer extends Activity implements
 		context = this;
         mMap = ((MapFragment) getFragmentManager().findFragmentById(R.id.map)).getMap();
 		mContext = this;
-		Thread.setDefaultUncaughtExceptionHandler(new ExceptionHandler());
-		trailId = this.getIntent().getStringExtra("TrailId");
 
+		trailId = this.getIntent().getStringExtra("TrailId");
+		// HAX
+		//Thread.setDefaultUncaughtExceptionHandler(new ExceptionHandler());
 		//
 		if (trailId != null && trailId.endsWith("L")) {
 			IS_OWN_TRAIL = true;
@@ -170,18 +187,28 @@ public class MapViewer extends Activity implements
 		scaleImage(bottomSheet);
 		setUpTrailState();
 
+		final TextCaching caching = new TextCaching(context);
+		String firstTime = caching.FetchCachedText(FIRST_TIME_FLAG);
 		// What we do if we are looking at our own trail.
-		if (IS_OWN_TRAIL) {
+		if (firstTime == null) {
 			new Handler().postDelayed(new Runnable() {
 				@Override
 				public void run() {
 					bottomSheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
 				}
-			}, 500);
+			}, 1000);
+			new Handler().postDelayed(new Runnable() {
+				@Override
+				public void run() {
+					Snackbar.make(coordinatorLayout, "Swipe down trip summary to view map", Snackbar.LENGTH_LONG).show();
+					caching.CacheText(FIRST_TIME_FLAG, "We have opened our own trail before.");
+				}
+			}, 1200);
+		} else {
+
+			FetchMyLocation();
 		}
 	}
-
-
 
 	private void setUpTrailState() {
 		SetUpDetailsItems();
@@ -460,23 +487,30 @@ public class MapViewer extends Activity implements
 
 	// This is a method that wraps up all the startup shit done in onStart() and
 	private void setListenersAndLoaders() {
-		createCurrentTrailManager(mMap);
 
+		// UI Thread shit
 		setToggleSatellite();
 		setBackButtonListener();
 		setUpPlayButton();
 
-		// Local map will override this method and do its own load.
+		// background shit
+		createCurrentTrailManager(mMap);
 		SetBaseDetailsForATrail(trailId);
 		StartCrumbDisplay(trailId);
+
+		Log.d(TAG, "Starting GetAndDisplayTrailOnMap. Time: " + System.currentTimeMillis());
 		GetAndDisplayTrailOnMap(trailId);
+		Log.d(TAG, "Finished GetAndDisplayTrailOnMap. Time: " + System.currentTimeMillis());
 		//addViewToTrail(trailId);
 	}
 
+	public void ZoomOnGivenLocation(Location location, int zoom) {
+		mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(
+				new LatLng(location.getLatitude(), location.getLongitude()), zoom), 500, null);
+	}
 
 	/*
         *    Method that triggers the the start of displaying crumbs on the map.
-
         *    @Param trailId : The id of the trail that we want to view. Used to get all the crumb Ids for
         *    displaying on the map.
         */
@@ -485,74 +519,73 @@ public class MapViewer extends Activity implements
 		String url = MessageFormat.format("{0}/rest/login/getAllCrumbsForATrail/{1}",
 				LoadBalancer.RequestServerAddress(),
 				trailId);
-		//setMapListener();
 		url = url.replaceAll(" ", "%20");
-
+		final String finalUrl = url;
 		// This creates the async request with a callback method of what I want completed when the
 		// request is finished.
-		clientRequestProxy  = new AsyncDataRetrieval(url, new AsyncDataRetrieval.RequestListener() {
+		AsyncFetchCrumbList.IGenericAsync overrides = new AsyncFetchCrumbList.IGenericAsync() {
 			@Override
-			public void onFinished(String result) {
-				//Initialise our object, and attempt to construct it from the string.
-				JSONObject returnedCrumbs = null;
+			public JSONArray backgroundTasks() {
+				return fetchAndProcessJSONArray(finalUrl);
+			}
+
+			@Override
+			public void postExecute(JSONArray arrayObject) {
 				try {
-					returnedCrumbs = new JSONObject(result);
-
-					// All the crumbs are under the object that has the id "Title".
-					JSONArray crumbListJSON = new JSONArray(returnedCrumbs.getString("Title"));
-
-					DisplayObjects(crumbListJSON);
-
+					DisplayObjects(arrayObject);
 				} catch (JSONException e) {
-					// TODO Auto-generated catch block
-					Log.e("BC.MAP", "A JsonException was thrown during the display process for a crumb." +
-							"This probably means that you are missing a field on your json. Stacktrace follows");
+					Log.d(TAG, "Errors displayiing crumbs. Stack trace follows");
 					e.printStackTrace();
 				}
 			}
-		}, context);
-
-		clientRequestProxy.execute();
-		Log.i("MAP", "Finished Loading crumbs and displaying them on the map");
+		};
+		AsyncFetchCrumbList genericAsyncWorker = new AsyncFetchCrumbList(overrides);
+		genericAsyncWorker.execute();
+		Log.d(TAG, "Finished StartCrumbDisplay on main thread. May still be processing client side.");
 	}
 
+	private JSONArray fetchAndProcessJSONArray(String url) {
+		HTTPRequestHandler requestHandler = new HTTPRequestHandler();
+		String networkRequestResult = requestHandler.SendDataRequest(url, context);
+		try {
+			JSONObject returnedCrumbs = new JSONObject(networkRequestResult);
+			JSONArray crumbListJSON = new JSONArray(returnedCrumbs.getString("Title"));
+			return crumbListJSON;
+		} catch (JSONException e) {
+			e.printStackTrace();
+		}
+		// Return a blank to avoid npe.
+		return new JSONArray();
+	}
+
+
+
 	public void FetchMyLocation() {
-		LocationListener locationListener = new LocationListener() {
-			@Override
-			public void onLocationChanged(Location location) {
-				mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(
-						new LatLng(location.getLatitude(), location.getLongitude()), 13));
 
-				if (LOOKIING_AT_MAP) {
-					CameraPosition cameraPosition = new CameraPosition.Builder()
-							.target(new LatLng(location.getLatitude(), location.getLongitude()))      // Sets the center of the map to location user
-							.zoom(17)                   // Sets the zoom
-							.bearing(90)                // Sets the orientation of the camera to east
-							.tilt(40)                   // Sets the tilt of the camera to 30 degrees
-							.build();                   // Creates a CameraPosition from the builder
-					mMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
-					HAVE_ZOOMED = true;
-				}
+		SimpleGps simpleGps = new SimpleGps(context);
+		Location location = simpleGps.GetInstantLocation();
+		if (location == null) {
+			return;
+		}
 
-			}
+ 		mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(
+				new LatLng(location.getLatitude(), location.getLongitude()), 13), 500, null);
 
-			@Override
-			public void onStatusChanged(String provider, int status, Bundle extras) {
-
-			}
-
-			@Override
-			public void onProviderEnabled(String provider) {
-
-			}
-
-			@Override
-			public void onProviderDisabled(String provider) {
-
-			}
-		};
-
-		BreadcrumbsLocationProvider.getInstance(mContext).requestLocationUpdate(locationListener);
+		mMap.addCircle(new CircleOptions()
+				.center(new LatLng(location.getLatitude(), location.getLongitude()))
+				.radius(30)
+				.strokeColor(Color.BLUE)
+				.fillColor(Color.BLUE));
+		if (LOOKIING_AT_MAP) {
+//			CameraPosition cameraPosition = new CameraPosition.Builder()
+//					.target(new LatLng(location.getLatitude(), location.getLongitude()))      // Sets the center of the map to location user
+//					.zoom(17)                   // Sets the zoom
+//					.bearing(90)                // Sets the orientation of the camera to east
+//					.tilt(40)                   // Sets the tilt of the camera to 30 degrees
+//					.build();                   // Creates a CameraPosition from the builder
+//			mMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
+			HAVE_ZOOMED = true;
+		}
 	}
 
 	public void DisplayObjects (JSONArray objects) throws JSONException {
@@ -571,14 +604,7 @@ public class MapViewer extends Activity implements
 	}
 
 	public void SetMapPosition(LatLng latLng) {
-		CameraPosition camPos = new CameraPosition.Builder()
-				.target(latLng)
-				.zoom(18)
-				.bearing(40)
-				.tilt(70)
-				.build();
-		CameraUpdate camUpd3 = CameraUpdateFactory.newCameraPosition(camPos);
-		mMap.animateCamera(camUpd3);
+		mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(latLng.latitude, latLng.longitude), 15), 500, null);
 	}
 
 	public void GetAndDisplayTrailOnMap(String trailId) {
@@ -586,12 +612,13 @@ public class MapViewer extends Activity implements
 		mapDisplayManager = new MapDisplayManager(mMap, (Activity) context, trailId);
 
 		// fetch metadata first
-		final String fetchMetadataUrl = LoadBalancer.RequestServerAddress() + "/rest/TrailManager/FetchMetadata/" + trailId;
+		final String fetchMetadataUrl = LoadBalancer.RequestServerAddress() + "/rest/TrailManager/GetSavedPath/" + trailId;
 		clientRequestProxy = new AsyncDataRetrieval(fetchMetadataUrl, new AsyncDataRetrieval.RequestListener() {
 			@Override
 			public void onFinished(String result) throws JSONException {
-				JSONObject jsonObject = new JSONObject(result);
-				displayMetadata(jsonObject);
+				processResult(result);
+//				JSONObject jsonObject = new JSONObject(result);
+//				displayMetadata(jsonObject);
 			}
 		}, context);
 		clientRequestProxy.execute();
@@ -605,7 +632,7 @@ public class MapViewer extends Activity implements
 		while (keys.hasNext()) {
 			String nodeString = metadata.getString(Integer.toString(index));
 			JSONObject node = new JSONObject(nodeString);
-			// testIfNeedToDrawDay(nodeString);
+
 			// This is to stop the bug where the different lines dont connect up.
 			endOfLastPolyline = drawOnMap(node, endOfLastPolyline);
 			drawNodeOnMap(node);
@@ -636,8 +663,144 @@ public class MapViewer extends Activity implements
 		}
 	}
 
+	private void processResult(String result) throws JSONException {
+		JSONObject jsonObject = new JSONObject(result);
+		Iterator<String> keys = jsonObject.keys();
+		int count = 0;
+		while (keys.hasNext()) {
+			keys.next();
+			JSONObject tempObject = jsonObject.getJSONObject(Integer.toString(count));
+			boolean isEncoded = tempObject.getBoolean("IsEncoded");
+			String polyline = tempObject.getString("Polyline");
+			List<LatLng> listOfPoints;
+			if (isEncoded) {
+				listOfPoints = PolyUtil.decode(polyline);
+				listOfPoints = addLastPointToList(listOfPoints);
+				DrawPolyline(listOfPoints, "#03A9F4");
+			} else {
+				listOfPoints = parseNonEncodedPolyline(polyline);
+				listOfPoints = addLastPointToList(listOfPoints);
+				DrawDashedPolyline(listOfPoints.get(0), listOfPoints.get(listOfPoints.size()-1), R.color.accent);
+				//DrawPolyline(listOfPoints, "#03A9F4");
+			}
+			count += 1;
+		}
+	}
+
+	public void DrawDashedPolyline(LatLng latLngOrig, LatLng latLngDest, int color) {
+
+			double difLat = latLngDest.latitude - latLngOrig.latitude;
+			double difLng = latLngDest.longitude - latLngOrig.longitude;
+
+			double zoom = mMap.getCameraPosition().zoom;
+
+			double divLat = difLat / (zoom * 2);
+			double divLng = difLng / (zoom * 2);
+
+			LatLng tmpLatOri = latLngOrig;
+
+			for(int i = 0; i < (zoom * 2); i++){
+				LatLng loopLatLng = tmpLatOri;
+
+				if(i > 0){
+					loopLatLng = new LatLng(tmpLatOri.latitude + (divLat * 0.075f), tmpLatOri.longitude + (divLng * 0.075f));
+				}
+
+				Polyline polyline = mMap.addPolyline(new PolylineOptions()
+						.add(loopLatLng)
+						.add(new LatLng(tmpLatOri.latitude + divLat, tmpLatOri.longitude + divLng))
+						.color(color)
+						.width(5f));
+
+				tmpLatOri = new LatLng(tmpLatOri.latitude + divLat, tmpLatOri.longitude + divLng);
+			}
+
+	}
+
+	/**
+	 * Add a the last point from the previous polyline so that we dont have those hanging lines.
+	 * @param listOfPoints The current polyline.
+	 * @return The new polyline points (the line with a point added). Not really neccessary as javas
+	 * shallow reference shit will sort it out, but it makes it a bit more readable.
+     */
+	private List<LatLng> addLastPointToList(List<LatLng> listOfPoints) {
+
+		// This is our first time through use case. In this situation, we want to record the start and
+		// end of this line so that we can work out which end was the best to draw from when drawing
+		// to the next polyline.
+		if (startBase == null && startHead == null && lastPoint == null) {
+			startBase = new LatLng(listOfPoints.get(0).latitude, listOfPoints.get(0).longitude);
+			startHead = new LatLng(listOfPoints.get(listOfPoints.size()-1).latitude, listOfPoints.get(listOfPoints.size()-1).longitude);
+			return listOfPoints;
+		}
+
+		// Second time through. Decide which end we should draw from.
+		if (lastPoint == null) {
+			float lengthFromStart = calculateTheShortestDistanceToAnotherPolylineEndOrStartPoint(listOfPoints, startBase);
+			float lengthFromEnd = calculateTheShortestDistanceToAnotherPolylineEndOrStartPoint(listOfPoints, startHead);
+			if (lengthFromStart > lengthFromEnd) {
+				lastPoint = startHead;
+			} else {
+				lastPoint = startBase;
+			}
+		}
+
+		// Calculate which end of the polyline is closest - the head or the start.
+		LatLng basePoint = listOfPoints.get(0);
+		LatLng headPoint = listOfPoints.get(listOfPoints.size() - 1);
+		float[] baseResults = new float[3];
+		Location.distanceBetween(lastPoint.latitude, lastPoint.longitude, basePoint.latitude, basePoint.longitude, baseResults);
+		float distanceToBase = baseResults[0];
+		float[] headFloats = new float[3];
+		Location.distanceBetween(lastPoint.latitude, lastPoint.longitude, headPoint.latitude, headPoint.longitude, headFloats);
+		float distanceToHead = headFloats[0];
+
+		// This means that we are drawing to the first point in the li
+		if (distanceToBase < distanceToHead) {
+			listOfPoints.add(0, lastPoint);
+			lastPoint = listOfPoints.get(listOfPoints.size()-1);
+			return listOfPoints;
+		} else {
+			listOfPoints.add(listOfPoints.size()-1, lastPoint);
+			lastPoint = listOfPoints.get(0);
+			return listOfPoints;
+		}
+	}
+
+	/**
+	 * Calculate whether the head or the base is closest. This is used to find what end of the list
+	 * we should be drawing the "Joining" line to. This method is used to define the {@link #lastPoint}
+	 * when it has not yet been set.
+	 * @param listOfPoints The polyline in a list format
+	 * @param focusPoint The point we are drawing from.
+     * @return The shortest possible distsance.
+     */
+	private float calculateTheShortestDistanceToAnotherPolylineEndOrStartPoint(List<LatLng> listOfPoints, LatLng focusPoint) {
+		// Head and base of our polyline.
+		LatLng basePoint = listOfPoints.get(0);
+		LatLng headPoint = listOfPoints.get(listOfPoints.size() - 1);
+
+		// Results holders. Should not be more than 3 long, but I am making it 5 to be safe,
+		// as documentation was not really clear about how many it can be.
+		float[] baseResults = new float[3];
+		float[] headFloats = new float[3];
+
+		// Distance between the base and our point in question.
+		Location.distanceBetween(focusPoint.latitude, focusPoint.longitude, basePoint.latitude, basePoint.longitude, baseResults);
+		float distanceToBase = baseResults[0];
+
+		// Distance between the head of the line and our point in question.
+		Location.distanceBetween(focusPoint.latitude, focusPoint.longitude, headPoint.latitude, headPoint.longitude, headFloats);
+		float distanceToHead = headFloats[0];
+		if (distanceToBase < distanceToHead) {
+			return distanceToBase;
+		} else {
+			return distanceToHead;
+		}
+	}
 
 	private LatLng drawOnMap(JSONObject node, LatLng endOfLastLine) throws JSONException {
+
 		List<LatLng> listOfPoints;
 		if (node.has("PolylineString")) {
 			String polyLineString = node.getString("PolylineString");
@@ -645,7 +808,8 @@ public class MapViewer extends Activity implements
 				listOfPoints = PolyUtil.decode(polyLineString);
 			} else {
 				listOfPoints = parseNonEncodedPolyline(polyLineString);
-				drawDashedPoly(listOfPoints);
+				DrawDashedPolyline(listOfPoints.get(0), listOfPoints.get(listOfPoints.size()-1), R.color.black);
+				//drawDashedPoly(listOfPoints);
 				return listOfPoints.get(0);
 			}
 			if (endOfLastLine != null) {
@@ -662,8 +826,12 @@ public class MapViewer extends Activity implements
 		DrawPolyline(list);
 	}
 
-	private List<LatLng> parseNonEncodedPolyline(String polylineString) {
+	public List<LatLng> parseNonEncodedPolyline(String polylineString) {
+
 		ArrayList<LatLng> listOfPoints = new ArrayList<>();
+		//if (lastPoint != null) {
+			//listOfPoints.add(0,lastPoint);
+		//}
 		String[] pointsString = polylineString.split("\\|");
 		for (int index = 0; index < pointsString.length; index += 1 ) {
 			try {
@@ -688,6 +856,22 @@ public class MapViewer extends Activity implements
 		mMap.addPolyline(options);
 	}
 
+	public void DrawPolyline(List<LatLng> listOfPoints, String color) {
+		PolylineOptions options = new PolylineOptions().width(24).color(Color.parseColor(color)).geodesic(true);
+		for (int z = 0; z < listOfPoints.size(); z++) {
+			LatLng point = listOfPoints.get(z);
+			options.add(point);
+		}
+
+//		LatLng first = listOfPoints.get(0);
+//                mMap.addCircle(new CircleOptions()
+//                        .center(new LatLng(first.latitude, first.longitude))
+//                        .radius(30)
+//                        .strokeColor(Color.parseColor(color))
+//                        .fillColor(Color.parseColor(color)));
+		mMap.addPolyline(options);
+	}
+
 	/**
 	 * setUp our play button.
 	 */
@@ -705,6 +889,7 @@ public class MapViewer extends Activity implements
 	public void playFabClickHandler() {
 
 		Intent viewCrumbsIntent = new Intent(mContext, StoryBoardActivity.class);
+
 		ArrayList<CrumbCardDataObject> crumbObjects = myCurrentTrailManager.getDataObjects();
 
 		// Just exit quietly.
@@ -712,19 +897,18 @@ public class MapViewer extends Activity implements
 			return;
 		}
 		viewCrumbsIntent.putExtra("StartingObject", crumbObjects.get(0));
-
 		viewCrumbsIntent.putExtra("Index", storyboardIndex);
-		viewCrumbsIntent.putParcelableArrayListExtra("CrumbArray", crumbObjects); // Note - this is currently using serializable - shoiuld use parcelable for speed
+		viewCrumbsIntent.putParcelableArrayListExtra("CrumbArray", crumbObjects);
 		viewCrumbsIntent.putExtra("TrailId", trailId);
+		boolean isOwnTrail = crumbObjects.get(0).GetIsLocal() == 0;
+		viewCrumbsIntent.putExtra("UserOwnsTrail", isOwnTrail);
 		viewCrumbsIntent.putExtra("Timer", storyboardTimerTime);
 
 		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
 			ActivityOptions options = ActivityOptions.makeSceneTransitionAnimation(mContext, playFab, playFab.getTransitionName());
-			mContext.startActivityForResult(viewCrumbsIntent, 1 , options.toBundle());
-
+			mContext.startActivityForResult(viewCrumbsIntent , 1, options.toBundle());
 		} else {
 			mContext.startActivityForResult(viewCrumbsIntent, 1);
-
 		}
 	}
 
@@ -898,7 +1082,6 @@ public class MapViewer extends Activity implements
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 		super.onActivityResult(requestCode, resultCode, data);
 		if (resultCode == RESULT_OK) {
-			Toast.makeText(mContext, "Finished", Toast.LENGTH_LONG).show();
 			CrumbCardDataObject dataObject = data.getParcelableExtra("LastObject");
 			int index = data.getIntExtra("Index", -1);
 			int timer = data.getIntExtra("TimerPosition", -1);
@@ -915,11 +1098,12 @@ public class MapViewer extends Activity implements
 			if (dataObject != null) {
 				CameraPosition cameraPosition = new CameraPosition.Builder()
 						.target(new LatLng(dataObject.GetLatitude(), dataObject.GetLongitude()))      // Sets the center of the map to location user
-								.zoom(17)                   // Sets the zoom
+								.zoom(19)                   // Sets the zoom
 								.bearing(90)                // Sets the orientation of the camera to east
 								.tilt(40)                   // Sets the tilt of the camera to 30 degrees
 								.build();
 				mMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
+				mMap.setMapType(2);
 			}
 
 			// Then we passed data back, need to focus on this now.
@@ -949,7 +1133,7 @@ public class MapViewer extends Activity implements
 
     @Override
     public void onBackPressed() {
-        super.onBackPressed();
+		super.onBackPressed();
         //overridePendingTransition(R.animator.slide_in_right, R.anim.abc_slide_out_bottom);
     }
 
@@ -1237,8 +1421,6 @@ public class MapViewer extends Activity implements
 			// photos on the database and display it on the map
 
 		}
-
-
 	}
 
 

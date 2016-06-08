@@ -16,8 +16,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.balysv.materialripple.MaterialRippleLayout;
 import com.teamunemployment.breadcrumbs.CustomElements.FancyFollow;
 import com.teamunemployment.breadcrumbs.Network.ServiceProxy.AsyncFetchThumbnail;
 import com.teamunemployment.breadcrumbs.Network.ServiceProxy.HTTPRequestHandler;
@@ -227,7 +229,10 @@ public class HomeCardAdapter extends RecyclerView.Adapter<HomeCardAdapter.ViewHo
            // TextView description = (TextView) card.findViewById(R.id.trail_description);
 //            description.setText(desc);
             final ImageView trailCoverPhoto = (ImageView) card.findViewById(R.id.main_photo);
-            trailCoverPhoto.setOnClickListener(new View.OnClickListener() {
+
+            MaterialRippleLayout holder = (MaterialRippleLayout) card.findViewById(R.id.ripple);
+
+            holder.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     Intent TrailViewer = new Intent();

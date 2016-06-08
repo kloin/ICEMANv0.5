@@ -1,14 +1,19 @@
 package com.teamunemployment.breadcrumbs.RandomUsefulShit;
 
+import android.content.ContentResolver;
 import android.content.Context;
+import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.media.ExifInterface;
+import android.net.Uri;
 import android.os.Environment;
 import android.os.Looper;
+import android.provider.MediaStore;
 import android.support.annotation.Nullable;
 import android.util.TypedValue;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -120,4 +125,39 @@ public class Utils {
         int convertedDpSize = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, px, context.getResources().getDisplayMetrics());
         return convertedDpSize;
     }
+
+    public static long FetchContentIdFromFilePath(String path, ContentResolver contentResolver) {
+            long videoId = 0; // not sure how we should handle this.
+            //Log.d(TAG,"Loading file " + filePath);
+
+            // This returns us content://media/external/videos/media (or something like that)
+            // I pass in "external" because that's the MediaStore's name for the external
+            // storage on my device (the other possibility is "internal")
+            Uri videosUri = MediaStore.Video.Media.getContentUri("external");
+
+            // Log.d(TAG,"videosUri = " + videosUri.toString());
+
+            String[] projection = {MediaStore.Video.VideoColumns._ID};
+
+            // TODO This will break if we have no matching item in the MediaStore.
+            Cursor cursor = contentResolver.query(videosUri, projection, MediaStore.Video.VideoColumns.DATA + " LIKE ?", new String[] { path }, null);
+            cursor.moveToFirst();
+
+            int columnIndex = cursor.getColumnIndex(projection[0]);
+            if (cursor.getCount() > 0) {
+                videoId = cursor.getLong(columnIndex);
+            }
+
+            //Log.d(TAG,"Video ID is " + videoId);
+            cursor.close();
+            return videoId;
+        }
+
+    public static byte[] ConvertBitmapToByteArray(Bitmap bmp) {
+        ByteArrayOutputStream stream = new ByteArrayOutputStream();
+        bmp.compress(Bitmap.CompressFormat.PNG, 100, stream);
+        byte[] byteArray = stream.toByteArray();
+        return byteArray;
+    }
+
 }

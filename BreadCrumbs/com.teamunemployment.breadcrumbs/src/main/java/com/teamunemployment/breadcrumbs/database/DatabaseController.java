@@ -35,6 +35,7 @@ public class DatabaseController extends SQLiteOpenHelper {
 	private static final String DATABASE_NAME="users";
     private static final String TRAIL_POINTS_INDEX = "trailIndexDb";
 
+    private static final String GPS_TABLE = "GPS_POINTS";
     private static final String TRAIL_SUMMARY = "trailsSummaryDb";
     private static final String CRUMBS = "crumbsDb";
     private static final String RESTZONES = "restZoneDb";
@@ -47,6 +48,7 @@ public class DatabaseController extends SQLiteOpenHelper {
 	public static final String PIN="pin";
     public static final String TRAILID="trailid";
 
+    private static final String TAG = "DBC";
     private Context mContext;
 	private SQLiteDatabase db;
 
@@ -506,6 +508,35 @@ public class DatabaseController extends SQLiteOpenHelper {
                 "StartDate TIMESTAMP," +
                 "LastUpdate TIMESTAMP," +
                 "IsPublished INTEGER);");
+
+        db.execSQL("CREATE TABLE " + GPS_TABLE + " (_id INTEGER PRIMARY KEY AUTOINCREMENT, " +
+            "TrailId TEXT," +
+            "CurrentActivity INTEGER," +
+            "LastActivity INTEGER," +
+            "Latitude REAL," +
+            "Longitude REAL," +
+            "Granularity INTEGER);");
+    }
+
+    public void SaveActivityPoint(int currentActivity, int pastActivity, Double latitude, Double longitude, int granularity) {
+        ContentValues cv = new ContentValues();
+        int currentTrailId = mPreferencesApi.GetLocalTrailId();
+        if (currentTrailId == -1) {
+            Log.e(TAG, "Cannot save point as we dont have a trailId.");
+            return;
+        }
+
+        cv.put("TrailId", Integer.toString(currentTrailId));
+        cv.put("CurrentActivity", currentActivity);
+        cv.put("LastActivity", pastActivity);
+        cv.put("Latitude", latitude);
+        cv.put("Longitude", longitude);
+        cv.put("Granularity", granularity);
+
+        SQLiteDatabase localDb = getWritableDatabase();
+        localDb.insert(GPS_TABLE, null, cv);
+        localDb.close();
+        Log.d(TAG, "Successfully saved an activity point to the database. current Activity: " + currentActivity);
     }
 
     public int SaveTrailStart(String trailId, String startDate) {
@@ -527,8 +558,8 @@ public class DatabaseController extends SQLiteOpenHelper {
        // cv.put("EndDate", ""); // End date is unkown - we can change this later.
 
         SQLiteDatabase localDb = getWritableDatabase();
-        localDb.insert(TRAIL_SUMMARY, null, cv);
-        mPreferencesApi.SaveCurrentLocalTrailId((int) trailIdInt);
+        long newId = localDb.insert(TRAIL_SUMMARY, null, cv);
+        mPreferencesApi.SaveCurrentLocalTrailId((int) newId);
         localDb.close();
         return (int) trailIdInt;
     }
@@ -543,7 +574,6 @@ public class DatabaseController extends SQLiteOpenHelper {
         cv.put("latitude", latitude);
         cv.put("longitude", longitude);
         cv.put("city", city);
-
         SQLiteDatabase localDb = getWritableDatabase();
         localDb.insert(WEATHER, null, cv);
         localDb.close();
@@ -779,22 +809,17 @@ public class DatabaseController extends SQLiteOpenHelper {
             int index = constantsCursor.getInt(constantsCursor.getColumnIndex("_id"));
 
             try {
-                TextCaching caching = new TextCaching(mContext);
-                String base64String = caching.FetchCachedText(eventId);
 
-                Log.d("Base64", "base64 retrieved");
-                node.put("eventId", eventId);
-                node.put("latitude", latitude);
-                node.put("longitude", longitude);
-                node.put("timeStamp", timeStamp);
-                node.put("description", description);
-                node.put("userId", userId);
-                node.put("icon", icon);
-                node.put("media", base64String);
-                node.put("placeId", placeId);
-                node.put("suburb", suburb);
-                node.put("city", city);
-                node.put("mime", mime);
+                node.put(Models.Crumb.EVENT_ID, eventId);
+                node.put(Models.Crumb.LATITUDE, latitude);
+                node.put(Models.Crumb.LONGITUDE, longitude);
+                node.put(Models.Crumb.TIMESTAMP, timeStamp);
+                node.put(Models.Crumb.DESCRIPTION, description);
+                node.put(Models.Crumb.USER_ID, userId);
+                node.put(Models.Crumb.PLACEID, placeId);
+                node.put(Models.Crumb.SUBURB, suburb);
+                node.put(Models.Crumb.CITY, city);
+                node.put(Models.Crumb.EXTENSION, mime);
                 node.put("index", index);
                 returnObject.put(Integer.toString(count), node);
                 count += 1;
@@ -874,7 +899,6 @@ public class DatabaseController extends SQLiteOpenHelper {
             String mime = constantsCursor.getString(constantsCursor.getColumnIndex("mime"));
             try {
 
-                Log.d("Base64", "base64 retrieved");
                 node.put(Models.Crumb.EVENT_ID, eventId);
                 node.put(Models.Crumb.LATITUDE, latitude);
                 node.put(Models.Crumb.LONGITUDE, longitude);
@@ -941,9 +965,66 @@ public class DatabaseController extends SQLiteOpenHelper {
         Simple Delete sql script to delete from a database
      */
     public void DeleteCrumb(String crumbId) {
-        int target = Integer.parseInt(crumbId);
-        int result = getWritableDatabase().delete(CRUMBS, "_id=" + target, null);
+        SQLiteDatabase localdb = getWritableDatabase();
+        int result = localdb.delete(CRUMBS, "eventId = "+ crumbId, null);
         Log.d("DBC", "Requested deletion of crumb with id: " + crumbId + ", deleted " + result + " row(s)");
-//getWritableDatabase().rawQuery("DELETE FROM " + CRUMBS + " WHERE eventId=" + crumbId, null)
+        localdb.close();
+    }
+
+    public Location GetLastSavedLocation() {
+        Cursor cursor = getReadableDatabase().rawQuery("SELECT * FROM "+GPS_TABLE +" ORDER BY _id", null);
+        if(cursor.getCount() > 0) {
+            cursor.moveToLast();
+            Double latitude = cursor.getDouble(cursor.getColumnIndex("Latitude"));
+            Double longitude = cursor.getDouble(cursor.getColumnIndex("Longitude"));
+            Location location = new Location("MOCK");
+            location.setLatitude(latitude);
+            location.setLongitude(longitude);
+            return location;
+        }
+
+        return null;
+
+
+    }
+
+    /**
+     * Grab all the gps points from the database that we have saved from a local database.
+     * @param localTrailId
+     * @return This is the jsonObject of all the activity recordings that we have made.
+     */
+    public JSONObject GetAllActivityData(int localTrailId) {
+        JSONObject metadata = new JSONObject();
+        Cursor constantsCursor=getReadableDatabase().rawQuery("SELECT * FROM "+GPS_TABLE+" WHERE trailId ="+localTrailId +" ORDER BY _id",
+                null);
+        int currentIndex = 0;
+        while (constantsCursor.moveToNext()) {
+            JSONObject metadataNode = new JSONObject();
+
+            //Get all columns
+            int id = constantsCursor.getInt(constantsCursor.getColumnIndex("_id"));
+            Double latitude = constantsCursor.getDouble(constantsCursor.getColumnIndex("Latitude"));
+            Double longitude = constantsCursor.getDouble(constantsCursor.getColumnIndex("Longitude"));
+            int activity = constantsCursor.getInt(constantsCursor.getColumnIndex("LastActivity"));
+            int currentActivity = constantsCursor.getInt(constantsCursor.getColumnIndex("CurrentActivity"));
+            int granularity = constantsCursor.getInt(constantsCursor.getColumnIndex("Granularity"));
+
+
+            // Save our single point as a single node, and add it to the overall object that is
+            // going to be sent to the server.
+            try {
+                metadataNode.put(Models.Crumb.LATITUDE, Double.toString(latitude));
+                metadataNode.put(Models.Crumb.LONGITUDE, Double.toString(longitude));
+                metadataNode.put("LastActivity", Integer.toString(activity));
+                metadataNode.put("CurrentActivity", Integer.toString(currentActivity));
+                metadataNode.put("Granularity", Integer.toString(granularity));
+                // This wraps the object so that the first point is not a gps point, which means that it wont track properly
+                currentIndex += 1;
+                metadata.put(Integer.toString(currentIndex), metadataNode);
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
+        return metadata;
     }
 }

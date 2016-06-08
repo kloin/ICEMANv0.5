@@ -2,6 +2,8 @@ package com.teamunemployment.breadcrumbs.client.StoryBoard;
 
 import android.app.Activity;
 import android.content.Context;
+import android.graphics.Color;
+import android.os.Handler;
 import android.provider.ContactsContract;
 import android.util.Log;
 import android.view.SurfaceView;
@@ -9,6 +11,7 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.android.exoplayer.ExoPlayer;
 import com.google.android.exoplayer.upstream.Loader;
@@ -18,8 +21,11 @@ import com.teamunemployment.breadcrumbs.BreadcrumbsExoPlayer.BreadcrumbsExoPlaye
 import com.teamunemployment.breadcrumbs.BreadcrumbsExoPlayer.BreadcrumbsExoPlayerWrapper;
 import com.teamunemployment.breadcrumbs.BreadcrumbsVideoProgressTimer;
 import com.teamunemployment.breadcrumbs.Network.LoadBalancer;
+import com.teamunemployment.breadcrumbs.Network.ServiceProxy.HTTPRequestHandler;
+import com.teamunemployment.breadcrumbs.Network.ServiceProxy.UpdateViewElementWithProperty;
 import com.teamunemployment.breadcrumbs.R;
 import com.teamunemployment.breadcrumbs.RandomUsefulShit.Utils;
+import com.teamunemployment.breadcrumbs.client.Animations.SimpleAnimations;
 import com.teamunemployment.breadcrumbs.client.Cards.CrumbCardDataObject;
 import com.teamunemployment.breadcrumbs.database.DatabaseController;
 
@@ -30,16 +36,16 @@ import java.util.ArrayList;
  * Created by jek40 on 26/04/2016.
  */
 public class StoryBoardController {
+    private ArrayList<CrumbCardDataObject> deletedCrumbs = new ArrayList<>();
     private ArrayList<ImageView> images = new ArrayList<>();
     private final ArrayList<ProgressBar> mProgressBars = new ArrayList<ProgressBar>();
     private final ArrayList<SurfaceView> videoHolders = new ArrayList<>();
     private ArrayList<StoryBoardModel> storyBoardModels = new ArrayList<>();
     private int viewingIndex = 0;
     private int loadingIndex = 0;
-
+    private int DISPLAY_INDEX = 0;
     private ProgressBar itemDisplayDurationProgressBar;
     private BreadcrumbsVideoProgressTimer videoProgressTimer;
-
     // This is a record of what object we are using of the mCrumbs list. Each time I CREATE a storyboard this gets incremented.
     private int DATA_INDEX = 0;
 
@@ -60,13 +66,20 @@ public class StoryBoardController {
     private TextView crumbCount;
     private boolean awaitingPhotoLoad = false;
     private boolean isPlaying = true;
-
+    private TextView placeName;
     // Flag for when we have been buffering. This means that we have to restart the timer.
     private boolean beenBuffering = false;
 
     private int seekingTo = 0;
 
-    public StoryBoardController(ArrayList<CrumbCardDataObject> crumbs, ArrayList<ImageView> imageViews, Context context, int index) {
+    private FinishedListener finishedListener;
+
+    public interface FinishedListener {
+        void onStoryboardFinished();
+    }
+
+    public StoryBoardController(ArrayList<CrumbCardDataObject> crumbs, ArrayList<ImageView> imageViews, Context context, int index, FinishedListener listener) {
+        this.finishedListener = listener;
         mCrumbs = crumbs;
         images = imageViews;
         mContext = context;
@@ -173,7 +186,14 @@ public class StoryBoardController {
             }
             count += 1;
         }
-        StartLoadingWorkerProcess();
+        final Handler handler = new Handler();
+        handler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                // Do something after 5s = 5000ms
+                StartLoadingWorkerProcess();
+            }
+        }, 1000);
     }
 
     // This method triggers the loading to start. Loading continues until we are 2(3?) ahead. This  method only displays the first object, click handlers takke care of the rest.
@@ -267,15 +287,10 @@ public class StoryBoardController {
                             public void run() {
                                 displayModel.ProgressBar.setVisibility(View.VISIBLE);
                                 videoProgressTimer.StopTimer();
-
-                                // stop timer
-                                // Set callback required flag
-
                             }
                         });
                     }
                 }
-
                 // Stop showing loading symbol
                 if (state == ExoPlayer.STATE_READY) {
                     Log.d("BCExoplayer", "Ready to play");
@@ -287,13 +302,13 @@ public class StoryBoardController {
                                     Log.d("StoryBoardController", "Exoplayer ready to play video");
                                     displayModel.ProgressBar.setVisibility(View.GONE);
                                     displayModel.PlayerWrapper.VideoSurface.setVisibility(View.VISIBLE);
+                                    displayModel.PlayerWrapper.VideoSurface.setBackgroundColor(Color.TRANSPARENT);
 
                                     // Set up the progress timer
                                     long duration = displayModel.PlayerWrapper.player.getDuration();
                                     if (duration > 0) {
                                        videoProgressTimer.StopTimer();
                                         videoProgressTimer.SetTimerDuration((int) duration);
-                                       //
                                         videoProgressTimer.startTimer();
                                     }
                                 }
@@ -301,7 +316,6 @@ public class StoryBoardController {
                         });
                     }
                 }
-
                 // Loop back to start
                 if (state == ExoPlayer.STATE_ENDED) {
                     Log.d("BCExoplayer", "Finshed playing mp4, looping back to start");
@@ -312,9 +326,6 @@ public class StoryBoardController {
                                 videoProgressTimer.StopTimer();
                                 videoProgressTimer.ResetTimer();
                                 moveForward();
-                                //displayModel.PlayerWrapper.player.prepare();
-                                //displayModel.PlayerWrapper.player.seekTo(0);
-                                //displayModel.PlayerWrapper.StartPlaying();
                             }
                         });
                     }
@@ -350,17 +361,21 @@ public class StoryBoardController {
             DATA_INDEX += 1;
             storyBoardModels.add(4, newModel);
             displayNextItem(storyBoardModels.get(1), storyBoardModels.get(2));
+
             Log.d(TAG, "Moving forward in list. Added crumb with id: " + newModel.CrumbData.GetCrumbId());
-            LOADED_INDEX -= 1;
-            // trigger loading
+            if (LOADED_INDEX > 2) {
+                LOADED_INDEX -= 1;
+            }
+            // trigger the load of a new object if we are already 5 ahead.
             if (!amLoading && LOADED_INDEX < storyBoardModels.size()) {
                 amLoading = true;
                 Log.d(TAG, "Triggering load with index: " + LOADED_INDEX + " for storyBoard item with Id: " + storyBoardModels.get(LOADED_INDEX).CrumbData.GetCrumbId());
                 constructAndLoadObject(LOADED_INDEX);
             }
+
         } else {
             if (VIEWING_INDEX >= mCrumbs.size()) {
-                act.finish();
+
                 return;
             }
             StoryBoardModel blankModel = recycle(toBeRecycled, null);
@@ -372,14 +387,23 @@ public class StoryBoardController {
 
     // Change the visibility of the views . ie toggle one invisible and te other visible
     private void displayNextItem(StoryBoardModel currentModel, StoryBoardModel nextModel) {
+        if (nextModel.CrumbData == null) {
+            // Nothing we can do with nothing.
+            finishedListener.onStoryboardFinished();
+            return;
+        }
         Log.d(TAG, "Changing visibility of imageViews.");
         if(currentModel != null) {
             Log.d(TAG, "Hiding object with ");
         }
         VIEWING_INDEX += 1;
-
+        if (LOADED_INDEX == 2) {
+            // If we skip foreward while the current item is still loading, it doesnt load the next. This here triggers the load of the next item.
+            constructAndLoadObject(LOADED_INDEX);
+        }
         // Updates the view.
         setCrumbCount();
+        setPlaceName();
         mLastObject = nextModel;
         currentModel.ImageView.setVisibility(View.GONE);
         currentModel.ProgressBar.setVisibility(View.GONE);
@@ -400,18 +424,16 @@ public class StoryBoardController {
         // Set the new to be the display model for the entire class scope. Also delete the crumb data
         // Nulling the crumb data is not vital, but it stops accifental use down the line.
         displayModel = nextModel;
-        if (nextModel.CrumbData == null) {
-            // Nothing we can do with nothing.
-            act.finish();
-            return;
-        }
+
 
         // Decide if its photo.
         if (nextModel.CrumbData.GetDataType().equals(".jpg")) {
             Log.d(TAG, "Setting Visibility for item ");
             nextModel.ImageView.setVisibility(View.VISIBLE);
             if (!nextModel.FinishedLoadingImages) {
+                awaitingPhotoLoad = true;
                 nextModel.ProgressBar.setVisibility(View.VISIBLE);
+                videoProgressTimer.StopTimer();
             } else {
                 if (videoProgressTimer != null) {
                     videoProgressTimer.StopTimer();
@@ -430,6 +452,11 @@ public class StoryBoardController {
             nextModel.PlayerWrapper.VideoSurface.setVisibility(View.VISIBLE);
             nextModel.ProgressBar.setVisibility(View.VISIBLE);
             nextModel.PlayerWrapper.player.setPlayWhenReady(true); // This means that it will start playing when built
+            if (videoProgressTimer != null) {
+                videoProgressTimer.StopTimer();
+                videoProgressTimer.ResetTimer();
+                videoProgressTimer.SetTimerDuration(5000);
+            }
         }
     }
 
@@ -451,6 +478,7 @@ public class StoryBoardController {
                 Log.d(TAG, "Released player and set it to null");
             }
         }
+
         Log.d(TAG, "Finished recycling");
         return new StoryBoardModel(loadingIndex, newData, model.ImageView, model.ProgressBar,
                 new BreadcrumbsExoPlayerWrapper(model.PlayerWrapper.VideoSurface, mContext, DATA_INDEX));
@@ -461,7 +489,7 @@ public class StoryBoardController {
         view.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // moveForward();
+                 moveForward();
             }
         });
     }
@@ -553,6 +581,14 @@ public class StoryBoardController {
         }
     }
 
+    private void setPlaceName() {
+        if (placeName == null) {
+            placeName = (TextView) act.findViewById(R.id.place_name);
+        }
+
+        placeName.setText(displayModel.CrumbData.GetPlaceName());
+    }
+
     private void setCrumbCount() {
         if (crumbCount == null) {
             crumbCount = (TextView) act.findViewById(R.id.crumb_count);
@@ -582,12 +618,14 @@ public class StoryBoardController {
 
     /*
         Deletes the item that we are currently looking at in our storyboard.
-     */
+    */
     public void DeleteCurrentItem() {
         // Local use case
-        if (mLastObject.CrumbData != null && mLastObject.CrumbData.GetIsLocal() == 0) {
+        if (displayModel.CrumbData != null && displayModel.CrumbData.GetIsLocal() == 0) {
             doLocalDelete(displayModel);
-        } else if (mLastObject.CrumbData!= null && mLastObject.CrumbData.GetIsLocal() == 1) {
+            deletedCrumbs.add(displayModel.CrumbData);
+            moveForward();
+        } else if (displayModel.CrumbData != null && displayModel.CrumbData.GetIsLocal() == 1) {
             doServerDelete(displayModel);
         }
     }
@@ -597,14 +635,18 @@ public class StoryBoardController {
         if (itemToDelete!=null && itemToDelete.CrumbData != null) {
             DatabaseController databaseController = new DatabaseController(mContext);
             databaseController.DeleteCrumb(itemToDelete.CrumbData.GetCrumbId());
+            // Set the counter back to 1, and make the previous one null.
             Log.d("StoryBoardController", "Deleting crumb with id : " + itemToDelete.CrumbData.GetCrumbId());
-            moveForward();
+            itemToDelete = null;
         }
-
     }
 
     private void doServerDelete(StoryBoardModel itemDoDelete) {
         // Send request to server to delete our crumb. This should be done by crumb Id as well
+    }
+
+    public ArrayList<CrumbCardDataObject> GetDeletedCrumbs() {
+        return deletedCrumbs;
     }
 
     /*
@@ -614,10 +656,37 @@ public class StoryBoardController {
         videoProgressTimer.GetDisplayTimer();
         videoProgressTimer.StopTimer();
         isPlaying = false;
-        BreadcrumbsExoPlayerWrapper wrapper = mLastObject.PlayerWrapper;
+        if (displayModel == null) {
+            return;
+        }
+        BreadcrumbsExoPlayerWrapper wrapper = displayModel.PlayerWrapper;
         if (wrapper != null && wrapper.player != null) {
-            wrapper.player.getPlayerControl().pause();
+            wrapper.player.Stop();
+            wrapper.player.setPlayWhenReady(false);
             wrapper.player.release(); // Player must not be used after calling this.
+        }
+    }
+
+    // Pause playback if the storyboard.
+    public void Pause() {
+        videoProgressTimer.setTimerPauseState(true);
+        if (displayModel.PlayerWrapper.player != null) {
+           // displayModel.PlayerWrapper.player.Stop();
+            displayModel.PlayerWrapper.player.setPlayWhenReady(false);
+        }
+    }
+
+    public void Unpause() {
+        videoProgressTimer.setTimerPauseState(false);
+
+        if (displayModel.PlayerWrapper != null && displayModel.PlayerWrapper.player != null) {
+            displayModel.PlayerWrapper.player.setPlayWhenReady(true);
+        }
+    }
+
+    public void Play() {
+        if (displayModel.PlayerWrapper.player != null) {
+            displayModel.PlayerWrapper.player.setPlayWhenReady(true);
         }
     }
 }

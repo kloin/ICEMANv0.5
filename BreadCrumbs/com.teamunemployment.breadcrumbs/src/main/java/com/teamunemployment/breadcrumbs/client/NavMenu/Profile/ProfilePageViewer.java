@@ -83,13 +83,6 @@ public class ProfilePageViewer extends AppCompatActivity implements DatePickerDi
     // Toolbar button listeners - save and back
     private void setButtonListeners() {
         // Save button listener.
-        TextView saveButton = (TextView) findViewById(R.id.profile_save);
-        saveButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                save();
-            }
-        });
 
         // back button listener
         ImageButton button = (ImageButton) findViewById(R.id.profile_back_button);
@@ -143,8 +136,6 @@ public class ProfilePageViewer extends AppCompatActivity implements DatePickerDi
 
     private void setEditButtonVisibility() {
         Log.d(TAG, "Setting up edit button visiblity");
-        TextView saveButton = (TextView) findViewById(R.id.profile_save);
-        saveButton.setVisibility(View.GONE);
         if (!isOwnProfile) {
             Log.d(TAG, "Not our local user - need to hide the edit/save buttons");
             // Hide the edsit button, and the Save button.

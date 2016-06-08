@@ -28,7 +28,6 @@
                 android:layout_margin="12dp"
                 android:src="@drawable/profile"/>
 
-
             <TextView
                 android:id="@+id/belongs_to"
                 android:tag="1234445"
@@ -80,10 +79,14 @@
               android:layout_width="wrap_content"
               android:layout_height="wrap_content"
               android:layout_gravity="center" /> -->
+            <com.balysv.materialripple.MaterialRippleLayout
+                android:id="@+id/ripple"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
             <RelativeLayout
+                android:id="@+id/item_holder"
                 android:layout_width="match_parent"
                 android:layout_height="350dp">
-
 
             <ImageView
                 android:id="@+id/main_photo"
@@ -92,10 +95,7 @@
                 android:background="@color/white"
                 android:layout_width="match_parent"
                 android:layout_height="350dp" />
-                <FrameLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="350dp"
-                    android:background="#20000000"></FrameLayout>
+
                 <ImageView
                     android:id="@+id/crumb_count_image"
                     android:layout_above="@+id/Title"
@@ -110,26 +110,29 @@
                     android:layout_toRightOf="@+id/crumb_count_image"
                     android:layout_above="@id/Title"
                     android:textColor="@color/white"
-
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content" />
                 <TextView
                     android:id="@+id/Title"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+
                     android:layout_weight="6"
                     android:layout_margin="10dp"
                     android:textColor="@color/white"
-                    style="@style/CodeFont"
+                    style="@style/Base.TextAppearance.AppCompat.Title"
                     android:ellipsize="end"
                     android:singleLine="true"
                     android:layout_alignParentLeft="true"
                     android:layout_alignParentBottom="true"
                     android:textSize="22sp" />
             </RelativeLayout>
-        <RelativeLayout
+            </com.balysv.materialripple.MaterialRippleLayout>
+
+            <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:visibility="gone"
             android:layout_marginLeft="15dp"
             android:layout_marginRight="15dp"
             android:layout_marginTop="10dp"

@@ -21,6 +21,7 @@ import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.teamunemployment.breadcrumbs.Network.LoadBalancer;
 import com.teamunemployment.breadcrumbs.Network.ServiceProxy.AsyncDataRetrieval;
@@ -28,6 +29,8 @@ import com.teamunemployment.breadcrumbs.Network.ServiceProxy.AsyncImageFetch;
 import com.teamunemployment.breadcrumbs.Network.ServiceProxy.GETImageSaver;
 import com.teamunemployment.breadcrumbs.Network.ServiceProxy.HTTPRequestHandler;
 import com.teamunemployment.breadcrumbs.Network.ServiceProxy.UploadFile;
+import com.teamunemployment.breadcrumbs.Preferences.Preferences;
+import com.teamunemployment.breadcrumbs.PreferencesAPI;
 import com.teamunemployment.breadcrumbs.R;
 import com.teamunemployment.breadcrumbs.RandomUsefulShit.Utils;
 import com.teamunemployment.breadcrumbs.caching.GlobalContainer;
@@ -104,23 +107,24 @@ public class LocalPhotoImageSelector extends Activity {
                     @Override
                     public void onClick(View v) {
                         UploadProfileImage(position);
-                        Uri images = MediaStore.Images.Media.EXTERNAL_CONTENT_URI;
-                        final Uri uri = Uri.parse(images + "/" + ids.get(position));
 
-                        // Quiting on select for now.
-                        ImageLoadingManager imageLoadingManager = new ImageLoadingManager(mContext);
-                        Bitmap bitmap = null;
-                        try {
-                            bitmap = imageLoadingManager.GetFull720Bitmap(uri);
-                        } catch (IOException e) {
-                            e.printStackTrace();
-                        }
-                        GlobalContainer.GetContainerInstance().SetBitMap(bitmap);
-                        // Tell the tabs activity (from previously) that we have saved and want to go back to the profile page.
-                        Intent returnIntent = new Intent();
-                        returnIntent.putExtra("bitmap",bitmap);
-                        mContext.setResult(5, returnIntent);
-                        mContext.finish();
+//                        Uri images = MediaStore.Images.Media.EXTERNAL_CONTENT_URI;
+//                        final Uri uri = Uri.parse(images + "/" + ids.get(position));
+//
+//                        // Quiting on select for now.
+//                        ImageLoadingManager imageLoadingManager = new ImageLoadingManager(mContext);
+//                        Bitmap bitmap = null;
+//                        try {
+//                            bitmap = imageLoadingManager.GetFull720Bitmap(uri);
+//                        } catch (IOException e) {
+//                            e.printStackTrace();
+//                        }
+//                        GlobalContainer.GetContainerInstance().SetBitMap(bitmap);
+//                        // Tell the tabs activity (from previously) that we have saved and want to go back to the profile page.
+//                        Intent returnIntent = new Intent();
+//                        returnIntent.putExtra("bitmap",bitmap);
+//                        mContext.setResult(5, returnIntent);
+//                        mContext.finish();
                         //mContext.finish();
                     }
                 });
@@ -176,14 +180,6 @@ public class LocalPhotoImageSelector extends Activity {
         // Root of the local images folder.
         Uri images = MediaStore.Images.Media.EXTERNAL_CONTENT_URI;
 
-        // FetchMedia
-        final String userId = PreferenceManager.getDefaultSharedPreferences(mContext).getString("USERID", "-1");
-
-        // First we save the crumb to the database. We use a request listerner (getRequestListener) to  do the save once we have updated the profile image.
-        final String saveImageUrl = LoadBalancer.RequestServerAddress() + "/rest/Crumb/UploadProfileImage/"+ userId;
-        AsyncDataRetrieval asyncDataRetrieval = new AsyncDataRetrieval(saveImageUrl, getRequestListener(userId, position), mContext);
-        asyncDataRetrieval.execute();
-
         final Uri uri = Uri.parse(images + "/" + ids.get(position));
 
         // FetchMedia
@@ -193,12 +189,23 @@ public class LocalPhotoImageSelector extends Activity {
             bitmap = imageLoadingManager.GetFull720Bitmap(uri);
         } catch (IOException e) {
             e.printStackTrace();
+            // Fuck all we can do here.
+            Toast.makeText(mContext, "Saving failed.. :(", Toast.LENGTH_SHORT).show();
+            return;
         }
+        // Save our id locally for future reference.
+        new PreferencesAPI(mContext).SetUserCoverPhoto(ids.get(position)+"L");
+
+        // Save our bitmap by the local id. THis allows us to reference both the remote and local version with the same Id.
+        String url = LoadBalancer.RequestServerAddress() + "/rest/Crumb/SaveImageToDatabase/"+ids.get(position)+"L";
+        UploadFile uploadFile = new UploadFile(url, null, bitmap);
+        uploadFile.execute();
 
         // Tell the tabs activity (from previously) that we have saved and want to go back to the profile page.
         Intent returnIntent = new Intent();
-        returnIntent.putExtra("bitmap",bitmap);
-        mContext.setResult(5, returnIntent);
+        returnIntent.putExtra("ProfileId", ids.get(position));
+        int LOCAL_FLAG = 0;
+        mContext.setResult(LOCAL_FLAG, returnIntent);
         mContext.finish();
     }
 

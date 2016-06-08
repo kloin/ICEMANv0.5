@@ -1,11 +1,13 @@
 package com.teamunemployment.breadcrumbs.client.Maps;
 
 import android.app.Activity;
+import android.app.NotificationManager;
+import android.content.Context;
 import android.content.Intent;
 import android.content.res.ColorStateList;
 import android.graphics.Color;
-import android.support.design.widget.CoordinatorLayout;
-import android.support.design.widget.Snackbar;
+import android.location.Location;
+import android.support.v7.app.NotificationCompat;
 import android.support.v7.widget.SwitchCompat;
 import android.text.Editable;
 import android.util.Log;
@@ -14,37 +16,38 @@ import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.google.android.gms.maps.CameraUpdateFactory;
-import com.google.android.gms.maps.model.CameraPosition;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
+import com.google.android.gms.maps.model.CircleOptions;
 import com.google.android.gms.maps.model.LatLng;
-import com.teamunemployment.breadcrumbs.BackgroundServices.MessageObjects.TrailObject;
+import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.maps.android.PolyUtil;
+import com.google.maps.android.ui.IconGenerator;
+import com.teamunemployment.breadcrumbs.ActivityRecognition.ActivityController;
+import com.teamunemployment.breadcrumbs.AsyncWorkers.GenericAsyncWorker;
+import com.teamunemployment.breadcrumbs.BackgroundServices.UploadTrailService;
 import com.teamunemployment.breadcrumbs.BreadcrumbsActivityAPI;
 import com.teamunemployment.breadcrumbs.BreadcrumbsLocationAPI;
 import com.teamunemployment.breadcrumbs.Dialogs.IDialogCallback;
 import com.teamunemployment.breadcrumbs.Dialogs.SimpleMaterialDesignDialog;
+import com.teamunemployment.breadcrumbs.Location.SimpleGps;
+import com.teamunemployment.breadcrumbs.Models;
 import com.teamunemployment.breadcrumbs.Network.LoadBalancer;
-import com.teamunemployment.breadcrumbs.Network.NetworkConnectivityManager;
 import com.teamunemployment.breadcrumbs.Network.ServiceProxy.AsyncDataRetrieval;
-import com.teamunemployment.breadcrumbs.Network.ServiceProxy.AsyncSendLargeJsonParam;
 import com.teamunemployment.breadcrumbs.Network.ServiceProxy.HTTPRequestHandler;
-import com.teamunemployment.breadcrumbs.Network.ServiceProxy.UpdateViewElementWithProperty;
-import com.teamunemployment.breadcrumbs.Preferences.Preferences;
 import com.teamunemployment.breadcrumbs.PreferencesAPI;
 import com.teamunemployment.breadcrumbs.R;
 import com.teamunemployment.breadcrumbs.RandomUsefulShit.Utils;
-import com.teamunemployment.breadcrumbs.Trails.MyCurrentTrailDisplayManager;
 import com.teamunemployment.breadcrumbs.client.Animations.SimpleAnimations;
+import com.teamunemployment.breadcrumbs.client.Cards.CrumbCardDataObject;
 import com.teamunemployment.breadcrumbs.client.ImageChooser.TrailCoverImageSelector;
-import com.teamunemployment.breadcrumbs.client.TrailManager;
 import com.teamunemployment.breadcrumbs.database.DatabaseController;
 import com.teamunemployment.breadcrumbs.database.Models.LocalTrailModel;
 import com.teamunemployment.breadcrumbs.database.Models.TrailSummaryModel;
 
 
-import org.greenrobot.eventbus.EventBus;
 import org.joda.time.DateTime;
 import org.joda.time.Days;
 import org.joda.time.Hours;
@@ -65,9 +68,13 @@ public class LocalMap extends MapViewer {
     private PreferencesAPI preferencesAPI;
     private String localTrailId;
 
+    private NotificationManager notificationManager;
+    private NotificationCompat.Builder notificationBuilder;
     private BreadcrumbsLocationAPI locationAPI;
     private BreadcrumbsActivityAPI activityAPI;
+    private LatLng lastPoint;
 
+    public final static int DELETED_CRUMBS = 4435;
     @Override
     public void DoBottomSheetClick() {
         switch (BOTTOM_SHEET_STATE) {
@@ -86,13 +93,35 @@ public class LocalMap extends MapViewer {
         if (preferencesAPI == null) {
             preferencesAPI = new PreferencesAPI(context);
         }
-
+        drawLocalTrailOnMap();
         String coverId = preferencesAPI.GetCurrentTrailCoverPhoto();
+        setListenerForTrackingToggle();
         if (coverId == null) {
             return;
-        }
+         }
+
         setCoverPhoto(coverId);
 
+    }
+
+    private void setListenerForTrackingToggle() {
+        SwitchCompat switchCompat = (SwitchCompat) findViewById(R.id.toggle_tracking);
+        if (preferencesAPI == null) {
+            preferencesAPI = new PreferencesAPI(context);
+        }
+        switchCompat.setChecked(preferencesAPI.isTrackingEnabledByUser());
+        switchCompat.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (isChecked) {
+                    // Start listening
+                    startTracking();
+                }
+                if (!isChecked) {
+                    stopTracking();
+                }
+            }
+        });
     }
 
     @Override
@@ -105,6 +134,8 @@ public class LocalMap extends MapViewer {
         findViewById(R.id.settings_my_trail).setVisibility(View.VISIBLE);
         findViewById(R.id.toggle_tracking).setVisibility(View.VISIBLE);
         findViewById(R.id.publish_trail).setVisibility(View.VISIBLE);
+        findViewById(R.id.view_count).setVisibility(View.GONE);
+        findViewById(R.id.number_of_views).setVisibility(View.GONE);
 
         setPublishClickListener();
     }
@@ -119,6 +150,15 @@ public class LocalMap extends MapViewer {
         });
     }
 
+    private void startPublishingNotification() {
+        int id = 8;
+        notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+        notificationBuilder = new NotificationCompat.Builder(context);
+        notificationBuilder.setContentTitle("Upload Trip").setContentText("Upload in progress").setSmallIcon(R.drawable.ic_backup_white_24dp);
+        notificationBuilder.setProgress(0,0, true);
+        notificationManager.notify(id, notificationBuilder.build());
+    }
+
     private void doPublish() {
         // Create the shell to hold our simple dialog.
         final SimpleMaterialDesignDialog materialDesignDialog = SimpleMaterialDesignDialog.Build(context);
@@ -129,6 +169,8 @@ public class LocalMap extends MapViewer {
         IDialogCallback onAccept = new IDialogCallback() {
             @Override
             public void DoCallback() {
+                // First we need to build our notification.
+
                 // Send save Request to server
                 int serverTrailId = preferencesAPI.GetServerTrailId();
                 if (serverTrailId == -1) {
@@ -180,6 +222,7 @@ public class LocalMap extends MapViewer {
             return false;
         }
 
+        startPublishingNotification();
         // Save our name locally for future reference.
         preferencesAPI.SaveTrailNameString(trailName);
 
@@ -187,15 +230,15 @@ public class LocalMap extends MapViewer {
         HTTPRequestHandler httpRequestHandler = new HTTPRequestHandler();
         httpRequestHandler.SaveNodeProperty(Integer.toString(serverTrailId), "TrailName", trailName, context);
 
-        // get trail from current index to now.
-        TrailObject trailObject = new TrailObject(trailId);
+        Intent uploadTrailService = new Intent(context, UploadTrailService.class);
+        context.startService(uploadTrailService);
+
         return true;
     }
 
     /**
      * Handle the use case where we have not saved our trail yet. This involves creating the trail
      * and saving the Id that gets returned.
-     *
      */
     private boolean handleFirstTimePublishing() {
         String trailName = fetchCurrentTrailName();
@@ -204,6 +247,7 @@ public class LocalMap extends MapViewer {
         if (trailName.isEmpty()) {
             return false;
         }
+        startPublishingNotification();
         String userId = preferencesAPI.GetUserId();
 
         String url = MessageFormat.format("{0}/rest/login/saveTrail/{1}/{2}/{3}",
@@ -227,46 +271,25 @@ public class LocalMap extends MapViewer {
         return true;
     }
 
-    private void saveLocalFileMetadataAndLoadMapWithResponse(String localTrailId) {
-        initDatabaseController();
-        int trailId = preferencesAPI.GetServerTrailId();
-        if (trailId == -1 || !NetworkConnectivityManager.IsNetworkAvailable(context)) {
-            doLocalLoad();
-            return;
-        }
-        doProcessingOnServer(Integer.toString(trailId), localTrailId);
-    }
+    private JSONObject fetchCurrentLocationNode() {
+        SimpleGps simpleGps = new SimpleGps(context);
+        Location location = simpleGps.GetInstantLocation();
 
-    private void doProcessingOnServer(final String trailId, final String localTrailId) {
-        int index = preferencesAPI.GetCurrentIndex();
-        JSONObject json = databaseController.fetchMetadataFromDB(localTrailId, false);
-        JSONObject wrapper = new JSONObject();
-        try {
-            wrapper.put("Events", json);
-            wrapper.put("TrailId", trailId);
-            wrapper.put("StartingIndex", index);
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-        String url = MessageFormat.format("{0}/rest/TrailManager/SaveMetadataAndReturnIt/{1}",
-                LoadBalancer.RequestServerAddress(),
-                trailId);
-        url = url.replaceAll(" ", "%20");
-        // save our metadata and then do the loading with the metadata that gets returned.
-        AsyncSendLargeJsonParam asyncJSON = new AsyncSendLargeJsonParam(url, new AsyncSendLargeJsonParam.RequestListener() {
-            @Override
-            public void onFinished(String metadataJSON) throws JSONException {
-                // Our metadata gets returned, so now we have to load the map using the data that gets returned.
-                Log.d("Result", metadataJSON);
-                displayMetadata(new JSONObject(metadataJSON));
-                mMap.setMyLocationEnabled(true);
-                JSONObject crumbs = databaseController.GetAllCrumbs(localTrailId);
-                DisplayCrumbsFromLocalDatabase(crumbs);
-                Log.d(TAG, "Successfully retrieved crumbs: " + crumbs.toString());
-                //  myCurrentTrailDisplayManager.DisplayCrumbsFromLocalDatabase(crumbs);
+        if (location != null) {
+            JSONObject response = new JSONObject();
+
+            try {
+                response.put(Models.Crumb.LATITUDE, location.getLatitude());
+                response.put(Models.Crumb.LONGITUDE, location.getLongitude());
+                response.put("LastActivity", Integer.toString(0));
+                response.put("CurrentActivity", Integer.toString(0));
+                response.put("Granularity", Integer.toString(0));
+                return response;
+            } catch (JSONException e) {
+                e.printStackTrace();
             }
-        }, wrapper);
-        asyncJSON.execute();
+        }
+        return null;
     }
 
     private void initDatabaseController() {
@@ -290,6 +313,23 @@ public class LocalMap extends MapViewer {
 
         // The user is looking at their own trail, which should draw to where they are, so we zoom onto them.
         //zoomOnMyLocation();
+    }
+
+    private void addMeMarker() {
+        SimpleGps simpleGps = new SimpleGps(context);
+        Location location = simpleGps.GetInstantLocation();
+        if (location == null) {
+            return;
+        }
+        IconGenerator iconFactory = new IconGenerator(context);
+        iconFactory.setColor(Color.CYAN);
+        LatLng position = new LatLng(location.getLatitude(), location.getLongitude());
+        MarkerOptions markerOptions = new MarkerOptions().
+                icon(BitmapDescriptorFactory.fromBitmap(iconFactory.makeIcon("You"))).
+                position(position).
+                anchor(iconFactory.getAnchorU(), iconFactory.getAnchorV());
+
+        mMap.addMarker(markerOptions);
     }
 
     private void buildTrailPathFromLocalDB() {
@@ -323,10 +363,16 @@ public class LocalMap extends MapViewer {
             // Get the crumb title ??? why do i do this? last crumb?
             Iterator<String> keys = crumbs.keys();
             JSONObject next = null;
+
+            // Create a trail.
+            mapDisplayManager.clusterManager.clearItems();
+            mapDisplayManager.GetDataObjects().clear();
+
             while (keys.hasNext()) {
                 // The next node to get data from and Draw.
                 String id = keys.next();
                 next = crumbs.getJSONObject(id);
+
                 mapDisplayManager.DrawLocalCrumbFromJson(next);
                 mapDisplayManager.clusterManager.cluster();
             }
@@ -441,39 +487,14 @@ public class LocalMap extends MapViewer {
         trailName.setText(trailSummaryModel.GetTripName());
 
         TextView trailTitle = (TextView) findViewById(R.id.bottom_sheet_trail_title);
-        trailTitle.setText(trailSummaryModel.GetTripName());
+        String name = trailSummaryModel.GetTripName();
+        if (name == null || name.isEmpty()) {
+            name = "My Trip";
+        }
+        trailTitle.setText(name);
         if (trailSummaryModel.GetLastUpdate() != null) {
             setLastUpdate(new DateTime(trailSummaryModel.GetLastUpdate()));
         }
-
-        final SwitchCompat activeSwitch = (SwitchCompat) findViewById(R.id.toggle_tracking);
-        activeSwitch.setChecked(preferencesAPI.isTrackingEnabledByUser());
-        setUpToggleTrackingListener(activeSwitch);
-    }
-
-    private void setUpToggleTrackingListener(SwitchCompat activeSwitch) {
-        activeSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                if (locationAPI == null) {
-                    locationAPI = new BreadcrumbsLocationAPI();
-                }
-                if (activityAPI == null) {
-                    activityAPI = new BreadcrumbsActivityAPI();
-                }
-
-                if (isChecked) {
-                    locationAPI.StartLocationService();
-                    activityAPI.ListenToUserActivityChanges();
-                    preferencesAPI.SetUserTracking(true);
-                } else {
-                    locationAPI.StopLocationService();
-                    // FIXME Stop listening to activity changes too, otherwise we will just start tracking again when we recognize walking.
-                    preferencesAPI.SetUserTracking(false);
-                    preferencesAPI.SetTracking(false);
-                }
-            }
-        });
     }
 
     /**
@@ -508,11 +529,110 @@ public class LocalMap extends MapViewer {
         lastUpdateTextView.setText(days + " days ago");
     }
 
+    private void drawLocalTrailOnMap() {
+        if (databaseController == null) {
+            databaseController = new DatabaseController(context);
+        }
+        if (preferencesAPI == null) {
+            preferencesAPI = new PreferencesAPI(context);
+        }
+
+        // Fetch local Data.
+        GenericAsyncWorker.IGenericAsync overrides = new GenericAsyncWorker.IGenericAsync() {
+            @Override
+            public JSONObject backgroundTasks() {
+                JSONObject localData = fetchLocalData();
+                JSONObject processedResult = processLocalDataOnServer(localData);
+                return processedResult;
+            }
+
+            @Override
+            public void postExecute(JSONObject jsonObject) {
+                try {
+                    processResult(jsonObject);
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        };
+        GenericAsyncWorker genericAsyncWorker = new GenericAsyncWorker(overrides);
+        genericAsyncWorker.execute();
+    }
+
+    private JSONObject processLocalDataOnServer(JSONObject jsonObject) {
+        String url = MessageFormat.format("{0}/rest/TrailManager/CalculatePath/{1}",
+                LoadBalancer.RequestServerAddress(),
+                "1");
+        url = url.replaceAll(" ", "%20");
+        HTTPRequestHandler requestHandler = new HTTPRequestHandler();
+        String result = requestHandler.SendJSONRequest(url, jsonObject);
+        try {
+            JSONObject resultJSON = new JSONObject(result);
+            return resultJSON;
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return new JSONObject();
+    }
+
+    private JSONObject fetchLocalData() {
+        int localTrailId = preferencesAPI.GetLocalTrailId();
+        JSONObject metadata = databaseController.GetAllActivityData(localTrailId);
+        JSONObject lastMetadataObject = fetchCurrentLocationNode();
+        int length = metadata.length() + 1;
+        try {
+            metadata.put(Integer.toString(length), lastMetadataObject);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        return metadata;
+    }
+
+    private void processResult(JSONObject jsonObject) throws JSONException {
+        Iterator<String> keys = jsonObject.keys();
+        int count = 0;
+        while (keys.hasNext()) {
+            keys.next();
+            JSONObject tempObject = jsonObject.getJSONObject(Integer.toString(count));
+            boolean isEncoded = tempObject.getBoolean("IsEncoded");
+            String polyline = tempObject.getString("Polyline");
+            List<LatLng> listOfPoints;
+            if (isEncoded) {
+                listOfPoints = PolyUtil.decode(polyline);
+                if (lastPoint != null) {
+                    listOfPoints.add(0, lastPoint);
+                }
+                lastPoint = listOfPoints.get(listOfPoints.size()-1);
+                DrawPolyline(listOfPoints, "#FF0000");
+            } else {
+                listOfPoints = parseNonEncodedPolyline(polyline);
+                DrawDashedPolyline(listOfPoints.get(0), listOfPoints.get(1),Color.parseColor("#03A9F4"));
+                lastPoint = listOfPoints.get(listOfPoints.size()-1);
+            }
+            count += 1;
+        }
+    }
+
     @Override
     public void StartCrumbDisplay(String trailId) {
         // Set up our crumbs
-        trailId = Integer.toString(preferencesAPI.GetLocalTrailId());
-        saveLocalFileMetadataAndLoadMapWithResponse(trailId);
+        final String localTrailId = Integer.toString(preferencesAPI.GetLocalTrailId());
+        GenericAsyncWorker.IGenericAsync overrides = new GenericAsyncWorker.IGenericAsync() {
+            @Override
+            public JSONObject backgroundTasks() {
+                return databaseController.GetAllCrumbs(localTrailId);
+            }
+
+            @Override
+            public void postExecute(JSONObject jsonObject) {
+                Log.d(TAG, "Starting display crumbs from local. Time = " + System.currentTimeMillis());
+                DisplayCrumbsFromLocalDatabase(jsonObject);
+                Log.d(TAG, "Finished display crumbs from local. Time = " + System.currentTimeMillis());
+            }
+        };
+        GenericAsyncWorker genericAsyncWorker = new GenericAsyncWorker(overrides);
+        genericAsyncWorker.execute();
     }
 
     @Override
@@ -522,7 +642,6 @@ public class LocalMap extends MapViewer {
 
     @Override
     public void SetUpBottomSheetFab() {
-
         bottomSheetFab.setBackgroundTintList(ColorStateList.valueOf(Color.WHITE));
         bottomSheetFab.setImageDrawable(context.getResources().getDrawable(R.drawable.ic_action_edit));
 
@@ -542,9 +661,9 @@ public class LocalMap extends MapViewer {
         startActivityForResult(selectCoverPhotoIntent, 155);
     }
 
-
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == 155) {
             if (resultCode == RESULT_OK) {
                 Log.d(TAG, "Recieved result for saving cover photo.");
@@ -555,6 +674,22 @@ public class LocalMap extends MapViewer {
                 setUpReadOnlyMode();
             }
         }
+
+        if (requestCode == 1) {
+            if (resultCode == RESULT_OK) {
+                // We have deleted some crumbs, so we need to remove them from our list of data objects and refresh the map.
+                ArrayList<CrumbCardDataObject> deleted = data.getParcelableArrayListExtra("DeletedCrumbs");
+
+                deleteAndRefresh(deleted);
+
+            }
+        }
+    }
+
+    private void deleteAndRefresh(ArrayList<CrumbCardDataObject> deletedItems) {
+        trailId = Integer.toString(preferencesAPI.GetLocalTrailId());
+        JSONObject crumbs = databaseController.GetAllCrumbs(trailId);
+        DisplayCrumbsFromLocalDatabase(crumbs);
     }
 
     private void setCoverPhoto(String id) {
@@ -578,5 +713,47 @@ public class LocalMap extends MapViewer {
     public void setCollapsedToolbarState() {
         super.setCollapsedToolbarState();
         ZoomOnMyLocation();
+    }
+
+    // Stop the activity listener that toggles the tracking
+    private void stopTracking() {
+        preferencesAPI.SetUserTracking(false);
+        ActivityController activityController = new ActivityController(context);
+        activityController.StopListening();
+    }
+
+    // Start the activity listener that triggers the gps tracking.
+    private void startTracking() {
+        preferencesAPI.SetUserTracking(true);
+        ActivityController activityController = new ActivityController(context);
+        activityController.StartListenting();
+    }
+
+    public void FetchMyLocation() {
+
+        SimpleGps simpleGps = new SimpleGps(context);
+        Location location = simpleGps.GetInstantLocation();
+        if (location == null) {
+            return;
+        }
+
+        mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(
+                new LatLng(location.getLatitude(), location.getLongitude()), 13), 500, null);
+
+        mMap.addCircle(new CircleOptions()
+                .center(new LatLng(location.getLatitude(), location.getLongitude()))
+                .radius(30)
+                .strokeColor(Color.BLUE)
+                .fillColor(Color.BLUE));
+        if (LOOKIING_AT_MAP) {
+//			CameraPosition cameraPosition = new CameraPosition.Builder()
+//					.target(new LatLng(location.getLatitude(), location.getLongitude()))      // Sets the center of the map to location user
+//					.zoom(17)                   // Sets the zoom
+//					.bearing(90)                // Sets the orientation of the camera to east
+//					.tilt(40)                   // Sets the tilt of the camera to 30 degrees
+//					.build();                   // Creates a CameraPosition from the builder
+//			mMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
+            HAVE_ZOOMED = true;
+        }
     }
 }

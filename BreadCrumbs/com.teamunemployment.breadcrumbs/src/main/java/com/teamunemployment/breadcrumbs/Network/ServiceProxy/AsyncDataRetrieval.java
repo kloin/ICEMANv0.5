@@ -8,6 +8,7 @@ import com.squareup.okhttp.OkHttpClient;
 import com.squareup.okhttp.Request;
 import com.squareup.okhttp.Response;
 import com.teamunemployment.breadcrumbs.Network.NetworkConnectivityManager;
+import com.teamunemployment.breadcrumbs.caching.CacheResult;
 import com.teamunemployment.breadcrumbs.caching.TextCaching;
 
 import org.json.JSONException;
@@ -56,47 +57,39 @@ public class AsyncDataRetrieval extends AsyncTask<String, Integer, String> {
 			}
 	    }
 
-		/*
-		 * This is our method we use to retrieve data using get (or store data.)
-		 * Remember - GET is pretty shit, I need to do more research.
-		 */
 		public String SendDataRequest(String url) {
-
+			String result = "";
 			// check the cache first
-			//TextCaching caching = new TextCaching(mContext);
-			//String key = url.replace("/","");
-			//caching.FetchCachedText()
-			if (!NetworkConnectivityManager.IsNetworkAvailable(mContext)) {
-				Log.d("NETWORK", "No network connection available.");
-				return null;
-			}
-			OkHttpClient client = new OkHttpClient();
-			try {
-				Request request = new Request.Builder()
-						.url(url)
-						.build();
-				Response response = client.newCall(request).execute();
+			TextCaching caching = new TextCaching(mContext);
+			String key = url.replace("/","");
+			key = key.replace(":", "");
 
-				return response.body().string();
-			} catch (IOException e) {
-				e.printStackTrace();
+			// Fetch our caching object, to decide what we do with it.
+			CacheResult resultObject = caching.FetchCacheObject(key);
+			result = resultObject.result;
+			if (resultObject.requiresUpdate) {
+				if (!NetworkConnectivityManager.IsNetworkAvailable(mContext)) {
+					Log.d("NETWORK", "No network connection available.");
+					return null;
+				}
+				OkHttpClient client = new OkHttpClient();
+				try {
+					Request request = new Request.Builder()
+							.url(url)
+							.build();
+					Response response = client.newCall(request).execute();
+					result = response.body().string();
+					caching.CacheText(key, result);
+					return result;
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			} else {
+				return result;
 			}
-			return null;
+			return result; // The android compiler is a dumb cunt.
+
 		}
-
-        public String PostDataToServer(String urlString) {
-            URL url = null;
-            try {
-                url = new URL(urlString);
-                URLConnection connection = url.openConnection();
-                //connection.
-            } catch (MalformedURLException e) {
-                e.printStackTrace();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-            return"";
-        }
 	}
 	
          

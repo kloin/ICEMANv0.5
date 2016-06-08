@@ -37,12 +37,11 @@ public class SplashScreen extends Activity {
 
                 if (!result.equals("0") && !result.equals("")) {
                     new PreferencesAPI(context).SaveCurrentLocalTrailId(Integer.parseInt(result));
-
                 }
 
                 // Start up home page.
                 Intent myIntent = new Intent();
-                myIntent.setClassName("com.teamunemployment.breadcrumbs", "com.teamunemployment.breadcrumbs.client.BaseViewModel");
+                myIntent.setClassName("com.teamunemployment.breadcrumbs", "com.teamunemployment.breadcrumbs.client.Home.HomeActivity");
                 startActivity(myIntent);
             }
         }, context);

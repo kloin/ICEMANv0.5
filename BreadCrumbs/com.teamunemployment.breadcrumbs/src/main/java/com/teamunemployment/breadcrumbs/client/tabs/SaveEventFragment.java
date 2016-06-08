@@ -13,6 +13,8 @@ import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
 import android.location.LocationListener;
+import android.location.LocationManager;
+import android.location.LocationProvider;
 import android.os.Bundle;
 import android.os.Environment;
 import android.preference.PreferenceManager;
@@ -32,6 +34,8 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.teamunemployment.breadcrumbs.BackgroundServices.SaveCrumbService;
+import com.teamunemployment.breadcrumbs.BackgroundServices.UploadTrailService;
 import com.teamunemployment.breadcrumbs.Location.BreadCrumbsFusedLocationProvider;
 import com.teamunemployment.breadcrumbs.Location.BreadcrumbsLocationProvider;
 import com.teamunemployment.breadcrumbs.Location.PlaceManager;
@@ -90,19 +94,29 @@ public class SaveEventFragment extends Activity {
 	private BreadCrumbsFusedLocationProvider fusedLocationProvider;
 	private boolean backCameraOpen;
 	private PreferencesAPI mPreferencesApi;
-	/*
-	 * Do as LITTLE as possible in the constructors. If possible, load at run-time
-	 */
+	private Location location;
+	private LocationManager locationManager;
+
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.add_screen);
+		context = this;
 		globalContainer = GlobalContainer.GetContainerInstance();
-		addTapListeners();
 		mPreferencesApi = new PreferencesAPI(this);
-        context = this;
-        ActionBar actionBar = getActionBar();
+
+		addTapListeners();
+
 		backCameraOpen = getIntent().getBooleanExtra("IsBackCameraOpen", true);
+		Double lat = getIntent().getDoubleExtra("Latitude", 0);
+		Double lon = getIntent().getDoubleExtra("Longitude", 0);
+		if (lat == 0 && lon == 0) {
+			// StartFetching Location updates.
+			location = new Location("");
+			location.setLatitude(lat);
+			location.setLongitude(lon);
+		}
+
         SetMedia();
 
 		// Set the height of the camera to be the same as the width so we get a square.
@@ -122,6 +136,7 @@ public class SaveEventFragment extends Activity {
 			@Override
 			public void onClick(View v) {
 				// Close this activity, which will exit the screen
+
 				finish();
 			}
 		});
@@ -133,52 +148,29 @@ public class SaveEventFragment extends Activity {
 			@Override
 			public void onClick(View view) {
 				createNewEvent();
-				Intent myIntent = new Intent(context, HomeActivity.class);
-				myIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-				context.startActivity(myIntent);
+				Toast.makeText(context, "Saved", Toast.LENGTH_SHORT).show();
+				finish();
 			}
 		});
 	}
-	
+
 	private void createNewEvent() {
 		//Currently we will only be creating a crumb. In the future we will be able to create both.
 		trailId = Integer.toString(mPreferencesApi.GetLocalTrailId());
 
-        final Location location = locationProvider.GetBestRecentLocation();
-		if (location == null) {
-			// Need to display and error to the user
-			Log.d("SAVE_EVENT", "Failed to find a satisfactory recent location, fetching location now");
-			if (ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED ||
-					ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
-				Toast.makeText(context, "Cannot save a crumb without location services enabled.", Toast.LENGTH_LONG).show();
-			} else {
-				LocationListener locationListener = new LocationListener() {
-					@Override
-					public void onLocationChanged(Location location) {
-						processAndSaveEvent(location);
-					}
+		// grab event Id.
+		int eventId = mPreferencesApi.GetEventId();
 
-					@Override
-					public void onStatusChanged(String provider, int status, Bundle extras) {
+		// Save image to disk.
+		String fileName =  Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES).toString() + "/"+eventId;
+		Utils.SaveBitmap(fileName, GlobalContainer.GetContainerInstance().GetBitMap());
 
-					}
-
-					@Override
-					public void onProviderEnabled(String provider) {
-
-					}
-
-					@Override
-					public void onProviderDisabled(String provider) {
-						Toast.makeText(context, "Cannot save a crumb without location services enabled.", Toast.LENGTH_LONG).show();
-					}
-				};
-				locationProvider.requestLocationUpdate(locationListener);
-			}
-
-			return;
-		}
-		processAndSaveEvent(location);
+		// Need to launch intent service to save object.
+		Intent saveCrumbService = new Intent(context, SaveCrumbService.class);
+		saveCrumbService.putExtra("IsPhoto", true);
+		saveCrumbService.putExtra("EventId", eventId);
+		context.startService(saveCrumbService);
+		mPreferencesApi.SetEventId(eventId+1);
 
 	}
 
@@ -329,7 +321,9 @@ public class SaveEventFragment extends Activity {
 		}
 		iv = (ImageView) findViewById(R.id.media);
 		iv.setImageBitmap(bm);
-		media = bm;
+		if (bm != null){
+			globalContainer.SetBitMap(bm.copy(Bitmap.Config.ARGB_8888, false));
+		}
 	}
 
 	public void SetMedia() {

@@ -114,6 +114,9 @@ public class BreadcrumbsExoPlayer implements ExoPlayer.Listener, DefaultBandwidt
         void onCues(List<Cue> cues);
     }
 
+    public void Stop() {
+        player.stop();
+    }
 
     // Constants pulled into this class for convenience.
     public static final int STATE_IDLE = ExoPlayer.STATE_IDLE;
@@ -146,6 +149,7 @@ public class BreadcrumbsExoPlayer implements ExoPlayer.Listener, DefaultBandwidt
 
     private Surface surface;
     private TrackRenderer videoRenderer;
+    private TrackRenderer audioRenderer;
     private CodecCounters codecCounters;
     private Format videoFormat;
     private int videoTrackToRestore;
@@ -281,6 +285,7 @@ public class BreadcrumbsExoPlayer implements ExoPlayer.Listener, DefaultBandwidt
 
         // Complete preperation
         this.videoRenderer = renderers[TYPE_VIDEO];
+        this.audioRenderer = renderers[TYPE_AUDIO];
         this.codecCounters = videoRenderer instanceof MediaCodecTrackRenderer
                 ? ((MediaCodecTrackRenderer) videoRenderer).codecCounters
                 : renderers[TYPE_AUDIO] instanceof MediaCodecTrackRenderer
@@ -458,6 +463,13 @@ public class BreadcrumbsExoPlayer implements ExoPlayer.Listener, DefaultBandwidt
         }
     }
 
+    public void setMute(boolean toMute){
+        if(toMute){
+            player.sendMessage(audioRenderer, MediaCodecAudioTrackRenderer.MSG_SET_VOLUME, 0f);
+        } else {
+            player.sendMessage(audioRenderer, MediaCodecAudioTrackRenderer.MSG_SET_VOLUME, 1f);
+        }
+    }
 
 
     private void pushSurface(boolean blockForSurfacePush) {

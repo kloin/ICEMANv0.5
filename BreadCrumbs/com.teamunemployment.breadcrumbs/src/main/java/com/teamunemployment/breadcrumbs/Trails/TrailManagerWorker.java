@@ -1,27 +1,38 @@
 package com.teamunemployment.breadcrumbs.Trails;
 
+import android.Manifest;
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
+import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.location.Location;
 import android.location.LocationListener;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Environment;
 import android.preference.PreferenceManager;
+import android.provider.MediaStore;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
+import android.support.v7.app.AppCompatActivity;
+import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 import android.widget.ProgressBar;
 
+import com.pathsense.locationengine.apklib.data.t;
 import com.squareup.okhttp.MediaType;
 import com.squareup.okhttp.MultipartBuilder;
 import com.squareup.okhttp.OkHttpClient;
 import com.squareup.okhttp.Request;
 import com.squareup.okhttp.RequestBody;
 import com.squareup.okhttp.Response;
+import com.teamunemployment.breadcrumbs.ActivityRecognition.ActivityController;
 import com.teamunemployment.breadcrumbs.BackgroundServices.StopTrackingIntent;
 import com.teamunemployment.breadcrumbs.BreadcrumbsActivityAPI;
 import com.teamunemployment.breadcrumbs.BreadcrumbsLocationAPI;
@@ -80,7 +91,7 @@ public class TrailManagerWorker {
     /**
      * Method to publish a new or updated trail to the server.
      *
-     * @param trailId the Server Trail Id of the trail that we want to save.
+     * @param trailId The server trail Id of the trail that we want to save.
      */
     public void SaveEntireTrail(String trailId) {
         try {
@@ -108,6 +119,10 @@ public class TrailManagerWorker {
             metadataPackage.put("EndDate", DateTime.now().toString());
             metadataPackage.put("StartingIndex", index);
 
+            int localTrailId = mPreferencesAPI.GetLocalTrailId();
+            JSONObject metadata = dbc.GetAllActivityData(localTrailId);
+
+            savePath(metadata, trailId);
             // Fetch crumb data. Remember this may be an update
             int crumbsIndex = mPreferencesAPI.GetLastSavedMediaCrumbIndex();
             crumbsWithMedia= dbc.GetCrumbsWithMedia(localTrailString, crumbsIndex);
@@ -120,6 +135,27 @@ public class TrailManagerWorker {
         } catch(JSONException e) {
             e.printStackTrace();
         }
+    }
+
+    private void savePath(JSONObject metadata, String serverTrailId) {
+        String url = MessageFormat.format("{0}/rest/TrailManager/SavePath/{1}",
+                LoadBalancer.RequestServerAddress(),
+                serverTrailId);
+        url = url.replaceAll(" ", "%20");
+
+        // We should not be sending JSON as url encoded parameters. I know in some places we do and that is wrong. This ius the correct way to do it.
+        AsyncSendLargeJsonParam asyncJSON = new AsyncSendLargeJsonParam(url, new AsyncSendLargeJsonParam.RequestListener() {
+            @Override
+            public void onFinished(String result) throws JSONException {
+                // Our metadata gets returned, so now we have to load the map using the data that gets returned.
+                if (result != null) {
+                    Log.d("Result", result);
+                }
+
+                // If we fail, we should handle this here.
+            }
+        }, metadata);
+        asyncJSON.execute();
     }
 
     /**
@@ -191,7 +227,7 @@ public class TrailManagerWorker {
         }
 
         // This is where we increment The event id for the next event.
-        mPreferencesAPI.SetEventId(eventId+1);
+//        mPreferencesAPI.SetEventId(eventId+1);
     }
 
     /**
@@ -208,30 +244,11 @@ public class TrailManagerWorker {
 
         // Start our trail. note that the local trial id is saved to preferences inside this method
         dbc.SaveTrailStart(null, DateTime.now().toString());
-
-        // Doesnt work for some reason.
-        Intent stopIntent = new Intent(mContext.getApplicationContext(), StopTrackingIntent.class);
-       // stopIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
-       // stopIntent.setAction("STOPGPS");
-      //  int requestID = (int) System.currentTimeMillis();
-        PendingIntent pIntent = PendingIntent.getActivity(mContext.getApplicationContext(), 1000, stopIntent, PendingIntent.FLAG_UPDATE_CURRENT);
-
-        // Start up our background service.
-        locationAPI.StartLocationService();
-        final NotificationManager systemService = (NotificationManager) mContext.getApplicationContext().getSystemService(mContext.getApplicationContext().NOTIFICATION_SERVICE);
-        Notification n  = new Notification.Builder(mContext.getApplicationContext())
-                .setContentTitle("Breadcrumbs")
-                .setContentText("Tracking is currently enabled.")
-                .setSmallIcon(R.drawable.ic_launcher)
-                .addAction(R.drawable.ic_action_cancel, "Stop", pIntent)
-                .build();
-        systemService.notify(2222, n);
-        locationAPI.singleAccurateGpsRequest(fetchFirstPointListener);
-
-        // Start up our activity service
-        BreadcrumbsActivityAPI activityAPI = new BreadcrumbsActivityAPI();
-        activityAPI.ListenToUserActivityChanges();
+        ActivityController activityController = new ActivityController(mContext);
+        activityController.StartListenting();
     }
+
+
 
     // We need to get the point where we start. This deals with that.
     private LocationListener fetchFirstPointListener = new LocationListener() {
@@ -280,6 +297,7 @@ public class TrailManagerWorker {
                 // Check to ensure that we have data.
                 if (!crumbsIterator.hasNext()) {
                     Log.d(TAG, "Attempted to save but we have not crumbs to save :(");
+                    showFinishedNotification();
                     return;
                 }
 
@@ -424,10 +442,11 @@ public class TrailManagerWorker {
 
                 OkHttpClient client = new OkHttpClient();
                 Response response = client.newCall(request).execute();
-                Log.d(TAG, "Response is: " + response.code());
 
-                if (response.code() == 200) {
                     // Update the saved crumb index
+                    if(crumb.GetMediaType().endsWith("4")) {
+                        saveThumbnail(crumb, response.body().string());
+                    }
                     mPreferencesAPI.SetLastSavedMediaCrumbIndex(crumb.GetIndex());
                     if (crumbsIterator.hasNext()) {
                         // go to next and do save
@@ -436,12 +455,10 @@ public class TrailManagerWorker {
                         Crumb lcoalCrumb = new Crumb(JSONcrumb);
                         saveCrumb(lcoalCrumb);
                     } else {
+                        showFinishedNotification();
                         mPreferencesAPI.SetIsUploading(false);
                     }
                     // other wise just exit out.
-                } else {
-                    // Else, we failed
-                }
                 return response.body().string();
             } catch (UnknownHostException | UnsupportedEncodingException e) {
                 Log.e("IMAGESAVE", "Error: " + e.getLocalizedMessage());
@@ -466,4 +483,33 @@ public class TrailManagerWorker {
         public void onFinished(String result);
     }
 
+    private void saveThumbnail(Crumb crumb, String crumbDatabaseId) {
+        String fileName = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES).toString() + "/"+crumb.GetEventId() + ".mp4";
+        Bitmap bitmap;
+        long id = com.teamunemployment.breadcrumbs.RandomUsefulShit.Utils.FetchContentIdFromFilePath(fileName, mContext.getContentResolver());
+
+        ContentResolver crThumb = mContext.getContentResolver();
+        BitmapFactory.Options options=new BitmapFactory.Options();
+        options.inSampleSize = 1;
+        bitmap = MediaStore.Video.Thumbnails.getThumbnail(crThumb, id, MediaStore.Video.Thumbnails.MICRO_KIND, options);
+
+        // Save our bitmap here.
+        String url = LoadBalancer.RequestServerAddress() + "/rest/Crumb/SaveImageToDatabase/"+crumbDatabaseId+"T";
+        UploadFile uploadFile = new UploadFile(url, null, bitmap);
+        uploadFile.execute();
+    }
+
+    private void showFinishedNotification() {
+        NotificationManager mNotificationManager =
+                (NotificationManager) mContext.getSystemService(Context.NOTIFICATION_SERVICE);
+// Sets an ID for the notification, so it can be updated
+        int notifyID = 8;
+        NotificationCompat.Builder mNotifyBuilder = new NotificationCompat.Builder(mContext)
+                .setContentTitle("Upload Complete")
+                .setContentText("Sucessfully updated your trip.")
+                .setSmallIcon(R.drawable.ic_cloud_done_white_24dp);
+        mNotificationManager.notify(
+                notifyID,
+                mNotifyBuilder.build());
+    }
 }

@@ -5,7 +5,7 @@ import android.content.Context;
 import com.danikula.videocache.HttpProxyCacheServer;
 
 /**
- * Created by jek40 on 4/05/2016.
+ * Singleton for getting our proxy cache server for caching videos.
  */
 public class Mp4ProxyCache {
 

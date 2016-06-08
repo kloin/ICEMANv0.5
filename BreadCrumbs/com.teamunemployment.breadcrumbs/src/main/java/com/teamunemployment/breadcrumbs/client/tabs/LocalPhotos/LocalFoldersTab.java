@@ -73,16 +73,16 @@ public class LocalFoldersTab extends GridImageSelector {
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (resultCode == 5) {
+        // result code 0 means that we have selected a local image.
+        if (resultCode == 0) {
             Activity activityContext = (Activity) context;
             Intent returnIntent = new Intent();
             if (data!= null) {
-                Bitmap bitmap = data.getParcelableExtra("bitmap");
-                returnIntent.putExtra("bitmap", bitmap);
+                String id = data.getStringExtra("ProfileId");
+                returnIntent.putExtra("ProfileId", id);
             }
-            activityContext.setResult(Activity.RESULT_OK, returnIntent);
+            activityContext.setResult(0, returnIntent);
             activityContext.finish();
-
         }
     }
 }

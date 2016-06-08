@@ -10,6 +10,7 @@
 
     <uses-permission android:name="android.permission.INTERNET"/>
     <uses-permission android:name="android.permission.WAKE_LOCK"/>
+    <uses-permission android:name="com.google.android.gms.permission.ACTIVITY_RECOGNITION" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
@@ -106,12 +107,12 @@
         <service android:name=".BootReciever.BootloaderService" android:exported="false"></service>
 
         <service android:name=".BackgroundServices.StopTrackingIntent" android:exported="false" />
+        <service android:name=".BackgroundServices.UploadTrailService" android:exported="false"/>
+        <service android:name=".BackgroundServices.SaveCrumbService" android:exported="false"/>
 
-        <activity android:name=".client.TrailManager"
-            android:screenOrientation="portrait">
+        <activity android:name=".client.TrailManager" android:screenOrientation="portrait">
         </activity>
-        <activity android:name=".client.CrumbViewer.CommentViewer"
-            android:screenOrientation="portrait">
+        <activity android:name=".client.CrumbViewer.CommentViewer" android:screenOrientation="portrait">
         </activity>
         <activity android:name=".Trails.EditMyTrail"
             android:screenOrientation="portrait">
@@ -178,7 +179,7 @@
         <receiver android:name="com.teamunemployment.breadcrumbs.Weather.WeatherAlarmReceiver"></receiver>
         <service android:name="com.teamunemployment.breadcrumbs.BackgroundServices.BackgroundService"></service>
         <service android:name="com.teamunemployment.breadcrumbs.BackgroundServices.BackgroundService"></service>
-
+        <service android:name=".ActivityRecognition.ActivityHandler"></service>
         <!--AIzaSyBQ9w6VrGGquOHwERNrc_jAx_jcm8mrKQw  - this is the legit release one-->
         <!--  AIzaSyBmkUW1b2c3cXhz-Sw7cfWtK41Qz-0aaww -->
         <!--  AIzaSyCy82ucudMrzKRtUsF0S3v_DSVyNL5m9n8

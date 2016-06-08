@@ -18,6 +18,7 @@ import com.teamunemployment.breadcrumbs.Facebook.AccountManager;
 import com.teamunemployment.breadcrumbs.Framework.JsonHandler;
 import com.teamunemployment.breadcrumbs.Network.LoadBalancer;
 import com.teamunemployment.breadcrumbs.Network.ServiceProxy.AsyncDataRetrieval;
+import com.teamunemployment.breadcrumbs.PreferencesAPI;
 import com.teamunemployment.breadcrumbs.client.Animations.SimpleAnimations;
 import com.teamunemployment.breadcrumbs.client.Cards.ImageChooserGridViewAdapter;
 import com.teamunemployment.breadcrumbs.R;
@@ -89,13 +90,11 @@ public class GridImageSelector extends Fragment {
                     public void onItemClick(AdapterView<?> parent, View v, int position, long id) {
                         // Save our profile header pic.
                         String newPicId = idsArray.get(position);
-
-                        // Save our new selection locally too.
-                        PreferenceManager.getDefaultSharedPreferences(activityContext).edit().putString("COVERPHOTOID", newPicId).commit();
+                        new PreferencesAPI(context).SetUserCoverPhoto(newPicId);
+                        Activity activityContext = (Activity) context;
                         Intent returnIntent = new Intent();
-                        activityContext.setResult(Activity.RESULT_OK,returnIntent);
-
-                        // Quiting on select for now.
+                        returnIntent.putExtra("ProfileId", newPicId);
+                        activityContext.setResult(1, returnIntent);
                         activityContext.finish();
                     }
                 });

@@ -13,9 +13,9 @@
 
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/backAddScreen"
-        android:src="@drawable/ic_action_cancel_light"
+        android:src="@drawable/ic_action_cancel"
         app:fabSize="mini"
-        app:backgroundTint="#03A9F4"
+        app:backgroundTint="#FFFFFF"
         android:layout_marginRight="16dp"
         android:layout_alignParentRight="true"
         android:layout_above="@+id/save_video"
@@ -24,12 +24,11 @@
     
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/save_video"
-        android:layout_alignParentRight="true"
-        app:fabSize="mini"
-        app:backgroundTint="#03A9F4"
+        android:layout_alignParentBottom="true"
+        app:backgroundTint="@color/good_to_go"
+        android:layout_centerInParent="true"
         android:layout_margin="16dp"
         android:src="@drawable/ic_action_accept"
-        android:layout_alignParentBottom="true"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content" />
     <ProgressBar

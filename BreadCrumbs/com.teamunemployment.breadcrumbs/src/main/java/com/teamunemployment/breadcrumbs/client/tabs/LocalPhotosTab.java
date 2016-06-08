@@ -49,6 +49,7 @@ public class LocalPhotosTab extends GridImageSelector {
         loadLocalImages();
     }
 
+    // Use the content resolver to grab all the urls to our local images.
     private void loadLocalImages() {
         final ArrayList<String> ids = new ArrayList<>();
         final GridView gridview = (GridView)  rootView.findViewById(R.id.gridView1);
@@ -71,8 +72,7 @@ public class LocalPhotosTab extends GridImageSelector {
                     final BitmapFactory.Options thumbOpts = new BitmapFactory.Options();
                     thumbOpts.inSampleSize = 4;
                     Bitmap bm = BitmapFactory.decodeFile(url, thumbOpts);
-                    ExifInterface exif = null;
-                    exif = new ExifInterface(url);
+                    ExifInterface exif = new ExifInterface(url);
                     int rotation = exif.getAttributeInt(ExifInterface.TAG_ORIENTATION, ExifInterface.ORIENTATION_NORMAL);
                     int rotationInDegrees = Utils.exifToDegrees(rotation);
                     Matrix matrix = new Matrix();
@@ -90,12 +90,16 @@ public class LocalPhotosTab extends GridImageSelector {
                          */
                         @Override
                         public void onFinished(String result) {
+                            // Save our current cover photo to our preferences.
                             PreferenceManager.getDefaultSharedPreferences(activityContext).edit().putString("COVERPHOTOID",result).commit();
+
+                            // Also save it to the server.
                             HTTPRequestHandler simpleHttp = new HTTPRequestHandler();
                             simpleHttp.SaveNodeProperty(userId, "CoverPhotoId", result, context);
+
+                            // We are running locally, so we can return with a local Id, i.e
                             Intent returnIntent = new Intent();
                             activityContext.setResult(Activity.RESULT_OK,returnIntent);
-
                             // Quiting on select for now.
                             activityContext.finish();
                         }
