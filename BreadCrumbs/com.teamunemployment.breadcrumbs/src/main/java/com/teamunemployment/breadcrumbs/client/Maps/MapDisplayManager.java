@@ -157,44 +157,11 @@ public class MapDisplayManager implements GoogleMap.OnMarkerClickListener, Googl
 
             @Override
             public boolean onClusterClick(Cluster<DisplayCrumb> displayCrumbCluster) {
-                final Intent viewCrumbsIntent = new Intent(context, StoryBoardActivity.class);
-                ArrayList<DisplayCrumb> crumbs = (ArrayList<DisplayCrumb>) displayCrumbCluster.getItems();
-                final ArrayList<CrumbCardDataObject> crumbObjects = new ArrayList<>();
-                Iterator<DisplayCrumb> crumbIterator = crumbs.iterator();
-                int photoCount = 0;
-                int videoCount = 0;
-                while (crumbIterator.hasNext()) {
-                    DisplayCrumb next = crumbIterator.next();
-                    CrumbCardDataObject object = new CrumbCardDataObject(next.getExtension(), next.getId(), next.getPlaceId(), next.getPosition().latitude, next.getPosition().longitude, next.GetIsLocal(), next.getSuburb());
-                    crumbObjects.add(object);
-                    if (next.getExtension().equals(".jpg")) {
-                        photoCount += 1;
-                    } else if (next.getExtension().equals(".mp4")) {
-                        videoCount += 1;
-                    }
-                }
-
-                // Start
-                viewCrumbsIntent.putExtra("StartingObject", crumbObjects.get(0));
-                boolean isOwnTrail = crumbObjects.get(0).GetIsLocal() == 0;
-                viewCrumbsIntent.putExtra("UserOwnsTrail", isOwnTrail);
-                viewCrumbsIntent.putParcelableArrayListExtra("CrumbArray", mDataObjects);
-                viewCrumbsIntent.putExtra("TrailId", trailId);
-                FloatingActionButton playFab = (FloatingActionButton) context.findViewById(R.id.play_button);
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                    ActivityOptions options = ActivityOptions.makeSceneTransitionAnimation(context, playFab, playFab.getTransitionName());
-                    context.startActivityForResult(viewCrumbsIntent , 1, options.toBundle());
-                } else {
-                    context.startActivityForResult(viewCrumbsIntent, 1);
-                }
-                return true;
-                // Zoom into ever
-                /*
                 LatLngBounds markerBounds = getBounds(displayCrumbCluster);
-                int padding = 40; // offset from edges of the map in pixels
+                int padding = 400; // offset from edges of the map in pixels
                 CameraUpdate cu = CameraUpdateFactory.newLatLngBounds(markerBounds, padding);
                 mapInstance.animateCamera(cu);
-                return true;*/
+                return true;
             }
         });
 
@@ -426,54 +393,3 @@ public class MapDisplayManager implements GoogleMap.OnMarkerClickListener, Googl
         slidingUpPanelLayout.setPanelState(SlidingUpPanelLayout.PanelState.COLLAPSED);
     }
 }
-
-// Load a cluster
-/*
-final Intent viewCrumbsIntent = new Intent(context, SelectedEventViewerBase.class);
-                ArrayList<DisplayCrumb> crumbs = (ArrayList<DisplayCrumb>) displayCrumbCluster.getItems();
-                final ArrayList<CrumbCardDataObject> crumbObjects = new ArrayList<>();
-                Iterator<DisplayCrumb> crumbIterator = crumbs.iterator();
-                int photoCount = 0;
-                int videoCount = 0;
-                while (crumbIterator.hasNext()) {
-                    DisplayCrumb next = crumbIterator.next();
-                    CrumbCardDataObject object = new CrumbCardDataObject(next.getExtension(), next.getId());
-                    crumbObjects.add(object);
-                    if (next.getExtension().equals(".jpg")) {
-                        photoCount += 1;
-                    } else if (next.getExtension().equals(".mp4")) {
-                        videoCount += 1;
-                    }
-                }
-
-                viewCrumbsIntent.putParcelableArrayListExtra("CrumbArray", crumbObjects); // Note - this is currently using serializable - shoiuld use parcelable for speed
-                viewCrumbsIntent.putExtra("TrailId", trailId);
-                context.startActivity(viewCrumbsIntent);
-                // Build up the slidingModal layout info
-                // Location
-                // People??
-                // Content types
-                // Tags
-
-                // Get best fit location tag
-//                String location = getBestFitLocationStringForCluster(crumbs);
-//                TextView mapOverLayTitle = (TextView) context.findViewById(R.id.map_overlay_title);
-//                mapOverLayTitle.setText(location);
-//
-//                TextView mediaTextView = (TextView) context.findViewById(R.id.map_overlay_description);
-//                mediaTextView.setText(mediaCount);
-//
-//                SlidingUpPanelLayout slidingUpPanelLayout = (SlidingUpPanelLayout) context.findViewById(R.id.sliding_layout);
-//                slidingUpPanelLayout.setPanelState(SlidingUpPanelLayout.PanelState.EXPANDED);
-//                TextView viewCrumbsButton = (TextView) slidingUpPanelLayout.findViewById(R.id.map_overlay_view_button);
-//                viewCrumbsButton.setOnClickListener(new View.OnClickListener() {
-//                    @Override
-//                    public void onClick(View v) {
-//                         viewCrumbsIntent.putStringArrayListExtra("IdArray", crumbsIds); // Note - this is currently using serializable - shoiuld use parcelable for speed
-//                         viewCrumbsIntent.putExtra("TrailId", trailId);
-//                        context.startActivity(viewCrumbsIntent);
-//                    }
-//                });
-
-                return true;
- */

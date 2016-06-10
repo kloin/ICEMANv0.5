@@ -170,16 +170,17 @@ public class MapViewer extends Activity implements OnMapClickListener, OnMapLong
 		context = this;
         mMap = ((MapFragment) getFragmentManager().findFragmentById(R.id.map)).getMap();
 		mContext = this;
-
 		trailId = this.getIntent().getStringExtra("TrailId");
-		// HAX
-		//Thread.setDefaultUncaughtExceptionHandler(new ExceptionHandler());
 		//
+
 		if (trailId != null && trailId.endsWith("L")) {
 			IS_OWN_TRAIL = true;
 			// Get rid of the L
 			trailId = trailId.substring(0, trailId.length()-1);
 			LOOKIING_AT_MAP = false;
+		}
+		if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+			getWindow().setSharedElementsUseOverlay(false);
 		}
 		setLocateMeClickHandler();
 		setUpBottomSheet();
@@ -190,7 +191,7 @@ public class MapViewer extends Activity implements OnMapClickListener, OnMapLong
 		final TextCaching caching = new TextCaching(context);
 		String firstTime = caching.FetchCachedText(FIRST_TIME_FLAG);
 		// What we do if we are looking at our own trail.
-		if (firstTime == null) {
+		if (firstTime == null && IS_OWN_TRAIL) {
 			new Handler().postDelayed(new Runnable() {
 				@Override
 				public void run() {
@@ -306,7 +307,6 @@ public class MapViewer extends Activity implements OnMapClickListener, OnMapLong
 					int toolbarHeightInPx = Math.round(60 * (displayMetrics.xdpi / DisplayMetrics.DENSITY_DEFAULT));
 					SCROLLABLE_HEIGHT = TRAIL_COVER_PHOTO_HEIGHT - toolbarHeightInPx;
 				}
-
 
 				float alpha = 0;
 				// percentage of the bitmap that we have scrolled to invisible

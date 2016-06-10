@@ -260,7 +260,7 @@ public class SaveCrumbService extends Service {
         dbc.SaveCrumb(localTrailId, " ", userId, event.eventId, location.getLatitude(), location.getLongitude(), mime, timeStamp.toString(), "", placeId, suburb, city, country);
         TrailManagerWorker trailManagerWorker = new TrailManagerWorker(context);
         trailManagerWorker.CreateEventMetadata(TrailManagerWorker.CRUMB, location);
-        int lastActivity = preferencesAPI.GetLastActivity();
+        int lastActivity = DetectedActivity.WALKING;
 
         // If we dont know what we were last doing, we default to walking. It is more likely that we are
         // taking a photo on foot than in a vehicle I am assuming.

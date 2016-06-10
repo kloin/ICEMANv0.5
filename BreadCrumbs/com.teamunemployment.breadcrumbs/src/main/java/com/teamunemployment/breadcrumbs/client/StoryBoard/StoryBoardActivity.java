@@ -85,7 +85,6 @@ public class StoryBoardActivity extends Activity {
         } else {
             initViews();
         }
-
         Intent intent = getIntent();
         Log.d("TIME", "Loading parcelable array List start at: " + SystemClock.currentThreadTimeMillis());
         mCrumbObjects = intent.getParcelableArrayListExtra("CrumbArray");
@@ -309,7 +308,11 @@ public class StoryBoardActivity extends Activity {
         pauseButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                backPressedHandler();
+                if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                    backPressedHandler();
+                    return;
+                }
+                backPressed();
             }
         });
     }
@@ -330,7 +333,7 @@ public class StoryBoardActivity extends Activity {
                         setResult(RESULT_OK, intent);
                         //finish();
                         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                            backPressed();
+                            backPressedLolipopAndAbove();
                         } else {
                             finish();
                         }
@@ -344,8 +347,12 @@ public class StoryBoardActivity extends Activity {
                 });
     }
 
-    private void backPressed() {
+    private void backPressedLolipopAndAbove() {
         super.onBackPressed();
+    }
+    private void backPressed() {
+        storyBoardController.Stop();
+        finish();
     }
 
     @TargetApi(Build.VERSION_CODES.LOLLIPOP)

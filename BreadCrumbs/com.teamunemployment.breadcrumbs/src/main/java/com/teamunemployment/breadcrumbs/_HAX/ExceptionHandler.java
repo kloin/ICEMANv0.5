@@ -6,7 +6,10 @@ import java.io.PrintWriter;
 import java.io.StringWriter;
 
 /**
- * Created by jek40 on 24/05/2016.
+ * @author Josiah Kendall
+ * THis is a pretty hacks class that I use to catch a bug in google maps. Google maps fails when it is
+ * involved in a return animation with a transition to another activity. See bug: https://code.google.com/p/gmaps-api-issues/issues/detail?id=7712
+ * Has been fixed on marshmallow above but occurs
  */
 public class ExceptionHandler implements java.lang.Thread.UncaughtExceptionHandler {
     private final String LINE_SEPARATOR = "\n";

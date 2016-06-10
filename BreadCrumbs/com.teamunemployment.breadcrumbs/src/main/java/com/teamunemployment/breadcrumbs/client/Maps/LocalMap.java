@@ -35,6 +35,7 @@ import com.teamunemployment.breadcrumbs.Dialogs.SimpleMaterialDesignDialog;
 import com.teamunemployment.breadcrumbs.Location.SimpleGps;
 import com.teamunemployment.breadcrumbs.Models;
 import com.teamunemployment.breadcrumbs.Network.LoadBalancer;
+import com.teamunemployment.breadcrumbs.Network.NetworkConnectivityManager;
 import com.teamunemployment.breadcrumbs.Network.ServiceProxy.AsyncDataRetrieval;
 import com.teamunemployment.breadcrumbs.Network.ServiceProxy.HTTPRequestHandler;
 import com.teamunemployment.breadcrumbs.PreferencesAPI;
@@ -101,7 +102,6 @@ public class LocalMap extends MapViewer {
          }
 
         setCoverPhoto(coverId);
-
     }
 
     private void setListenerForTrackingToggle() {
@@ -170,7 +170,6 @@ public class LocalMap extends MapViewer {
             @Override
             public void DoCallback() {
                 // First we need to build our notification.
-
                 // Send save Request to server
                 int serverTrailId = preferencesAPI.GetServerTrailId();
                 if (serverTrailId == -1) {
@@ -179,13 +178,11 @@ public class LocalMap extends MapViewer {
                         //toggleButton(publishFab);
                     }
                 } else {
-
                     boolean result = publishTrail(Integer.toString(serverTrailId));
                     if (result) {
                         //toggleButton(publishFab);
                     }
                 }
-
             databaseController.SetLastUpdate(Integer.toString(preferencesAPI.GetLocalTrailId()), DateTime.now().toString());
             setLastUpdate(DateTime.now());
             }
@@ -533,6 +530,7 @@ public class LocalMap extends MapViewer {
         if (databaseController == null) {
             databaseController = new DatabaseController(context);
         }
+
         if (preferencesAPI == null) {
             preferencesAPI = new PreferencesAPI(context);
         }
@@ -555,6 +553,8 @@ public class LocalMap extends MapViewer {
                 }
             }
         };
+
+
         GenericAsyncWorker genericAsyncWorker = new GenericAsyncWorker(overrides);
         genericAsyncWorker.execute();
     }
@@ -617,6 +617,12 @@ public class LocalMap extends MapViewer {
     @Override
     public void StartCrumbDisplay(String trailId) {
         // Set up our crumbs
+
+        boolean amConnected = NetworkConnectivityManager.IsNetworkAvailable(context);
+
+        if (amConnected) {
+            //processServerSide()
+        }
         final String localTrailId = Integer.toString(preferencesAPI.GetLocalTrailId());
         GenericAsyncWorker.IGenericAsync overrides = new GenericAsyncWorker.IGenericAsync() {
             @Override

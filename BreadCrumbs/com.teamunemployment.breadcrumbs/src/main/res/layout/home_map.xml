@@ -10,7 +10,6 @@
     android:layout_height="match_parent">
 
     <!--    tools:context="client.Main" -->
-
     <FrameLayout
         android:id="@+id/mapHolder"
         android:layout_width="match_parent"
@@ -22,7 +21,6 @@
             android:name="com.google.android.gms.maps.MapFragment"
             android:layout_width="match_parent"
             android:layout_height="match_parent" />
-
 
         <android.support.design.widget.FloatingActionButton
             android:id="@+id/where_am_i"

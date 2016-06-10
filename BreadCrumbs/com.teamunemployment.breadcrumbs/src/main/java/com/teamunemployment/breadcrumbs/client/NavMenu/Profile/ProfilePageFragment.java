@@ -82,7 +82,6 @@ public class ProfilePageFragment extends Fragment {
 
     private static final int WRITE_EXTERNAL_STORAGE_REQUEST = 5;
 
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {

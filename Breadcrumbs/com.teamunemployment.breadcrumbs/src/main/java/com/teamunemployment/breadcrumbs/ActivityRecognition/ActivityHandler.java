@@ -171,10 +171,18 @@ public class ActivityHandler extends Service {
      * than if we are driving.
      */
     private void handleWalkingActivity() {
-
         // Fetch our last activity for saving.
         int lastActivity = preferencesAPI.GetLastActivity();
+        if (lastActivity == -1) {
+            // This means that we have not recorded anything yet. We should save this point
+            Location location = simpleGps.GetInstantLocation();
+            if (location != null) {
+                dbc.SaveActivityPoint(DetectedActivity.WALKING, lastActivity,location.getLatitude(), location.getLongitude(), 0);
+            } else {
+                simpleGps.FetchFineLocation(callbackGenerator(DetectedActivity.WALKING, lastActivity, 0));
+            }
 
+        }
         // Fetch last know location first. If that is recent enough, and far enough away from our
         // previous target, we can just same that
         Location location = simpleGps.GetInstantLocation();
