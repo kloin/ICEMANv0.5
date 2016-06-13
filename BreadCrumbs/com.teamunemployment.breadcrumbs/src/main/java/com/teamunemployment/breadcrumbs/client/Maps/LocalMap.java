@@ -331,7 +331,10 @@ public class LocalMap extends MapViewer {
 
     private void buildTrailPathFromLocalDB() {
         List<LatLng> list = new ArrayList<>();
+        // Fetch from repository (Pretend now, but we will fetch from the repository later).
         JSONObject metadata = databaseController.fetchMetadataFromDB(trailId, false);
+
+        // Do draw with map tasks.
         Iterator<String> metadataKeys = metadata.keys();
         while (metadataKeys.hasNext()) {
             String next = metadataKeys.next();
@@ -346,7 +349,7 @@ public class LocalMap extends MapViewer {
             }
         }
         // Need to load local trails here too.
-        DrawPolyline(list);
+       // DrawPolyline(list);
     }
 
     private void displayCrumbsFromLocal() {
@@ -604,7 +607,7 @@ public class LocalMap extends MapViewer {
                     listOfPoints.add(0, lastPoint);
                 }
                 lastPoint = listOfPoints.get(listOfPoints.size()-1);
-                DrawPolyline(listOfPoints, "#FF0000");
+            //    DrawPolyline(listOfPoints, "#FF0000");
             } else {
                 listOfPoints = parseNonEncodedPolyline(polyline);
                 DrawDashedPolyline(listOfPoints.get(0), listOfPoints.get(1),Color.parseColor("#03A9F4"));

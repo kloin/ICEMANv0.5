@@ -720,7 +720,6 @@ public class DatabaseController extends SQLiteOpenHelper {
                 null);
         while (constantsCursor.moveToNext()) {
             JSONObject trailSummaryNode = new JSONObject();
-
             //Get all columns
             String startDate = constantsCursor.getString(constantsCursor.getColumnIndex("StartDate"));
             String lastUpdate = constantsCursor.getString(constantsCursor.getColumnIndex("LastUpdate"));

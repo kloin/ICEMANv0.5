@@ -2,8 +2,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
 
     package="com.teamunemployment.breadcrumbs"
-    android:versionCode="8"
-    android:versionName="8.02">
+    android:versionCode="9"
+    android:versionName="8.03">
 
     <permission android:name="com.teamunemployment.breadcrumbs.permission.C2D_MESSAGE"
         android:protectionLevel="signature" />
@@ -188,7 +188,7 @@
         AIzaSyCfkLHIJIAnKKwd5S4nLMN5apRtWj28rwc- debug key-->
         <meta-data
             android:name="com.google.android.geo.API_KEY"
-            android:value="AIzaSyD1tXj_z3zgxB-5tPG8H9sXS4NCBWAJosA"/>
+            android:value="AIzaSyBQ9w6VrGGquOHwERNrc_jAx_jcm8mrKQw"/>
 
         <meta-data android:name="com.facebook.sdk.ApplicationId" android:value="@string/facebook_app_id"/>
         <!-- Pathsense APIs -->

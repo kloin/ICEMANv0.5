@@ -14,8 +14,8 @@ android {
         applicationId "com.teamunemployment.breadcrumbs"
         minSdkVersion 16
         targetSdkVersion 23
-        versionCode 10
-        versionName "B8.0.2"
+        versionCode 11
+        versionName "B8.0.3"
         multiDexEnabled true
         testInstrumentationRunner 'android.support.test.runner.AndroidJUnitRunner'
         generatedDensities = []

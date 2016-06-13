@@ -1,5 +1,6 @@
 package com.teamunemployment.breadcrumbs.client.Maps;
 
+import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.ActivityOptions;
 import android.app.PendingIntent;
@@ -19,6 +20,7 @@ import android.location.LocationListener;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.Trace;
 import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomSheetBehavior;
@@ -91,6 +93,7 @@ import static android.graphics.Typeface.BOLD;
 import static android.graphics.Typeface.ITALIC;
 import static android.text.Spannable.SPAN_EXCLUSIVE_EXCLUSIVE;
 
+import org.apache.http.annotation.NotThreadSafe;
 import org.greenrobot.eventbus.EventBus;
 import org.joda.time.DateTime;
 import org.json.JSONArray;
@@ -205,9 +208,6 @@ public class MapViewer extends Activity implements OnMapClickListener, OnMapLong
 					caching.CacheText(FIRST_TIME_FLAG, "We have opened our own trail before.");
 				}
 			}, 1200);
-		} else {
-
-			FetchMyLocation();
 		}
 	}
 
@@ -607,6 +607,7 @@ public class MapViewer extends Activity implements OnMapClickListener, OnMapLong
 		mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(latLng.latitude, latLng.longitude), 15), 500, null);
 	}
 
+	// Get and display a a bunch of polylines that represent the users path onto the map.
 	public void GetAndDisplayTrailOnMap(String trailId) {
 		// First construct our url that we want:
 		mapDisplayManager = new MapDisplayManager(mMap, (Activity) context, trailId);
@@ -617,6 +618,8 @@ public class MapViewer extends Activity implements OnMapClickListener, OnMapLong
 			@Override
 			public void onFinished(String result) throws JSONException {
 				processResult(result);
+				Log.d(TAG, "Finished processResult(result). Time: " + System.currentTimeMillis());
+
 //				JSONObject jsonObject = new JSONObject(result);
 //				displayMetadata(jsonObject);
 			}
@@ -659,12 +662,36 @@ public class MapViewer extends Activity implements OnMapClickListener, OnMapLong
 		}
 		else if (eventType == TrailManagerWorker.CRUMB) {
 			// Draw crumb type on the map.
-
 		}
 	}
 
-	private void processResult(String result) throws JSONException {
+
+	/**
+	 * Callback for the attempt to fetch our saved path.
+	 * @param result This is the string of data that we are supposed to be processing.
+     */
+	private void processResult(final String result) {
+		Handler processResultHandler = new Handler();
+		Runnable processResultRunner = new Runnable() {
+			@Override
+			public void run() {
+				try {
+					processResultRunnable(result);
+				} catch (JSONException e) {
+					Log.e(TAG, "Failed to draw polyline on map due to error. Stack trace follow");
+					e.printStackTrace();
+				}
+			}
+		};
+		processResultHandler.post(processResultRunner);
+	}
+
+	// Runnable method that occurs off of the main UI Thread.
+	private void processResultRunnable(String result) throws JSONException {
+		Trace.beginSection("Process result");
+		Log.d(TAG, "processResult: creating  JSONObject. Time: " + System.currentTimeMillis());
 		JSONObject jsonObject = new JSONObject(result);
+		Log.d(TAG, "processResult: created  JSONObject. Time: " + System.currentTimeMillis());
 		Iterator<String> keys = jsonObject.keys();
 		int count = 0;
 		while (keys.hasNext()) {
@@ -680,11 +707,11 @@ public class MapViewer extends Activity implements OnMapClickListener, OnMapLong
 			} else {
 				listOfPoints = parseNonEncodedPolyline(polyline);
 				listOfPoints = addLastPointToList(listOfPoints);
-				DrawDashedPolyline(listOfPoints.get(0), listOfPoints.get(listOfPoints.size()-1), R.color.accent);
-				//DrawPolyline(listOfPoints, "#03A9F4");
+				DrawPolyline(listOfPoints, "#03A9F4");
 			}
 			count += 1;
 		}
+		Trace.endSection();
 	}
 
 	public void DrawDashedPolyline(LatLng latLngOrig, LatLng latLngDest, int color) {
@@ -724,7 +751,6 @@ public class MapViewer extends Activity implements OnMapClickListener, OnMapLong
 	 * shallow reference shit will sort it out, but it makes it a bit more readable.
      */
 	private List<LatLng> addLastPointToList(List<LatLng> listOfPoints) {
-
 		// This is our first time through use case. In this situation, we want to record the start and
 		// end of this line so that we can work out which end was the best to draw from when drawing
 		// to the next polyline.
@@ -846,7 +872,11 @@ public class MapViewer extends Activity implements OnMapClickListener, OnMapLong
 		return listOfPoints;
 	}
 
-	public void DrawPolyline(List<LatLng> listOfPoints) {
+	/**
+	 * Draw a list of points as a polyline onto the map as a  polyline
+	 * @param listOfPoints The list of points that we want to draw.
+     */
+	private void DrawPolyline(List<LatLng> listOfPoints) {
 		PolylineOptions options = new PolylineOptions().width(12).color(Color.parseColor("#E57373")).geodesic(true);
 		for (int z = 0; z < listOfPoints.size(); z++) {
 			LatLng point = listOfPoints.get(z);
@@ -856,20 +886,25 @@ public class MapViewer extends Activity implements OnMapClickListener, OnMapLong
 		mMap.addPolyline(options);
 	}
 
-	public void DrawPolyline(List<LatLng> listOfPoints, String color) {
-		PolylineOptions options = new PolylineOptions().width(24).color(Color.parseColor(color)).geodesic(true);
+	/**
+	 * Draw a list of points onto the map as a polyline, using the given color. Must be a hex color I think.
+	 * NOTE this thread is written to run off of the UI Thread.
+	 * @param listOfPoints The list of points to draw.
+	 * @param color The color to draw the polyline in.
+     */
+	private void DrawPolyline(List<LatLng> listOfPoints, String color) {
+		final PolylineOptions options = new PolylineOptions().width(24).color(Color.parseColor(color)).geodesic(true);
 		for (int z = 0; z < listOfPoints.size(); z++) {
 			LatLng point = listOfPoints.get(z);
 			options.add(point);
 		}
 
-//		LatLng first = listOfPoints.get(0);
-//                mMap.addCircle(new CircleOptions()
-//                        .center(new LatLng(first.latitude, first.longitude))
-//                        .radius(30)
-//                        .strokeColor(Color.parseColor(color))
-//                        .fillColor(Color.parseColor(color)));
-		mMap.addPolyline(options);
+		runOnUiThread(new Runnable() {
+			@Override
+			public void run() {
+				mMap.addPolyline(options);
+			}
+		});
 	}
 
 	/**
@@ -887,11 +922,8 @@ public class MapViewer extends Activity implements OnMapClickListener, OnMapLong
 	}
 
 	public void playFabClickHandler() {
-
 		Intent viewCrumbsIntent = new Intent(mContext, StoryBoardActivity.class);
-
 		ArrayList<CrumbCardDataObject> crumbObjects = myCurrentTrailManager.getDataObjects();
-
 		// Just exit quietly.
 		if (crumbObjects.size() == 0) {
 			return;
