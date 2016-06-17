@@ -203,15 +203,10 @@ public class ActivityHandler extends Service {
                 Log.d(TAG, "We have moved far enough and we have a fine enough accuracy. We will save a point here.");
                 float distanceInMeters = previousLocation.distanceTo(location);
                 Log.d(TAG, "We have moved : " + distanceInMeters + " meters");
-                if (distanceInMeters < 500) {
+//                if (distanceInMeters < 500) {
                     dbc.SaveActivityPoint(DetectedActivity.WALKING, lastActivity,location.getLatitude(), location.getLongitude(), 0);
                     preferencesAPI.SetLastActivity(DetectedActivity.WALKING);
                     stopSelf();
-                } else {
-                    dbc.SaveActivityPoint(DetectedActivity.IN_VEHICLE, lastActivity,location.getLatitude(), location.getLongitude(), 0);
-                    preferencesAPI.SetLastActivity(DetectedActivity.IN_VEHICLE);
-                    stopSelf();
-                }
 
                 return;
             } else if (movedFarEnough) {
