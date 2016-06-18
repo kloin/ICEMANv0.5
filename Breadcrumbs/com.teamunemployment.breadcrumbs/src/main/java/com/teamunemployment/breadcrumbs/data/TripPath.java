@@ -9,18 +9,13 @@ import java.util.ArrayList;
  */
 public class TripPath {
 
-    private ArrayList<BreadcrumbsPolyline> polylines = new ArrayList<>();
+    private ArrayList<BreadcrumbsEncodedPolyline> polylines = new ArrayList<>();
 
-    public TripPath(String polylinePoints, boolean isEncoded) {
-        // Do the parsing here.
-
-    }
-
-    public TripPath(ArrayList<BreadcrumbsPolyline> points) {
+    public TripPath(ArrayList<BreadcrumbsEncodedPolyline> points) {
         polylines = points;
     }
 
-    public ArrayList<BreadcrumbsPolyline> getTripPolyline() {
+    public ArrayList<BreadcrumbsEncodedPolyline> getTripPolyline() {
         return polylines;
     }
 

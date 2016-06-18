@@ -147,10 +147,10 @@ public class MapActivity extends AppCompatActivity implements MapContract.View {
      */
     @Override
     public void DrawPath(TripPath tripPath) {
-        ArrayList<BreadcrumbsPolyline> polylines = tripPath.getTripPolyline();
-        for (BreadcrumbsPolyline polyline : polylines) {
-            drawPolyline(polyline);
-        }
+//        ArrayList<BreadcrumbsPolyline> polylines = tripPath.getTripPolyline();
+//        for (BreadcrumbsPolyline polyline : polylines) {
+//            drawPolyline(polyline);
+//        }
     }
 
     @Override

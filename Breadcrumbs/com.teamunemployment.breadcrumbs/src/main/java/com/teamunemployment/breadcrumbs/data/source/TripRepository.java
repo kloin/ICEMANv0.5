@@ -5,11 +5,16 @@ import android.support.annotation.NonNull;
 import android.util.Log;
 
 import com.teamunemployment.breadcrumbs.data.Trip;
+import com.teamunemployment.breadcrumbs.data.TripPath;
 import com.teamunemployment.breadcrumbs.data.source.LocalRepository.TripLocalDataSource;
 import com.teamunemployment.breadcrumbs.data.source.RemoteRepository.RemoteTripDataSource;
 
+import org.json.JSONObject;
+
 /**
  * @author Josiah Kendall
+ *
+ * Entry point for fetching / syncing data related to trips.
  */
 public class TripRepository implements TripDataSource {
     private final static String TAG = "TripRepository";
@@ -63,6 +68,13 @@ public class TripRepository implements TripDataSource {
         }
     }
 
+    /**
+     * Grab the current trip data from the database i.e the Trip that the user is currently recording.
+     * This data is not presentable to the user, but should be used to fetch raw data from the database
+     * which we will process server side.
+     * @param callback
+     * @param id
+     */
     @Override
     public void getCurrentTrip(@NonNull LoadCurrentTripCallback callback, String id) {
 
@@ -70,6 +82,11 @@ public class TripRepository implements TripDataSource {
 
     @Override
     public void saveTrip(@NonNull Trip trip) {
+
+    }
+
+    @Override
+    public void saveTripPath(@NonNull TripPath tripPath, String id) {
 
     }
 
@@ -82,4 +99,5 @@ public class TripRepository implements TripDataSource {
     public void deleteTrip(@NonNull String tripId) {
 
     }
+
 }

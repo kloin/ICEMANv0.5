@@ -63,8 +63,8 @@ public class RemoteTripDataSource implements TripDataSource {
             public void onFinished(String result) throws JSONException {
                 JSONObject resultObject = new JSONObject(result);
                 ArrayList<BreadcrumbsPolyline> resultArray = processResult(resultObject);
-                TripPath tripPath = new TripPath(resultArray);
-                callback.onTripPathLoaded(tripPath);
+//                TripPath tripPath = new TripPath(resultArray);
+//                callback.onTripPathLoaded(tripPath);
             }
         }, context);
         asyncDataRetrieval.execute();
@@ -140,6 +140,11 @@ public class RemoteTripDataSource implements TripDataSource {
 
     @Override
     public void saveTrip(@NonNull Trip trip) {
+        // Save remote trip
+    }
+
+    @Override
+    public void saveTripPath(@NonNull TripPath tripPath, String id) {
 
     }
 

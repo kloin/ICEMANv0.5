@@ -30,6 +30,7 @@ public interface TripDataSource {
     void getTripPath(@NonNull LoadTripPathCallback callback, String id);
     void getCurrentTrip(@NonNull LoadCurrentTripCallback callback, String id );
     void saveTrip(@NonNull Trip trip);
+    void saveTripPath(@NonNull TripPath tripPath, String id);
     void refreshTrips();
     void deleteTrip(@NonNull String tripId);
 

@@ -57,15 +57,15 @@ public class MapPresenter extends BaseObservable implements MapContract.Presente
 
     @Override
     public void loadTripPath(String tripId) {
-        repository.getTripPath(new TripDataSource.LoadTripPathCallback() {
-            @Override
-            public void onTripPathLoaded(TripPath tripPath) {
-                ArrayList<BreadcrumbsPolyline> polylines = tripPath.getTripPolyline();
-                for(BreadcrumbsPolyline polyline : polylines) {
-                    mapView.DrawStandardPolyline(polyline);
-                }
-            }
-        }, tripId);
+//        repository.getTripPath(new TripDataSource.LoadTripPathCallback() {
+//            @Override
+//            public void onTripPathLoaded(TripPath tripPath) {
+//                ArrayList<BreadcrumbsPolyline> polylines = tripPath.getTripPolyline();
+//                for(BreadcrumbsPolyline polyline : polylines) {
+//                    mapView.DrawStandardPolyline(polyline);
+//                }
+//            }
+//        }, tripId);
     }
 
     @Override
