@@ -37,7 +37,7 @@ public class ImageChooserTabWrapper extends AppCompatActivity {
         setContentView(R.layout.photo_selector_tab_page);
         Toolbar toolbar = (Toolbar) findViewById(R.id.image_selector_toolbar);
         toolbar.setTitleTextAppearance(this, R.style.HeaderFont);
-        toolbar.setTitle("");
+        toolbar.setTitle("Select Profile");
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         toolbar.setNavigationIcon(R.drawable.ic_action_back);

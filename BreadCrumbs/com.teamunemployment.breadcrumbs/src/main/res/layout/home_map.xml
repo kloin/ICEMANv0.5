@@ -1,79 +1,86 @@
 <?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
-<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:fab="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    xmlns:fancy="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/map_root_view"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    <data>
+        <variable
+            name="tripDetails"
+            type="com.teamunemployment.breadcrumbs.data.TripDetails" />
+    </data>
 
-    <!--    tools:context="client.Main" -->
-    <FrameLayout
-        android:id="@+id/mapHolder"
+    <android.support.design.widget.CoordinatorLayout
+        android:id="@+id/map_root_view"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical">
+        android:layout_height="match_parent">
 
-        <fragment
-            android:id="@+id/map"
-            android:name="com.google.android.gms.maps.MapFragment"
+        <!--    tools:context="client.Main" -->
+        <FrameLayout
+            android:id="@+id/mapHolder"
             android:layout_width="match_parent"
-            android:layout_height="match_parent" />
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+            <fragment
+                android:id="@+id/map"
+                android:name="com.google.android.gms.maps.MapFragment"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" />
+
+            <android.support.design.widget.FloatingActionButton
+                android:id="@+id/where_am_i"
+                android:layout_width="wrap_content"
+                android:elevation="0dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="right"
+                android:layout_margin="24dp"
+                android:src="@drawable/ic_my_location_black_24dp"
+                app:backgroundTint="@color/white"
+                app:fabSize="mini" />
+
+            <!-- this is some mapbox shit . Maybe later. Has isses with scrolling though it tho.-->
+            <!-- <com.mapbox.mapboxsdk.views.MapView
+                 android:id="@+id/mapview"
+                 android:layout_width="fill_parent"
+                 android:layout_height="fill_parent"
+                 mapbox:mapid="kloin.kh43g7ga"
+                 mapbox:accessToken="pk.eyJ1Ijoia2xvaW4iLCJhIjoiZDE0alNFMCJ9.wZCMJMdSauq0GYbYWPLTwA"/>-->
+
+            <!--  <ImageButton
+                  android:id="@+id/trailToggle"
+                  android:tag="0"
+                  android:layout_width="150px"
+                  android:layout_height="150px"
+                  android:layout_marginBottom="50dp"
+                  android:shadowRadius="30"
+                  android:shadowDx="10"
+                  android:shadowDy="10"
+                  android:shadowColor="@android:color/black"
+                  android:layout_marginLeft="10dp"
+                  android:textColor="@color/material_blue_grey_800"
+                  android:background="@drawable/border_no_background"
+                  android:src="@drawable/ic_action_new"
+                  android:layout_gravity="left|bottom" /> -->
+        </FrameLayout>
+
+        <include layout="@layout/map_bottom_sheet" app:tripDetails="@{tripDetails}"/>
 
         <android.support.design.widget.FloatingActionButton
-            android:id="@+id/where_am_i"
-            app:fabSize="mini"
-            app:backgroundTint="@color/white"
-            android:layout_margin="24dp"
-            android:layout_gravity="right"
-            android:src="@drawable/ic_my_location_black_24dp"
+            android:id="@+id/play_button"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom|right"
+            android:layout_marginBottom="32dp"
+            android:layout_marginRight="30sp"
+            android:src="@drawable/exomedia_ic_play_arrow_white"
+            android:transitionName="transition_reveal_contact" />
 
-        <!-- this is some mapbox shit . Maybe later. Has isses with scrolling though it tho.-->
-        <!-- <com.mapbox.mapboxsdk.views.MapView
-             android:id="@+id/mapview"
-             android:layout_width="fill_parent"
-             android:layout_height="fill_parent"
-             mapbox:mapid="kloin.kh43g7ga"
-             mapbox:accessToken="pk.eyJ1Ijoia2xvaW4iLCJhIjoiZDE0alNFMCJ9.wZCMJMdSauq0GYbYWPLTwA"/>-->
-
-        <!--  <ImageButton
-              android:id="@+id/trailToggle"
-              android:tag="0"
-              android:layout_width="150px"
-              android:layout_height="150px"
-              android:layout_marginBottom="50dp"
-              android:shadowRadius="30"
-              android:shadowDx="10"
-              android:shadowDy="10"
-              android:shadowColor="@android:color/black"
-              android:layout_marginLeft="10dp"
-              android:textColor="@color/material_blue_grey_800"
-              android:background="@drawable/border_no_background"
-              android:src="@drawable/ic_action_new"
-              android:layout_gravity="left|bottom" /> -->
-    </FrameLayout>
-    <include layout="@layout/map_bottom_sheet"/>
-
-
-    <android.support.design.widget.FloatingActionButton
-        android:id="@+id/play_button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:src="@drawable/exomedia_ic_play_arrow_white"
-        android:transitionName="transition_reveal_contact"
-        android:layout_gravity="bottom|right"
-        android:layout_marginBottom="32dp"
-        android:layout_marginRight="30sp" />
-    <android.support.design.widget.FloatingActionButton
-        android:id="@+id/map_back"
-        app:fabSize="mini"
-        android:src="@drawable/ic_arrow_left_black_24dp"
-        app:backgroundTint="@color/white"
-        android:layout_margin="24dp"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
-</android.support.design.widget.CoordinatorLayout>
+        <android.support.design.widget.FloatingActionButton
+            android:id="@+id/map_back"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="24dp"
+            android:src="@drawable/ic_arrow_left_black_24dp"
+            app:backgroundTint="@color/white"
+            app:fabSize="mini" />
+    </android.support.design.widget.CoordinatorLayout>
+</layout>

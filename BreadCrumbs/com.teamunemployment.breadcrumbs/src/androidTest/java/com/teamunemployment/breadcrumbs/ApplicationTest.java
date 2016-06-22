@@ -346,13 +346,16 @@ public class ApplicationTest {
 
     }
 
+
+
     @Test
     public void TestGrabbingImagesAndFolders() {
         // which image properties are we querying
 
 
-
     }
+
+
 
 
 

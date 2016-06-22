@@ -77,9 +77,16 @@ public class LocalPhotoImageSelector extends Activity {
         backButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                setResult(1); // so we stay on the
                 finish();
             }
         });
+    }
+
+    @Override
+    public void onBackPressed() {
+        setResult(1);
+        super.onBackPressed();
     }
 
     /**

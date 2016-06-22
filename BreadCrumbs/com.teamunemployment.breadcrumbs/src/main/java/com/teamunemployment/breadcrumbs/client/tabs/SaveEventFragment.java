@@ -330,8 +330,6 @@ public class SaveEventFragment extends Activity {
         //Unpack extras
 		media = globalContainer.GetBitMap();
 		adjustMedia(media);
-
-
 	}
 	// adda photo.
 //	private void addMedia() {

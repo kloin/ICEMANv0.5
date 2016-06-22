@@ -1,0 +1,169 @@
+package com.teamunemployment.breadcrumbs.SaveCrumb;
+
+import android.content.Context;
+import android.content.Intent;
+import android.content.SharedPreferences;
+import android.graphics.Bitmap;
+import android.location.Address;
+import android.location.Location;
+import android.os.Environment;
+import android.preference.PreferenceManager;
+import android.view.View;
+import android.widget.EditText;
+
+import com.google.android.gms.common.api.ResultCallback;
+import com.google.android.gms.location.places.Place;
+import com.google.android.gms.location.places.PlaceLikelihood;
+import com.google.android.gms.location.places.PlaceLikelihoodBuffer;
+import com.teamunemployment.breadcrumbs.BackgroundServices.SaveCrumbService;
+import com.teamunemployment.breadcrumbs.Location.BreadCrumbsFusedLocationProvider;
+import com.teamunemployment.breadcrumbs.Location.PlaceManager;
+import com.teamunemployment.breadcrumbs.Location.SimpleGps;
+import com.teamunemployment.breadcrumbs.PreferencesAPI;
+import com.teamunemployment.breadcrumbs.RandomUsefulShit.Utils;
+import com.teamunemployment.breadcrumbs.Trails.TrailManagerWorker;
+import com.teamunemployment.breadcrumbs.caching.GlobalContainer;
+import com.teamunemployment.breadcrumbs.database.DatabaseController;
+
+
+/**
+ * @author Josiah Kendall
+ */
+public class SaveCrumbModel {
+    public static int READ_ONLY_MODE = View.VISIBLE;
+    private SimpleGps simpleGps;
+    private CrumbToSaveDetails details;
+    private SaveCrumbPresenter presenter;
+
+    private String description;
+    private Location location;
+    private String placeName;
+
+    private int editableDescriptionVisibility = View.GONE;
+    private int uneditableDescriptionVisibility = View.VISIBLE;
+
+    public SaveCrumbModel(SimpleGps simpleGps, CrumbToSaveDetails details, SaveCrumbPresenter presenter) {
+        this.simpleGps = simpleGps;
+        this.details = details;
+        this.presenter = presenter;
+    }
+
+    public void load() {
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                Bitmap bitmap = loadBitmap();
+                presenter.setBitmapDisplay(bitmap);
+                location = fetchLocation();
+                placeName = fetchLocationName(location);
+                presenter.setLocation(placeName);
+            }
+        }).start();
+
+    }
+
+    public Bitmap loadBitmap() {
+        GlobalContainer globalContainer = GlobalContainer.GetContainerInstance();
+        Bitmap bitmapResult = globalContainer.GetBitMap();
+        // rotate bitmap to correctOrientation
+        if (bitmapResult != null) {
+            Bitmap bm = Utils.AdjustBitmapToCorrectOrientation(!details.IS_SELFIE, bitmapResult);
+            if (bm != null){
+                globalContainer.SetBitMap(bm.copy(Bitmap.Config.ARGB_8888, false));
+                return bm;
+            }
+        }
+
+        return null;
+    }
+
+    public Location fetchLocation() {
+        Location location = simpleGps.GetInstantLocation();
+        return location;
+    }
+
+    public String fetchLocationName(Location location) {
+        if (location == null) {
+            presenter.showMessage("Failed to find location");
+            return "";
+        }
+
+        if (location.getProvider().equals("BC_MOCK")) {
+            return "MOCK";
+        }
+
+        // Get our place name
+        return simpleGps.FetchPlaceNameForLocation(location);
+    }
+
+    public void setDescription(String description) {
+        if (description.length() > 140) {
+            presenter.showMessage("Descriptions are limited to 140 characters");
+            // Re set description back to 140 characters.
+            presenter.setDescriptionText(this.description);
+        } else {
+            this.description = description;
+        }
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    /**
+     * This is pretty shit because its not really testable.
+     * @param context need the context to start the service.
+     * @param preferencesAPI
+     */
+    public void SaveCrumb(Context context, PreferencesAPI preferencesAPI) {
+        saveCrumb(context, preferencesAPI);
+    }
+
+    private void saveCrumb(Context context, PreferencesAPI preferencesAPI) {
+        //Currently we will only be creating a crumb. In the future we will be able to create both.
+        String trailId = Integer.toString(preferencesAPI.GetLocalTrailId());
+
+        // grab event Id.
+        int eventId = preferencesAPI.GetEventId();
+
+        // Save image to disk.
+        String fileName =  Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES).toString() + "/"+eventId;
+        com.teamunemployment.breadcrumbs.caching.Utils.SaveBitmap(fileName, GlobalContainer.GetContainerInstance().GetBitMap());
+
+        // Need to launch intent service to save object.
+        Intent saveCrumbService = new Intent(context, SaveCrumbService.class);
+        saveCrumbService.putExtra("IsPhoto", details.IS_PHOTO);
+        saveCrumbService.putExtra("EventId", eventId);
+        saveCrumbService.putExtra("Description", description);
+        saveCrumbService.putExtra("PlaceName", placeName);
+
+        context.startService(saveCrumbService);
+        preferencesAPI.SetEventId(eventId+1); // This is a flag - should be saved in the DB because user can clear shared preferences
+    }
+
+    public void CleanUp() {
+        GlobalContainer.GetContainerInstance().SetBitMap(null);
+    }
+
+    public void setEditDescription() {
+        editableDescriptionVisibility = View.VISIBLE;
+        uneditableDescriptionVisibility = View.GONE;
+        updateViews();
+    }
+
+    public void setReadOnlyDescription() {
+        editableDescriptionVisibility = View.GONE;
+        uneditableDescriptionVisibility = View.VISIBLE;
+        updateViews();
+        presenter.setDescriptionText(description);
+    }
+
+    private void updateViews() {
+        presenter.setDescriptionEditTextVisibility(editableDescriptionVisibility);
+        presenter.setDescriptionTextViewVisibility(uneditableDescriptionVisibility);
+    }
+
+    public int GetCurrentDescriptionState() {
+        return uneditableDescriptionVisibility;
+    }
+}

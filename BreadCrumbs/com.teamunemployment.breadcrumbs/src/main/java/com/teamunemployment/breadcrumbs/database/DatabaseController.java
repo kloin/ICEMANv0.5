@@ -12,26 +12,36 @@ import android.preference.PreferenceManager;
 import android.util.Base64;
 import android.util.Log;
 
+import com.google.android.gms.maps.model.LatLng;
+import com.teamunemployment.breadcrumbs.Location.SimpleGps;
 import com.teamunemployment.breadcrumbs.Models;
 import com.teamunemployment.breadcrumbs.Network.LoadBalancer;
+import com.teamunemployment.breadcrumbs.Network.NetworkConnectivityManager;
 import com.teamunemployment.breadcrumbs.Network.ServiceProxy.AsyncPost;
 import com.teamunemployment.breadcrumbs.Preferences.Preferences;
 import com.teamunemployment.breadcrumbs.PreferencesAPI;
 import com.teamunemployment.breadcrumbs.Trails.TrailManagerWorker;
 import com.teamunemployment.breadcrumbs.caching.TextCaching;
 import com.teamunemployment.breadcrumbs.caching.Utils;
+import com.teamunemployment.breadcrumbs.data.BreadcrumbsEncodedPolyline;
+import com.teamunemployment.breadcrumbs.data.BreadcrumbsPolyline;
+import com.teamunemployment.breadcrumbs.data.TripDetails;
+import com.teamunemployment.breadcrumbs.data.TripPath;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
 import java.text.DateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 
 /*
  * This is the class used to create and help with local storage. Uses SQLite
  */
 public class DatabaseController extends SQLiteOpenHelper {
+
+    private static final String POLYLINES = "polylines";
 	private static final String DATABASE_NAME="users";
     private static final String TRAIL_POINTS_INDEX = "trailIndexDb";
 
@@ -356,6 +366,8 @@ public class DatabaseController extends SQLiteOpenHelper {
 
     }
 
+
+    // UGGGH WHY IS THIS HERE.
     private void saveVideoToLocalFile(int eventId, byte[] media) {
         String path = Utils.getExternalCacheDir(mContext) + "/"+eventId+".bcv";
 
@@ -516,6 +528,15 @@ public class DatabaseController extends SQLiteOpenHelper {
             "Latitude REAL," +
             "Longitude REAL," +
             "Granularity INTEGER);");
+
+        db.execSQL("CREATE TABLE " + POLYLINES + " (_id INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                "TrailId TEXT," +
+                "IsEncoded INTEGER," +
+                "BaseLatitude REAL," +
+                "BaseLongitude REAL," +
+                "HeadLatitude REAL," +
+                "HeadLongitude REAL,"+
+                "Polyline TEXT);");
     }
 
     public void SaveActivityPoint(int currentActivity, int pastActivity, Double latitude, Double longitude, int granularity) {
@@ -703,15 +724,25 @@ public class DatabaseController extends SQLiteOpenHelper {
         return metadata;
     }
 
-    private void updateTrailSavedPoint(String trailId, int count) {
-        ContentValues cv = new ContentValues();
-        cv.put("SavedIndex", count); //These Fields should be your String values of actual column names
+    public void updateTrailSavedPoint(String trailId, int count) {
+//        ContentValues cv = new ContentValues();
+//        cv.put("SavedIndex", count); //These Fields should be your String values of actual column names
+//
+//        SQLiteDatabase localDb = getWritableDatabase();
+//        localDb.update(TRAIL_SUMMARY, cv, "TrailId=" + trailId, null);
+//        localDb.close();
+//
+//        mPreferencesApi.SetCurrentIndex(count);
 
-        SQLiteDatabase localDb = getWritableDatabase();
-        localDb.update(TRAIL_SUMMARY, cv, "TrailId=" + trailId, null);
-        localDb.close();
+        String query = "UPDATE "+TRAIL_SUMMARY + " SET SavedIndex="+ count+ " WHERE _id = "+trailId;
+        db = getWritableDatabase();
+        Cursor cursor = db.rawQuery(query, null);
 
-        mPreferencesApi.SetCurrentIndex(count);
+        // WHY DOES THIS MAKE IT WORK? I FUCKING HATE SQL. If you remove this line, it wont update the row.
+        cursor.getCount();
+
+        cursor.close();
+        db.close();
     }
 
     public JSONObject GetTrailSummary(String trailId) {
@@ -877,8 +908,7 @@ public class DatabaseController extends SQLiteOpenHelper {
 
     private JSONObject fetchCrumbs(String trailId) {
         JSONObject returnObject = new JSONObject();
-        Cursor constantsCursor=getReadableDatabase().rawQuery("SELECT * FROM "+CRUMBS+" WHERE trailId ="+trailId+" ORDER BY _id",
-                null);
+        Cursor constantsCursor=getReadableDatabase().rawQuery("SELECT * FROM "+CRUMBS+" WHERE trailId ="+trailId+" ORDER BY _id", null);
         int count = 0;
         while (constantsCursor.moveToNext()) {
             JSONObject node = new JSONObject();
@@ -994,8 +1024,7 @@ public class DatabaseController extends SQLiteOpenHelper {
      */
     public JSONObject GetAllActivityData(int localTrailId) {
         JSONObject metadata = new JSONObject();
-        Cursor constantsCursor=getReadableDatabase().rawQuery("SELECT * FROM "+GPS_TABLE+" WHERE trailId ="+localTrailId +" ORDER BY _id",
-                null);
+        Cursor constantsCursor=getReadableDatabase().rawQuery("SELECT * FROM "+GPS_TABLE+" WHERE trailId ="+localTrailId +" ORDER BY _id", null);
         int currentIndex = 0;
         while (constantsCursor.moveToNext()) {
             JSONObject metadataNode = new JSONObject();
@@ -1007,7 +1036,6 @@ public class DatabaseController extends SQLiteOpenHelper {
             int activity = constantsCursor.getInt(constantsCursor.getColumnIndex("LastActivity"));
             int currentActivity = constantsCursor.getInt(constantsCursor.getColumnIndex("CurrentActivity"));
             int granularity = constantsCursor.getInt(constantsCursor.getColumnIndex("Granularity"));
-
 
             // Save our single point as a single node, and add it to the overall object that is
             // going to be sent to the server.
@@ -1024,6 +1052,180 @@ public class DatabaseController extends SQLiteOpenHelper {
                 e.printStackTrace();
             }
         }
+
         return metadata;
+    }
+
+    /**
+     * Grab all the gps points from the database that we have saved from a local database.
+     * @param localTrailId
+     * @param index We only are interested in data above the index, as this was the last 'Save' point
+     * @return This is the jsonObject of all the activity recordings that we have made.
+     */
+    public JSONObject  GetAllActivityData(int localTrailId, int index) {
+        if (index > 0) {
+            index -= 1; // This stops us skipping a line. pretty shitty fix but fck it.
+        }
+
+        JSONObject metadata = new JSONObject();
+        Cursor constantsCursor=getReadableDatabase().rawQuery("SELECT * FROM "+GPS_TABLE+" WHERE trailId ="+localTrailId +" ORDER BY _id", null);
+        int currentIndex = 0;
+
+        // Need reference index because the server reads from 0, but the current index will only be 0 on first use case.
+        int referenceIndex = 0;
+        while (constantsCursor.moveToNext()) {
+            JSONObject metadataNode = new JSONObject();
+
+            // Data to grab
+            Double latitude = constantsCursor.getDouble(constantsCursor.getColumnIndex("Latitude"));
+            Double longitude = constantsCursor.getDouble(constantsCursor.getColumnIndex("Longitude"));
+            int activity = constantsCursor.getInt(constantsCursor.getColumnIndex("LastActivity"));
+            int currentActivity = constantsCursor.getInt(constantsCursor.getColumnIndex("CurrentActivity"));
+            int granularity = constantsCursor.getInt(constantsCursor.getColumnIndex("Granularity"));
+
+            if (currentIndex >= index) {
+                // Save our single point as a single node, and add it to the overall object that is
+                // going to be sent to the server.
+                try {
+                    metadataNode.put(Models.Crumb.LATITUDE, Double.toString(latitude));
+                    metadataNode.put(Models.Crumb.LONGITUDE, Double.toString(longitude));
+                    metadataNode.put("LastActivity", Integer.toString(activity));
+                    metadataNode.put("CurrentActivity", Integer.toString(currentActivity));
+                    metadataNode.put("Granularity", Integer.toString(granularity));
+                    // This wraps the object so that the first point is not a gps point, which means that it wont track properly
+                    metadata.put(Integer.toString(referenceIndex), metadataNode);
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+                referenceIndex += 1;
+            }
+            currentIndex += 1;
+        }
+
+        updateTrailSavedPoint(Integer.toString(localTrailId), currentIndex-1);
+
+        return metadata;
+    }
+
+    private JSONObject fetchCurrentLocationNode() {
+        SimpleGps simpleGps = new SimpleGps(mContext);
+        Location location = simpleGps.GetInstantLocation();
+
+        if (location != null) {
+            JSONObject response = new JSONObject();
+
+            try {
+                response.put(Models.Crumb.LATITUDE, location.getLatitude());
+                response.put(Models.Crumb.LONGITUDE, location.getLongitude());
+                response.put("LastActivity", Integer.toString(7));
+                response.put("CurrentActivity", Integer.toString(7));
+                response.put("Granularity", Integer.toString(0));
+                return response;
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
+        return null;
+    }
+
+
+
+    /**
+     * Get a {@link TripDetails} object for the corresponding (local) trip id.
+     * @param id The id of the trip as it is stored in the database (e.g _id)
+     * @return
+     */
+    public TripDetails GetTripDetails(String id) {
+        Cursor constantsCursor=getReadableDatabase().rawQuery("SELECT * FROM " + TRAIL_SUMMARY + " WHERE _id =" + id + " ORDER BY _id", null);
+        constantsCursor.moveToFirst();
+
+        String startDate = constantsCursor.getString(constantsCursor.getColumnIndex("StartDate"));
+        String serverId = constantsCursor.getString(constantsCursor.getColumnIndex("TrailId"));
+        String trailName = constantsCursor.getString(constantsCursor.getColumnIndex("TrailName"));
+
+        return new TripDetails(serverId,trailName,startDate);
+    }
+
+    /**
+     * Get the lat long points from the database. Note that this should be used for displaying a trail when no
+     * network is available. I Still think this is a bad solution however, so future me should be pretty cautious about using this
+     * except for in a super specific use case. (i.e
+     * @param id The trail id in the database of the trail that we are getting points for.
+     * @return The {@link TripPath} model with the poliyline as an arrayList of latLng points.
+     */
+    public TripPath GetTripPath(String id) {
+//
+//        ArrayList<LatLng> points = new ArrayList<>();
+//        Cursor constantsCursor=getReadableDatabase().rawQuery("SELECT * FROM "+GPS_TABLE+" WHERE trailId ="+id +" ORDER BY _id",
+//                null);
+//        boolean second = false;
+//        String polyline = "";
+//        while (constantsCursor.moveToNext()) {
+//            Double latitude = constantsCursor.getDouble(constantsCursor.getColumnIndex("Latitude"));
+//            Double longitude = constantsCursor.getDouble(constantsCursor.getColumnIndex("Longitude"));
+//            if (second = false) {
+//                polyline = latitude.toString() + "," + longitude.toString();
+//                second = true;
+//            } else {
+//
+//            }
+//        }
+//
+//        BreadcrumbsEncodedPolyline polyline = new BreadcrumbsEncodedPolyline(false, points);
+//        ArrayList<BreadcrumbsEncodedPolyline> lines = new ArrayList<>();
+//        lines.add(polyline);
+        //MOT WORKING YET AND ALSO IS NOT USED.
+        return new TripPath(null);
+    }
+
+    /**
+     * Save a {@link BreadcrumbsEncodedPolyline} to our database.
+     * @param polyline
+     * @param id
+     */
+    public void SavePolyline(BreadcrumbsEncodedPolyline polyline, String id) {
+        int isEncoded = 1;
+        if (polyline.isEncoded) {
+            isEncoded = 0;
+        }
+        ContentValues cv = new ContentValues();
+
+        cv.put("TrailId", id);
+        cv.put("IsEncoded", isEncoded);
+        cv.put("Polyline", polyline.polyline);
+        if (polyline.isEncoded) {
+            cv.put("BaseLatitude", polyline.baseLatitude);
+            cv.put("BaseLongitude", polyline.baseLongitude);
+            cv.put("HeadLatitude", polyline.headLatitude);
+            cv.put("HeadLongitude", polyline.headLongitude);
+        }
+
+        SQLiteDatabase localdb = getWritableDatabase();
+        localdb.insert(POLYLINES, null, cv);
+        localdb.close();
+    }
+
+    public TripPath FetchTripPath(String id) {
+        Cursor constantsCursor=getReadableDatabase().rawQuery("SELECT * FROM " + POLYLINES + " WHERE TrailId =" + id + " ORDER BY _id", null);
+        final ArrayList<BreadcrumbsEncodedPolyline> polylines = new ArrayList<>();
+        while (constantsCursor.moveToNext()) {
+            int isEncoded = constantsCursor.getInt(constantsCursor.getColumnIndex("IsEncoded"));
+            String polylineString = constantsCursor.getString(constantsCursor.getColumnIndex("Polyline"));
+            if (isEncoded == 0) {
+                Double headLat = constantsCursor.getDouble(constantsCursor.getColumnIndex("HeadLatitude"));
+                Double headLon = constantsCursor.getDouble(constantsCursor.getColumnIndex("HeadLongitude"));
+                Double baseLat = constantsCursor.getDouble(constantsCursor.getColumnIndex("BaseLatitude"));
+                Double baseLon = constantsCursor.getDouble(constantsCursor.getColumnIndex("BaseLongitude"));
+
+                // Polyline with the head lat / long
+                BreadcrumbsEncodedPolyline polyline = new BreadcrumbsEncodedPolyline( true, polylineString, baseLat, baseLon, headLat, headLon);
+                polylines.add(polyline);
+            } else {
+                BreadcrumbsEncodedPolyline polyline = new BreadcrumbsEncodedPolyline(isEncoded== 0, polylineString);
+                polylines.add(polyline);
+            }
+        }
+
+        return new TripPath(polylines);
     }
 }

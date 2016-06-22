@@ -16,12 +16,26 @@ public class BreadcrumbsEncodedPolyline {
     public Double baseLongitude;
     public Double baseLatitude;
 
+
+    /**
+     * Unencoded polyline constructor.
+     * @param encoded
+     * @param polyline
+     */
     public BreadcrumbsEncodedPolyline(boolean encoded, String polyline) {
         this.polyline = polyline;
         isEncoded = encoded;
     }
 
-    // This is used for encoded polylines where we need to join the hanging lines using base/head lat/longs
+    /**
+     * Encoded poyline constructor.
+     * @param encoded
+     * @param polyline
+     * @param baseLat
+     * @param baseLong
+     * @param headLat
+     * @param headLong
+     */
     public BreadcrumbsEncodedPolyline(boolean encoded, String polyline, Double baseLat, Double baseLong, Double headLat, Double headLong) {
         this.polyline = polyline;
         isEncoded = encoded;

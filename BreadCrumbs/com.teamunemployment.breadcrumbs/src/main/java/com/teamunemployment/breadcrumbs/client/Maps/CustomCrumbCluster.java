@@ -100,7 +100,7 @@ public class CustomCrumbCluster extends DefaultClusterRenderer<DisplayCrumb> {
     @Override
     protected boolean shouldRenderAsCluster(Cluster cluster) {
         // Always render clusters.
-        return cluster.getSize() > 3;
+        return cluster.getSize() > 1;
     }
 
 

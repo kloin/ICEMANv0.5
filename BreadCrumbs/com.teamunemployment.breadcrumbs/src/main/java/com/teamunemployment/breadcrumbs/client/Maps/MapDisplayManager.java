@@ -46,7 +46,9 @@ import java.util.ArrayList;
 import java.util.Iterator;
 
 /**
- * Created by aDirtyCanvas on 6/2/2015.
+ * @author Josiah Kendall.
+ *
+ * This class handles the display of the map, except for the
  */
 public class MapDisplayManager implements GoogleMap.OnMarkerClickListener, GoogleMap.OnMapClickListener {
     private GoogleMap mapInstance = null;
@@ -220,11 +222,6 @@ public class MapDisplayManager implements GoogleMap.OnMarkerClickListener, Googl
 
     }
 
-    private void loadCrumbs(Cluster<DisplayCrumb> cluster) {
-
-        ArrayList<String> idArrayList = new ArrayList<String>();
-    }
-
     // Get all the ids of the crumbs we want to display in this intent.
     private ArrayList<String> getCrumbIds(Cluster<DisplayCrumb> cluster) {
 
@@ -244,8 +241,10 @@ public class MapDisplayManager implements GoogleMap.OnMarkerClickListener, Googl
         // Return our ids
         return ids;
     }
+
+
     /*
-     *  Draw the crumbs onto the map using the object given.
+     *  Draw the crumbs onto the map using the JSONObject given.
      *
      * @Throws a JSONException, because the crumb should always have the fields we are asking of it.
      */

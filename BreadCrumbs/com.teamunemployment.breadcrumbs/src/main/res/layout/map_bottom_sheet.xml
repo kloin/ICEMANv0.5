@@ -1,379 +1,397 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    app:behavior_hideable="false"
-    android:id="@+id/bottom_sheet"
-    android:background="@color/white"
-    app:behavior_peekHeight="60dp"
-    app:layout_behavior="@string/bottom_sheet_behavior"
-    android:elevation="4dp"
-    xmlns:fancy="http://schemas.android.com/apk/res-auto">
-    <android.support.v7.widget.CardView
-        android:id="@+id/dunno"
-        app:cardElevation="4dp"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
-	<android.support.v4.widget.NestedScrollView
-        android:id="@+id/bottom_sheet_scroller"
-        android:layout_marginBottom="60dp"
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <data>
+
+        <variable
+            name="tripDetails"
+            type="com.teamunemployment.breadcrumbs.data.TripDetails" />
+    </data>
+
+    <RelativeLayout xmlns:fancy="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/bottom_sheet"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_above="@+id/bottom_sheet_bottom_bar">
+        android:background="@color/white"
+        android:elevation="4dp"
+        app:behavior_hideable="false"
+        app:behavior_peekHeight="60dp"
+        app:layout_behavior="@string/bottom_sheet_behavior">
 
         <RelativeLayout
+            android:id="@+id/dunno"
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
-            <ImageView
-                android:id="@+id/trail_cover_photo"
-                android:layout_width="match_parent"
-                android:layout_height="500px"
-                android:scaleType="centerCrop" />
-            <TextView
-                android:id="@+id/cover_photo_prompt"
-                android:layout_alignTop="@id/trail_cover_photo"
-                android:layout_alignBottom="@id/trail_cover_photo"
-                android:text="Tap to Change Cover Image"
-                android:textColor="@color/white"
-                android:visibility="gone"
-                android:gravity="center"
-                android:background="@color/black"
-                android:alpha="0.6"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
-            <RelativeLayout
-                android:id="@+id/image_view_cover"
-                android:background="@color/white"
-                android:layout_width="match_parent"
-                android:layout_height="1dp"></RelativeLayout>
+            android:layout_height="match_parent"
+            app:cardElevation="4dp">
 
-            <TextView
-                android:id="@+id/stat1"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignBottom="@id/trail_cover_photo"
-                android:layout_margin="16dp"
-                android:visibility="gone"
-                android:text="stat 1"
-                android:textColor="@color/white" />
-
-            <TextView
-                android:id="@+id/stat2"
-                android:visibility="gone"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_above="@+id/stat1"
-                android:layout_marginLeft="16dp"
-                android:text="Stat 2"
-                android:textColor="@color/white" />
-
-            <android.support.design.widget.FloatingActionButton
-                android:id="@+id/edit_toggle_fab"
-                android:visibility="invisible"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentRight="true"
-                android:layout_below="@+id/trail_cover_photo"
-                android:layout_marginRight="40dp"
-                android:layout_marginTop="-32dp"
-                android:src="@drawable/ic_edit_white_24dp" />
-            <RelativeLayout
-                android:id="@+id/settings_holder"
+            <android.support.v4.widget.NestedScrollView
+                android:id="@+id/bottom_sheet_scroller"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_alignRight="@+id/edit_toggle_fab"
-                android:layout_below="@+id/trail_cover_photo">
-            <TextView
-                android:id="@+id/settings_my_trail"
-                android:text="Settings"
-                android:tag="1234"
-                style="@style/Base.TextAppearance.AppCompat.Title"
-                android:layout_marginLeft="30dp"
-                android:layout_marginTop="20dp"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
-            <android.support.v7.widget.SwitchCompat
-                android:id="@+id/toggle_tracking"
-                android:tag="1234"
-                android:layout_marginLeft="30dp"
-                style="@style/Base.TextAppearance.AppCompat.Subhead"
-                android:alpha="0.54"
-                android:layout_marginTop="6dp"
-                android:layout_below="@+id/settings_my_trail"
-                android:text="Path Recording"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
-            </RelativeLayout>
-            <TextView
-                android:id="@+id/details_header"
-                style="@style/Base.TextAppearance.AppCompat.Title"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_below="@+id/settings_holder"
-                android:layout_marginLeft="30dp"
-                android:layout_marginTop="20dp"
-                android:alpha="0.87"
-                android:text="Details" />
-
-            <EditText
-                android:id="@+id/trail_title_input"
-                style="@style/Widget.AppCompat.EditText"
-                android:layout_width="match_parent"
-                android:enabled="false"
                 android:layout_height="match_parent"
-                android:layout_alignRight="@+id/edit_toggle_fab"
-                android:layout_below="@+id/details_header"
-                android:layout_marginLeft="30dp"
-                android:hint="Trip Title"
-                android:text="This is a test trail" />
+                android:layout_above="@+id/bottom_sheet_bottom_bar"
+                android:layout_marginBottom="60dp">
 
-            <CheckBox
-                android:id="@+id/stat1_enabled"
-                android:visibility="gone"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_below="@+id/trail_title_input"
-                android:layout_marginLeft="12dp"
-                android:layout_marginTop="6dp" />
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
 
-            <TextView
-                android:id="@+id/stat1_description"
-                android:visibility="gone"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignBottom="@+id/stat1_enabled"
-                android:layout_alignTop="@+id/stat1_enabled"
-                android:layout_below="@+id/trail_title_input"
-                android:layout_marginTop="6dp"
-                android:layout_toRightOf="@+id/stat1_enabled"
-                android:gravity="center"
-                android:text="Enable stat 1" />
+                    <ImageView
+                        android:id="@+id/trail_cover_photo"
+                        android:layout_width="match_parent"
+                        android:layout_height="100px"
+                        android:scaleType="centerCrop" />
 
-            <CheckBox
-                android:id="@+id/stat2_enabled"
-                android:layout_width="wrap_content"
-                android:visibility="gone"
-                android:layout_height="wrap_content"
-                android:layout_below="@+id/stat1_enabled"
-                android:layout_marginLeft="12dp" />
+                    <TextView
+                        android:id="@+id/cover_photo_prompt"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_alignBottom="@id/trail_cover_photo"
+                        android:layout_alignTop="@id/trail_cover_photo"
+                        android:alpha="0.6"
+                        android:background="@color/black"
+                        android:gravity="center"
+                        android:text="Tap to Change Cover Image"
+                        android:textColor="@color/white"
+                        android:visibility="gone" />
 
-            <TextView
-                android:id="@+id/stat2_description"
-                android:visibility="gone"
+                    <RelativeLayout
+                        android:id="@+id/image_view_cover"
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:background="@color/white"></RelativeLayout>
 
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignBottom="@+id/stat2_enabled"
-                android:layout_alignTop="@+id/stat2_enabled"
-                android:layout_toRightOf="@+id/stat2_enabled"
-                android:gravity="center"
-                android:text="Enable stat 2" />
+                    <TextView
+                        android:id="@+id/stat1"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignBottom="@id/trail_cover_photo"
+                        android:layout_margin="16dp"
+                        android:text="stat 1"
+                        android:textColor="@color/white"
+                        android:visibility="gone" />
 
-            <CheckBox
-                android:id="@+id/stat3_enabled"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:visibility="gone"
+                    <TextView
+                        android:id="@+id/stat2"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_above="@+id/stat1"
+                        android:layout_marginLeft="16dp"
+                        android:text="Stat 2"
+                        android:textColor="@color/white"
+                        android:visibility="gone" />
 
-                android:layout_below="@+id/stat2_enabled"
-                android:layout_marginLeft="12dp" />
+                    <android.support.design.widget.FloatingActionButton
+                        android:id="@+id/edit_toggle_fab"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentRight="true"
+                        android:layout_below="@+id/trail_cover_photo"
+                        android:layout_marginRight="40dp"
+                        android:layout_marginTop="-32dp"
+                        android:src="@drawable/ic_edit_white_24dp"
+                        android:visibility="invisible" />
 
-            <TextView
-                android:id="@+id/stat3_description"
-                android:layout_width="wrap_content"
-                android:visibility="gone"
+                    <RelativeLayout
+                        android:id="@+id/settings_holder"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_alignRight="@+id/edit_toggle_fab"
+                        android:layout_below="@+id/trail_cover_photo">
 
-                android:layout_height="wrap_content"
-                android:layout_alignBottom="@+id/stat3_enabled"
-                android:layout_alignTop="@+id/stat3_enabled"
-                android:layout_toRightOf="@+id/stat3_enabled"
-                android:gravity="center"
-                android:text="Enable stat 3" />
+                        <TextView
+                            android:id="@+id/settings_my_trail"
+                            style="@style/Base.TextAppearance.AppCompat.Title"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="30dp"
+                            android:layout_marginTop="20dp"
+                            android:tag="1234"
+                            android:text="Settings" />
 
-            <!-- display view -->
-            <ImageView
-                android:id="@+id/duration_icon"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_below="@+id/trail_title_input"
-                android:layout_marginTop="12dp"
-                android:layout_marginLeft="30dp"
-                android:alpha="0.54"
-                android:src="@drawable/ic_date_range_black_24dp" />
+                        <android.support.v7.widget.SwitchCompat
+                            android:id="@+id/toggle_tracking"
+                            style="@style/Base.TextAppearance.AppCompat.Subhead"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_below="@+id/settings_my_trail"
+                            android:layout_marginLeft="30dp"
+                            android:layout_marginTop="6dp"
+                            android:alpha="0.54"
+                            android:tag="1234"
+                            android:text="Path Recording" />
+                    </RelativeLayout>
 
-            <TextView
-                android:id="@+id/duration_details"
-                style="@style/Base.TextAppearance.AppCompat.Subhead"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignBottom="@+id/duration_icon"
-                android:layout_alignTop="@+id/duration_icon"
-                android:layout_marginLeft="10dp"
-                android:layout_toRightOf="@+id/duration_icon"
-                android:alpha="0.54"
-                android:gravity="center"
-                android:text="12 days" />
+                    <TextView
+                        android:id="@+id/details_header"
+                        style="@style/Base.TextAppearance.AppCompat.Title"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@+id/settings_holder"
+                        android:layout_marginLeft="30dp"
+                        android:layout_marginTop="20dp"
+                        android:alpha="0.87"
+                        android:text="Details" />
 
-            <ImageView
-                android:id="@+id/number_of_crumbs_icon"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignLeft="@+id/duration_icon"
-                android:layout_alignRight="@+id/duration_icon"
-                android:layout_below="@+id/duration_icon"
-                android:layout_marginTop="10dp"
-                android:alpha="0.54"
-                android:src="@drawable/ic_group_work_black_24dp" />
+                    <EditText
+                        android:id="@+id/trail_title_input"
+                        style="@style/Widget.AppCompat.EditText"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_alignRight="@+id/edit_toggle_fab"
+                        android:layout_below="@+id/details_header"
+                        android:layout_marginLeft="30dp"
+                        android:enabled="false"
+                        android:hint="Trip Title"
+                        android:text="This is a test trail" />
 
-            <TextView
-                android:id="@+id/number_of_crumbs_details"
-                style="@style/Base.TextAppearance.AppCompat.Subhead"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignBottom="@+id/number_of_crumbs_icon"
-                android:layout_alignTop="@+id/number_of_crumbs_icon"
-                android:layout_marginLeft="10dp"
-                android:layout_toRightOf="@+id/number_of_crumbs_icon"
-                android:alpha="0.54"
-                android:gravity="center"
-                android:text="283 Points of Interest" />
+                    <CheckBox
+                        android:id="@+id/stat1_enabled"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@+id/trail_title_input"
+                        android:layout_marginLeft="12dp"
+                        android:layout_marginTop="6dp"
+                        android:visibility="gone" />
 
-            <ImageView
-                android:id="@+id/number_of_videos_icon"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignLeft="@+id/duration_icon"
-                android:layout_alignRight="@+id/duration_icon"
-                android:layout_below="@+id/number_of_crumbs_icon"
-                android:layout_centerVertical="true"
-                android:layout_marginTop="10dp"
-                android:alpha="0.54"
-                android:src="@drawable/ic_videocam_black_24dp" />
+                    <TextView
+                        android:id="@+id/stat1_description"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignBottom="@+id/stat1_enabled"
+                        android:layout_alignTop="@+id/stat1_enabled"
+                        android:layout_below="@+id/trail_title_input"
+                        android:layout_marginTop="6dp"
+                        android:layout_toRightOf="@+id/stat1_enabled"
+                        android:gravity="center"
+                        android:text="Enable stat 1"
+                        android:visibility="gone" />
 
-            <TextView
-                android:id="@+id/number_of_videos_details"
-                style="@style/Base.TextAppearance.AppCompat.Subhead"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignBottom="@+id/number_of_videos_icon"
-                android:layout_alignTop="@id/number_of_videos_icon"
-                android:layout_marginLeft="10dp"
-                android:layout_toRightOf="@+id/number_of_videos_icon"
-                android:alpha="0.54"
-                android:gravity="center"
-                android:text="45 videos" />
+                    <CheckBox
+                        android:id="@+id/stat2_enabled"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@+id/stat1_enabled"
+                        android:layout_marginLeft="12dp"
+                        android:visibility="gone" />
 
-            <ImageView
-                android:id="@+id/number_of_photos_icon"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignLeft="@+id/duration_icon"
-                android:layout_alignRight="@+id/duration_icon"
-                android:layout_below="@+id/number_of_videos_icon"
-                android:layout_marginTop="10dp"
-                android:alpha="0.54"
-                android:src="@drawable/ic_camera_alt_black_24dp" />
+                    <TextView
+                        android:id="@+id/stat2_description"
+                        android:layout_width="wrap_content"
 
-            <TextView
-                android:id="@+id/number_of_photos_details"
-                style="@style/Base.TextAppearance.AppCompat.Subhead"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignBottom="@+id/number_of_photos_icon"
-                android:layout_alignTop="@+id/number_of_photos_icon"
-                android:layout_marginLeft="10dp"
-                android:layout_toRightOf="@+id/number_of_photos_icon"
-                android:alpha="0.54"
-                android:gravity="center"
-                android:text="174 photos" />
-            <ImageView
-                android:id="@+id/number_of_views"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
-                android:src="@drawable/ic_visibility_black_24dp"
-                android:layout_below="@id/number_of_photos_icon"
-                android:layout_alignRight="@+id/number_of_photos_icon"
-                android:layout_alignLeft="@+id/number_of_photos_icon"
-                android:alpha="0.54"/>
-            <TextView
-                android:id="@+id/view_count"
-                style="@style/Base.TextAppearance.AppCompat.Subhead"
-                android:layout_toRightOf="@+id/number_of_views"
-                android:alpha="0.54"
-                android:layout_marginLeft="10dp"
-                android:layout_alignBottom="@+id/number_of_views"
-                android:layout_alignTop="@id/number_of_views"
-                android:layout_below="@id/number_of_photos_icon"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
+                        android:layout_height="wrap_content"
+                        android:layout_alignBottom="@+id/stat2_enabled"
+                        android:layout_alignTop="@+id/stat2_enabled"
+                        android:layout_toRightOf="@+id/stat2_enabled"
+                        android:gravity="center"
+                        android:text="Enable stat 2"
+                        android:visibility="gone" />
+
+                    <CheckBox
+                        android:id="@+id/stat3_enabled"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@+id/stat2_enabled"
+
+                        android:layout_marginLeft="12dp"
+                        android:visibility="gone" />
+
+                    <TextView
+                        android:id="@+id/stat3_description"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+
+                        android:layout_alignBottom="@+id/stat3_enabled"
+                        android:layout_alignTop="@+id/stat3_enabled"
+                        android:layout_toRightOf="@+id/stat3_enabled"
+                        android:gravity="center"
+                        android:text="Enable stat 3"
+                        android:visibility="gone" />
+
+                    <!-- display view -->
+                    <ImageView
+                        android:id="@+id/duration_icon"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@+id/trail_title_input"
+                        android:layout_marginLeft="30dp"
+                        android:layout_marginTop="12dp"
+                        android:alpha="0.54"
+                        android:src="@drawable/ic_date_range_black_24dp" />
+
+                    <TextView
+                        android:id="@+id/duration_details"
+                        style="@style/Base.TextAppearance.AppCompat.Subhead"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignBottom="@+id/duration_icon"
+                        android:layout_alignTop="@+id/duration_icon"
+                        android:layout_marginLeft="10dp"
+                        android:layout_toRightOf="@+id/duration_icon"
+                        android:alpha="0.54"
+                        android:gravity="center"
+                        android:text="@{tripDetails.StartDate}" />
+
+                    <ImageView
+                        android:id="@+id/number_of_crumbs_icon"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignLeft="@+id/duration_icon"
+                        android:layout_alignRight="@+id/duration_icon"
+                        android:layout_below="@+id/duration_icon"
+                        android:layout_marginTop="10dp"
+                        android:alpha="0.54"
+                        android:src="@drawable/ic_group_work_black_24dp"
+                        android:visibility="gone" />
+
+                    <ImageView
+                        android:id="@+id/number_of_videos_icon"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignLeft="@+id/duration_icon"
+                        android:layout_alignRight="@+id/duration_icon"
+                        android:layout_below="@+id/number_of_crumbs_icon"
+                        android:layout_centerVertical="true"
+                        android:layout_marginTop="10dp"
+                        android:alpha="0.54"
+                        android:src="@drawable/ic_videocam_black_24dp"
+                        android:visibility="gone" />
+
+                    <TextView
+                        android:id="@+id/number_of_videos_details"
+                        style="@style/Base.TextAppearance.AppCompat.Subhead"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignBottom="@+id/number_of_videos_icon"
+                        android:layout_alignTop="@id/number_of_videos_icon"
+                        android:layout_marginLeft="10dp"
+                        android:layout_toRightOf="@+id/number_of_videos_icon"
+                        android:alpha="0.54"
+                        android:gravity="center"
+                        android:text="45 videos"
+                        android:visibility="gone" />
+
+                    <ImageView
+                        android:id="@+id/number_of_photos_icon"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignLeft="@+id/duration_icon"
+                        android:layout_alignRight="@+id/duration_icon"
+                        android:layout_below="@+id/number_of_videos_icon"
+                        android:layout_marginTop="10dp"
+                        android:alpha="0.54"
+                        android:src="@drawable/ic_camera_alt_black_24dp"
+                        android:visibility="gone" />
+
+                    <TextView
+                        android:id="@+id/number_of_photos_details"
+                        style="@style/Base.TextAppearance.AppCompat.Subhead"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignBottom="@+id/number_of_photos_icon"
+                        android:layout_alignTop="@+id/number_of_photos_icon"
+                        android:layout_marginLeft="10dp"
+                        android:layout_toRightOf="@+id/number_of_photos_icon"
+                        android:alpha="0.54"
+                        android:gravity="center"
+                        android:text="174 photos"
+                        android:visibility="gone" />
+
+                    <ImageView
+                        android:id="@+id/number_of_views"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignLeft="@+id/number_of_photos_icon"
+                        android:layout_alignRight="@+id/number_of_photos_icon"
+                        android:layout_below="@id/number_of_photos_icon"
+                        android:layout_marginTop="10dp"
+                        android:alpha="0.54"
+                        android:src="@drawable/ic_visibility_black_24dp" />
+
+                    <TextView
+                        android:id="@+id/view_count"
+                        style="@style/Base.TextAppearance.AppCompat.Subhead"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_alignBottom="@+id/number_of_views"
+                        android:layout_alignTop="@id/number_of_views"
+                        android:layout_below="@id/number_of_photos_icon"
+                        android:layout_marginLeft="10dp"
+                        android:layout_toRightOf="@+id/number_of_views"
+                        android:alpha="0.54"
+                        android:text="@{tripDetails.Views}" />
+                </RelativeLayout>
+            </android.support.v4.widget.NestedScrollView>
         </RelativeLayout>
-    </android.support.v4.widget.NestedScrollView>
-    </android.support.v7.widget.CardView>
-    <android.support.v7.widget.CardView
-        app:cardCornerRadius="0dp"
-        app:cardElevation="4dp"
-        app:cardBackgroundColor="@color/white"
-        android:id="@+id/bottom_sheet_header"
-        android:layout_width="match_parent"
-        android:layout_height="60dp">
-        <TextView
-            android:id="@+id/bottom_sheet_trail_title"
-            style="@style/Base.TextAppearance.AppCompat.Title"
-            android:textColor="@color/ColorPrimary"
-            android:singleLine="true"
-            android:ellipsize="end"
-            android:gravity="center|left"
-            android:layout_marginLeft="20dp"
-            android:layout_width="match_parent"
-            android:layout_height="60dp" />
-    </android.support.v7.widget.CardView>
-    <android.support.v7.widget.CardView
-        app:cardCornerRadius="0dp"
-        app:cardElevation="6dp"
-        app:cardBackgroundColor="@color/white"
-        android:id="@+id/bottom_sheet_bottom_bar"
-        android:layout_width="match_parent"
-        android:layout_alignParentBottom="true"
-        android:layout_height="60dp">
+
         <RelativeLayout
-            android:id="@+id/botton_card"
+            android:id="@+id/bottom_sheet_header"
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
-        <TextView
-            android:id="@+id/publish_prompt"
-            android:layout_width="wrap_content"
-            android:text="Last update - "
-            android:layout_marginLeft="12dp"
-            android:gravity="center|left"
-            android:layout_height="match_parent" />
-        <TextView
-            android:id="@+id/last_update"
-            android:text="Never"
-            android:layout_marginLeft="2dp"
-            android:gravity="center"
-            android:layout_toRightOf="@+id/publish_prompt"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent" />
+            android:layout_height="60dp">
+
+            <TextView
+                android:id="@+id/bottom_sheet_trail_title"
+                style="@style/Base.TextAppearance.AppCompat.Title"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginLeft="20dp"
+                android:ellipsize="end"
+                android:gravity="center|left"
+                android:singleLine="true"
+                android:text="My Trip"
+                android:textColor="@color/ColorPrimary" />
         </RelativeLayout>
-        <mehdi.sakout.fancybuttons.FancyButton
-            android:id="@+id/publish_trail"
-            android:tag="1234"
-            android:layout_gravity="center|right"
-            android:tint="@color/ColorPrimary"
-            fancy:fb_borderColor="@color/good_to_go"
-            fancy:fb_borderWidth="1dp"
-            fancy:fb_defaultColor="@color/white"
-            fancy:fb_focusColor="@color/ColorPrimaryLight"
-            fancy:fb_fontIconSize="1dp"
-            fancy:fb_iconPosition="right"
-            fancy:fb_radius="5dp"
-            android:layout_marginRight="12dp"
-            fancy:fb_text="PUBLISH"
-            fancy:fb_textColor="@color/good_to_go"
-            fancy:fb_textSize="16sp"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"/>
-		</android.support.v7.widget.CardView>
-	</RelativeLayout>
+
+        <android.support.v7.widget.CardView
+            android:id="@+id/bottom_sheet_bottom_bar"
+            android:layout_width="match_parent"
+            android:layout_height="60dp"
+            android:layout_alignParentBottom="true"
+            app:cardBackgroundColor="@color/white"
+            app:cardCornerRadius="0dp"
+            app:cardElevation="6dp">
+
+            <RelativeLayout
+                android:id="@+id/botton_card"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <TextView
+                    android:id="@+id/publish_prompt"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_marginLeft="12dp"
+                    android:gravity="center|left"
+                    android:text="Last update - " />
+
+                <TextView
+                    android:id="@+id/last_update"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_marginLeft="2dp"
+                    android:layout_toRightOf="@+id/publish_prompt"
+                    android:gravity="center"
+                    android:text="Never" />
+            </RelativeLayout>
+
+            <mehdi.sakout.fancybuttons.FancyButton
+                android:id="@+id/publish_trail"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center|right"
+                android:layout_marginRight="12dp"
+                android:tag="1234"
+                android:tint="@color/ColorPrimary"
+                fancy:fb_borderColor="@color/good_to_go"
+                fancy:fb_borderWidth="1dp"
+                fancy:fb_defaultColor="@color/white"
+                fancy:fb_focusColor="@color/ColorPrimaryLight"
+                fancy:fb_fontIconSize="1dp"
+                fancy:fb_iconPosition="right"
+                fancy:fb_radius="5dp"
+                fancy:fb_text="PUBLISH"
+                fancy:fb_textColor="@color/good_to_go"
+                fancy:fb_textSize="16sp" />
+        </android.support.v7.widget.CardView>
+    </RelativeLayout>
+</layout>

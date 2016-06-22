@@ -120,6 +120,7 @@
         <activity android:name=".client.ImageChooser.LocalPhotoImageSelector" android:screenOrientation="portrait"></activity>
         <activity android:name=".client.NavMenu.Profile.ProfilePageViewer"
             android:screenOrientation="portrait"></activity>
+        <activity android:name=".Map.MapActivity"></activity>
         <activity
             android:name=".client.SelectedEventViewerBase"
             android:screenOrientation="portrait">
@@ -170,7 +171,7 @@
         <activity android:name=".client.TrailDetailsViewer" android:screenOrientation="portrait"/>
         <activity android:name=".client.StoryBoard.StoryBoardActivity" android:screenOrientation="portrait"></activity>
         <activity android:name=".client.ImageChooser.TrailCoverImageSelector" android:screenOrientation="portrait"></activity>
-
+        <activity android:name=".SaveCrumb.SaveCrumbActivity" android:screenOrientation="portrait"></activity>
         <activity android:name=".client.TestingVideo"></activity>
         <provider
             android:name="com.facebook.FacebookContentProvider"
@@ -183,12 +184,12 @@
         <!--AIzaSyBQ9w6VrGGquOHwERNrc_jAx_jcm8mrKQw  - this is the legit release one-->
         <!--  AIzaSyBmkUW1b2c3cXhz-Sw7cfWtK41Qz-0aaww -->
         <!--  AIzaSyCy82ucudMrzKRtUsF0S3v_DSVyNL5m9n8
-        AIzaSyD1tXj_z3zgxB-5tPG8H9sXS4NCBWAJosA debug 22/04 ?? yes
+        AIzaSyD1tXj_z3zgxB-5tPG8H9sXS4NCBWAJosA debug 22/04 ?? yes yup
         A4:0B:0E:F1:E0:AB:A0:FF:3B:E4:C2:8E:D3:71:CA:93:6B:CB:84:70
         AIzaSyCfkLHIJIAnKKwd5S4nLMN5apRtWj28rwc- debug key-->
         <meta-data
             android:name="com.google.android.geo.API_KEY"
-            android:value="AIzaSyBQ9w6VrGGquOHwERNrc_jAx_jcm8mrKQw"/>
+            android:value="AIzaSyD1tXj_z3zgxB-5tPG8H9sXS4NCBWAJosA"/>
 
         <meta-data android:name="com.facebook.sdk.ApplicationId" android:value="@string/facebook_app_id"/>
         <!-- Pathsense APIs -->

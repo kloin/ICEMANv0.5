@@ -5,6 +5,7 @@ import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.ThemedSpinnerAdapter;
+import android.util.Log;
 
 import com.teamunemployment.breadcrumbs.Location.SimpleGps;
 import com.teamunemployment.breadcrumbs.Models;
@@ -43,7 +44,7 @@ public class SyncManager {
         Runnable syncRunnable = new Runnable() {
             @Override
             public void run() {
-                sync(fetchLocalDataCallback, localId, databaseController, index);
+                sync(fetchLocalDataCallback, localId, databaseController);
             }
         };
 
@@ -51,10 +52,15 @@ public class SyncManager {
     }
 
     private void sync(@NonNull TripDataSource.LoadTripPathCallback fetchLocalDataCallback, int localId,
-                      @NonNull DatabaseController databaseController, int index) {
+                      @NonNull DatabaseController databaseController) {
+
         // Do local fetch
+        int index = databaseController.GetSavedIndexForTrail(Integer.toString(localId));
         TripLocalDataSource localDataSource = new TripLocalDataSource(databaseController);
         JSONObject localData = localDataSource.FetchRawTrackingData(localId, index);
+
+
+        //JSONObject localData = localDataSource.FetchRawTestData();
         if (localData.length() > 0) {
             // Send data to the server for processing and reference our result.
             JSONObject resultData = pushDataToServer(localData);
@@ -62,7 +68,10 @@ public class SyncManager {
             // Help with the processing of the json.
             JSONHelper helper = new JSONHelper();
             ArrayList<BreadcrumbsEncodedPolyline> lines = helper.processResultIntoPolylines(resultData);
-
+            // if our data is shit, we need
+            if (lines.size() == 0) {
+                databaseController.updateTrailSavedPoint(Integer.toString(localId), index);
+            }
             TripPath tripPath = new TripPath(lines);
             localDataSource.saveTripPath(tripPath, Integer.toString(localId));
         }
@@ -78,6 +87,9 @@ public class SyncManager {
         url = url.replaceAll(" ", "%20");
         HTTPRequestHandler requestHandler = new HTTPRequestHandler();
         String result = requestHandler.SendJSONRequest(url, localData);
+        if (result == null) {
+            return new JSONObject();
+        }
         try {
             JSONObject resultJSON = new JSONObject(result);
             return resultJSON;

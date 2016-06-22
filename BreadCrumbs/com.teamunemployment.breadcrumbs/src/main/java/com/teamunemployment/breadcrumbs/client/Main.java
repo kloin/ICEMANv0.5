@@ -334,7 +334,7 @@ public class Main extends AppCompatActivity {
 		 if(cursor.getCount()<1) {
              cursor.close();
              return false;
-         }
+	 	}
         cursor.moveToFirst();
         //This is our id we want.
         String id = Integer.toString(cursor.getInt(1));

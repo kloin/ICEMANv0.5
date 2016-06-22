@@ -178,8 +178,8 @@ public class ProfilePageFragment extends Fragment {
         Toolbar toolbar = (Toolbar) rootView.findViewById(R.id.toolbar);
         myContext.setSupportActionBar(toolbar);
         CollapsingToolbarLayout collapsingToolbarLayout = (CollapsingToolbarLayout) rootView.findViewById(R.id.collapsable_toolbar_holder);
-        collapsingToolbarLayout.setExpandedTitleTextAppearance(R.style.Gone);
-        collapsingToolbarLayout.setCollapsedTitleTextColor(Color.WHITE);
+        collapsingToolbarLayout.setExpandedTitleTextAppearance(R.style.CodeFontWhite);
+        collapsingToolbarLayout.setCollapsedTitleTextColor(getResources().getColor(R.color.ColorPrimary));
         collapsingToolbarLayout.setTitle(name);
 
         ImageView backButton = (ImageView) rootView.findViewById(R.id.profile_back_button);
@@ -281,6 +281,10 @@ public class ProfilePageFragment extends Fragment {
         final ImageView header = (ImageView) rootView.findViewById(R.id.headerPicture);
         if (resultCode == LOCAL && requestCode ==PICK_PROFILE_REQUEST) { // 0 for local flag.
             // This means that it is the result that we are looking for.
+            if (data == null) {
+                return;
+            }
+
             String id = data.getStringExtra("ProfileId");
             if (id == null) {
                 return;

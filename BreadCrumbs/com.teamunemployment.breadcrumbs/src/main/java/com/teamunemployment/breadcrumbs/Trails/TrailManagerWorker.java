@@ -37,6 +37,7 @@ import com.teamunemployment.breadcrumbs.BackgroundServices.StopTrackingIntent;
 import com.teamunemployment.breadcrumbs.BreadcrumbsActivityAPI;
 import com.teamunemployment.breadcrumbs.BreadcrumbsLocationAPI;
 import com.teamunemployment.breadcrumbs.Crumb;
+import com.teamunemployment.breadcrumbs.Location.SimpleGps;
 import com.teamunemployment.breadcrumbs.Network.LoadBalancer;
 import com.teamunemployment.breadcrumbs.Network.ServiceProxy.AsyncDataRetrieval;
 import com.teamunemployment.breadcrumbs.Network.ServiceProxy.AsyncSendLargeJsonParam;
@@ -213,28 +214,25 @@ public class TrailManagerWorker {
         // Save event to appropriate database
         switch (eventType) {
             case TRAIL_START:
-                dbc.AddMetadata(eventId, DateTime.now().toString(),location.getLatitude(), location.getLongitude(), trailId, TRAIL_START, mPreferencesAPI.GetTransportMethod());
+                dbc.AddMetadata(eventId, " ",location.getLatitude(), location.getLongitude(), trailId, TRAIL_START, mPreferencesAPI.GetTransportMethod());
                 break;
             case TRAIL_END:
-                dbc.AddMetadata(eventId, DateTime.now().toString(),location.getLatitude(), location.getLongitude(), trailId, TRAIL_END, mPreferencesAPI.GetTransportMethod());
+                dbc.AddMetadata(eventId, " ",location.getLatitude(), location.getLongitude(), trailId, TRAIL_END, mPreferencesAPI.GetTransportMethod());
                 break;
             case CRUMB:
-                dbc.AddMetadata(eventId, DateTime.now().toString(),location.getLatitude(), location.getLongitude(), trailId, CRUMB, mPreferencesAPI.GetTransportMethod());
+                dbc.AddMetadata(eventId, " ",location.getLatitude(), location.getLongitude(), trailId, CRUMB, mPreferencesAPI.GetTransportMethod());
                 break;
             case REST_ZONE:
-                dbc.AddMetadata(eventId, DateTime.now().toString(),location.getLatitude(), location.getLongitude(), trailId, REST_ZONE, mPreferencesAPI.GetTransportMethod());
+                dbc.AddMetadata(eventId, " ",location.getLatitude(), location.getLongitude(), trailId, REST_ZONE, mPreferencesAPI.GetTransportMethod());
                 break;
         }
-
-        // This is where we increment The event id for the next event.
-//        mPreferencesAPI.SetEventId(eventId+1);
     }
 
     /**
      * Handle the create trail call from the user. This method handles setting up and starting a trail.
      */
     public void StartLocalTrail() {
-        DatabaseController dbc = new DatabaseController(mContext);
+        final DatabaseController dbc = new DatabaseController(mContext);
         BreadcrumbsLocationAPI locationAPI = new BreadcrumbsLocationAPI();
 
         // clean up any old trail data that may exist.
@@ -244,34 +242,27 @@ public class TrailManagerWorker {
 
         // Start our trail. note that the local trial id is saved to preferences inside this method
         dbc.SaveTrailStart(null, DateTime.now().toString());
+
+        // Shouldnt really be putting this shit here.
+        getFirstPoint();
         ActivityController activityController = new ActivityController(mContext);
         activityController.StartListenting();
     }
 
-
-
-    // We need to get the point where we start. This deals with that.
-    private LocationListener fetchFirstPointListener = new LocationListener() {
-        @Override
-        public void onLocationChanged(Location location) {
-            CreateEventMetadata(0, location);
+    private void getFirstPoint() {
+        SimpleGps simpleGps = new SimpleGps(mContext);
+        Location location = simpleGps.GetInstantLocation();
+        if (location != null) {
+            dbc.SaveActivityPoint(7, 7, location.getLatitude(), location.getLongitude(), 0);
+        } else {
+            simpleGps.FetchFineLocation(new SimpleGps.Callback() {
+                @Override
+                public void doCallback(Location location) {
+                    dbc.SaveActivityPoint(7,7,location.getLatitude(),location.getLongitude(),0);
+                }
+            });
         }
-
-        @Override
-        public void onStatusChanged(String provider, int status, Bundle extras) {
-
-        }
-
-        @Override
-        public void onProviderEnabled(String provider) {
-
-        }
-
-        @Override
-        public void onProviderDisabled(String provider) {
-
-        }
-    };
+    }
 
 
     // ==================================================================================

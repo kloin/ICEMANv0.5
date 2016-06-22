@@ -49,6 +49,8 @@ public class ActivityHandler extends Service {
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
+        TextCaching caching = new TextCaching(this);
+        caching.CacheText("SHITYEA", "working");
         context = this;
         simpleGps = new SimpleGps(this);
         dbc = new DatabaseController(this);
@@ -269,7 +271,7 @@ public class ActivityHandler extends Service {
 
                 // If we have been further than 500 meters we dont want to save this as a walking line, but
                 // a driving line.
-                if (previousLocation.distanceTo(location) > 500) {
+                if (previousLocation != null && previousLocation.distanceTo(location) > 500) {
                     preferencesAPI.SetLastActivity(DetectedActivity.IN_VEHICLE);
                     dbc.SaveActivityPoint(DetectedActivity.IN_VEHICLE, pastActivity, location.getLatitude(), location.getLongitude(), granularity);
                     stopSelf();

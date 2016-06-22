@@ -62,7 +62,7 @@ public class SaveCrumbService extends Service {
     private Context context;
     private Timer t;
     int timer = 0;
-
+    private boolean HAVE_SAVED = false;
     private BreadCrumbsFusedLocationProvider fusedLocationProvider;
 
     private Bitmap bitmap;
@@ -108,12 +108,13 @@ public class SaveCrumbService extends Service {
             return super.onStartCommand(intent, flags, startId);
         }
 
-        // Grab location service.
         locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
         locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 1, 0, locationListener);
 
         // Start thread. If we are still running, cancel it.
-        t = new Timer();
+        if (t == null) {
+            t = new Timer();
+        }
         t.scheduleAtFixedRate(new TimerTask() {
             @Override
             public void run() {
@@ -126,13 +127,20 @@ public class SaveCrumbService extends Service {
                     }
                     SimpleGps gps = new SimpleGps(context);
                     Location location = gps.GetInstantLocation();
-                    processAndSaveEvent(location);
+                    if (HAVE_SAVED) {
+                        return; // Dont want to save anything here because I have already saved.
+                    }   else {
+                        HAVE_SAVED = true;
+                        processAndSaveEvent(location);
+                    }
+
                     locationManager.removeUpdates(locationListener);
-                    t.cancel();
-                    stopSelf();
                 }
             }
         }, 50, 50);
+
+        // Grab location service.
+
 
         return super.onStartCommand(intent, flags, startId);
     }
@@ -140,9 +148,14 @@ public class SaveCrumbService extends Service {
     private LocationListener locationListener = new LocationListener() {
         @Override
         public void onLocationChanged(Location location) {
-            if (location.getAccuracy() <= 48) {
-                processAndSaveEvent(location);
-                t.cancel();
+            if (location.getAccuracy() <= 32) {
+                if (HAVE_SAVED) {
+                    return; // Dont want to save anything here because I have already saved.
+                }   else {
+                    HAVE_SAVED = true;
+                    processAndSaveEvent(location);
+                }
+
                 // Save event.
                 if (ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
                     // Shouldnt ever get here - this would be really bad.
@@ -150,7 +163,6 @@ public class SaveCrumbService extends Service {
                     return;
                 }
                 locationManager.removeUpdates(this);
-                stopSelf();
             }
         }
 
@@ -178,6 +190,7 @@ public class SaveCrumbService extends Service {
         return " "; // return an empty string which will be sent to the server.
     }
 
+
     private String getCity(Address address) {
         if (address != null) {
             return address.getLocality();
@@ -192,56 +205,66 @@ public class SaveCrumbService extends Service {
         return " "; // return an empty string which will be sent to the server.
     }
 
-
     /**
      * Fetch the details needed and save our event.
      * @param location
      */
     private void processAndSaveEvent(final Location location) {
-
-        // Fetch Time
-        Calendar calendar = Calendar.getInstance();
-        final String timeStamp = calendar.getTime().toString();
-
-        // Get the address
-        Address address = PlaceManager.GetPlace(context, location.getLatitude(), location.getLongitude());
-
-        // Parameters that we need to save to for a crumb.
-        final String suburb = getSuburb(address);
-        final String finalCity = getCity(address);
-        final String finalCountry = getCountry(address);
-
-        fusedLocationProvider = new BreadCrumbsFusedLocationProvider(context);
-        fusedLocationProvider.GetCurrentPlace(new ResultCallback<PlaceLikelihoodBuffer>() {
+        new Thread(new Runnable() {
             @Override
-            public void onResult(PlaceLikelihoodBuffer likelyPlaces) {
-                String placeId = " ";
-                try {
-                    PlaceLikelihood placeLikelihood = likelyPlaces.get(0);
-                    if (placeLikelihood != null) {
-                        Place place = placeLikelihood.getPlace();
-                        if (place != null) {
-                            placeId = place.getId();
+            public void run() {
+                // Fetch Time
+                Calendar calendar = Calendar.getInstance();
+                final String timeStamp = calendar.getTime().toString();
+
+                // Get the address
+                Address address = PlaceManager.GetPlace(context, location.getLatitude(), location.getLongitude());
+
+                // Parameters that we need to save to for a crumb.
+                final String suburb = getSuburb(address);
+                final String finalCity = getCity(address);
+                final String finalCountry = getCountry(address);
+
+                fusedLocationProvider = new BreadCrumbsFusedLocationProvider(context);
+                fusedLocationProvider.GetCurrentPlace(new ResultCallback<PlaceLikelihoodBuffer>() {
+                    @Override
+                    public void onResult(PlaceLikelihoodBuffer likelyPlaces) {
+                        String placeId = " ";
+                        try {
+                            PlaceLikelihood placeLikelihood = likelyPlaces.get(0);
+                            if (placeLikelihood != null) {
+                                Place place = placeLikelihood.getPlace();
+                                if (place != null) {
+                                    placeId = place.getId();
+                                }
+                            }
+                            likelyPlaces.release();
+                            likelyPlaces.close();
+                        } catch (IllegalStateException ex) {
+                            // This happens when we have no network connection
+                            ex.printStackTrace();
+                            if (likelyPlaces!=null) {
+                                likelyPlaces.release();
+                                likelyPlaces.close();
+                            }
                         }
+
+                        // For each item in the arrayList, save our shit.
+                        Iterator<Event> eventIterator = eventsTosave.iterator();
+                        while (eventIterator.hasNext()) {
+                            Event next = eventIterator.next();
+                            saveEvent(next, location, suburb, finalCity, finalCountry, placeId);
+                        }
+
+                        // Also need to save a path event here.
                     }
-                    likelyPlaces.release();
-                } catch (IllegalStateException ex) {
-                    // This happens when we have no network connection
-                    ex.printStackTrace();
-                }
-
-                // For each item in the arrayList, save our shit.
-                Iterator<Event> eventIterator = eventsTosave.iterator();
-                while (eventIterator.hasNext()) {
-                    Event next = eventIterator.next();
-                    saveEvent(next, location, suburb, finalCity, finalCountry, placeId);
-                }
-
-                // Also need to save a path event here.
+                });
             }
-        });
+        }).start();
+
     }
 
+    //
     private void saveEvent(Event event, Location location, String suburb, String city, String country, String placeId) {
         if (preferencesAPI == null) {
             preferencesAPI = new PreferencesAPI(context);
@@ -251,14 +274,16 @@ public class SaveCrumbService extends Service {
         String localTrailId = Integer.toString(preferencesAPI.GetLocalTrailId());
         DatabaseController dbc = new DatabaseController(context);
         int eventId = event.eventId;
-        DateTime timeStamp = DateTime.now();
-        String mime = "";
+
+        //
+        String mime;
         if (event.isPhoto) {
             mime = ".jpg";
         } else {
             mime = ".mp4";
         }
-        dbc.SaveCrumb(localTrailId, " ", userId, event.eventId, location.getLatitude(), location.getLongitude(), mime, timeStamp.toString(), "", placeId, suburb, city, country);
+
+        dbc.SaveCrumb(localTrailId, " ", userId, event.eventId, location.getLatitude(), location.getLongitude(), mime, " ", " ", placeId, suburb, city, country);
         TrailManagerWorker trailManagerWorker = new TrailManagerWorker(context);
         trailManagerWorker.CreateEventMetadata(TrailManagerWorker.CRUMB, location);
         int lastActivity = DetectedActivity.WALKING;
@@ -268,7 +293,9 @@ public class SaveCrumbService extends Service {
         if (lastActivity == -1) {
             lastActivity = DetectedActivity.WALKING;
         }
-        dbc.SaveActivityPoint(lastActivity, lastActivity, location.getLatitude(), location.getLongitude(), 0);
 
+        dbc.SaveActivityPoint(lastActivity, lastActivity, location.getLatitude(), location.getLongitude(), 0);
+        t.cancel();
+        stopSelf();
     }
 }

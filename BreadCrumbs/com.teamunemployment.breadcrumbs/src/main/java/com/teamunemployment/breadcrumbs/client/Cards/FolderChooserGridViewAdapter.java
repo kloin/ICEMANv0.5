@@ -98,8 +98,9 @@ public class FolderChooserGridViewAdapter extends BaseAdapter {
         onlyBoundsOptions.inPreferredConfig=Bitmap.Config.ARGB_8888;//optional
         BitmapFactory.decodeStream(input, null, onlyBoundsOptions);
         input.close();
-        if ((onlyBoundsOptions.outWidth == -1) || (onlyBoundsOptions.outHeight == -1))
+        if ((onlyBoundsOptions.outWidth == -1) || (onlyBoundsOptions.outHeight == -1)) {
             return null;
+        }
 
         int originalSize = (onlyBoundsOptions.outHeight > onlyBoundsOptions.outWidth) ? onlyBoundsOptions.outHeight : onlyBoundsOptions.outWidth;
 
@@ -155,6 +156,9 @@ public class FolderChooserGridViewAdapter extends BaseAdapter {
             Matrix matrix = new Matrix();
             if (rotation != 0) {
                 matrix.preRotate(rotation);
+            }
+            if (bm == null) {
+                return null;
             }
             final Bitmap adjustedBitmap = Bitmap.createBitmap(bm, 0, 0, bm.getWidth(), bm.getHeight(), matrix, true);
             return adjustedBitmap;

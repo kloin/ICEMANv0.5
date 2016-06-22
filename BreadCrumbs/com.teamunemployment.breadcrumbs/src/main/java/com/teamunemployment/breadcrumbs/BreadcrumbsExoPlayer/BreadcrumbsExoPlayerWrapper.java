@@ -90,7 +90,6 @@ public class BreadcrumbsExoPlayerWrapper implements BreadcrumbsExoPlayer.Listene
         return player.getPlayerControl().isPlaying();
     }
 
-
     // This is required to create the extractorRenderer so that we load the mp4.
     // WE have this in a serperate method so that we can load before we need to show the video.
     public void BuildDatasource(String url) {

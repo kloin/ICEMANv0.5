@@ -55,6 +55,7 @@ import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
 import com.google.maps.android.PolyUtil;
 import com.google.maps.android.ui.IconGenerator;
+import com.google.repacked.kotlin.jvm.internal.DoubleCompanionObject;
 import com.squareup.okhttp.OkHttpClient;
 import com.squareup.okhttp.Request;
 import com.squareup.okhttp.Response;
@@ -80,6 +81,7 @@ import com.google.android.gms.maps.MapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.sothree.slidinguppanel.SlidingUpPanelLayout;
+import com.teamunemployment.breadcrumbs.RandomUsefulShit.Utils;
 import com.teamunemployment.breadcrumbs.Trails.TrailManagerWorker;
 import com.teamunemployment.breadcrumbs._HAX.ExceptionHandler;
 import com.teamunemployment.breadcrumbs.caching.TextCaching;
@@ -87,6 +89,8 @@ import com.teamunemployment.breadcrumbs.client.Animations.SimpleAnimations;
 import com.teamunemployment.breadcrumbs.client.Cards.CrumbCardDataObject;
 import com.teamunemployment.breadcrumbs.client.StoryBoard.StoryBoardActivity;
 import com.teamunemployment.breadcrumbs.client.StoryBoard.StoryBoardItemData;
+import com.teamunemployment.breadcrumbs.data.BreadcrumbsEncodedPolyline;
+import com.teamunemployment.breadcrumbs.data.TripPath;
 import com.teamunemployment.breadcrumbs.database.DatabaseController;
 
 import static android.graphics.Typeface.BOLD;
@@ -113,6 +117,9 @@ import java.util.List;
  */
 public class MapViewer extends Activity implements OnMapClickListener, OnMapLongClickListener, OnMarkerClickListener {
 
+	public static final int MEDIUM_WIDTH = 24;
+	public static final int FAT_WIDTH = 36;
+	public static final int SKINNY_WIDTH = 8;
 	public static final int EDIT_MODE = 1;
 	public static final int READ_ONLY_MODE = 0;
 	private static final String FIRST_TIME_FLAG = "FIRST_TIME_BRO";
@@ -140,10 +147,9 @@ public class MapViewer extends Activity implements OnMapClickListener, OnMapLong
 
 	private CoordinatorLayout coordinatorLayout;
 	public View bottomSheet;
-	public CardView bottomSheetToolbar;
+	public RelativeLayout bottomSheetToolbar;
 	private RelativeLayout imageCover;
 	private ImageView trailCoverPhoto;
-
 	private BottomSheetBehavior bottomSheetBehavior;
 
 	// Fabs
@@ -174,7 +180,6 @@ public class MapViewer extends Activity implements OnMapClickListener, OnMapLong
         mMap = ((MapFragment) getFragmentManager().findFragmentById(R.id.map)).getMap();
 		mContext = this;
 		trailId = this.getIntent().getStringExtra("TrailId");
-		//
 
 		if (trailId != null && trailId.endsWith("L")) {
 			IS_OWN_TRAIL = true;
@@ -182,9 +187,13 @@ public class MapViewer extends Activity implements OnMapClickListener, OnMapLong
 			trailId = trailId.substring(0, trailId.length()-1);
 			LOOKIING_AT_MAP = false;
 		}
+
+		// Google maps breaks the animation when returning to the map screen. This only happens on
+		// lolipop. This is the 'reccomended' hack by google. This bug is fixed on Marshmallow +.
 		if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
 			getWindow().setSharedElementsUseOverlay(false);
 		}
+
 		setLocateMeClickHandler();
 		setUpBottomSheet();
 		setListenersAndLoaders();
@@ -221,7 +230,7 @@ public class MapViewer extends Activity implements OnMapClickListener, OnMapLong
 	private void setUpBottomSheet() {
 		coordinatorLayout = (CoordinatorLayout) findViewById(R.id.map_root_view);
 		bottomSheet = coordinatorLayout.findViewById(R.id.bottom_sheet);
-		bottomSheetToolbar = (CardView) bottomSheet.findViewById(R.id.bottom_sheet_header);
+		bottomSheetToolbar = (RelativeLayout) bottomSheet.findViewById(R.id.bottom_sheet_header);
 
 		bottomSheetBehavior = BottomSheetBehavior.from(bottomSheet);
 		bottomSheetBehavior.setBottomSheetCallback(new BottomSheetBehavior.BottomSheetCallback() {
@@ -539,6 +548,7 @@ public class MapViewer extends Activity implements OnMapClickListener, OnMapLong
 				}
 			}
 		};
+
 		AsyncFetchCrumbList genericAsyncWorker = new AsyncFetchCrumbList(overrides);
 		genericAsyncWorker.execute();
 		Log.d(TAG, "Finished StartCrumbDisplay on main thread. May still be processing client side.");
@@ -561,7 +571,6 @@ public class MapViewer extends Activity implements OnMapClickListener, OnMapLong
 
 
 	public void FetchMyLocation() {
-
 		SimpleGps simpleGps = new SimpleGps(context);
 		Location location = simpleGps.GetInstantLocation();
 		if (location == null) {
@@ -620,8 +629,6 @@ public class MapViewer extends Activity implements OnMapClickListener, OnMapLong
 				processResult(result);
 				Log.d(TAG, "Finished processResult(result). Time: " + System.currentTimeMillis());
 
-//				JSONObject jsonObject = new JSONObject(result);
-//				displayMetadata(jsonObject);
 			}
 		}, context);
 		clientRequestProxy.execute();
@@ -671,19 +678,18 @@ public class MapViewer extends Activity implements OnMapClickListener, OnMapLong
 	 * @param result This is the string of data that we are supposed to be processing.
      */
 	private void processResult(final String result) {
-		Handler processResultHandler = new Handler();
-		Runnable processResultRunner = new Runnable() {
+		new Thread(new Runnable() {
 			@Override
 			public void run() {
 				try {
+					Log.d("UIINDICATOR", " We are on the UI Thread: " +Utils.WeAreRunningOnTheUIThread());
 					processResultRunnable(result);
 				} catch (JSONException e) {
 					Log.e(TAG, "Failed to draw polyline on map due to error. Stack trace follow");
 					e.printStackTrace();
 				}
 			}
-		};
-		processResultHandler.post(processResultRunner);
+		}).start();
 	}
 
 	// Runnable method that occurs off of the main UI Thread.
@@ -703,44 +709,100 @@ public class MapViewer extends Activity implements OnMapClickListener, OnMapLong
 			if (isEncoded) {
 				listOfPoints = PolyUtil.decode(polyline);
 				listOfPoints = addLastPointToList(listOfPoints);
-				DrawPolyline(listOfPoints, "#03A9F4");
+				DrawPolyline(listOfPoints, "#03A9F4", MEDIUM_WIDTH);
+				// Draw from start
+				linkHangingLines(listOfPoints, tempObject);
 			} else {
 				listOfPoints = parseNonEncodedPolyline(polyline);
 				listOfPoints = addLastPointToList(listOfPoints);
-				DrawPolyline(listOfPoints, "#03A9F4");
+				Log.d("UIINDICATOR", " WE are on the UI Thread: " +Utils.WeAreRunningOnTheUIThread());
+				DrawPolyline(listOfPoints, "#FFFF0000", SKINNY_WIDTH);
 			}
 			count += 1;
 		}
 		Trace.endSection();
 	}
 
-	public void DrawDashedPolyline(LatLng latLngOrig, LatLng latLngDest, int color) {
+	// Link encoded polylines with their base/head locations.
+	private void linkHangingLines(List<LatLng> listOfPoints, JSONObject tempObject) throws JSONException {
+		String baseLat = tempObject.getString("BA");
+		String baseLon = tempObject.getString("BO");
+		String headLat = tempObject.getString("HA");
+		String headLon = tempObject.getString("HO");
 
-			double difLat = latLngDest.latitude - latLngOrig.latitude;
-			double difLng = latLngDest.longitude - latLngOrig.longitude;
+		LatLng originBase = new LatLng(Double.parseDouble(baseLat), Double.parseDouble(baseLon));
+		LatLng originHead =listOfPoints.get(0);
+		List<LatLng> latLngs = new ArrayList<>();
+		latLngs.add(originBase);
+		latLngs.add(originHead);
+		DrawPolyline(latLngs, "#FFFF0000", SKINNY_WIDTH);
 
-			double zoom = mMap.getCameraPosition().zoom;
+		LatLng destBase = listOfPoints.get(listOfPoints.size()-1);
+		LatLng destHead = new LatLng(Double.parseDouble(headLat), Double.parseDouble(headLon));
+		List<LatLng> endPoints = new ArrayList<>();
+		endPoints.add(destBase);
+		endPoints.add(destHead);
 
-			double divLat = difLat / (zoom * 2);
-			double divLng = difLng / (zoom * 2);
+		DrawPolyline(endPoints, "#FFFF0000", SKINNY_WIDTH);
+	}
 
-			LatLng tmpLatOri = latLngOrig;
+	// Link encoded polylines with their base/head locations.
+	private void linkHangingLines(List<LatLng> listOfPoints, BreadcrumbsEncodedPolyline tempObject){
+		Double headLat = tempObject.headLatitude;
+		Double headLon = tempObject.headLongitude;
+		Double baseLat = tempObject.baseLatitude;
+		Double baseLon = tempObject.baseLongitude;
 
-			for(int i = 0; i < (zoom * 2); i++){
-				LatLng loopLatLng = tmpLatOri;
+		LatLng originBase = new LatLng(baseLat, baseLon);
+		LatLng originHead =listOfPoints.get(0);
+		List<LatLng> latLngs = new ArrayList<>();
+		latLngs.add(originBase);
+		latLngs.add(originHead);
+		DrawPolyline(latLngs, "#FFFF0000", SKINNY_WIDTH);
 
-				if(i > 0){
-					loopLatLng = new LatLng(tmpLatOri.latitude + (divLat * 0.075f), tmpLatOri.longitude + (divLng * 0.075f));
+		LatLng destBase = listOfPoints.get(listOfPoints.size()-1);
+		LatLng destHead = new LatLng(headLat, headLon);
+		List<LatLng> endPoints = new ArrayList<>();
+		endPoints.add(destBase);
+		endPoints.add(destHead);
+
+		DrawPolyline(endPoints, "#FFFF0000", SKINNY_WIDTH);
+	}
+
+
+	public void DrawDashedPolyline(final LatLng latLngOrig, final LatLng latLngDest, final int color) {
+
+		runOnUiThread(new Runnable() {
+			@Override
+			public void run() {
+				double difLat = latLngDest.latitude - latLngOrig.latitude;
+				double difLng = latLngDest.longitude - latLngOrig.longitude;
+
+				double zoom = mMap.getCameraPosition().zoom;
+
+				final double divLat = difLat / (zoom * 2);
+				final double divLng = difLng / (zoom * 2);
+
+				LatLng tmpLatOri = latLngOrig;
+
+				for(int i = 0; i < (zoom * 2); i++){
+					LatLng loopLatLng = tmpLatOri;
+
+					if(i > 0){
+						loopLatLng = new LatLng(tmpLatOri.latitude + (divLat * 0.075f), tmpLatOri.longitude + (divLng * 0.075f));
+					}
+					final LatLng finalLoopLatLng = loopLatLng;
+					final LatLng finalTmpLatOri = tmpLatOri;
+
+					mMap.addPolyline(new PolylineOptions()
+							.add(finalLoopLatLng)
+							.add(new LatLng(finalTmpLatOri.latitude + divLat, finalTmpLatOri.longitude + divLng))
+							.color(color)
+							.width(5f));
+					tmpLatOri = new LatLng(tmpLatOri.latitude + divLat, tmpLatOri.longitude + divLng);
 				}
-
-				Polyline polyline = mMap.addPolyline(new PolylineOptions()
-						.add(loopLatLng)
-						.add(new LatLng(tmpLatOri.latitude + divLat, tmpLatOri.longitude + divLng))
-						.color(color)
-						.width(5f));
-
-				tmpLatOri = new LatLng(tmpLatOri.latitude + divLat, tmpLatOri.longitude + divLng);
 			}
+		});
 
 	}
 
@@ -876,14 +938,19 @@ public class MapViewer extends Activity implements OnMapClickListener, OnMapLong
 	 * Draw a list of points as a polyline onto the map as a  polyline
 	 * @param listOfPoints The list of points that we want to draw.
      */
-	private void DrawPolyline(List<LatLng> listOfPoints) {
-		PolylineOptions options = new PolylineOptions().width(12).color(Color.parseColor("#E57373")).geodesic(true);
+	public void DrawPolyline(List<LatLng> listOfPoints) {
+		final PolylineOptions options = new PolylineOptions().width(12).color(Color.parseColor("#E57373")).geodesic(true);
 		for (int z = 0; z < listOfPoints.size(); z++) {
 			LatLng point = listOfPoints.get(z);
 			options.add(point);
 		}
 
-		mMap.addPolyline(options);
+		runOnUiThread(new Runnable() {
+			@Override
+			public void run() {
+				mMap.addPolyline(options);
+			}
+		});
 	}
 
 	/**
@@ -892,8 +959,29 @@ public class MapViewer extends Activity implements OnMapClickListener, OnMapLong
 	 * @param listOfPoints The list of points to draw.
 	 * @param color The color to draw the polyline in.
      */
-	private void DrawPolyline(List<LatLng> listOfPoints, String color) {
+	public void DrawPolyline(List<LatLng> listOfPoints, String color) {
 		final PolylineOptions options = new PolylineOptions().width(24).color(Color.parseColor(color)).geodesic(true);
+		for (int z = 0; z < listOfPoints.size(); z++) {
+			LatLng point = listOfPoints.get(z);
+			options.add(point);
+		}
+
+		runOnUiThread(new Runnable() {
+			@Override
+			public void run() {
+				mMap.addPolyline(options);
+			}
+		});
+	}
+
+	/**
+	 * Draw a polyuline on the map. Same as the others, except you can define a width
+	 * @param listOfPoints
+	 * @param color
+	 * @param width
+     */
+	public void DrawPolyline(List<LatLng> listOfPoints, String color, int width) {
+		final PolylineOptions options = new PolylineOptions().width(width).color(Color.parseColor(color)).geodesic(true);
 		for (int z = 0; z < listOfPoints.size(); z++) {
 			LatLng point = listOfPoints.get(z);
 			options.add(point);
@@ -1035,7 +1123,6 @@ public class MapViewer extends Activity implements OnMapClickListener, OnMapLong
 
 	}
 
-
 	// This is where I want to set the duration, distance, number of views and followers
 	private void setTrailDetails(String trailId) {
 		UpdateViewElementWithProperty updateViewElementWithProperty = new UpdateViewElementWithProperty();
@@ -1059,8 +1146,6 @@ public class MapViewer extends Activity implements OnMapClickListener, OnMapLong
 //			textView.setText(trailDescription);
 //		}
 	}
-
-
 
 	private void addIcon(IconGenerator iconFactory, CharSequence text, LatLng position) {
 		MarkerOptions markerOptions = new MarkerOptions().
@@ -1447,12 +1532,6 @@ public class MapViewer extends Activity implements OnMapClickListener, OnMapLong
 
 			return output;
 		}
-
-		public void DrawPersonalTrailOnMap() {
-			// Need to fetch all our metadata and save it to the server. Then we need to get all the
-			// photos on the database and display it on the map
-
-		}
 	}
 
 
@@ -1464,6 +1543,34 @@ public class MapViewer extends Activity implements OnMapClickListener, OnMapLong
 				FetchMyLocation();
 			}
 		});
+	}
+
+	/**
+	 * Draw our path on the map.
+	 * @param tripPath
+     */
+	public void DrawPath(TripPath tripPath) {
+
+		// We are drawing from the database, and we may not have had a point saved nearby recently,
+		// or a sync may have been delayed due to problems with network or battery on the user phone.
+		SimpleGps simpleGps = new SimpleGps(context);
+		Location myLocation = simpleGps.GetInstantLocation();
+		tripPath.AddLocationToLine(myLocation);
+
+		ArrayList<BreadcrumbsEncodedPolyline> encodedPolylines = tripPath.getTripPolyline();
+		List<LatLng> listOfPoints = new ArrayList<>();
+		for (BreadcrumbsEncodedPolyline polyline : encodedPolylines) {
+			if (polyline.isEncoded) {
+				listOfPoints = PolyUtil.decode(polyline.polyline);
+				DrawPolyline(listOfPoints, "#03A9F4", MEDIUM_WIDTH);
+				// Draw from start
+				linkHangingLines(listOfPoints, polyline);
+			} else {
+				listOfPoints = parseNonEncodedPolyline(polyline.polyline);
+				Log.d("UIINDICATOR", " WE are on the UI Thread: " +Utils.WeAreRunningOnTheUIThread());
+				DrawPolyline(listOfPoints, "#FFFF0000", SKINNY_WIDTH);
+			}
+		}
 	}
 
 }

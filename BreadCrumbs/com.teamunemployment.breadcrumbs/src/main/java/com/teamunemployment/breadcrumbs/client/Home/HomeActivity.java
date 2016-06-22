@@ -27,6 +27,7 @@ import com.ncapdevi.fragnav.FragNavController;
 import com.roughike.bottombar.BottomBar;
 import com.roughike.bottombar.BottomBarBadge;
 import com.roughike.bottombar.OnMenuTabClickListener;
+import com.teamunemployment.breadcrumbs.ActivityRecognition.ActivityController;
 import com.teamunemployment.breadcrumbs.ActivityRecognition.ActivityHandler;
 import com.teamunemployment.breadcrumbs.Dialogs.IDialogCallback;
 import com.teamunemployment.breadcrumbs.Dialogs.SimpleMaterialDesignDialog;
@@ -69,6 +70,7 @@ public class HomeActivity extends AppCompatActivity {
         preferencesAPI = new PreferencesAPI(this);
         initialiseFragHolder();
         setUpBottomBar(savedInstanceState);
+        startTrackingIfNeccessary();
 
     }
 
@@ -299,6 +301,21 @@ public class HomeActivity extends AppCompatActivity {
 
             // other 'case' lines to check for other
             // permissions this app might request
+        }
+    }
+
+    /**
+     * If we were tracking when the phone was turned off, we need to start tracking again.
+     */
+    private void startTrackingIfNeccessary() {
+        if (preferencesAPI == null) {
+            preferencesAPI = new PreferencesAPI(this);
+        }
+
+        boolean isTracking = preferencesAPI.isTrackingEnabledByUser();
+        if (isTracking) {
+            ActivityController activityController = new ActivityController(context);
+            activityController.StartListenting();
         }
     }
 }

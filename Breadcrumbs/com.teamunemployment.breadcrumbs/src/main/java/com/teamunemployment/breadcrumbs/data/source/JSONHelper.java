@@ -41,8 +41,22 @@ public class JSONHelper {
             JSONObject tempObject = jsonObject.getJSONObject(Integer.toString(count));
             boolean isEncoded = tempObject.getBoolean("IsEncoded");
             String polyline = tempObject.getString("Polyline");
-            BreadcrumbsEncodedPolyline encodedPolyline = new BreadcrumbsEncodedPolyline(isEncoded, polyline);
-            polylines.add(encodedPolyline);
+
+            // All encoded strings should have a base and head lat/long
+            if (isEncoded) {
+                Double headLongitude = tempObject.getDouble("HO");
+                Double headLatitude = tempObject.getDouble("HA");
+                Double baseLontidude = tempObject.getDouble("BO");
+                Double baseLatitude = tempObject.getDouble("BA");
+                BreadcrumbsEncodedPolyline encodedPolyline = new BreadcrumbsEncodedPolyline(isEncoded, polyline, baseLatitude, baseLontidude, headLatitude, headLongitude);
+                polylines.add(encodedPolyline);
+            } else {
+                BreadcrumbsEncodedPolyline encodedPolyline = new BreadcrumbsEncodedPolyline(isEncoded, polyline);
+                polylines.add(encodedPolyline);
+            }
+
+
+
             count += 1;
         }
 

@@ -3,6 +3,7 @@ package com.teamunemployment.breadcrumbs.Location;
 import android.Manifest;
 import android.content.Context;
 import android.content.pm.PackageManager;
+import android.location.Address;
 import android.location.Criteria;
 import android.location.Location;
 import android.location.LocationListener;
@@ -12,6 +13,10 @@ import android.os.Looper;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 
+import com.google.android.gms.common.api.ResultCallback;
+import com.google.android.gms.location.places.Place;
+import com.google.android.gms.location.places.PlaceLikelihood;
+import com.google.android.gms.location.places.PlaceLikelihoodBuffer;
 import com.teamunemployment.breadcrumbs.caching.TextCaching;
 
 import java.util.List;
@@ -83,6 +88,45 @@ public class SimpleGps {
         locationManager.requestSingleUpdate(locationCriteria, getCustomLocationListener(callback), null);
     }
 
+    // careful not to run this on the main thread.
+    public String FetchPlaceNameForLocation(Location location) {
+        Address address = PlaceManager.GetPlace(context, location.getLatitude(), location.getLongitude());
+        if (address == null) {
+            return "";
+        }
+        String result = getSuburb(address);
+        if (result.isEmpty()) {
+            result = getCity(address);
+            if (result.isEmpty()) {
+                return address.getCountryName();
+            }
+        }
+        return result;
+
+    }
+
+    private String getSuburb(Address address) {
+        if (address != null) {
+            return address.getSubLocality();
+        }
+
+        return ""; // return an empty string which will be sent to the server.
+    }
+
+    private String getCity(Address address) {
+        if (address != null) {
+            return address.getLocality();
+        }
+        return ""; // return an empty string which will be sent to the server.
+    }
+
+    private String getCountry(Address address) {
+        if (address != null) {
+            return address.getCountryName();
+        }
+        return ""; // return an empty string which will be sent to the server.
+    }
+
     /**
      * Fetch an accurate location from the gps. May take some time, and may cost gps.
      * @param callback the callback to execute when we have found a location.
@@ -135,6 +179,32 @@ public class SimpleGps {
             }
         };
     }
+    // Dont run this on the main thread
+    private String fetchName() {
+
+        BreadCrumbsFusedLocationProvider fusedLocationProvider = new BreadCrumbsFusedLocationProvider(context);
+        fusedLocationProvider.GetCurrentPlace(new ResultCallback<PlaceLikelihoodBuffer>() {
+            @Override
+            public void onResult(PlaceLikelihoodBuffer likelyPlaces) {
+                String placeId = " ";
+                try {
+                    PlaceLikelihood placeLikelihood = likelyPlaces.get(0);
+                    if (placeLikelihood != null) {
+                        Place place = placeLikelihood.getPlace();
+                        if (place != null) {
+                            placeId = place.getId();
+                        }
+                    }
+                    likelyPlaces.release();
+                } catch (IllegalStateException ex) {
+                    // This happens when we have no network connection
+                    ex.printStackTrace();
+                }
+            }
+        });
+        return  "";
+    }
+
 
 
 

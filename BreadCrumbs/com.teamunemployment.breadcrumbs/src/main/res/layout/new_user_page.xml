@@ -9,13 +9,6 @@
     android:orientation="vertical"
     android:padding="20dp">
 
-    <ImageView
-        android:id="@+id/logo"
-        android:layout_width="140dp"
-        android:layout_height="140dp"
-        android:layout_centerHorizontal="true"
-        android:src="@drawable/logo" />
-
     <TextView
         android:id="@+id/breadcrumbs_header"
         android:layout_width="match_parent"
@@ -32,17 +25,17 @@
         style="@style/CodeFontWhite"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"
-        android:layout_below="@id/logo"
-        android:layout_marginTop="5dp"
+        android:layout_marginTop="20dp"
         android:hint="Username"
         android:imeOptions="actionDone"
         android:inputType="text"
         android:paddingLeft="10dp"
         android:textColor="@color/white"
         android:textColorHint="@color/white"
-        android:textSize="18sp" />
+        android:textSize="18sp"
+        android:layout_centerVertical="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true" />
 
     <EditText
         android:id="@+id/password"
@@ -114,26 +107,24 @@
 
     <Button
         android:id="@+id/facebook_login_button"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/or"
-        android:layout_centerInParent="true"
         android:layout_gravity="center_horizontal"
         android:background="#3b5998"
         android:paddingLeft="20dp"
         android:paddingRight="20dp"
         android:text="Log in with Facebook"
-        android:textColor="@color/white" />
+        android:textColor="@color/white"
+        android:layout_above="@+id/userNameLogin" />
 
     <TextView
         android:id="@+id/create_an_account"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
-        android:layout_below="@+id/facebook_login_button"
-        android:layout_centerInParent="true"
         android:text="Dont have an account? Sign up"
-        android:textColor="@color/white_pressed" />
+        android:textColor="@color/white_pressed"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true" />
 
     <ImageButton
         android:id="@+id/signUpButton"

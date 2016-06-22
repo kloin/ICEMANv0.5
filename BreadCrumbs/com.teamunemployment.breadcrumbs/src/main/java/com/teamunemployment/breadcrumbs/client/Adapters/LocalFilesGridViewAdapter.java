@@ -92,7 +92,10 @@ public class LocalFilesGridViewAdapter extends ImageChooserGridViewAdapter {
             final BitmapFactory.Options thumbOpts = new BitmapFactory.Options();
             thumbOpts.inSampleSize = 3;
             Bitmap bm = getThumbnail(uri);
-
+            if (bm == null) {
+                //Cant load
+                return null;
+            }
             // NEED TO TEST THIS ON PRE V19
             int rotation = getOrientation(context, uri);
             //int rotationInDegrees = Utils.exifToDegrees(rotation);
@@ -100,6 +103,7 @@ public class LocalFilesGridViewAdapter extends ImageChooserGridViewAdapter {
             if (rotation != 0) {
                 matrix.preRotate(rotation);
             }
+
             final Bitmap adjustedBitmap = Bitmap.createBitmap(bm, 0, 0, bm.getWidth(), bm.getHeight(), matrix, true);
             return adjustedBitmap;
         } catch (IOException e) {

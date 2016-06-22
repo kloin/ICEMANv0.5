@@ -121,7 +121,6 @@ public class StoryBoardController {
                         moveForward();
                     }
                 });
-
             }
         };
     }
@@ -372,7 +371,6 @@ public class StoryBoardController {
                 Log.d(TAG, "Triggering load with index: " + LOADED_INDEX + " for storyBoard item with Id: " + storyBoardModels.get(LOADED_INDEX).CrumbData.GetCrumbId());
                 constructAndLoadObject(LOADED_INDEX);
             }
-
         } else {
             if (VIEWING_INDEX >= mCrumbs.size()) {
 
@@ -407,7 +405,6 @@ public class StoryBoardController {
         mLastObject = nextModel;
         currentModel.ImageView.setVisibility(View.GONE);
         currentModel.ProgressBar.setVisibility(View.GONE);
-
 
         if (currentModel.PlayerWrapper != null) {
             currentModel.PlayerWrapper.VideoSurface.setVisibility(View.GONE);
@@ -560,11 +557,19 @@ public class StoryBoardController {
                         storyBoardModel.FinishedLoadingImages = true;
                         storyBoardModel.ProgressBar.setVisibility(View.GONE);
                         Log.d(TAG, "Failed to load Image with Id: " + storyBoardModel.CrumbData.GetCrumbId());
+                        // Not sure I should
                         doLoadCompletedCallback();
                     }
                 });
             }
         });
+    }
+
+    // Clean up the image and video loading.
+    private void cleanUp() {
+        Picasso.with(displayModel.ImageView.getContext())
+                .cancelRequest(displayModel.ImageView);
+        displayModel.ImageView.setImageDrawable(null);
     }
 
     public int GetCurrentIndex() {
@@ -665,6 +670,7 @@ public class StoryBoardController {
             wrapper.player.setPlayWhenReady(false);
             wrapper.player.release(); // Player must not be used after calling this.
         }
+        cleanUp();
     }
 
     // Pause playback if the storyboard.

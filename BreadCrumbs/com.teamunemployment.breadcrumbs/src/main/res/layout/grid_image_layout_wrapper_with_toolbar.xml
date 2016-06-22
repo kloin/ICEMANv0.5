@@ -17,7 +17,7 @@
             android:background="@null"/>
         <TextView
             android:id="@+id/image_chooser_header"
-            android:text="Instagram photos"
+            android:text="Photo Select"
             style="@style/CodeFont"
             android:textColor="@color/white"
             android:textSize="22sp"

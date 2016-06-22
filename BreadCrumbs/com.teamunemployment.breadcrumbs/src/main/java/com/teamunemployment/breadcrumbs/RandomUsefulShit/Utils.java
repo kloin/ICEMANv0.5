@@ -5,6 +5,7 @@ import android.content.Context;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Matrix;
 import android.media.ExifInterface;
 import android.net.Uri;
 import android.os.Environment;
@@ -66,6 +67,52 @@ public class Utils {
         BitmapFactory.Options bmOptions = new BitmapFactory.Options();
         bitmap = BitmapFactory.decodeFile(image.getAbsolutePath(),bmOptions);
         return bitmap;
+    }
+
+    public static Bitmap AdjustBitmapToCorrectOrientation(boolean backCameraOpen, Bitmap bm) {
+        if (backCameraOpen) {
+
+            if (90 != 0 && bm != null) {
+                Matrix m = new Matrix();
+
+                m.setRotate(90, (float) bm.getWidth() / 2, (float) bm.getHeight() / 2);
+                try {
+                    Bitmap b2 = Bitmap.createBitmap(
+                            bm, 0, 0, bm.getWidth(), bm.getHeight(), m, true);
+                    if (bm != b2) {
+                        bm.recycle();
+                        bm = b2;
+                    }
+                } catch (OutOfMemoryError ex) {
+                    ex.printStackTrace();
+                }
+            }
+        }
+        // Otherwise its a front cam shot, rotate the other way.
+        else {
+            if (bm != null) {
+                Matrix m = new Matrix();
+
+                m.setRotate(270, (float) bm.getWidth()/2, (float) bm.getHeight() / 2);
+                try {
+                    Bitmap b2 = Bitmap.createBitmap(bm, 0, 0, bm.getWidth(), bm.getHeight(), m, true);
+                    if (bm != b2) {
+                        bm.recycle();
+                        bm = b2;
+                    }
+
+                    // Our images keep being flipped?
+                    Matrix flipHorizontalMatrix = new Matrix();
+                    flipHorizontalMatrix.setScale(-1,1);
+                    flipHorizontalMatrix.postTranslate(bm.getWidth(),0);
+                    bm = Bitmap.createBitmap(bm, 0, 0, bm.getWidth(), bm.getHeight(), flipHorizontalMatrix, true);
+                } catch (OutOfMemoryError ex) {
+                    throw ex;
+                }
+            }
+        }
+
+        return  bm;
     }
 
 

@@ -18,22 +18,12 @@
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent">
-        <de.hdodenhof.circleimageview.CircleImageView
-            android:id="@+id/profile_image_home"
-            android:layout_alignParentLeft="true"
-            android:layout_centerVertical="true"
-            android:layout_marginLeft="10dp"
-            android:src="@drawable/profile"
-            android:scaleType="centerCrop"
-            android:layout_width="40dp"
-            android:layout_height="40dp" />
         <TextView
-            android:id="@+id/user_name_header"
             style="@style/Base.TextAppearance.AppCompat.Title"
+            android:text="Discover"
             android:textColor="@color/ColorPrimary"
             android:gravity="center|left"
             android:layout_marginLeft="10dp"
-            android:layout_toRightOf="@+id/profile_image_home"
             android:layout_width="match_parent"
             android:layout_height="match_parent" />
 
@@ -76,7 +66,7 @@
         style="?android:progressBarStyle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="center"/>
+        android:layout_centerInParent="true"/>
   <TextView
       android:id="@+id/no_favs_placeholder"
       android:gravity="center"

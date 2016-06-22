@@ -350,7 +350,7 @@ public class CameraController extends SurfaceView implements SurfaceHolder.Callb
         } else {
             recorder.setOrientationHint(270);
         }
-        recorder.setVideoEncodingBitRate(2200000);
+        recorder.setVideoEncodingBitRate(3200000);
         recorder.setOutputFormat(MediaRecorder.OutputFormat.DEFAULT);
         recorder.setAudioEncoder(MediaRecorder.AudioEncoder.AMR_NB);
         Camera.Size size = getOptimalVideoSize(supportedSizes);
@@ -539,7 +539,7 @@ public class CameraController extends SurfaceView implements SurfaceHolder.Callb
             // If our location isnt null we want to pass this in as the save location.
 
             save.putExtras(extras);
-            save.setClassName("com.teamunemployment.breadcrumbs", "com.teamunemployment.breadcrumbs.client.tabs.SaveEventFragment");
+            save.setClassName("com.teamunemployment.breadcrumbs", "com.teamunemployment.breadcrumbs.SaveCrumb.SaveCrumbActivity");
             context.startActivity(save);
         }
     };

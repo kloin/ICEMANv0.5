@@ -25,6 +25,7 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.maps.android.PolyUtil;
 import com.google.maps.android.ui.IconGenerator;
+import com.google.repacked.kotlin.jvm.internal.DoubleCompanionObject;
 import com.teamunemployment.breadcrumbs.ActivityRecognition.ActivityController;
 import com.teamunemployment.breadcrumbs.AsyncWorkers.GenericAsyncWorker;
 import com.teamunemployment.breadcrumbs.BackgroundServices.UploadTrailService;
@@ -41,9 +42,13 @@ import com.teamunemployment.breadcrumbs.Network.ServiceProxy.HTTPRequestHandler;
 import com.teamunemployment.breadcrumbs.PreferencesAPI;
 import com.teamunemployment.breadcrumbs.R;
 import com.teamunemployment.breadcrumbs.RandomUsefulShit.Utils;
+import com.teamunemployment.breadcrumbs.caching.TextCaching;
 import com.teamunemployment.breadcrumbs.client.Animations.SimpleAnimations;
 import com.teamunemployment.breadcrumbs.client.Cards.CrumbCardDataObject;
 import com.teamunemployment.breadcrumbs.client.ImageChooser.TrailCoverImageSelector;
+import com.teamunemployment.breadcrumbs.data.TripPath;
+import com.teamunemployment.breadcrumbs.data.source.SyncManager;
+import com.teamunemployment.breadcrumbs.data.source.TripDataSource;
 import com.teamunemployment.breadcrumbs.database.DatabaseController;
 import com.teamunemployment.breadcrumbs.database.Models.LocalTrailModel;
 import com.teamunemployment.breadcrumbs.database.Models.TrailSummaryModel;
@@ -76,6 +81,7 @@ public class LocalMap extends MapViewer {
     private LatLng lastPoint;
 
     public final static int DELETED_CRUMBS = 4435;
+
     @Override
     public void DoBottomSheetClick() {
         switch (BOTTOM_SHEET_STATE) {
@@ -97,11 +103,11 @@ public class LocalMap extends MapViewer {
         drawLocalTrailOnMap();
         String coverId = preferencesAPI.GetCurrentTrailCoverPhoto();
         setListenerForTrackingToggle();
-        if (coverId == null) {
-            return;
-         }
+        ZoomOnMyLocation();
+        if (coverId != null) {
+            setCoverPhoto(coverId);
+        }
 
-        setCoverPhoto(coverId);
     }
 
     private void setListenerForTrackingToggle() {
@@ -354,6 +360,7 @@ public class LocalMap extends MapViewer {
 
     private void displayCrumbsFromLocal() {
         JSONObject crumbsJson = databaseController.GetAllCrumbs(trailId);
+
         DisplayCrumbsFromLocalDatabase(crumbsJson);
     }
 
@@ -402,6 +409,7 @@ public class LocalMap extends MapViewer {
 
         return currentTitleEditable.toString();
     }
+
     /**
      *	Define how the bottom sheet fab works in edit mode.
      */
@@ -437,6 +445,7 @@ public class LocalMap extends MapViewer {
         EditText trailName = (EditText) act.findViewById(R.id.trail_title_input);
         trailName.setEnabled(false);
 
+
         TextView tellThemToSelectACoverPhoto = (TextView) act.findViewById(R.id.cover_photo_prompt);
         SimpleAnimations.FadeOutView(tellThemToSelectACoverPhoto);
 
@@ -444,7 +453,11 @@ public class LocalMap extends MapViewer {
         Editable trailNameEditable = trailName.getText();
         if (trailNameEditable != null) {
             saveTrailName(trailNameEditable.toString());
+
+            TextView trailTitle = (TextView) findViewById(R.id.bottom_sheet_trail_title);
+            trailTitle.setText(trailNameEditable.toString());
         }
+
         // Set the trail
         SimpleAnimations.ShrinkToggleAFab(bottomSheetFab, "#ffffff", context.getResources().getDrawable(R.drawable.ic_action_edit));
     }
@@ -474,8 +487,8 @@ public class LocalMap extends MapViewer {
 
         TextView days = (TextView) bottomSheet.findViewById(R.id.duration_details);
         days.setText(trailSummaryModel.GetDaysDuration() + " Days");
-        TextView pois = (TextView) bottomSheet.findViewById(R.id.number_of_crumbs_details);
-        pois.setText(localTrailModel.getNumberOfPOI() + " Points of Interest");
+//        TextView pois = (TextView) bottomSheet.findViewById(R.id.number_of_crumbs_details);
+//        pois.setText(localTrailModel.getNumberOfPOI() + " Points of Interest");
 
         TextView videos = (TextView) bottomSheet.findViewById(R.id.number_of_videos_details);
         videos.setText(localTrailModel.getNumberOfVideos() + " Videos");
@@ -538,30 +551,107 @@ public class LocalMap extends MapViewer {
             preferencesAPI = new PreferencesAPI(context);
         }
 
+        TextCaching textCaching = new TextCaching(context);
+        String index = textCaching.FetchCachedText("TrailActivityIndex");
+        if (index == null) {
+            index = "0";
+        }
+        SyncManager syncManager = new SyncManager();
+        syncManager.Sync(getLoadTripPathCallback(), preferencesAPI.GetLocalTrailId(),databaseController, Integer.parseInt(index));
+    }
+
+    private TripDataSource.LoadTripPathCallback getLoadTripPathCallback() {
+        return new TripDataSource.LoadTripPathCallback() {
+            @Override
+            public void onTripPathLoaded(TripPath tripPath) {
+                DrawPath(tripPath);
+            }
+        };
+    }
+
+
+
+    private void displayLocalTrail() {
+
+        TextCaching caching = new TextCaching(context);
+        String index = caching.FetchCachedText("MapPathIndex");
+        if (index == null) {
+            //JSONObject localData = fetchLocalData(index);
+
+        }
+    }
+
+    private void startOfHackerLane() {
         // Fetch local Data.
         GenericAsyncWorker.IGenericAsync overrides = new GenericAsyncWorker.IGenericAsync() {
             @Override
             public JSONObject backgroundTasks() {
-                JSONObject localData = fetchLocalData();
-                JSONObject processedResult = processLocalDataOnServer(localData);
-                return processedResult;
+
+
+                return new JSONObject();
             }
 
             @Override
-            public void postExecute(JSONObject jsonObject) {
-                try {
-                    processResult(jsonObject);
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
+            public void postExecute(final JSONObject jsonObject) {
+
+                    // Draw local trail.
+                drawLocalPolylines(jsonObject);
+
+                // I am so evil If this breaks I can come back here and slap myself. I think it should be all g, just looks ugly af.
+                new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        // We only want to run this if we have netork available.
+                        if (NetworkConnectivityManager.IsNetworkAvailable(context)) {
+                            JSONObject processedResult = processLocalDataOnServer(jsonObject);
+                            runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    mMap.clear();
+                                }
+                            });
+                            try {
+                                processResult(processedResult);
+                            } catch (JSONException e) {
+                                e.printStackTrace();
+                            }
+                        }
+                    }
+                }).start();
             }
         };
-
-
         GenericAsyncWorker genericAsyncWorker = new GenericAsyncWorker(overrides);
         genericAsyncWorker.execute();
     }
 
+    private void drawLocalPolylines(final JSONObject localData)  {
+        new Thread(new Runnable() {
+        @Override
+        public void run() {
+                try {
+                    ArrayList<LatLng> pointsToDraw = new ArrayList<>();
+                    int id = 1;
+                    Iterator<String> keys = localData.keys();
+                    while (keys.hasNext()) {
+                        keys.next();// Bad i know but fuck it this whole class is getting a re write post release.
+                        JSONObject next = localData.getJSONObject(Integer.toString(id));
+                        String latitude = next.getString(Models.Crumb.LATITUDE);
+                        String longitude = next.getString(Models.Crumb.LONGITUDE);
+                        pointsToDraw.add(new LatLng(Double.parseDouble(latitude), Double.parseDouble(longitude)));
+                    }
+                    // Cant use the standard polyline draw as wee need to retain a reference to this
+                    // polyline as we want to delete it when the processed lines come back form the server.
+                   DrawPolyline(pointsToDraw, "#FF888888", SKINNY_WIDTH);
+                }catch (JSONException ex) {
+                    Log.d(TAG, "Issues drawing local polylines. Probably failed with finding / converting of lat/long");
+                }
+            }
+        }).start();
+    }
+
+    private void drawLocalPolyline(ArrayList<LatLng> polyPoints) {
+
+    }
     private JSONObject processLocalDataOnServer(JSONObject jsonObject) {
         String url = MessageFormat.format("{0}/rest/TrailManager/CalculatePath/{1}",
                 LoadBalancer.RequestServerAddress(),
@@ -578,9 +668,9 @@ public class LocalMap extends MapViewer {
         return new JSONObject();
     }
 
-    private JSONObject fetchLocalData() {
+    private JSONObject fetchLocalData(int index) {
         int localTrailId = preferencesAPI.GetLocalTrailId();
-        JSONObject metadata = databaseController.GetAllActivityData(localTrailId);
+        JSONObject metadata = databaseController.GetAllActivityData(localTrailId, index);
         JSONObject lastMetadataObject = fetchCurrentLocationNode();
         int length = metadata.length() + 1;
         try {
@@ -607,9 +697,10 @@ public class LocalMap extends MapViewer {
                     listOfPoints.add(0, lastPoint);
                 }
                 lastPoint = listOfPoints.get(listOfPoints.size()-1);
-            //    DrawPolyline(listOfPoints, "#FF0000");
+                DrawPolyline(listOfPoints, "#FF0000", MEDIUM_WIDTH);
             } else {
                 listOfPoints = parseNonEncodedPolyline(polyline);
+
                 DrawDashedPolyline(listOfPoints.get(0), listOfPoints.get(1),Color.parseColor("#03A9F4"));
                 lastPoint = listOfPoints.get(listOfPoints.size()-1);
             }

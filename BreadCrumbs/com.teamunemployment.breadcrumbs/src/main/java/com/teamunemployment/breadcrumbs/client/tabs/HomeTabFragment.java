@@ -21,6 +21,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.teamunemployment.breadcrumbs.Dialogs.IDialogCallback;
@@ -84,38 +85,7 @@ public class HomeTabFragment extends Fragment {
         context = rootView.getContext();
         preferencesAPI = new PreferencesAPI(context);
         setShitUp();
-        setUpHeaderShit();
         return rootView;
-    }
-
-    private void setUpHeaderShit() {
-
-        final CircleImageView profilePic = (CircleImageView) rootView.findViewById(R.id.profile_image_home);
-        String userId = preferencesAPI.GetUserId();
-
-        TextView userName = (TextView) rootView.findViewById(R.id.user_name_header);
-        UpdateViewElementWithProperty updateViewElementWithProperty = new UpdateViewElementWithProperty();
-        updateViewElementWithProperty.UpdateTextViewElement(userName, userId, "Username",context);
-        String coverPhotoId = PreferenceManager.getDefaultSharedPreferences(context).getString("COVERPHOTOID", "-1");
-
-        if (!userId.equals(PreferenceManager.getDefaultSharedPreferences(context).getString("USERID", "-1"))) {
-            String imageIdUrl = LoadBalancer.RequestServerAddress() + "/rest/login/GetPropertyFromNode/" + userId + "/CoverPhotoId";
-            AsyncDataRetrieval asyncDataRetrieval = new AsyncDataRetrieval(imageIdUrl, new AsyncDataRetrieval.RequestListener() {
-                @Override
-                public void onFinished(String result) {
-                    if (result != null || !result.isEmpty()) {
-                        try {
-                            Glide.with(context).load(LoadBalancer.RequestCurrentDataAddress() + "/images/" + result + ".jpg").centerCrop().placeholder(R.drawable.profileblank).crossFade().into(profilePic);
-                        } catch (IllegalArgumentException ex) {
-                            Log.d("PROF", "caught glide exception in profile page. Probably due to activity being destroyed before load was finished");
-                        }
-                    }
-                }
-            }, context);
-            asyncDataRetrieval.execute();
-        } else {
-            Glide.with(context).load(LoadBalancer.RequestCurrentDataAddress() + "/images/" + coverPhotoId + ".jpg").centerCrop().placeholder(R.drawable.profileblank).crossFade().into(profilePic);
-        }
     }
 
     public void setShitUp() {
@@ -224,6 +194,7 @@ public class HomeTabFragment extends Fragment {
             @Override
             public void onFinished(String result) {
                 try {
+                    //Toast.makeText(context, "Working",Toast.LENGTH_LONG).show();
                     // Get our arrayList for the card adapter
                     CardView networkIssueCard = (CardView) rootView.findViewById(R.id.network_issue_placeholder);
                     if (result.equals("NE1")) {

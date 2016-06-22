@@ -23,7 +23,7 @@ import java.util.ArrayList;
 
 /**
  * @author Josiah Kendall
- * s
+ *
  */
 public class PersistanceLayer {
 
@@ -38,6 +38,7 @@ public class PersistanceLayer {
         preferencesAPI = new PreferencesAPI(context);
         this.context = context;
     }
+
     @Test
     public void TestThatWeCanSavePolylines() {
         RenamingDelegatingContext context = new RenamingDelegatingContext(InstrumentationRegistry.getInstrumentation().getTargetContext(), "test_");
@@ -51,6 +52,21 @@ public class PersistanceLayer {
     }
 
     @Test
+    public void TestThatWeCanSaveWithHeadAndBaseLatitudes() {
+        BreadcrumbsEncodedPolyline encodedPolyline = new BreadcrumbsEncodedPolyline(true, "ABC", 0.0, 1.1, 2.3, 4.4);
+        BreadcrumbsEncodedPolyline encodedPolyline2 = new BreadcrumbsEncodedPolyline(true, "ABC", 0.0, 1.1, 2.3, 4.4);
+        databaseController.SavePolyline(encodedPolyline, "1");
+
+        TripPath path = databaseController.FetchTripPath("1");
+        ArrayList<BreadcrumbsEncodedPolyline> encodedPolylines = path.getTripPolyline();
+        Assert.assertTrue(encodedPolylines.size() == 1);
+        Assert.assertTrue(encodedPolylines.get(0).baseLatitude == 0.0);
+        Assert.assertTrue(encodedPolylines.get(0).baseLongitude == 1.1);
+        Assert.assertTrue(encodedPolylines.get(0).headLatitude == 2.3);
+        Assert.assertTrue(encodedPolylines.get(0).headLongitude == 4.4);
+    }
+
+    @Test
     public void TestFetchingActivityData() {
         // Not really sure what will happen with this test - I already have an active trail so it will probably pull that data out too.
         databaseController.SaveActivityPoint(0, 0, 0.0, 0.0,0);
@@ -61,7 +77,7 @@ public class PersistanceLayer {
         int localTrailId = preferencesAPI.GetLocalTrailId();
         JSONObject object = databaseController.GetAllActivityData(localTrailId, 0);
 
-        Assert.assertTrue(object.length() > 0);
+        Assert.assertTrue(object.length() == 4);
 
         databaseController.SaveActivityPoint(0, 0, 0.0, 0.0, 0);
 
@@ -74,25 +90,41 @@ public class PersistanceLayer {
     }
 
     @Test
-    public void TestSyncWorks() {
-        SyncManager syncManager = new SyncManager();
-        TripDataSource.LoadTripPathCallback loadTripPathCallback = new TripDataSource.LoadTripPathCallback() {
-            @Override
-            public void onTripPathLoaded(TripPath tripPath) {
-                Assert.assertTrue(tripPath.getTripPolyline().get(1).polyline.equals("TEST"));
-            }
-        };
-
+    public void TestThatWeOnlyProcessDataOnce() {
         databaseController.SaveActivityPoint(0, 0, 0.0, 0.0,0);
         databaseController.SaveActivityPoint(0, 0, 0.0, 0.0,0);
         databaseController.SaveActivityPoint(0, 0, 0.0, 0.0,0);
         databaseController.SaveActivityPoint(0, 0, 0.0, 0.0,0);
 
-        BreadcrumbsEncodedPolyline encodedPolyline = new BreadcrumbsEncodedPolyline(true, "ABC");
-        databaseController.SavePolyline(encodedPolyline, "1");
-        databaseController.SavePolyline(encodedPolyline, "1");
+        int localTrailId = preferencesAPI.GetLocalTrailId();
+        JSONObject object = databaseController.GetAllActivityData(localTrailId, 0);
 
-        // Trip
-        syncManager.Sync(loadTripPathCallback, 1, databaseController, 0);
+        Assert.assertTrue(object.length() > 0);
+
+        databaseController.SaveActivityPoint(0, 0, 0.0, 0.0, 0);
+
     }
+
+//    @Test
+//    public void TestSyncWorks() {
+//        SyncManager syncManager = new SyncManager();
+//        TripDataSource.LoadTripPathCallback loadTripPathCallback = new TripDataSource.LoadTripPathCallback() {
+//            @Override
+//            public void onTripPathLoaded(TripPath tripPath) {
+//                Assert.assertTrue(tripPath.getTripPolyline().get(1).polyline.equals("TEST"));
+//            }
+//        };
+//
+//        databaseController.SaveActivityPoint(0, 0, 0.0, 0.0,0);
+//        databaseController.SaveActivityPoint(0, 0, 0.0, 0.0,0);
+//        databaseController.SaveActivityPoint(0, 0, 0.0, 0.0,0);
+//        databaseController.SaveActivityPoint(0, 0, 0.0, 0.0,0);
+//
+//        BreadcrumbsEncodedPolyline encodedPolyline = new BreadcrumbsEncodedPolyline(true, "ABC");
+//        databaseController.SavePolyline(encodedPolyline, "1");
+//        databaseController.SavePolyline(encodedPolyline, "1");
+//
+//        // Trip
+//        syncManager.Sync(loadTripPathCallback, 1, databaseController, 0);
+//    }
 }
