@@ -62,6 +62,9 @@ public class RegistrationIntentService extends IntentService {
                 // If an exception happens while fetching the new token or updating our registration data
                 // on a third-party server, this ensures that we'll attempt the update at a later time.
                 sharedPreferences.edit().putBoolean(Preferences.SENT_TOKEN_TO_SERVER, false).apply();
+            } catch (IncompatibleClassChangeError notificationsFailed) {
+                //
+                Log.d(TAG, "This is bad the gcm is not registering");
             }
             // Notify UI that registration has completed, so the progress indicator can be hidden.
             Intent registrationComplete = new Intent(Preferences.REGISTRATION_COMPLETE);

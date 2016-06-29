@@ -115,6 +115,9 @@ public class CameraController extends SurfaceView implements SurfaceHolder.Callb
         // Set the height of the camera to be the same as the width so we get a square.
         mHolder = holder;
         videoTimer = 0;
+        if (mCamera != null) {
+            mCamera.release();
+        }
         if (backCameraOpen) {
             mCamera = Camera.open(0); // Open rear facing by default
         }
@@ -127,7 +130,7 @@ public class CameraController extends SurfaceView implements SurfaceHolder.Callb
         Camera.Parameters parameters = mCamera.getParameters();
         Camera.Size size = getOptimalPreviewSize(parameters.getSupportedPictureSizes());
         if (parameters.getFocusMode() == null || parameters.getFocusMode().equals("auto")) {
-            parameters.setFocusMode(Camera.Parameters.FOCUS_MODE_CONTINUOUS_PICTURE);
+            parameters.setFocusMode(Camera.Parameters.FOCUS_MODE_AUTO);
         }
 
         // Store this for later reference
@@ -177,12 +180,12 @@ public class CameraController extends SurfaceView implements SurfaceHolder.Callb
     @Override
     public void surfaceDestroyed(SurfaceHolder holder) {
         // empty. Take care of releasing the Camera preview in your activity.
-        if (isPreviewRunning) {
+        if (isPreviewRunning && mCamera != null) {
             mCamera.stopPreview();
+            mCamera.release();
+            mCamera = null;
             isPreviewRunning = false;
         }
-        mCamera.release();
-        mCamera = null; // This could cause issues.
     }
 
     @Override
@@ -196,7 +199,7 @@ public class CameraController extends SurfaceView implements SurfaceHolder.Callb
                 cameraHeight = size.height;
                 cameraWidth = size.width;
                 if (parameters.getFocusMode() == null) {
-                    parameters.setFocusMode(Camera.Parameters.FOCUS_MODE_CONTINUOUS_PICTURE);
+                    parameters.setFocusMode(Camera.Parameters.FOCUS_MODE_AUTO);
                 }
 
                 parameters.setPictureSize(size.width, size.height);
@@ -265,7 +268,7 @@ public class CameraController extends SurfaceView implements SurfaceHolder.Callb
         cameraHeight = size.height;
         cameraWidth = size.width;
         if (parameters.getFocusMode() == null) {
-            parameters.setFocusMode(Camera.Parameters.FOCUS_MODE_CONTINUOUS_PICTURE);
+            parameters.setFocusMode(Camera.Parameters.FOCUS_MODE_AUTO);
         }
 
         parameters.setPictureSize(size.width, size.height);
@@ -391,6 +394,8 @@ public class CameraController extends SurfaceView implements SurfaceHolder.Callb
         recorder.release();
         mCamera.lock();
         mCamera.stopPreview();
+        mCamera.release();
+        mCamera = null;
         video = false;
         return true;
     }
@@ -453,14 +458,14 @@ public class CameraController extends SurfaceView implements SurfaceHolder.Callb
 
     private void toggleVideo(FloatingActionButton cameraButton) {
         if (currentlyFilming) {
+            t.cancel();
             cameraButton.setBackgroundTintList(ColorStateList.valueOf(getResources().getColor(R.color.ColorPrimary)));
             recorder.stop();
             disableVideoCamera();
             currentlyFilming = false;
-            t.cancel();
             // Launch video intent to save the video.
             Intent save = new Intent();
-            save.setClassName("com.teamunemployment.breadcrumbs", "com.teamunemployment.breadcrumbs.client.tabs.SaveVideoActivity");
+            save.setClassName("com.teamunemployment.breadcrumbs", "com.teamunemployment.breadcrumbs.SaveCrumb.SaveVideoActivity");
             Bundle extras = new Bundle();
             extras.putBoolean("IsBackCameraOpen", backCameraOpen);
             save.putExtras(extras);
@@ -507,7 +512,7 @@ public class CameraController extends SurfaceView implements SurfaceHolder.Callb
 
             // Launch video intent to save the video.
             Intent save = new Intent();
-            save.setClassName("com.teamunemployment.breadcrumbs", "com.teamunemployment.breadcrumbs.client.tabs.SaveVideoActivity");
+            save.setClassName("com.teamunemployment.breadcrumbs", "com.teamunemployment.breadcrumbs.SaveCrumb.SaveVideoActivity");
             Bundle extras = new Bundle();
             extras.putBoolean("IsBackCameraOpen", backCameraOpen);
             save.putExtras(extras);

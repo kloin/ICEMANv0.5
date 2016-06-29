@@ -2,11 +2,28 @@ package com.teamunemployment.breadcrumbs.BreadcrumbsExoPlayer;
 
 import android.app.Activity;
 import android.content.Context;
+import android.graphics.Matrix;
+import android.graphics.Point;
+import android.graphics.RectF;
 import android.net.Uri;
+import android.os.Build;
+import android.support.annotation.NonNull;
+import android.util.DisplayMetrics;
+import android.util.Log;
+import android.view.Display;
+import android.view.Gravity;
 import android.view.KeyEvent;
+import android.view.Surface;
 import android.view.SurfaceView;
+import android.view.TextureView;
 import android.view.View;
+import android.view.ViewGroup;
+import android.view.ViewTreeObserver;
+import android.view.WindowManager;
+import android.widget.FrameLayout;
+import android.widget.ImageView;
 import android.widget.MediaController;
+import android.widget.RelativeLayout;
 
 import com.google.android.exoplayer.TimeRange;
 import com.google.android.exoplayer.audio.AudioCapabilities;
@@ -19,6 +36,7 @@ import com.teamunemployment.breadcrumbs.Network.LoadBalancer;
 import com.teamunemployment.breadcrumbs.R;
 
 import java.util.List;
+import java.util.concurrent.locks.ReentrantLock;
 
 /**
  * A Wrapper for the exoplayer and its surface view that it plays on. Allows us to manage and interact
@@ -26,6 +44,8 @@ import java.util.List;
  */
 public class BreadcrumbsExoPlayerWrapper implements BreadcrumbsExoPlayer.Listener, BreadcrumbsExoPlayer.CaptionListener,
         AudioCapabilitiesReceiver.Listener {
+
+    protected MatrixManager matrixManager = new MatrixManager();
 
     private final static int PLAYER_IDLE_STATE = 0;
     private final static int PLAYER_LOADING_STATE = 1;
@@ -39,7 +59,7 @@ public class BreadcrumbsExoPlayerWrapper implements BreadcrumbsExoPlayer.Listene
     // Id to identify every Exoplayer instance that we have. This needs a refactor into useing just one player and multiple tracks/datasources
     private int id;
     private boolean isLoading = false;
-    public SurfaceView VideoSurface;
+    public TextureView VideoSurface;
     public BreadcrumbsExoPlayer player;
     public View root;
     public MediaController mediaController;
@@ -50,12 +70,13 @@ public class BreadcrumbsExoPlayerWrapper implements BreadcrumbsExoPlayer.Listene
     private final Context context;
     private boolean playerNeedsPrepare = false;
 
+    protected final ReentrantLock globalLayoutMatrixListenerLock = new ReentrantLock(true);
 
     public interface WrapperInterface {
         void stateChangedListener(boolean playWhenReady, int state, int id);
     }
 
-    public BreadcrumbsExoPlayerWrapper(SurfaceView surfaceView, Context context, int id) {
+    public BreadcrumbsExoPlayerWrapper(TextureView surfaceView, Context context, int id) {
         this.context = context;
         Activity tempActivity = (Activity) context;
         VideoSurface = surfaceView;
@@ -120,8 +141,7 @@ public class BreadcrumbsExoPlayerWrapper implements BreadcrumbsExoPlayer.Listene
         }
 
         if (player == null) {
-
-            player = new BreadcrumbsExoPlayer(dataSource);
+            player = new BreadcrumbsExoPlayer(dataSource, this);
             if (infoListener != null) {
                 player.setInfoListener(infoListener);
             }
@@ -137,10 +157,11 @@ public class BreadcrumbsExoPlayerWrapper implements BreadcrumbsExoPlayer.Listene
             playerNeedsPrepare = false;
         }
         player.seekTo(time);
-        player.setSurface(VideoSurface.getHolder().getSurface());
+        player.setSurface(new Surface(VideoSurface.getSurfaceTexture()));
         // player.setSurface(surfaceView.getHolder().getSurface());
         player.setPlayWhenReady(playWhenReady);
     }
+
     // We are just preparing here. We dont start until it is requested
     public void buildPlayer(boolean playWhenReady) {
 
@@ -150,7 +171,8 @@ public class BreadcrumbsExoPlayerWrapper implements BreadcrumbsExoPlayer.Listene
         }
 
         if (player == null) {
-            player = new BreadcrumbsExoPlayer(dataSource);
+            VideoSurface.setVisibility(View.VISIBLE);
+            player = new BreadcrumbsExoPlayer(dataSource, this);
             if (infoListener != null) {
                 player.setInfoListener(infoListener);
             }
@@ -166,7 +188,7 @@ public class BreadcrumbsExoPlayerWrapper implements BreadcrumbsExoPlayer.Listene
             player.prepare();
             playerNeedsPrepare = false;
         }
-        player.setSurface(VideoSurface.getHolder().getSurface());
+        player.setSurface(new Surface(VideoSurface.getSurfaceTexture()));
         // player.setSurface(surfaceView.getHolder().getSurface());
         player.setPlayWhenReady(playWhenReady);
     }
@@ -193,7 +215,89 @@ public class BreadcrumbsExoPlayerWrapper implements BreadcrumbsExoPlayer.Listene
 
     @Override
     public void onVideoSizeChanged(int width, int height, int unappliedRotationDegrees, float pixelWidthHeightRatio) {
+       // VideoSurface.setRotation(unappliedRotationDegrees);
+        if (unappliedRotationDegrees == 0) {
+            return;
+        }
+        WindowManager wm = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
+        Display display = wm.getDefaultDisplay();
 
+        String TAG = "VideoView.Size()";
+        Point size = new Point();
+        display.getSize(size);
+        final Matrix mtx=new Matrix();
+        RectF src = new RectF(0, 0, width, height);
+        RectF dst = new RectF(0, 0, VideoSurface.getWidth(), VideoSurface.getHeight());
+        RectF screen = new RectF(dst);
+        mtx.postRotate(unappliedRotationDegrees, screen.centerX(), screen.centerY());
+        mtx.mapRect(dst);
+
+        mtx.setRectToRect(src, dst, Matrix.ScaleToFit.FILL);
+        mtx.mapRect(src);
+
+        mtx.setRectToRect(screen, src, Matrix.ScaleToFit.FILL);
+        mtx.postRotate(unappliedRotationDegrees, screen.centerX(), screen.centerY());
+//        String TAG = "VideoView.Size()";
+//        Point size = new Point();
+//        display.getSize(size);
+//        final Matrix mtx=new Matrix();
+////        RectF drawableRect = new RectF(0, 0, size.x, size.y);
+////        RectF viewRect = new RectF(0, 0, size.x, size.y);
+////        mtx.setRectToRect(drawableRect, viewRect, Matrix.ScaleToFit.START);
+//        float scalex = (float) width / (float) height;
+//        float scaley = (float) height / (float) width;
+//        //mtx.preTranslate(-1, 1);
+//        mtx.postRotate(unappliedRotationDegrees,size.y/2, size.x/2);
+//        mtx.postScale(scaley, scalex, 0, size.y);
+        Activity activity = (Activity) context;
+        activity.runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                VideoSurface.setTransform(mtx);
+            }
+        });
+        //setScaleType(ScaleType.CENTER_CROP);
+//
+//        Matrix matrix = new Matrix();
+//        matrix.setRotate(unappliedRotationDegrees);
+//        VideoSurface.setTransform(matrix);
+////
+//
+//        params.height = 1820;
+//        DisplayMetrics displayMetrics = new DisplayMetrics();
+//        display.getRealMetrics(displayMetrics);
+//        Log.d(TAG, "Screen Width:" + size.x);
+//        Log.d(TAG, "Screen WIdth:" + size.y);
+//        Log.d(TAG, "densityDpi" + displayMetrics.densityDpi);
+//        Log.d(TAG, "density" + displayMetrics.density);
+//        Log.d(TAG, displayMetrics.xdpi + ": xdpi");
+//        Log.d(TAG, displayMetrics.ydpi + ": ydpi");
+//        Log.d(TAG, "widthPixels" + displayMetrics.widthPixels);
+//        Log.d(TAG, "heightPixels" + displayMetrics.heightPixels);
+//        Log.d(TAG, "scaledDensity" + displayMetrics.scaledDensity);
+//
+//        VideoSurface.setMinimumHeight(size.y);
+//
+//        params.width = size.x;
+//        params.height = RelativeLayout.LayoutParams.MATCH_PARENT;
+//        Log.d(TAG, "VideoView wisth: "+ width *5);
+//        Log.d(TAG, "VideoView height: "+ height *5);
+////        params.height = height*4;
+////        params.width = width*4;
+//        VideoSurface.setLayoutParams(params);
+
+//        VideoSurface.setMinimumHeight(size.x);
+//        VideoSurface.setMinimumWidth(size.y);
+    }
+
+    private void updateMatrixOnLayout() {
+        GlobalLayoutMatrixListener globalLayoutMatrixListener = new GlobalLayoutMatrixListener();
+        globalLayoutMatrixListenerLock.lock();
+
+        VideoSurface.getViewTreeObserver().addOnGlobalLayoutListener(globalLayoutMatrixListener);
+
+
+        globalLayoutMatrixListenerLock.unlock();
     }
 
     @Override
@@ -237,6 +341,25 @@ public class BreadcrumbsExoPlayerWrapper implements BreadcrumbsExoPlayer.Listene
                 return true;
             }
             return super.dispatchKeyEvent(event);
+        }
+    }
+
+    public void setScaleType(@NonNull ScaleType scaleType) {
+        matrixManager.scale(VideoSurface, scaleType);
+    }
+
+    private class GlobalLayoutMatrixListener implements ViewTreeObserver.OnGlobalLayoutListener {
+        @Override
+        public void onGlobalLayout() {
+            // Updates the scale to make sure one is applied
+            setScaleType(matrixManager.getCurrentScaleType());
+
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+                VideoSurface.getViewTreeObserver().removeOnGlobalLayoutListener(this);
+            } else {
+                //noinspection deprecation
+                VideoSurface.getViewTreeObserver().removeGlobalOnLayoutListener(this);
+            }
         }
     }
 }

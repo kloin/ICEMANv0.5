@@ -3,13 +3,12 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <data>
-
         <variable
             name="tripDetails"
             type="com.teamunemployment.breadcrumbs.data.TripDetails" />
     </data>
 
-    <RelativeLayout xmlns:fancy="http://schemas.android.com/apk/res-auto"
+    <android.support.design.widget.CoordinatorLayout xmlns:fancy="http://schemas.android.com/apk/res-auto"
         android:id="@+id/bottom_sheet"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -29,17 +28,17 @@
                 android:id="@+id/bottom_sheet_scroller"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_above="@+id/bottom_sheet_bottom_bar"
                 android:layout_marginBottom="60dp">
 
                 <RelativeLayout
                     android:layout_width="match_parent"
+                    android:paddingBottom="100px"
                     android:layout_height="match_parent">
 
                     <ImageView
                         android:id="@+id/trail_cover_photo"
                         android:layout_width="match_parent"
-                        android:layout_height="100px"
+                        android:layout_height="200px"
                         android:scaleType="centerCrop" />
 
                     <TextView
@@ -51,7 +50,7 @@
                         android:alpha="0.6"
                         android:background="@color/black"
                         android:gravity="center"
-                        android:text="Tap to Change Cover Image"
+                        android:text="@string/tap_to_change_cover_image"
                         android:textColor="@color/white"
                         android:visibility="gone" />
 
@@ -59,7 +58,7 @@
                         android:id="@+id/image_view_cover"
                         android:layout_width="match_parent"
                         android:layout_height="1dp"
-                        android:background="@color/white"></RelativeLayout>
+                        android:background="@color/white"/>
 
                     <TextView
                         android:id="@+id/stat1"
@@ -81,22 +80,13 @@
                         android:textColor="@color/white"
                         android:visibility="gone" />
 
-                    <android.support.design.widget.FloatingActionButton
-                        android:id="@+id/edit_toggle_fab"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_alignParentRight="true"
-                        android:layout_below="@+id/trail_cover_photo"
-                        android:layout_marginRight="40dp"
-                        android:layout_marginTop="-32dp"
-                        android:src="@drawable/ic_edit_white_24dp"
-                        android:visibility="invisible" />
+
 
                     <RelativeLayout
                         android:id="@+id/settings_holder"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_alignRight="@+id/edit_toggle_fab"
+                        android:layout_marginRight="60dp"
                         android:layout_below="@+id/trail_cover_photo">
 
                         <TextView
@@ -345,6 +335,7 @@
         <android.support.v7.widget.CardView
             android:id="@+id/bottom_sheet_bottom_bar"
             android:layout_width="match_parent"
+            android:layout_gravity="bottom"
             android:layout_height="60dp"
             android:layout_alignParentBottom="true"
             app:cardBackgroundColor="@color/white"
@@ -393,5 +384,16 @@
                 fancy:fb_textColor="@color/good_to_go"
                 fancy:fb_textSize="16sp" />
         </android.support.v7.widget.CardView>
-    </RelativeLayout>
+        <android.support.design.widget.FloatingActionButton
+            android:id="@+id/edit_toggle_fab"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_below="@+id/trail_cover_photo"
+            android:layout_marginRight="40dp"
+            fancy:layout_anchor="@+id/trail_cover_photo"
+            fancy:layout_anchorGravity="bottom|right|end"
+            android:src="@drawable/ic_edit_white_24dp"
+            android:visibility="visible" />
+    </android.support.design.widget.CoordinatorLayout>
 </layout>

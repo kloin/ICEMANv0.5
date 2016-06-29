@@ -170,7 +170,7 @@ public class StoryBoardActivity extends Activity {
         @Override
         public void run() {
             Animation animation = AnimationUtils.loadAnimation(context, android.R.anim.fade_in);
-           animation.setDuration(300);
+            animation.setDuration(150);
             storyBoardController.SetUpRestoredTimer(timer);
             storyBoardController.Start();
             mLlContainer.startAnimation(animation);
@@ -294,7 +294,6 @@ public class StoryBoardActivity extends Activity {
         intent.putExtra("TimerPosition", storyBoardController.GetTimerPosition());
         intent.putParcelableArrayListExtra("DeletedCrumbs", storyBoardController.GetDeletedCrumbs());
         setResult(RESULT_OK, intent);
-       // finish();
     }
 
     @Override
@@ -320,7 +319,7 @@ public class StoryBoardActivity extends Activity {
     // We have a back pressed handler as we have two entry points to this bit of code.
     private void backPressedHandler() {
         storyBoardController.Stop();
-        // finish();
+
         GUIUtils.animateRevealHide(context, mRlContainer, R.color.white, mFab.getWidth() / 2,
                 new OnRevealAnimationListener() {
                     @Override
@@ -331,7 +330,6 @@ public class StoryBoardActivity extends Activity {
                         intent.putExtra("Index", storyBoardController.GetCurrentIndex());
                         intent.putExtra("TimerPosition", storyBoardController.GetTimerPosition());
                         setResult(RESULT_OK, intent);
-                        //finish();
                         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                             backPressedLolipopAndAbove();
                         } else {

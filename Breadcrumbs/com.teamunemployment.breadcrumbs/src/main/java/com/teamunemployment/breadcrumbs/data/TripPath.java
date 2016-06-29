@@ -34,6 +34,9 @@ public class TripPath {
 
         BreadcrumbsEncodedPolyline endOfBreadcrumbsPolylinesList = polylines.get(size-1);
         Location locationNode = grabEndOfLastSavedPolyline(endOfBreadcrumbsPolylinesList);
+        if (locationNode != null) {
+            return;
+        }
 
         // Now I need to create a new unencoded polyline to match mine with the
         String unencodedPolyline = locationNode.getLatitude() + "," + locationNode.getLongitude() + "|" + location.getLatitude() + "," + location.getLongitude();

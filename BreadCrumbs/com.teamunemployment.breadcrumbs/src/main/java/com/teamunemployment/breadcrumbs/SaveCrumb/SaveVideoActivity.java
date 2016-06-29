@@ -1,7 +1,10 @@
 package com.teamunemployment.breadcrumbs.SaveCrumb;
 
 import android.graphics.Bitmap;
+import android.graphics.SurfaceTexture;
+import android.media.MediaPlayer;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
@@ -9,11 +12,13 @@ import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.DisplayMetrics;
 import android.util.Log;
-import android.view.KeyEvent;
+import android.view.Surface;
+import android.view.TextureView;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -21,16 +26,18 @@ import com.teamunemployment.breadcrumbs.Location.SimpleGps;
 import com.teamunemployment.breadcrumbs.PreferencesAPI;
 import com.teamunemployment.breadcrumbs.R;
 
+import java.io.IOException;
+
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
 /**
- * @author Josiah Kendall
+ * Created by jek40 on 29/06/2016.
  */
-public class SaveCrumbActivity extends AppCompatActivity implements SaveCrumbActivityContract.ICrumbDisplay, TextWatcher {
+public class SaveVideoActivity extends AppCompatActivity implements SaveCrumbActivityContract.ICrumbDisplay,
+        TextWatcher, TextureView.SurfaceTextureListener {
 
-    private static final String TAG = "SaveCrumbActivity";
     @Bind(R.id.done_button)
     FloatingActionButton saveCrumbFab;
 
@@ -49,6 +56,12 @@ public class SaveCrumbActivity extends AppCompatActivity implements SaveCrumbAct
     @Bind(R.id.description)
     EditText descriptionEditText;
 
+    @Bind(R.id.media_container)
+    RelativeLayout mediaContainer;
+
+    private String filePath;
+    private Surface videoSurface;
+    private TextureView videoContainer;
     private SaveCrumbModel model;
     private SaveCrumbPresenter presenter;
 
@@ -56,31 +69,39 @@ public class SaveCrumbActivity extends AppCompatActivity implements SaveCrumbAct
     private SaveCrumbModel.MediaLoader loaderContract = new SaveCrumbModel.MediaLoader() {
         @Override
         public void loadMedia() {
-            Bitmap bitmap = model.loadBitmap();
-            presenter.setBitmapDisplay(bitmap);
+            // Do nothing - not loading a bitmap.
         }
     };
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        // Initialise
         setContentView(R.layout.add_screen);
         ButterKnife.bind(this);
-        boolean backCameraOpen = getIntent().getBooleanExtra("IsBackCameraOpen", true);
-        CrumbToSaveDetails crumbToSaveDetails = new CrumbToSaveDetails(!backCameraOpen, "L", true);
+
+        filePath = getIntent().getExtras().getString("videoUrl");
+
+        // Create crumb saving details object
+        CrumbToSaveDetails crumbToSaveDetails = new CrumbToSaveDetails(false, "L", false);
 
         // Create gps
         SimpleGps simpleGps = new SimpleGps(this);
 
         // Create presenter
-        presenter = new SaveCrumbPresenter(this);
+        SaveCrumbPresenter presenter = new SaveCrumbPresenter(this);
 
-        // Create model and start load.
+        // Create model with dependencies
         model = new SaveCrumbModel(simpleGps, crumbToSaveDetails, presenter);
+
+        // Do load
         model.load(loaderContract);
 
+        // Add watcher for the description edit text view.
         descriptionEditText.addTextChangedListener(this);
         setMaxWidthForDescriptionCard();
+        setUpTextureView();
     }
 
     private void setMaxWidthForDescriptionCard() {
@@ -90,29 +111,22 @@ public class SaveCrumbActivity extends AppCompatActivity implements SaveCrumbAct
         descriptionTextView.setMaxWidth(oneFifthMaxWidth*7);
     }
 
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-    }
-
-    @Override
-    protected void onRestart() {
-        super.onRestart();
-    }
-
-    @Override
-    public void setBitmap(final Bitmap bitmap) {
-        runOnUiThread(new Runnable() {
+    private void setUpTextureView() {
+        videoContainer = new TextureView(this);
+        videoContainer.setSurfaceTextureListener(this);
+        Handler handler = new Handler();
+        handler.postDelayed(new Runnable() {
             @Override
             public void run() {
-                mediaView.setImageBitmap(bitmap);
+                mediaContainer.addView(videoContainer);
             }
-        });
+        }, 100);
+
+    }
+
+    @Override
+    public void setBitmap(Bitmap bitmap) {
+        // Not required - we are setting a video not a bitmap
     }
 
     @Override
@@ -139,6 +153,7 @@ public class SaveCrumbActivity extends AppCompatActivity implements SaveCrumbAct
     @Override
     public void showMessage(String message) {
         Toast.makeText(this, message, Toast.LENGTH_LONG).show();
+
     }
 
     @Override
@@ -174,20 +189,65 @@ public class SaveCrumbActivity extends AppCompatActivity implements SaveCrumbAct
     }
 
     @Override
+    public void onSurfaceTextureAvailable(SurfaceTexture surfaceTexture, int i, int i1) {
+        if (surfaceTexture!= null) {
+            Surface surface = new Surface(surfaceTexture);
+            buildMediaPlayer(surface);
+        }
+    }
+
+    private void buildMediaPlayer(Surface surface) {
+        final MediaPlayer mediaPlayer = new MediaPlayer();
+
+        try {
+            mediaPlayer.setDataSource(filePath);
+            mediaPlayer.setSurface(surface);
+            mediaPlayer.setVideoScalingMode(MediaPlayer.VIDEO_SCALING_MODE_SCALE_TO_FIT);
+            mediaPlayer.prepare();
+            MediaPlayer.OnPreparedListener onPreparedListener = new MediaPlayer.OnPreparedListener() {
+                @Override
+                public void onPrepared(MediaPlayer mp) {
+                    mp.start();
+                    mp.setLooping(true);
+
+                }
+            };
+
+            mediaPlayer.setOnPreparedListener(onPreparedListener);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Override
+    public void onSurfaceTextureSizeChanged(SurfaceTexture surfaceTexture, int i, int i1) {
+
+    }
+
+    @Override
+    public boolean onSurfaceTextureDestroyed(SurfaceTexture surfaceTexture) {
+        surfaceTexture.release();
+        return false;
+    }
+
+    @Override
+    public void onSurfaceTextureUpdated(SurfaceTexture surfaceTexture) {
+
+    }
+
+    @Override
     public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-        Log.d(TAG, "beforeTextChanged called with char sequence: " + s);
+
     }
 
     @Override
     public void onTextChanged(CharSequence s, int start, int before, int count) {
-        Log.d(TAG, "OnTextChanged called with char sequence: "+ s.toString());
+
         model.setDescription(s.toString());
     }
 
     @Override
     public void afterTextChanged(Editable s) {
-        Log.d(TAG, "AfterTextChanged called with char sequence: " + s);
+
     }
-
-
 }

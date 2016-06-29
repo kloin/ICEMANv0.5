@@ -8,6 +8,7 @@
     <permission android:name="com.teamunemployment.breadcrumbs.permission.C2D_MESSAGE"
         android:protectionLevel="signature" />
 
+    <uses-permission android:name="android.permission.SET_DEBUG_APP"></uses-permission>
     <uses-permission android:name="android.permission.INTERNET"/>
     <uses-permission android:name="android.permission.WAKE_LOCK"/>
     <uses-permission android:name="com.google.android.gms.permission.ACTIVITY_RECOGNITION" />
@@ -172,7 +173,8 @@
         <activity android:name=".client.StoryBoard.StoryBoardActivity" android:screenOrientation="portrait"></activity>
         <activity android:name=".client.ImageChooser.TrailCoverImageSelector" android:screenOrientation="portrait"></activity>
         <activity android:name=".SaveCrumb.SaveCrumbActivity" android:screenOrientation="portrait"></activity>
-        <activity android:name=".client.TestingVideo"></activity>
+        <activity android:name=".client.TestingVideo"/>
+        <activity android:name=".SaveCrumb.SaveVideoActivity" android:screenOrientation="portrait"/>
         <provider
             android:name="com.facebook.FacebookContentProvider"
             android:authorities="com.facebook.app.FacebookContentProvider668335369892920"

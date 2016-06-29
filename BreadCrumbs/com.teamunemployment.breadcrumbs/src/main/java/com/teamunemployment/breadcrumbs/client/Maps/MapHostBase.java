@@ -57,7 +57,7 @@ public class MapHostBase extends Activity implements
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.home_map);
-        mMap = ((MapFragment) getFragmentManager().findFragmentById(R.id.map)).getMap();
+        //mMap = ((MapFragment) getFragmentManager().findFragmentById(R.id.map)).getMap();
         mContext = this;
         mPreferencesApi = new PreferencesAPI(mContext);
         myCurrentTrailDisplayManager = new MyCurrentTrailDisplayManager(mMap,(Activity) mContext);

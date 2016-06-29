@@ -300,7 +300,6 @@ public class SaveEventFragment extends Activity {
 		else {
 			if (bm != null) {
 				Matrix m = new Matrix();
-
 				m.setRotate(270, (float) bm.getWidth()/2, (float) bm.getHeight() / 2);
 				try {
 					Bitmap b2 = Bitmap.createBitmap(bm, 0, 0, bm.getWidth(), bm.getHeight(), m, true);

@@ -6,6 +6,8 @@ import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.location.Address;
 import android.location.Location;
+import android.location.LocationListener;
+import android.os.Bundle;
 import android.os.Environment;
 import android.preference.PreferenceManager;
 import android.view.View;
@@ -42,24 +44,48 @@ public class SaveCrumbModel {
     private int editableDescriptionVisibility = View.GONE;
     private int uneditableDescriptionVisibility = View.VISIBLE;
 
+    public interface MediaLoader {
+        void loadMedia();
+    }
     public SaveCrumbModel(SimpleGps simpleGps, CrumbToSaveDetails details, SaveCrumbPresenter presenter) {
         this.simpleGps = simpleGps;
         this.details = details;
         this.presenter = presenter;
     }
 
-    public void load() {
+    public void load(final MediaLoader loaderContract) {
         new Thread(new Runnable() {
             @Override
             public void run() {
-                Bitmap bitmap = loadBitmap();
-                presenter.setBitmapDisplay(bitmap);
-                location = fetchLocation();
+                loaderContract.loadMedia();
+            }
+        }).start();
+        setLocation();
+    }
+
+    private void setLocation() {
+        location = fetchLocation();
+        if (validateLocation(location)) {
+            placeName = fetchLocationName(location);
+            presenter.setLocation(placeName);
+        } else {
+            simpleGps.FetchFineLocation(onLocationFound());
+        }
+    }
+
+    public SimpleGps.Callback onLocationFound() {
+        return new SimpleGps.Callback() {
+            @Override
+            public void doCallback(Location location) {
                 placeName = fetchLocationName(location);
                 presenter.setLocation(placeName);
             }
-        }).start();
+        };
+    }
 
+    // check if our location is less than 1 min old. If it isnt, we need to get
+    public boolean validateLocation(Location location) {
+        return location.getTime() > System.currentTimeMillis() - 60000;
     }
 
     public Bitmap loadBitmap() {
@@ -82,6 +108,11 @@ public class SaveCrumbModel {
         return location;
     }
 
+    /**
+     * Fetch a place name using a given location.
+     * @param location The {@link Location} to use.
+     * @return The suburb, city, or country name as a string.
+     */
     public String fetchLocationName(Location location) {
         if (location == null) {
             presenter.showMessage("Failed to find location");
@@ -92,8 +123,11 @@ public class SaveCrumbModel {
             return "MOCK";
         }
 
+        // Fetch address using our location.
+        Address address = simpleGps.FetchLocationAddress(location);
+
         // Get our place name
-        return simpleGps.FetchPlaceNameForLocation(location);
+        return simpleGps.FetchPlaceNameForLocation(address);
     }
 
     public void setDescription(String description) {
@@ -124,11 +158,18 @@ public class SaveCrumbModel {
         String trailId = Integer.toString(preferencesAPI.GetLocalTrailId());
 
         // grab event Id.
-        int eventId = preferencesAPI.GetEventId();
+        final int eventId = preferencesAPI.GetEventId();
 
         // Save image to disk.
-        String fileName =  Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES).toString() + "/"+eventId;
-        com.teamunemployment.breadcrumbs.caching.Utils.SaveBitmap(fileName, GlobalContainer.GetContainerInstance().GetBitMap());
+        if (details.IS_PHOTO) {
+            new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    saveBitmap(eventId);
+                }
+            }).start();
+        }
+
 
         // Need to launch intent service to save object.
         Intent saveCrumbService = new Intent(context, SaveCrumbService.class);
@@ -139,6 +180,11 @@ public class SaveCrumbModel {
 
         context.startService(saveCrumbService);
         preferencesAPI.SetEventId(eventId+1); // This is a flag - should be saved in the DB because user can clear shared preferences
+    }
+
+    private void saveBitmap(int eventId) {
+        String fileName =  Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES).toString() + "/"+eventId;
+        com.teamunemployment.breadcrumbs.caching.Utils.SaveBitmap(fileName, GlobalContainer.GetContainerInstance().GetBitMap());
     }
 
     public void CleanUp() {

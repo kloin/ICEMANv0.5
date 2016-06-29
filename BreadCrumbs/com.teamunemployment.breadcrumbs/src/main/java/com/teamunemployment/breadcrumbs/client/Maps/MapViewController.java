@@ -61,7 +61,7 @@ OnMapClickListener, OnMapLongClickListener, OnMarkerClickListener {
 			}
 			
 			LatLng theBurn = new LatLng(Latitude, Longitude);
-			mMap = ((MapFragment) getFragmentManager().findFragmentById(R.id.map)).getMap();
+			//mMap = ((MapFragment) getFragmentManager().findFragmentById(R.id.map)).getMap();
 			mMap.setOnMarkerClickListener(this);
 			// Show the shit on the map
 			mMap.setMyLocationEnabled(true);

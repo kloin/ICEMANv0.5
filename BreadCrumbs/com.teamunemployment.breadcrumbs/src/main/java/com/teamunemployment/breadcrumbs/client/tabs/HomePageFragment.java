@@ -40,8 +40,8 @@ public class HomePageFragment extends android.support.v4.app.Fragment {
             context = rootView.getContext();
             TrailStartToggleListener();
             ActionBarListeners();
-            GoogleMap map = ((MapFragment) activityContext.getFragmentManager().findFragmentById(R.id.map)).getMap();
-            trailManager = new MyCurrentTrailDisplayManager(map, activityContext);
+            //GoogleMap map = ((MapFragment) activityContext.getFragmentManager().findFragmentById(R.id.map)).getMap();
+            //trailManager = new MyCurrentTrailDisplayManager(map, activityContext);
         } catch (InflateException e) {
             /* map is already there, just return view as it is */
         }

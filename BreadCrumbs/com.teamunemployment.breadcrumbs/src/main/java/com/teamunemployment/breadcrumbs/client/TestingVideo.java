@@ -57,8 +57,7 @@ public class TestingVideo  extends Activity implements SurfaceHolder.Callback,
         if (player == null) {
             String userAgent = Util.getUserAgent(this, "BreadcrumbsExoplayer");
             Uri uri = Uri.parse(LoadBalancer.RequestCurrentDataAddress() + "/images/5073.mp4");
-            player = new BreadcrumbsExoPlayer(new ExtractorRendererBuilder(context,userAgent, uri, false));
-            player.addListener(this);
+           // player = new BreadcrumbsExoPlayer(new ExtractorRendererBuilder(context,userAgent, uri, false));
             player.setCaptionListener(this);
             player.seekTo(0);
             playerNeedsPrepare = true;

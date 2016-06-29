@@ -72,10 +72,12 @@ public class SaveCrumbService extends Service {
 
         public int eventId;
         public boolean isPhoto;
+        public String description;
 
-        public Event(int id, boolean isPhoto) {
+        public Event(int id, boolean isPhoto, String description) {
             this.eventId = id;
             this.isPhoto = isPhoto;
+            this.description = description;
         }
     }
 
@@ -94,14 +96,14 @@ public class SaveCrumbService extends Service {
 
         boolean isPhoto = intent.getBooleanExtra("IsPhoto", false);
         int eventId = intent.getIntExtra("EventId", -1);
-
+        String description = intent.getStringExtra("Descripttion");
         if (eventId == -1) {
             throw new IllegalArgumentException("Event Id cannot be -1");
         }
 
         // We add our events to a list so that we can save them all with one location request. This
         // is for when the user saves multiple photos in short successesion, so we need a list of events.
-        eventsTosave.add(new Event(eventId, isPhoto));
+        eventsTosave.add(new Event(eventId, isPhoto, description));
 
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             Toast.makeText(context, "Cannot save without location permissions", Toast.LENGTH_LONG).show();

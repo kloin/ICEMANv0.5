@@ -359,9 +359,9 @@ public class LocalMap extends MapViewer {
     }
 
     private void displayCrumbsFromLocal() {
-        JSONObject crumbsJson = databaseController.GetAllCrumbs(trailId);
+       // JSONObject crumbsJson = databaseController.GetAllCrumbs(trailId);
 
-        DisplayCrumbsFromLocalDatabase(crumbsJson);
+        //DisplayCrumbsFromLocalDatabase(crumbsJson);
     }
 
     public void DisplayCrumbsFromLocalDatabase(JSONObject crumbs) {
@@ -374,14 +374,15 @@ public class LocalMap extends MapViewer {
             // Create a trail.
             mapDisplayManager.clusterManager.clearItems();
             mapDisplayManager.GetDataObjects().clear();
-
+            int counter = 0;
             while (keys.hasNext()) {
                 // The next node to get data from and Draw.
-                String id = keys.next();
+                String id = Integer.toString(counter);
                 next = crumbs.getJSONObject(id);
 
                 mapDisplayManager.DrawLocalCrumbFromJson(next);
                 mapDisplayManager.clusterManager.cluster();
+                counter += 1;
             }
             // Now that we are done, we want to set the focus to the last crumb added
 
@@ -483,7 +484,7 @@ public class LocalMap extends MapViewer {
         setCoverPhoto(preferencesAPI.GetCurrentTrailCoverPhoto());
 
         TrailSummaryModel trailSummaryModel = new TrailSummaryModel(databaseController.GetTrailSummary(trailId));
-        LocalTrailModel localTrailModel = new LocalTrailModel(databaseController.GetAllCrumbs(trailId));
+        LocalTrailModel localTrailModel = new LocalTrailModel(databaseController.GetAllCrumbs("0"));
 
         TextView days = (TextView) bottomSheet.findViewById(R.id.duration_details);
         days.setText(trailSummaryModel.GetDaysDuration() + " Days");
@@ -806,7 +807,9 @@ public class LocalMap extends MapViewer {
     }
 
     private void ZoomOnMyLocation() {
-        FetchMyLocation();
+        if (mMap != null) {
+            FetchMyLocation();
+        }
     }
 
     @Override
@@ -829,31 +832,5 @@ public class LocalMap extends MapViewer {
         activityController.StartListenting();
     }
 
-    public void FetchMyLocation() {
 
-        SimpleGps simpleGps = new SimpleGps(context);
-        Location location = simpleGps.GetInstantLocation();
-        if (location == null) {
-            return;
-        }
-
-        mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(
-                new LatLng(location.getLatitude(), location.getLongitude()), 13), 500, null);
-
-        mMap.addCircle(new CircleOptions()
-                .center(new LatLng(location.getLatitude(), location.getLongitude()))
-                .radius(30)
-                .strokeColor(Color.BLUE)
-                .fillColor(Color.BLUE));
-        if (LOOKIING_AT_MAP) {
-//			CameraPosition cameraPosition = new CameraPosition.Builder()
-//					.target(new LatLng(location.getLatitude(), location.getLongitude()))      // Sets the center of the map to location user
-//					.zoom(17)                   // Sets the zoom
-//					.bearing(90)                // Sets the orientation of the camera to east
-//					.tilt(40)                   // Sets the tilt of the camera to 30 degrees
-//					.build();                   // Creates a CameraPosition from the builder
-//			mMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
-            HAVE_ZOOMED = true;
-        }
-    }
 }

@@ -89,6 +89,7 @@ public class ExtractorRendererBuilder implements BreadcrumbsExoPlayer.RendererBu
                 sampleSource, MediaCodecSelector.DEFAULT, MediaCodec.VIDEO_SCALING_MODE_SCALE_TO_FIT, 5000,
                 mainHandler, player, 50);
 
+
         MediaCodecAudioTrackRenderer audioRenderer = new MediaCodecAudioTrackRenderer(sampleSource,
                 MediaCodecSelector.DEFAULT, null, true, mainHandler, player,
                 AudioCapabilities.getCapabilities(context), AudioManager.STREAM_MUSIC);

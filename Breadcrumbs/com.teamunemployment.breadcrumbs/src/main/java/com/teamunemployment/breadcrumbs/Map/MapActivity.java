@@ -22,6 +22,7 @@ import android.widget.RelativeLayout;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapFragment;
+import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.model.CircleOptions;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Polyline;
@@ -48,7 +49,7 @@ import java.util.List;
  *
  * Our view for the Map.
  */
-public class MapActivity extends AppCompatActivity implements MapContract.View {
+public class MapActivity extends AppCompatActivity implements MapContract.View , OnMapReadyCallback{
 
     private static final String TAG = "MapView";
     private MapContract.Presenter presenter;
@@ -75,7 +76,7 @@ public class MapActivity extends AppCompatActivity implements MapContract.View {
         context = this;
         binding = DataBindingUtil.setContentView(this, R.layout.home_map);
         // Initialise our map.
-        map = ((MapFragment) getFragmentManager().findFragmentById(R.id.map)).getMap();
+        ((MapFragment) getFragmentManager().findFragmentById(R.id.map)).getMapAsync(this);
         String trailId = this.getIntent().getStringExtra("TrailId");
 
         // Build our repositories
@@ -280,5 +281,9 @@ public class MapActivity extends AppCompatActivity implements MapContract.View {
         }
     }
 
+    @Override
+    public void onMapReady(GoogleMap googleMap) {
+        map = googleMap;
+    }
 }
 

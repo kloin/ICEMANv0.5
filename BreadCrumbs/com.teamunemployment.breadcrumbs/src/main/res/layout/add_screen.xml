@@ -4,11 +4,16 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
     <!-- Layout for CRUMBS -->
-    <ImageView
-        android:id="@+id/media"
+    <RelativeLayout
+        android:id="@+id/media_container"
         android:layout_width="match_parent"
-        android:scaleType="centerCrop"
-        android:layout_height="match_parent" />
+        android:layout_height="match_parent">
+        <ImageView
+            android:id="@+id/media"
+            android:layout_width="match_parent"
+            android:scaleType="centerCrop"
+            android:layout_height="match_parent" />
+    </RelativeLayout>
 
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/done_button"

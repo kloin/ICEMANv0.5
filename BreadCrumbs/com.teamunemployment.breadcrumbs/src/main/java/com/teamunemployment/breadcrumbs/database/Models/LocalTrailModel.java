@@ -24,7 +24,7 @@ public class LocalTrailModel {
      * @param crumbs The crumbs for our local trail, fetched by {@link com.teamunemployment.breadcrumbs.database.DatabaseController#GetAllCrumbs(String)}
      */
     public LocalTrailModel(JSONObject crumbs) {
-        processMetadataIntoVars(crumbs);
+       //processMetadataIntoVars(crumbs);
     }
 
     /**

@@ -893,7 +893,7 @@ public class DatabaseController extends SQLiteOpenHelper {
     public String GetCurrentTrailName() {
         Cursor cursor = null;
         String trailName = "";
-        try{
+        try {
             cursor = getReadableDatabase().rawQuery("SELECT * FROM " + TRAIL_SUMMARY + " ORDER BY _id", null);
             // WE just want the latest trail.
             if(cursor.getCount() > 0) {
@@ -901,7 +901,7 @@ public class DatabaseController extends SQLiteOpenHelper {
                 trailName = cursor.getString(cursor.getColumnIndex("TrailName"));
             }
             return trailName;
-        }finally {
+        } finally {
             cursor.close();
         }
     }

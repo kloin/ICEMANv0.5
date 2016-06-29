@@ -88,16 +88,18 @@ public class SimpleGps {
         locationManager.requestSingleUpdate(locationCriteria, getCustomLocationListener(callback), null);
     }
 
-    // careful not to run this on the main thread.
-    public String FetchPlaceNameForLocation(Location location) {
-        Address address = PlaceManager.GetPlace(context, location.getLatitude(), location.getLongitude());
+    public String FetchPlaceNameForLocation(Address address) {
         if (address == null) {
+            // Not sure what to do here.
             return "";
         }
+
         String result = getSuburb(address);
-        if (result.isEmpty()) {
+
+        // If result returns a null, this crashes. Need to ensure that we are returning a
+        if (result == null || result.isEmpty()) {
             result = getCity(address);
-            if (result.isEmpty()) {
+            if (result == null || result.isEmpty()) {
                 return address.getCountryName();
             }
         }
@@ -105,7 +107,20 @@ public class SimpleGps {
 
     }
 
-    private String getSuburb(Address address) {
+    /**
+     * Simple method to grab the address for a particular location. I know it seems dumb to have a method
+     * for a method call, but we need this to make the address aspect of fetching a place name testable,
+     * as we have had some crashes.
+     * @param location The {@link Location} that we want an address for.
+     * @return The {@link Address} object for the given location. Can return null if we have no network access.
+     */
+    @Nullable
+    public Address FetchLocationAddress(Location location) {
+        Address address = PlaceManager.GetPlace(context, location.getLatitude(), location.getLongitude());
+        return address;
+    }
+
+    public String getSuburb(Address address) {
         if (address != null) {
             return address.getSubLocality();
         }
@@ -113,14 +128,14 @@ public class SimpleGps {
         return ""; // return an empty string which will be sent to the server.
     }
 
-    private String getCity(Address address) {
+    public String getCity(Address address) {
         if (address != null) {
             return address.getLocality();
         }
         return ""; // return an empty string which will be sent to the server.
     }
 
-    private String getCountry(Address address) {
+    public String getCountry(Address address) {
         if (address != null) {
             return address.getCountryName();
         }
@@ -144,6 +159,7 @@ public class SimpleGps {
             // for ActivityCompat#requestPermissions for more details.
             return;
         }
+
         TextCaching caching = new TextCaching(context);
         String text = caching.FetchCachedText("GPS_REQUESTS");
         if (text == null) {
@@ -204,8 +220,6 @@ public class SimpleGps {
         });
         return  "";
     }
-
-
 
 
 

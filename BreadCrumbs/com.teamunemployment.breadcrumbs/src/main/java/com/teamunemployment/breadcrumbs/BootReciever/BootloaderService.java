@@ -8,6 +8,7 @@ import android.support.annotation.Nullable;
 import android.util.Log;
 import android.widget.Toast;
 
+import com.teamunemployment.breadcrumbs.ActivityRecognition.ActivityController;
 import com.teamunemployment.breadcrumbs.Location.BreadCrumbsFusedLocationProvider;
 import com.teamunemployment.breadcrumbs.PreferencesAPI;
 
@@ -19,14 +20,13 @@ public class BootloaderService extends Service{
 
     public void onCreate() {
         super.onCreate();
-        Toast.makeText(this, "Service Started", Toast.LENGTH_LONG).show();
-        boolean isTracking = PreferenceManager.getDefaultSharedPreferences(this).getBoolean("TRACKING", false);
-        BreadCrumbsFusedLocationProvider breadCrumbsFusedLocationProvider = new BreadCrumbsFusedLocationProvider(this);
+        PreferencesAPI preferencesAPI = new PreferencesAPI(this);
+        boolean isTracking = preferencesAPI.isTrackingEnabledByUser();
         int localTrailId = new PreferencesAPI(this).GetLocalTrailId();
         if (localTrailId != -1 && isTracking) {
-            breadCrumbsFusedLocationProvider.StartBackgroundGPSService();
+            ActivityController activityController = new ActivityController(this);
+            activityController.StartListenting();
         }
-        // do something when the service is created
     }
 
     @Nullable

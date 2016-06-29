@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.os.Handler;
 import android.preference.PreferenceManager;
 import android.provider.MediaStore;
 import android.support.annotation.IdRes;
@@ -119,21 +120,41 @@ public class HomeActivity extends AppCompatActivity {
                 try {
                     if (menuItemId == R.id.bottomBarItemOne) {
                         CURRENT_TAB = FragNavController.TAB1;
-                        fragNavController.switchTab(FragNavController.TAB1);
+                        Handler handler = new Handler();
+                        handler.postDelayed(new Runnable(){
+                            @Override
+                            public void run() {
+                                fragNavController.switchTab(FragNavController.TAB1);
+                            }
+                        }, 80);
                     } else if(menuItemId == R.id.bottomBarItemTwo) {
                         CURRENT_TAB = FragNavController.TAB2;
-                        fragNavController.switchTab(FragNavController.TAB2);
+                        Handler handler = new Handler();
+                        handler.postDelayed(new Runnable(){
+                            @Override
+                            public void run() {
+                                fragNavController.switchTab(FragNavController.TAB2);
+                            }
+                        }, 80);
                     } else if(menuItemId == R.id.bottomBarItemThree) {
                         preferencesAPI.SetCurrentTab(CURRENT_TAB);
+
                         openCamera();
                     } else if(menuItemId == R.id.bottomBarItemFour) {
                         preferencesAPI.SetCurrentTab(CURRENT_TAB);
                         launchMyTripViewer();
                         // Launch my trip
                     } else if(menuItemId == R.id.bottomBarItemFive) {
-                        CURRENT_TAB = FragNavController.TAB3;
-                        preferencesAPI.SetCurrentTab(CURRENT_TAB);
-                        fragNavController.switchTab(FragNavController.TAB3);
+                        Handler handler = new Handler();
+                        handler.postDelayed(new Runnable(){
+                            @Override
+                            public void run() {
+                                CURRENT_TAB = FragNavController.TAB3;
+                                preferencesAPI.SetCurrentTab(CURRENT_TAB);
+                                fragNavController.switchTab(FragNavController.TAB3);
+                            }
+                        }, 80);
+
 //                    fragNavController.switchTab(FragNavController.TAB5);
                         // should launch profile in fragment here
                     }
@@ -151,7 +172,7 @@ public class HomeActivity extends AppCompatActivity {
     }
 
     private void launchMyTripViewer() {
-        int localTrail = preferencesAPI.GetLocalTrailId();
+        final int localTrail = preferencesAPI.GetLocalTrailId();
 
         // Show up the create trail dialog.
         if (localTrail == -1) {
@@ -165,11 +186,18 @@ public class HomeActivity extends AppCompatActivity {
             return;
         }
         else {
-            Intent newIntent = new Intent();
-            String localTrailString = Integer.toString(localTrail) + "L";
-            newIntent.putExtra("TrailId", localTrailString);
-            newIntent.setClassName("com.teamunemployment.breadcrumbs", "com.teamunemployment.breadcrumbs.client.Maps.LocalMap");
-            startActivity(newIntent);
+            Handler handler = new Handler();
+            handler.postDelayed(new Runnable(){
+                @Override
+                public void run() {
+                    Intent newIntent = new Intent();
+                    String localTrailString = Integer.toString(localTrail) + "L";
+                    newIntent.putExtra("TrailId", localTrailString);
+                    newIntent.setClassName("com.teamunemployment.breadcrumbs", "com.teamunemployment.breadcrumbs.client.Maps.LocalMap");
+                    startActivity(newIntent);
+                }
+            }, 60);
+
         }
     }
 
@@ -252,9 +280,16 @@ public class HomeActivity extends AppCompatActivity {
         }
 
         if (permissionsArrayList.size() == 0 ) {
-            Intent newIntent = new Intent();
-            newIntent.setClassName("com.teamunemployment.breadcrumbs", "com.teamunemployment.breadcrumbs.client.Camera.CameraCapture");
-            startActivity(newIntent);
+            Handler handler = new Handler();
+            handler.postDelayed(new Runnable(){
+                @Override
+                public void run() {
+                    Intent newIntent = new Intent();
+                    newIntent.setClassName("com.teamunemployment.breadcrumbs", "com.teamunemployment.breadcrumbs.client.Camera.CameraCapture");
+                    startActivity(newIntent);
+                }
+            }, 60);
+
         }
     }
 

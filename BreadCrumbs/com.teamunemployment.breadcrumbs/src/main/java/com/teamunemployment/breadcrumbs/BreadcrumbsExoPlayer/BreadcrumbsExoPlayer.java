@@ -3,6 +3,7 @@ package com.teamunemployment.breadcrumbs.BreadcrumbsExoPlayer;
 import android.media.MediaCodec;
 import android.os.Handler;
 import android.os.Looper;
+import android.util.Log;
 import android.view.Surface;
 
 import com.google.android.exoplayer.CodecCounters;
@@ -160,11 +161,13 @@ public class BreadcrumbsExoPlayer implements ExoPlayer.Listener, DefaultBandwidt
     private CaptionListener captionListener;
     private InternalErrorListener internalErrorListener;
     private InfoListener infoListener;
+    private Listener listener;
 
     /* ==========================================================================
      * *****************  Constructor   *****************************************
      *===========================================================================*/
-    public BreadcrumbsExoPlayer(RendererBuilder rendererBuilder) {
+    public BreadcrumbsExoPlayer(RendererBuilder rendererBuilder, Listener listener) {
+        this.listener = listener;
         this.rendererBuilder = rendererBuilder;
 
         // We dont allow the user to manually seek, but we do seek to a position programatically.
@@ -199,6 +202,10 @@ public class BreadcrumbsExoPlayer implements ExoPlayer.Listener, DefaultBandwidt
 
     public void setInfoListener(InfoListener listener) {
         infoListener = listener;
+    }
+
+    public void setSurfaceListener(Listener listener) {
+        this.listener = listener;
     }
 
     public void setCaptionListener(CaptionListener listener) {
@@ -405,7 +412,10 @@ public class BreadcrumbsExoPlayer implements ExoPlayer.Listener, DefaultBandwidt
 
     @Override
     public void onVideoSizeChanged(int width, int height, int unappliedRotationDegrees, float pixelWidthHeightRatio) {
-
+        Log.d("TEST", "unapplied rotation degrees = " + unappliedRotationDegrees);
+        if (listener != null) {
+            listener.onVideoSizeChanged(width,height,unappliedRotationDegrees,pixelWidthHeightRatio);
+        }
     }
 
     @Override

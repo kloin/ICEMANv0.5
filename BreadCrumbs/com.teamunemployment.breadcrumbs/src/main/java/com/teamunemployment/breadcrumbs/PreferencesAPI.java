@@ -48,7 +48,6 @@ public class PreferencesAPI {
     public int GetServerTrailId() {
         return mPreferences.getInt("SERVER_TRAIL", -1);
     }
-
     // save our local trail Id
     public void SaveCurrentServerTrailId(int id) {
         mPreferences.edit().putInt("SERVER_TRAIL", id).commit();
@@ -121,16 +120,16 @@ public class PreferencesAPI {
 
     public void RemoveTrailBasedValues() {
         // Remove all these
-        mPreferences.edit().remove("CRUMB_INDEX").commit();
-        mPreferences.edit().remove("TRANSPORT_METHOD").commit();
-        mPreferences.edit().remove("TRAIL_NAME").commit();
-        mPreferences.edit().remove("CURRENT_INDEX").commit();
-        mPreferences.edit().remove("USER_TRACKING").commit();
-        mPreferences.edit().remove("TRACKING").commit();
-        mPreferences.edit().remove("SERVER_TRAIL").commit();
-        mPreferences.edit().remove("LOCAL_TRAIL").commit();
-        mPreferences.edit().remove("STATE").commit();
-        mPreferences.edit().remove("TrailCoverPhoto").commit();
+        mPreferences.edit().remove("CRUMB_INDEX").apply();
+        mPreferences.edit().remove("TRANSPORT_METHOD").apply();
+        mPreferences.edit().remove("TRAIL_NAME").apply();
+        mPreferences.edit().remove("CURRENT_INDEX").apply();
+        mPreferences.edit().remove("USER_TRACKING").apply();
+        mPreferences.edit().remove("TRACKING").apply();
+        mPreferences.edit().remove("SERVER_TRAIL").apply();
+        mPreferences.edit().remove("LOCAL_TRAIL").apply();
+        mPreferences.edit().remove("STATE").apply();
+        mPreferences.edit().remove("TrailCoverPhoto").apply();
     }
 
     public String GetCurrentTrailCoverPhoto() {

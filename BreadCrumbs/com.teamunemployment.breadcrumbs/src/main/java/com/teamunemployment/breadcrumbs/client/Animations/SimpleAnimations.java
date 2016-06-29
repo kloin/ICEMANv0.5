@@ -35,6 +35,9 @@ public class SimpleAnimations {
         view.setVisibility(View.GONE);
     }
 
+    public static void AlphaFadeInView(View view) {
+
+    }
     // Fade in a given view.
     public static void FadeInView(View view) {
         Animation fadeIn = new AlphaAnimation(0, 1);

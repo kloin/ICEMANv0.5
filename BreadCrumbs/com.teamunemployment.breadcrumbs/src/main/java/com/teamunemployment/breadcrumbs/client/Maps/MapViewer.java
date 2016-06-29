@@ -46,6 +46,7 @@ import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
+import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.UiSettings;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.CameraPosition;
@@ -115,7 +116,7 @@ import java.util.List;
  * View model for the map. This shows all the points on the map, and loads up the photos when clicked.
  * Also due for a rework.
  */
-public class MapViewer extends Activity implements OnMapClickListener, OnMapLongClickListener, OnMarkerClickListener {
+public class MapViewer extends Activity implements OnMapClickListener, OnMapLongClickListener, OnMarkerClickListener, OnMapReadyCallback {
 
 	public static final int MEDIUM_WIDTH = 24;
 	public static final int FAT_WIDTH = 36;
@@ -177,10 +178,15 @@ public class MapViewer extends Activity implements OnMapClickListener, OnMapLong
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.home_map);
 		context = this;
-        mMap = ((MapFragment) getFragmentManager().findFragmentById(R.id.map)).getMap();
+        ((MapFragment) getFragmentManager().findFragmentById(R.id.map)).getMapAsync(this);
 		mContext = this;
 		trailId = this.getIntent().getStringExtra("TrailId");
 
+
+
+	}
+
+	private void doSetupShit() {
 		if (trailId != null && trailId.endsWith("L")) {
 			IS_OWN_TRAIL = true;
 			// Get rid of the L
@@ -193,7 +199,6 @@ public class MapViewer extends Activity implements OnMapClickListener, OnMapLong
 		if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
 			getWindow().setSharedElementsUseOverlay(false);
 		}
-
 		setLocateMeClickHandler();
 		setUpBottomSheet();
 		setListenersAndLoaders();
@@ -219,7 +224,6 @@ public class MapViewer extends Activity implements OnMapClickListener, OnMapLong
 			}, 1200);
 		}
 	}
-
 	private void setUpTrailState() {
 		SetUpDetailsItems();
 	}
@@ -694,7 +698,7 @@ public class MapViewer extends Activity implements OnMapClickListener, OnMapLong
 
 	// Runnable method that occurs off of the main UI Thread.
 	private void processResultRunnable(String result) throws JSONException {
-		Trace.beginSection("Process result");
+		//Trace.beginSection("Process result");
 		Log.d(TAG, "processResult: creating  JSONObject. Time: " + System.currentTimeMillis());
 		JSONObject jsonObject = new JSONObject(result);
 		Log.d(TAG, "processResult: created  JSONObject. Time: " + System.currentTimeMillis());
@@ -720,7 +724,7 @@ public class MapViewer extends Activity implements OnMapClickListener, OnMapLong
 			}
 			count += 1;
 		}
-		Trace.endSection();
+		//Trace.endSection();
 	}
 
 	// Link encoded polylines with their base/head locations.
@@ -1220,7 +1224,12 @@ public class MapViewer extends Activity implements OnMapClickListener, OnMapLong
 								.tilt(40)                   // Sets the tilt of the camera to 30 degrees
 								.build();
 				mMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
-				mMap.setMapType(2);
+				if (NetworkConnectivityManager.IsConnectedToWifi(context)) {
+					mMap.setMapType(2);
+				}
+				else {
+					mMap.setMapType(1);
+				}
 			}
 
 			// Then we passed data back, need to focus on this now.
@@ -1276,6 +1285,16 @@ public class MapViewer extends Activity implements OnMapClickListener, OnMapLong
 		// TODO Auto-generated method stub
 
 	}
+
+	@Override
+	public void onMapReady(GoogleMap googleMap) {
+		mMap = googleMap;
+		doSetupShit();
+		FetchMyLocation();
+
+	}
+
+
 
 	private class MyCurrentTrailDisplayManager {
 		private GoogleMap map;

@@ -13,6 +13,22 @@ public class NetworkConnectivityManager {
         ConnectivityManager connectivityManager
                 = (ConnectivityManager) context.getSystemService(context.CONNECTIVITY_SERVICE);
         NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
-        return activeNetworkInfo != null;
+        return (activeNetworkInfo != null && activeNetworkInfo.isConnected());
+    }
+
+    public static boolean IsConnectedToWifi(Context context) {
+        ConnectivityManager connMgr = (ConnectivityManager)
+                context.getSystemService(Context.CONNECTIVITY_SERVICE);
+
+        NetworkInfo activeInfo = connMgr.getActiveNetworkInfo();
+        return activeInfo.getType() == ConnectivityManager.TYPE_WIFI;
+    }
+
+    public static boolean IsOnData(Context context) {
+        ConnectivityManager connMgr = (ConnectivityManager)
+                context.getSystemService(Context.CONNECTIVITY_SERVICE);
+
+        NetworkInfo activeInfo = connMgr.getActiveNetworkInfo();
+        return activeInfo.getType() == ConnectivityManager.TYPE_MOBILE;
     }
 }

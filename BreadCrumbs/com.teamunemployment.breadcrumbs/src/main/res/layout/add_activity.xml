@@ -1,76 +1,74 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#333"
-    android:orientation="vertical">
-<RelativeLayout
-    android:layout_width="match_parent"
-    android:layout_height="match_parent">
-
-    <com.teamunemployment.breadcrumbs.client.CameraController
-        android:id="@+id/camera_preview"
+    android:background="@color/white">
+    <RelativeLayout
+        android:id="@+id/camera_holder"
         android:layout_width="match_parent"
-    android:layout_height="match_parent" />
+        android:layout_height="match_parent">
+    </RelativeLayout>
 
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/backButtonCapture"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:layout_alignParentLeft="true"
-        app:fabSize="mini"
+        android:layout_marginBottom="20dp"
+        android:layout_marginLeft="10dp"
         android:src="@drawable/ic_arrow_back_black_24dp"
         app:backgroundTint="#ffffff"
-        android:layout_marginLeft="10dp"
-        android:layout_marginBottom="20dp"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
+        app:fabSize="mini" />
 
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/captureButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:layout_centerInParent="true"
-        android:src="@drawable/ic_videocam_white_24dp"
-        app:fabSize="normal"
-        app:backgroundTint="#2196F3"
-        android:background="@color/white"
-        android:layout_marginRight="10dp"
         android:layout_marginBottom="20dp"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
+        android:layout_marginRight="10dp"
+        android:background="@color/white"
+        android:src="@drawable/ic_videocam_white_24dp"
+        app:backgroundTint="#2196F3"
+        app:fabSize="normal" />
+
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/videoButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_above="@id/captureButton"
         android:layout_alignParentRight="true"
+        android:layout_marginBottom="40px"
+        android:layout_marginRight="20px"
         android:src="@drawable/ic_camera_alt_black_24dp"
         app:backgroundTint="#ffffff"
-        app:fabSize="mini"
-        android:layout_marginRight="20px"
-        android:layout_marginBottom="40px"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
+        app:fabSize="mini" />
 
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/font_or_back_camera"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_above="@id/videoButton"
         android:layout_alignParentRight="true"
+        android:layout_marginBottom="40px"
+        android:layout_marginRight="20px"
         android:src="@drawable/ic_rotate_right_black_24dp"
         app:backgroundTint="#ffffff"
-        app:fabSize="mini"
-        android:layout_marginRight="20px"
-        android:layout_marginBottom="40px"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
+        app:fabSize="mini" />
+
     <ProgressBar
         android:id="@+id/video_progress"
+        style="@style/Base.Widget.AppCompat.ProgressBar.Horizontal"
         android:layout_width="match_parent"
-        android:progress="0"
-        android:padding="0dp"
-        android:layout_marginTop="-6dp"
-        android:progressBackgroundTint="#00000000"
-        android:max="15000"
         android:layout_height="wrap_content"
-        style="@style/Base.Widget.AppCompat.ProgressBar.Horizontal" />
-    </RelativeLayout>
-</LinearLayout>
+        android:layout_marginTop="-6dp"
+        android:max="15000"
+        android:padding="0dp"
+        android:progress="0"
+        android:progressBackgroundTint="#00000000" />
+</RelativeLayout>

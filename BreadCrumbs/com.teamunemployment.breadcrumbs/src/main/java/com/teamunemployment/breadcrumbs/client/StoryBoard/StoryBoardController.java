@@ -7,6 +7,7 @@ import android.os.Handler;
 import android.provider.ContactsContract;
 import android.util.Log;
 import android.view.SurfaceView;
+import android.view.TextureView;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
@@ -39,7 +40,7 @@ public class StoryBoardController {
     private ArrayList<CrumbCardDataObject> deletedCrumbs = new ArrayList<>();
     private ArrayList<ImageView> images = new ArrayList<>();
     private final ArrayList<ProgressBar> mProgressBars = new ArrayList<ProgressBar>();
-    private final ArrayList<SurfaceView> videoHolders = new ArrayList<>();
+    private final ArrayList<TextureView> videoHolders = new ArrayList<>();
     private ArrayList<StoryBoardModel> storyBoardModels = new ArrayList<>();
     private int viewingIndex = 0;
     private int loadingIndex = 0;
@@ -138,11 +139,11 @@ public class StoryBoardController {
         mProgressBars.add(progressBar04);
         mProgressBars.add(progressBar05);
 
-        SurfaceView video1 = (SurfaceView) act.findViewById(R.id.video_01);
-        SurfaceView video2 = (SurfaceView) act.findViewById(R.id.video_02);
-        SurfaceView video3 = (SurfaceView) act.findViewById(R.id.video_03);
-        SurfaceView video4 = (SurfaceView) act.findViewById(R.id.video_04);
-        SurfaceView video5 = (SurfaceView) act.findViewById(R.id.video_05);
+        TextureView video1 = (TextureView) act.findViewById(R.id.video_01);
+        TextureView video2 = (TextureView) act.findViewById(R.id.video_02);
+        TextureView video3 = (TextureView) act.findViewById(R.id.video_03);
+        TextureView video4 = (TextureView) act.findViewById(R.id.video_04);
+        TextureView video5 = (TextureView) act.findViewById(R.id.video_05);
 
         // Surfaces that we are going to use.
         videoHolders.add(video1);
@@ -206,6 +207,13 @@ public class StoryBoardController {
         StoryBoardModel currentObject = storyBoardModels.get(2);
         displayModel = currentObject;
         // Hard coding this here because we are loading a single object.
+        if (currentObject.CrumbData == null) {
+            // This is some dodgey 11pm coding here. This happened to me because I deleted a bunch of images,
+            // quit before the end and then tried to play again so it was like 29/23. This caused a crash
+            // Should reset to 0 and finish
+            Stop();
+            act.finish();
+        }
         if (currentObject.CrumbData.GetDataType().equals(".jpg")) {
             currentObject.ImageView.setVisibility(View.VISIBLE);
             if (!currentObject.FinishedLoadingImages) {
@@ -301,6 +309,7 @@ public class StoryBoardController {
                                     Log.d("StoryBoardController", "Exoplayer ready to play video");
                                     displayModel.ProgressBar.setVisibility(View.GONE);
                                     displayModel.PlayerWrapper.VideoSurface.setVisibility(View.VISIBLE);
+                                    displayModel.PlayerWrapper.VideoSurface.setAlpha(1);
                                     displayModel.PlayerWrapper.VideoSurface.setBackgroundColor(Color.TRANSPARENT);
 
                                     // Set up the progress timer
@@ -407,7 +416,7 @@ public class StoryBoardController {
         currentModel.ProgressBar.setVisibility(View.GONE);
 
         if (currentModel.PlayerWrapper != null) {
-            currentModel.PlayerWrapper.VideoSurface.setVisibility(View.GONE);
+            currentModel.PlayerWrapper.VideoSurface.setAlpha(0);
             //currentModel.PlayerWrapper.StopPlaying();
         }
 
@@ -446,7 +455,7 @@ public class StoryBoardController {
                 nextModel.PlayerWrapper.BeginLoading(LoadBalancer.RequestCurrentDataAddress() + "/images/" + nextModel.CrumbData.GetCrumbId() + ".mp4");
                 nextModel.PlayerWrapper.buildPlayer(false); // This means that it will start playing when built
             }
-            nextModel.PlayerWrapper.VideoSurface.setVisibility(View.VISIBLE);
+            displayModel.PlayerWrapper.VideoSurface.setAlpha(1);
             nextModel.ProgressBar.setVisibility(View.VISIBLE);
             nextModel.PlayerWrapper.player.setPlayWhenReady(true); // This means that it will start playing when built
             if (videoProgressTimer != null) {
@@ -569,11 +578,13 @@ public class StoryBoardController {
     private void cleanUp() {
         Picasso.with(displayModel.ImageView.getContext())
                 .cancelRequest(displayModel.ImageView);
-        displayModel.ImageView.setImageDrawable(null);
     }
 
     public int GetCurrentIndex() {
-        return VIEWING_INDEX;
+        if (VIEWING_INDEX +1 < mCrumbs.size()) {
+            return VIEWING_INDEX;
+        }
+        return 0;
     }
 
     private void checkForWaiting() {
@@ -586,12 +597,13 @@ public class StoryBoardController {
         }
     }
 
+    //
     private void setPlaceName() {
         if (placeName == null) {
             placeName = (TextView) act.findViewById(R.id.place_name);
         }
 
-        placeName.setText(displayModel.CrumbData.GetPlaceName());
+        placeName.setText(mLastObject.CrumbData.GetPlaceName());
     }
 
     private void setCrumbCount() {

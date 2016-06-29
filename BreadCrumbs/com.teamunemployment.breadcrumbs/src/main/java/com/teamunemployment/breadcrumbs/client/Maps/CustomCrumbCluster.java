@@ -11,8 +11,10 @@ import android.support.v4.content.ContextCompat;
 import android.view.View;
 import android.widget.ImageView;
 
+import com.google.android.gms.maps.model.CameraPosition;
 import com.google.maps.android.clustering.algo.Algorithm;
 import com.google.maps.android.clustering.algo.NonHierarchicalDistanceBasedAlgorithm;
+import com.teamunemployment.breadcrumbs.Network.NetworkConnectivityManager;
 import com.teamunemployment.breadcrumbs.R;
 import com.teamunemployment.breadcrumbs.Network.ServiceProxy.UpdateViewElementWithProperty;
 import com.google.android.gms.maps.GoogleMap;
@@ -33,19 +35,19 @@ import de.hdodenhof.circleimageview.CircleImageView;
  * This is a class for managing the crumbs being displayed on google maps. As you scroll out it will
  * group seperate crumbs under one crumb with a number.
  */
-public class CustomCrumbCluster extends DefaultClusterRenderer<DisplayCrumb> {
+public class CustomCrumbCluster extends DefaultClusterRenderer<DisplayCrumb> implements GoogleMap.OnCameraChangeListener{
     private ImageView mImageView;
     private final IconGenerator mIconGenerator;
     private final IconGenerator mClusterIconGenerator;
     private CircleImageView circularImageView;
     private Context context;
-    private GoogleMap map;
+    private GoogleMap mMap;
     private View multiProfile;
     private String crumbId = null;
     public CustomCrumbCluster(final Activity context, GoogleMap map, ClusterManager<DisplayCrumb> clusterManager) {
         super(context, map, clusterManager);
         this.context = context;
-        this.map = map;
+        mMap = map;
         mIconGenerator = new IconGenerator(context);
         mClusterIconGenerator = new IconGenerator(context);
         multiProfile = context.getLayoutInflater().inflate(R.layout.crumb_cluster_layout, null);
@@ -72,8 +74,7 @@ public class CustomCrumbCluster extends DefaultClusterRenderer<DisplayCrumb> {
     @Override
     protected void onBeforeClusterRendered(Cluster<DisplayCrumb> cluster, MarkerOptions markerOptions) {
         super.onBeforeClusterRendered(cluster, markerOptions);
-       // markerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_album_black_24dp));
-        // create a background process that alternates showing the images
+
     }
 
     @Override
@@ -104,4 +105,16 @@ public class CustomCrumbCluster extends DefaultClusterRenderer<DisplayCrumb> {
     }
 
 
+    @Override
+    public void onCameraChange(CameraPosition cameraPosition) {
+        if (cameraPosition.zoom <12) {
+            if (mMap.getMapType() != 1) {
+                mMap.setMapType(1);
+            }
+        } else if (cameraPosition.zoom > 12 && NetworkConnectivityManager.IsConnectedToWifi(context)) {
+            if (mMap.getMapType()!= 2) {
+                mMap.setMapType(2);
+            }
+        }
+    }
 }

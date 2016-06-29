@@ -2,7 +2,9 @@ package com.teamunemployment.breadcrumbs;
 
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.location.Address;
 import android.location.Location;
+import android.telecom.Call;
 import android.test.AndroidTestCase;
 import android.view.View;
 
@@ -20,6 +22,9 @@ import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 
+import java.util.Locale;
+
+import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -53,10 +58,65 @@ public class CrumbModelUnitTests{
         return location;
     }
 
+
     @Test
-    public void TestWeShowPromptIfWeHaveEditedChangesWhenGoingBack() {
+    public void TestThatSettingUpSaveCrumbScreenDoesNotCrashIfLocationWasNull() {
+        simpleGps = Mockito.mock(SimpleGps.class);
+        presenter = Mockito.mock(SaveCrumbPresenter.class);
+
+        // Return a null when we are saving a crumb.
+        Mockito.doReturn(null).when(simpleGps).GetInstantLocation();
+        model = new SaveCrumbModel(simpleGps, new CrumbToSaveDetails(false, "TEST", true), presenter);
+        model.load();
+    }
+
+    @Test
+    public void TestThatSavingCrumbFetchesNewLocationIfAgeOfInstantLocationIsGreaterThanOneMinutes() {
+        setUp();
+        Mockito.doReturn(getOldLocation()).when(simpleGps).GetInstantLocation();
+        model.load();
+        verify(simpleGps, times(1)).FetchFineLocation(any(SimpleGps.Callback.class));
+    }
+
+    @Test
+    public void TestValidatingLocationWorks() {
+        Location location = getOldLocation();
+        setUp();
+        Assert.assertFalse(model.validateLocation(location));
+    }
+
+    //
+    private Location getOldLocation() {
+        Location location = Mockito.mock (Location.class);
+        location.setTime(System.currentTimeMillis() - 509000);
+        return location;
+    }
+
+    @Test
+    public void TestThatLoadingCrumbModelDoesNotFailIfWeHaveNoAddress() {
 
     }
+
+    @Test
+    public void TestThatCreatingTheCrumbModelDoesNotFailIfOurAddressReturnsANullWhenFetchingLocalties() {
+        simpleGps = Mockito.mock(SimpleGps.class);
+        presenter = Mockito.mock(SaveCrumbPresenter.class);
+
+        // Return a null when we are saving a crumb.
+        Mockito.doReturn(getSimpleMockLocation()).when(simpleGps).GetInstantLocation();
+        Mockito.doReturn(null).when(simpleGps).getSuburb(new Address(new Locale("")));
+        model = new SaveCrumbModel(simpleGps, new CrumbToSaveDetails(false, "TEST", true), presenter);
+        model.load();
+    }
+
+    // Simple mock address to mock the scenario when our locations address cannot find a suburb.
+    private Address getMockAddress() {
+        Address address = Mockito.mock(Address.class);
+        Mockito.doReturn(null).when(address).getSubLocality();
+        return address;
+    }
+
+
     @Test
     public void TestThatWeCanAdd140CharactersToDescription() {
         setUp();

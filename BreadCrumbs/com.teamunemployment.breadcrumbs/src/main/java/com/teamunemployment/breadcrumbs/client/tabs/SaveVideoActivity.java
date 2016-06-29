@@ -152,6 +152,7 @@ public class SaveVideoActivity  extends Activity implements TextureView.SurfaceT
                 saveCrumbService.putExtra("EventId", eventId);
                 saveCrumbService.putExtra("IsPhoto", false);
                 context.startService(saveCrumbService);
+                mPreferencesApi.SetEventId(eventId+1);
                 Toast.makeText(context, "Saved to trip", Toast.LENGTH_SHORT).show();
                 t.cancel();
                 finish();

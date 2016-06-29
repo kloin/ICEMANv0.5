@@ -11,6 +11,7 @@ import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
 import android.os.Environment;
+import android.os.Handler;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.ActionBarActivity;
@@ -19,6 +20,7 @@ import android.util.DisplayMetrics;
 import android.util.Log;
 import android.util.LruCache;
 import android.view.SurfaceView;
+import android.view.TextureView;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
@@ -27,11 +29,13 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.teamunemployment.breadcrumbs.Location.BreadCrumbsFusedLocationProvider;
 import com.teamunemployment.breadcrumbs.caching.GlobalContainer;
 import com.teamunemployment.breadcrumbs.R;
+import com.teamunemployment.breadcrumbs.client.Animations.SimpleAnimations;
 import com.teamunemployment.breadcrumbs.client.CameraController;
 
 import java.io.File;
@@ -40,20 +44,39 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 
+import butterknife.Bind;
+import butterknife.ButterKnife;
+
 public class CameraCapture extends AppCompatActivity {
 	private LocationManager locationManager;
 	private ArrayList<Location> locations = new ArrayList<>();
+
+	@Bind(R.id.camera_holder)
+	RelativeLayout cameraHolder;
+
+	private Context context;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.add_activity);
-		//setUpAudioPermissions();
-		// ********** POTENTIAL BATTERY ISSUE *******************************
-		// I start the foreground service but I never manually stop it. Does it get destroyed with the intent?
-
-		// Construction purposes.
+		ButterKnife.bind(this);
+		context = this;
 		setBackButtonListener();
+		startCamera();
+	}
+
+	private void startCamera() {
+
+		Handler handler = new Handler();
+		handler.postDelayed(new Runnable() {
+			@Override
+			public void run() {
+				CameraController cameraController = new CameraController(context);
+				cameraHolder.addView(cameraController);
+			}
+		}, 100);
+
 	}
 
 

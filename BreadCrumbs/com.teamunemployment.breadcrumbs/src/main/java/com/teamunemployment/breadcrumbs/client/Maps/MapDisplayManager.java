@@ -16,9 +16,11 @@ import android.util.Base64;
 import android.util.Log;
 
 import com.google.android.gms.maps.CameraUpdate;
+import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLngBounds;
 import com.teamunemployment.breadcrumbs.Location.BreadCrumbsFusedLocationProvider;
 import com.teamunemployment.breadcrumbs.Models;
+import com.teamunemployment.breadcrumbs.Network.NetworkConnectivityManager;
 import com.teamunemployment.breadcrumbs.Network.ServiceProxy.AsyncFetchThumbnail;
 import com.teamunemployment.breadcrumbs.RandomUsefulShit.Utils;
 import com.teamunemployment.breadcrumbs.caching.GlobalContainer;
@@ -385,10 +387,14 @@ public class MapDisplayManager implements GoogleMap.OnMarkerClickListener, Googl
     }
 
 
+
+
     @Override
     public void onMapClick(LatLng latLng) {
         SlidingUpPanelLayout slidingUpPanelLayout = (SlidingUpPanelLayout) context.findViewById(R.id.sliding_layout);
 
         slidingUpPanelLayout.setPanelState(SlidingUpPanelLayout.PanelState.COLLAPSED);
     }
+
+
 }
