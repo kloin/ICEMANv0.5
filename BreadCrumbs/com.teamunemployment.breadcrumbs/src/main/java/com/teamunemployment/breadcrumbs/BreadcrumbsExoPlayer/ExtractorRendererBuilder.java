@@ -32,8 +32,6 @@ import android.net.Uri;
 import android.os.Handler;
 import android.util.Log;
 
-import org.joda.time.DateTime;
-
 /**
  * A {@link BreadcrumbsExoPlayer.RendererBuilder} for streams that can be read using an {@link Extractor}.
  */
@@ -66,11 +64,8 @@ public class ExtractorRendererBuilder implements BreadcrumbsExoPlayer.RendererBu
         // If its not a local datasource, we use the proxy cache. If it is local, just load from the local uri
         Uri proxyUri;
         if (!isLocal) {
-            Log.d("TIME", "Time Is: " + DateTime.now().getMillis());
             proxyCacheServer = Mp4ProxyCache.GetProxy(context);
-            Log.d("TIME", "Time Is: " + DateTime.now().getMillis());
             String proxyUrl = proxyCacheServer.getProxyUrl(uri.toString());
-            Log.d("TIME", "Time Is: " + DateTime.now().getMillis());
 
             proxyUri= Uri.parse(proxyUrl);
         } else {

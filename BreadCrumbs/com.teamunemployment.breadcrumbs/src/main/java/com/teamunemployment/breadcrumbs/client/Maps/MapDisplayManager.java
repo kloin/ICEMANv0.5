@@ -26,7 +26,6 @@ import com.teamunemployment.breadcrumbs.RandomUsefulShit.Utils;
 import com.teamunemployment.breadcrumbs.caching.GlobalContainer;
 import com.teamunemployment.breadcrumbs.R;
 import com.teamunemployment.breadcrumbs.client.Cards.CrumbCardDataObject;
-import com.teamunemployment.breadcrumbs.client.SelectedEventViewerBase;
 import com.google.android.gms.common.api.ResultCallback;
 import com.google.android.gms.location.places.Place;
 import com.google.android.gms.location.places.PlaceBuffer;
@@ -36,7 +35,6 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.maps.android.clustering.Cluster;
 import com.google.maps.android.clustering.ClusterManager;
-import com.sothree.slidinguppanel.SlidingUpPanelLayout;
 import com.teamunemployment.breadcrumbs.client.StoryBoard.StoryBoardActivity;
 
 
@@ -162,7 +160,7 @@ public class MapDisplayManager implements GoogleMap.OnMarkerClickListener, Googl
             @Override
             public boolean onClusterClick(Cluster<DisplayCrumb> displayCrumbCluster) {
                 LatLngBounds markerBounds = getBounds(displayCrumbCluster);
-                int padding = 400; // offset from edges of the map in pixels
+                int padding = 200; // offset from edges of the map in pixels
                 CameraUpdate cu = CameraUpdateFactory.newLatLngBounds(markerBounds, padding);
                 mapInstance.animateCamera(cu);
                 return true;
@@ -182,9 +180,9 @@ public class MapDisplayManager implements GoogleMap.OnMarkerClickListener, Googl
                 Intent viewCrumbsIntent = new Intent(context, StoryBoardActivity.class);
                 ArrayList<CrumbCardDataObject> crumbs = new ArrayList<>();
 
-                CrumbCardDataObject tempCard = new CrumbCardDataObject(clusterItem.getExtension(), clusterItem.getId(), clusterItem.getPlaceId(), clusterItem.getPosition().latitude, clusterItem.getPosition().longitude, clusterItem.GetIsLocal(), clusterItem.getSuburb());
+                CrumbCardDataObject tempCard = new CrumbCardDataObject(clusterItem.getExtension(), clusterItem.getId(), clusterItem.getPlaceId(), clusterItem.getPosition().latitude, clusterItem.getPosition().longitude, clusterItem.GetIsLocal(), clusterItem.getSuburb(), clusterItem.getDescription());
                 crumbs.add(tempCard);
-                viewCrumbsIntent.putExtra("StartingObject", new CrumbCardDataObject(clusterItem.getExtension(), clusterItem.getId(), clusterItem.getPlaceId(),clusterItem.getPosition().latitude, clusterItem.getPosition().longitude, clusterItem.GetIsLocal(), clusterItem.getSuburb()));
+                viewCrumbsIntent.putExtra("StartingObject", new CrumbCardDataObject(clusterItem.getExtension(), clusterItem.getId(), clusterItem.getPlaceId(),clusterItem.getPosition().latitude, clusterItem.getPosition().longitude, clusterItem.GetIsLocal(), clusterItem.getSuburb(), clusterItem.getDescription()));
                 viewCrumbsIntent.putParcelableArrayListExtra("CrumbArray", mDataObjects);
                 boolean isOwnTrail = clusterItem.GetIsLocal() == 0;
                 viewCrumbsIntent.putExtra("UserOwnsTrail", isOwnTrail);
@@ -276,7 +274,7 @@ public class MapDisplayManager implements GoogleMap.OnMarkerClickListener, Googl
             }
         }
 
-        mDataObjects.add(new CrumbCardDataObject(mediaType, id, placeId, Latitude, Longitude, 1, placeName));
+        mDataObjects.add(new CrumbCardDataObject(mediaType, id, placeId, Latitude, Longitude, 1, placeName, description));
 
         if (!local) {
             AsyncFetchThumbnail asyncDataRetrieval = new AsyncFetchThumbnail(id, new AsyncFetchThumbnail.RequestListener() {
@@ -337,8 +335,11 @@ public class MapDisplayManager implements GoogleMap.OnMarkerClickListener, Googl
             if (placeName == null || placeName.isEmpty() || placeName.equals("null")) {
                 placeName = country;
             }
+        } else if (city != null) {
+            placeName = placeName + ", " + city;
         }
-        mDataObjects.add(new CrumbCardDataObject(mediaType, eventId, placeId, Latitude, Longitude, 0, placeName));
+            Log.d(TAG, "Loading location crumb with and Id: " + id + " and a description of: " + description);
+        mDataObjects.add(new CrumbCardDataObject(mediaType, eventId, placeId, Latitude, Longitude, 0, placeName, description));
         Bitmap bitmap = fetchBitmapFromLocalFile(eventId, mediaType); // Needs to be async
         DisplayCrumb displayCrumb = new DisplayCrumb(Latitude, Longitude, mediaType, id, R.drawable.wine_glass, placeId,suburb, city, country, timeStamp, description, bitmap, 0);
         clusterManager.addItem(displayCrumb);
@@ -391,9 +392,7 @@ public class MapDisplayManager implements GoogleMap.OnMarkerClickListener, Googl
 
     @Override
     public void onMapClick(LatLng latLng) {
-        SlidingUpPanelLayout slidingUpPanelLayout = (SlidingUpPanelLayout) context.findViewById(R.id.sliding_layout);
 
-        slidingUpPanelLayout.setPanelState(SlidingUpPanelLayout.PanelState.COLLAPSED);
     }
 
 

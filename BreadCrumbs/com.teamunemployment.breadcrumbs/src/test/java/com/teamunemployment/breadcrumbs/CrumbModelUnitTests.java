@@ -67,14 +67,14 @@ public class CrumbModelUnitTests{
         // Return a null when we are saving a crumb.
         Mockito.doReturn(null).when(simpleGps).GetInstantLocation();
         model = new SaveCrumbModel(simpleGps, new CrumbToSaveDetails(false, "TEST", true), presenter);
-        model.load();
+        model.load(null);
     }
 
     @Test
     public void TestThatSavingCrumbFetchesNewLocationIfAgeOfInstantLocationIsGreaterThanOneMinutes() {
         setUp();
         Mockito.doReturn(getOldLocation()).when(simpleGps).GetInstantLocation();
-        model.load();
+        model.load(null);
         verify(simpleGps, times(1)).FetchFineLocation(any(SimpleGps.Callback.class));
     }
 
@@ -106,7 +106,7 @@ public class CrumbModelUnitTests{
         Mockito.doReturn(getSimpleMockLocation()).when(simpleGps).GetInstantLocation();
         Mockito.doReturn(null).when(simpleGps).getSuburb(new Address(new Locale("")));
         model = new SaveCrumbModel(simpleGps, new CrumbToSaveDetails(false, "TEST", true), presenter);
-        model.load();
+        model.load(null);
     }
 
     // Simple mock address to mock the scenario when our locations address cannot find a suburb.
@@ -194,7 +194,7 @@ public class CrumbModelUnitTests{
     @Test
     public void TestThatWeLoadLocationOnLoad() {
         setUp();
-        model.load();
+        model.load(null);
         verify(simpleGps, times(1)).GetInstantLocation();
     }
 
@@ -208,7 +208,7 @@ public class CrumbModelUnitTests{
         Mockito.doReturn(getSimpleMockLocation()).when(simpleGps).GetInstantLocation();
 
         model = new SaveCrumbModel(simpleGps, Mockito.mock(CrumbToSaveDetails.class), presenter);
-        model.load();
+        model.load(null);
         verify(presenter, times(1)).setLocation("MOCK");
     }
 
@@ -220,7 +220,7 @@ public class CrumbModelUnitTests{
         Mockito.doReturn(getSimpleMockLocation()).when(simpleGps).GetInstantLocation();
         model = new SaveCrumbModel(simpleGps, Mockito.mock(CrumbToSaveDetails.class), presenter);
 
-        model.load();
+        model.load(null);
 
         verify(presenter, times(1)).setBitmapDisplay(null);
     }
@@ -247,7 +247,7 @@ public class CrumbModelUnitTests{
     @Test
     public void TestThatLocationDoesntBreakWWhenNull() {
 
-        model.load();
+        model.load(null);
         verify(presenter, times(1)).setLocation("");
         verify(presenter, times(1)).showMessage("Failed to find location");
     }

@@ -42,7 +42,6 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.PolylineOptions;
 
-import org.joda.time.DateTime;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -148,25 +147,6 @@ public class MyCurrentTrailDisplayManager {
             keys.next();
         }
         // Get fisrt object and display it when we are ready to animate over the photos.
-    }
-
-    // Draw a day label on the map.
-    private void testIfNeedToDrawDay(String node) {
-        try {
-            JSONObject jsonObject = new JSONObject(node);
-            String timestamp = jsonObject.getString("TimeStamp");
-            DateTime dateTime = new DateTime(timestamp);
-            if (dateTime.getDayOfYear() > mDayOfYear) {
-                double latitude = Double.parseDouble(jsonObject.getString("Latitude"));
-                double longitude = Double.parseDouble(jsonObject.getString("Longitude"));
-                IconGenerator iconFactory = new IconGenerator(context);
-                iconFactory.setColor(Color.CYAN);
-                addIcon(iconFactory, "Custom color", new LatLng(latitude, longitude));
-                mDayOfYear = dateTime.getDayOfYear();
-            }
-        } catch (JSONException exception) {
-            exception.printStackTrace();
-        }
     }
 
     private void addIcon(IconGenerator iconFactory, CharSequence text, LatLng position) {

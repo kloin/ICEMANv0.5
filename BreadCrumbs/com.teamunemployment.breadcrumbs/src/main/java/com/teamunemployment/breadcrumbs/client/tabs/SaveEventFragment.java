@@ -37,7 +37,6 @@ import android.widget.Toast;
 import com.teamunemployment.breadcrumbs.BackgroundServices.SaveCrumbService;
 import com.teamunemployment.breadcrumbs.BackgroundServices.UploadTrailService;
 import com.teamunemployment.breadcrumbs.Location.BreadCrumbsFusedLocationProvider;
-import com.teamunemployment.breadcrumbs.Location.BreadcrumbsLocationProvider;
 import com.teamunemployment.breadcrumbs.Location.PlaceManager;
 import com.teamunemployment.breadcrumbs.Network.LoadBalancer;
 import com.teamunemployment.breadcrumbs.Network.NetworkConnectivityManager;
@@ -90,7 +89,6 @@ public class SaveEventFragment extends Activity {
     private JSONObject editableTrails;
 	private HashMap<String, String> trailAndIdMap;
     private AsyncDataRetrieval asyncDataRetrieval;
-	private BreadcrumbsLocationProvider locationProvider;
 	private BreadCrumbsFusedLocationProvider fusedLocationProvider;
 	private boolean backCameraOpen;
 	private PreferencesAPI mPreferencesApi;
@@ -121,7 +119,6 @@ public class SaveEventFragment extends Activity {
 
 		// Set the height of the camera to be the same as the width so we get a square.
 		setBackButtonListener();
-		locationProvider = BreadcrumbsLocationProvider.getInstance(this);
 		fusedLocationProvider = new BreadCrumbsFusedLocationProvider(this);
 	}
 

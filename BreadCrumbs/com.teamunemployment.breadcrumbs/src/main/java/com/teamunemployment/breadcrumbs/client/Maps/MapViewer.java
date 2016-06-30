@@ -44,7 +44,6 @@ import android.widget.Toast;
 
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationRequest;
-import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.UiSettings;
@@ -52,18 +51,10 @@ import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.CircleOptions;
 import com.google.android.gms.maps.model.MarkerOptions;
-import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
 import com.google.maps.android.PolyUtil;
 import com.google.maps.android.ui.IconGenerator;
-import com.google.repacked.kotlin.jvm.internal.DoubleCompanionObject;
-import com.squareup.okhttp.OkHttpClient;
-import com.squareup.okhttp.Request;
-import com.squareup.okhttp.Response;
 import com.teamunemployment.breadcrumbs.AsyncWorkers.AsyncFetchCrumbList;
-import com.teamunemployment.breadcrumbs.AsyncWorkers.GenericAsyncWorker;
-import com.teamunemployment.breadcrumbs.Framework.JsonHandler;
-import com.teamunemployment.breadcrumbs.Location.BreadcrumbsLocationProvider;
 import com.teamunemployment.breadcrumbs.Location.SimpleGps;
 import com.teamunemployment.breadcrumbs.Models;
 import com.teamunemployment.breadcrumbs.Network.LoadBalancer;
@@ -81,10 +72,8 @@ import com.google.android.gms.maps.GoogleMap.OnMarkerClickListener;
 import com.google.android.gms.maps.MapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
-import com.sothree.slidinguppanel.SlidingUpPanelLayout;
 import com.teamunemployment.breadcrumbs.RandomUsefulShit.Utils;
 import com.teamunemployment.breadcrumbs.Trails.TrailManagerWorker;
-import com.teamunemployment.breadcrumbs._HAX.ExceptionHandler;
 import com.teamunemployment.breadcrumbs.caching.TextCaching;
 import com.teamunemployment.breadcrumbs.client.Animations.SimpleAnimations;
 import com.teamunemployment.breadcrumbs.client.Cards.CrumbCardDataObject;
@@ -98,9 +87,6 @@ import static android.graphics.Typeface.BOLD;
 import static android.graphics.Typeface.ITALIC;
 import static android.text.Spannable.SPAN_EXCLUSIVE_EXCLUSIVE;
 
-import org.apache.http.annotation.NotThreadSafe;
-import org.greenrobot.eventbus.EventBus;
-import org.joda.time.DateTime;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -900,7 +886,7 @@ public class MapViewer extends Activity implements OnMapClickListener, OnMapLong
 				listOfPoints = PolyUtil.decode(polyLineString);
 			} else {
 				listOfPoints = parseNonEncodedPolyline(polyLineString);
-				DrawDashedPolyline(listOfPoints.get(0), listOfPoints.get(listOfPoints.size()-1), R.color.black);
+				DrawDashedPolyline(listOfPoints.get(0), listOfPoints.get(listOfPoints.size()-1), R.color.bb_darkBackgroundColor);
 				//drawDashedPoly(listOfPoints);
 				return listOfPoints.get(0);
 			}
@@ -1275,14 +1261,11 @@ public class MapViewer extends Activity implements OnMapClickListener, OnMapLong
 
 	@Override
 	public void onMapClick(LatLng point) {
-		// TODO Auto-generated method stub
-		SlidingUpPanelLayout slidingUpPanelLayout = (SlidingUpPanelLayout) findViewById(R.id.sliding_layout);
-		slidingUpPanelLayout.setPanelState(SlidingUpPanelLayout.PanelState.COLLAPSED);
+
 	}
 
 	@Override
 	public void onMapLongClick(LatLng point) {
-		// TODO Auto-generated method stub
 
 	}
 
@@ -1343,27 +1326,6 @@ public class MapViewer extends Activity implements OnMapClickListener, OnMapLong
 					}
 				}
 			});
-		}
-
-
-
-		// Draw a day label on the map.
-		private void testIfNeedToDrawDay(String node) {
-			try {
-				JSONObject jsonObject = new JSONObject(node);
-				String timestamp = jsonObject.getString("TimeStamp");
-				DateTime dateTime = new DateTime(timestamp);
-				if (dateTime.getDayOfYear() > mDayOfYear) {
-					double latitude = Double.parseDouble(jsonObject.getString("Latitude"));
-					double longitude = Double.parseDouble(jsonObject.getString("Longitude"));
-					IconGenerator iconFactory = new IconGenerator(context);
-					iconFactory.setColor(Color.CYAN);
-					addIcon(iconFactory, "Custom color", new LatLng(latitude, longitude));
-					mDayOfYear = dateTime.getDayOfYear();
-				}
-			} catch (JSONException exception) {
-				exception.printStackTrace();
-			}
 		}
 
 		private void addIcon(IconGenerator iconFactory, CharSequence text, LatLng position) {

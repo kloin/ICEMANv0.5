@@ -19,7 +19,6 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.balysv.materialripple.MaterialRippleLayout;
 import com.teamunemployment.breadcrumbs.CustomElements.FancyFollow;
 import com.teamunemployment.breadcrumbs.Network.ServiceProxy.AsyncFetchThumbnail;
 import com.teamunemployment.breadcrumbs.Network.ServiceProxy.HTTPRequestHandler;
@@ -230,7 +229,7 @@ public class HomeCardAdapter extends RecyclerView.Adapter<HomeCardAdapter.ViewHo
 //            description.setText(desc);
             final ImageView trailCoverPhoto = (ImageView) card.findViewById(R.id.main_photo);
 
-            MaterialRippleLayout holder = (MaterialRippleLayout) card.findViewById(R.id.ripple);
+            RelativeLayout holder = (RelativeLayout) card.findViewById(R.id.item_holder);
 
             holder.setOnClickListener(new View.OnClickListener() {
                 @Override

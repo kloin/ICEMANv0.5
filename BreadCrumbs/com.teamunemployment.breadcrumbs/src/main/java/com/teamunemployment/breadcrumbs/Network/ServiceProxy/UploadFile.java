@@ -5,18 +5,19 @@ import android.os.AsyncTask;
 import android.util.Log;
 import android.widget.ProgressBar;
 
-import com.squareup.okhttp.MediaType;
-import com.squareup.okhttp.MultipartBuilder;
-import com.squareup.okhttp.OkHttpClient;
-import com.squareup.okhttp.Request;
-import com.squareup.okhttp.RequestBody;
-import com.squareup.okhttp.Response;
 import com.teamunemployment.breadcrumbs.Crumb;
 import com.teamunemployment.breadcrumbs.RandomUsefulShit.Utils;
 
 import java.io.File;
 import java.io.UnsupportedEncodingException;
 import java.net.UnknownHostException;
+
+import okhttp3.MediaType;
+import okhttp3.MultipartBody;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.RequestBody;
+import okhttp3.Response;
 
 /**
  * Created by jek40 on 4/05/2016.
@@ -76,8 +77,8 @@ public class UploadFile extends AsyncTask<Void, Integer, String> {
             MediaType MEDIA_TYPE = MediaType.parse("image/jpg");
 
             // Build up and send response
-            RequestBody requestBody = new MultipartBuilder()
-                    .type(MultipartBuilder.FORM)
+            RequestBody requestBody = new MultipartBody.Builder()
+                    .setType(MultipartBody.FORM)
                     .addFormDataPart("file", "data", RequestBody.create(MEDIA_TYPE, sourceFile))
                     .build();
 
@@ -106,8 +107,8 @@ public class UploadFile extends AsyncTask<Void, Integer, String> {
             MediaType MEDIA_TYPE = MediaType.parse("image/jpg");
 
             // Build up and send response
-            RequestBody requestBody = new MultipartBuilder()
-                    .type(MultipartBuilder.FORM)
+            RequestBody requestBody = new MultipartBody.Builder()
+                    .setType(MultipartBody.FORM)
                     .addFormDataPart("file", "data", RequestBody.create(MEDIA_TYPE, bites))
                     .build();
 

@@ -79,10 +79,6 @@
               android:layout_width="wrap_content"
               android:layout_height="wrap_content"
               android:layout_gravity="center" /> -->
-            <com.balysv.materialripple.MaterialRippleLayout
-                android:id="@+id/ripple"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content">
             <RelativeLayout
                 android:id="@+id/item_holder"
                 android:layout_width="match_parent"
@@ -127,7 +123,6 @@
                     android:layout_alignParentBottom="true"
                     android:textSize="22sp" />
             </RelativeLayout>
-            </com.balysv.materialripple.MaterialRippleLayout>
 
             <RelativeLayout
             android:layout_width="match_parent"

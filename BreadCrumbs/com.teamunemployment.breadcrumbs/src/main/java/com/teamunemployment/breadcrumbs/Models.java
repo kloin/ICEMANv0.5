@@ -1,7 +1,5 @@
 package com.teamunemployment.breadcrumbs;
 
-import org.joda.time.DateTime;
-
 /**
  * Created by jek40 on 22/05/2016.
  */

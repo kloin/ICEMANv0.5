@@ -4,10 +4,10 @@ import android.support.annotation.Nullable;
 
 import com.teamunemployment.breadcrumbs.database.DatabaseController;
 
-import org.joda.time.DateTime;
-import org.joda.time.Days;
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import java.util.Date;
 
 /**
  * Created by jek40 on 18/05/2016.
@@ -31,9 +31,8 @@ public class TrailSummaryModel {
         if (summaryJSON.has("StartDate")) {
             try {
                 datatimeString = summaryJSON.getString("StartDate");
-                DateTime dateTime = new DateTime(datatimeString);
-                DateTime currentDate = DateTime.now();
-                return Days.daysBetween(dateTime.toLocalDate(), currentDate.toLocalDate()).getDays();
+
+                return 0;
             } catch (JSONException e) {
                 // Should never get here because of if check.
                 e.printStackTrace();
@@ -81,11 +80,11 @@ public class TrailSummaryModel {
         return null;
     }
 
-    public DateTime GetLastUpdate() {
+    public Date GetLastUpdate() {
         if (summaryJSON.has("LastUpdate")) {
             try {
                 String lastUpdate = summaryJSON.getString("LastUpdate");
-                DateTime dateTime = new DateTime(lastUpdate);
+                Date dateTime = new Date(lastUpdate);
                 return dateTime;
             } catch (JSONException e) {
                 // Should never get here because of if check.

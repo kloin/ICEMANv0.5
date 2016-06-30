@@ -346,6 +346,12 @@ public class DatabaseController extends SQLiteOpenHelper {
         AddMetadata(eventId, timeStamp, latitude, longitude, trailId, TrailManagerWorker.CRUMB, mPreferencesApi.GetTransportMethod());
     }
 
+
+//    public String GetCrumbDescription(String trailId) {
+//        Cursor constantsCursor=getReadableDatabase().rawQuery("SELECT * FROM trailPoints WHERE eventId ="+eventId+" ORDER BY timeStamp", null);
+//
+//    }
+
     public void SaveVideoCrumb(String trailId, String userId, int eventId, double latitude, double longitude, String mime, String timeStamp, String icon,String placeId, String suburb, String city,
                                String country) {
         ContentValues cv = new ContentValues();

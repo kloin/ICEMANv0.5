@@ -11,8 +11,8 @@ import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 
 import com.teamunemployment.breadcrumbs.R;
-import com.teamunemployment.breadcrumbs.client.SelectedEventViewerBase;
 import com.google.android.gms.gcm.GcmListenerService;
+import com.teamunemployment.breadcrumbs.SaveCrumb.SaveCrumbActivity;
 
 import java.util.ArrayList;
 
@@ -73,7 +73,7 @@ public class BreadcrumbsGcmReceiver extends GcmListenerService {
 
 
     private void SendCrumbCommentNotification(String message, String userId, String crumbId, String trailId) {
-        Intent intent = new Intent(this, SelectedEventViewerBase.class);
+        Intent intent = new Intent(this, SaveCrumbActivity.class);
         final ArrayList<String> crumbsIds = new ArrayList<>();
         crumbsIds.add(crumbId);
         intent.putStringArrayListExtra("IdArray", crumbsIds);
@@ -104,7 +104,7 @@ public class BreadcrumbsGcmReceiver extends GcmListenerService {
      */
     private void sendNotification(String message) {
         String[] splitArray = message.split(",");
-        Intent intent = new Intent(this, SelectedEventViewerBase.class);
+        Intent intent = new Intent(this, SaveCrumbActivity.class);
         final ArrayList<String> crumbsIds = new ArrayList<>();
         crumbsIds.add(splitArray[0]);
         intent.putStringArrayListExtra("IdArray", crumbsIds);

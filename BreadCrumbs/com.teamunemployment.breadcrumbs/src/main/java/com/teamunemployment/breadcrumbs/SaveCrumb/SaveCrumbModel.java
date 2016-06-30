@@ -57,7 +57,9 @@ public class SaveCrumbModel {
         new Thread(new Runnable() {
             @Override
             public void run() {
-                loaderContract.loadMedia();
+                if (loaderContract != null) {
+                    loaderContract.loadMedia();
+                }
             }
         }).start();
         setLocation();
@@ -85,6 +87,7 @@ public class SaveCrumbModel {
 
     // check if our location is less than 1 min old. If it isnt, we need to get
     public boolean validateLocation(Location location) {
+        if (location)
         return location.getTime() > System.currentTimeMillis() - 60000;
     }
 

@@ -1,13 +1,11 @@
 package com.teamunemployment.breadcrumbs;
 
-import android.app.NotificationManager;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 import android.support.annotation.Nullable;
-import android.support.v4.app.NotificationCompat;
 
-import com.teamunemployment.breadcrumbs.Location.PathSense.Activity.PathSenseActivityManager;
+import com.google.android.gms.location.DetectedActivity;
 
 
 /**
@@ -24,16 +22,12 @@ public class PreferencesAPI {
         mPreferences = PreferenceManager.getDefaultSharedPreferences(context);
     }
 
-    public boolean isWalking() {
-        return mPreferences.getString(SAVED_ACTIVITY_KEY, null).equals(PathSenseActivityManager.WALKING);
-    }
-
     public boolean isDriving() {
         String currentActivity = mPreferences.getString(SAVED_ACTIVITY_KEY, null);
         if (currentActivity == null) {
             return false;
         }
-        return currentActivity.equals(PathSenseActivityManager.DRIVING);
+        return currentActivity.equals(DetectedActivity.IN_VEHICLE);
     }
 
     // save our local trail Id

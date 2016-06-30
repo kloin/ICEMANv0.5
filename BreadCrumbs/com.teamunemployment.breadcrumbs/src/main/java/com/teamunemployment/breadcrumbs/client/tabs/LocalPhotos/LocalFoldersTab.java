@@ -20,7 +20,6 @@ import com.teamunemployment.breadcrumbs.Network.ServiceProxy.GETImageSaver;
 import com.teamunemployment.breadcrumbs.Network.ServiceProxy.HTTPRequestHandler;
 import com.teamunemployment.breadcrumbs.R;
 import com.teamunemployment.breadcrumbs.RandomUsefulShit.Utils;
-import com.teamunemployment.breadcrumbs.Trails.EditMyTrail;
 import com.teamunemployment.breadcrumbs.client.Adapters.LocalFilesGridViewAdapter;
 import com.teamunemployment.breadcrumbs.client.Cards.FolderChooserGridViewAdapter;
 import com.teamunemployment.breadcrumbs.client.ImageChooser.GalleryFolder;

@@ -607,11 +607,11 @@ public class StoryBoardController {
     }
 
     private void setCrumbCount() {
-        if (crumbCount == null) {
-            crumbCount = (TextView) act.findViewById(R.id.crumb_count);
-        }
-
-        crumbCount.setText(Integer.toString(VIEWING_INDEX + 1) + "/" + Integer.toString(mCrumbs.size()));
+//        if (crumbCount == null) {
+//            crumbCount = (TextView) act.findViewById(R.id.crumb_count);
+//        }
+//
+//        crumbCount.setText(Integer.toString(VIEWING_INDEX + 1) + "/" + Integer.toString(mCrumbs.size()));
     }
 
     public CrumbCardDataObject GetCurrentObject() {

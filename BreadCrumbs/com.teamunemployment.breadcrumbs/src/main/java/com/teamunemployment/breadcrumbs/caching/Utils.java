@@ -148,7 +148,7 @@ public class Utils {
         return true;
     }
 
-    // Create byte array from bitmap. Saved as PNG format at full quality.
+    // Create byte array from bitmap. Saved as JPEG at 80 % quality
     public static boolean SaveBitmap(String fileName, Bitmap media) {
         ByteArrayOutputStream stream = new ByteArrayOutputStream();
         media.compress(Bitmap.CompressFormat.JPEG, 80, stream);

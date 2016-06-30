@@ -1,55 +1,30 @@
 package com.teamunemployment.breadcrumbs.Trails;
 
-import android.Manifest;
-import android.app.Notification;
 import android.app.NotificationManager;
-import android.app.PendingIntent;
 import android.content.ContentResolver;
 import android.content.Context;
-import android.content.Intent;
 import android.content.SharedPreferences;
-import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.location.Location;
-import android.location.LocationListener;
 import android.os.AsyncTask;
-import android.os.Bundle;
 import android.os.Environment;
 import android.preference.PreferenceManager;
 import android.provider.MediaStore;
-import android.support.v4.app.ActivityCompat;
-import android.support.v4.content.ContextCompat;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v4.app.NotificationCompat;
 import android.util.Log;
-import android.widget.ProgressBar;
 
-import com.pathsense.locationengine.apklib.data.t;
-import com.squareup.okhttp.MediaType;
-import com.squareup.okhttp.MultipartBuilder;
-import com.squareup.okhttp.OkHttpClient;
-import com.squareup.okhttp.Request;
-import com.squareup.okhttp.RequestBody;
-import com.squareup.okhttp.Response;
 import com.teamunemployment.breadcrumbs.ActivityRecognition.ActivityController;
-import com.teamunemployment.breadcrumbs.BackgroundServices.StopTrackingIntent;
-import com.teamunemployment.breadcrumbs.BreadcrumbsActivityAPI;
 import com.teamunemployment.breadcrumbs.BreadcrumbsLocationAPI;
 import com.teamunemployment.breadcrumbs.Crumb;
 import com.teamunemployment.breadcrumbs.Location.SimpleGps;
 import com.teamunemployment.breadcrumbs.Network.LoadBalancer;
-import com.teamunemployment.breadcrumbs.Network.ServiceProxy.AsyncDataRetrieval;
 import com.teamunemployment.breadcrumbs.Network.ServiceProxy.AsyncSendLargeJsonParam;
-import com.teamunemployment.breadcrumbs.Network.ServiceProxy.AsyncUploadVideo;
 import com.teamunemployment.breadcrumbs.Network.ServiceProxy.UploadFile;
 import com.teamunemployment.breadcrumbs.PreferencesAPI;
 import com.teamunemployment.breadcrumbs.R;
-import com.teamunemployment.breadcrumbs.caching.TextCaching;
-import com.teamunemployment.breadcrumbs.caching.Utils;
 import com.teamunemployment.breadcrumbs.database.DatabaseController;
 
-import org.joda.time.DateTime;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -58,6 +33,13 @@ import java.io.UnsupportedEncodingException;
 import java.net.UnknownHostException;
 import java.text.MessageFormat;
 import java.util.Iterator;
+
+import okhttp3.MediaType;
+import okhttp3.MultipartBody;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.RequestBody;
+import okhttp3.Response;
 
 /**
  * Created by jek40 on 30/03/2016.
@@ -117,7 +99,7 @@ public class TrailManagerWorker {
             metadataPackage.put("Events", metadataJson);
             metadataPackage.put("TrailId", trailId);
             metadataPackage.put("StartDate", dbc.GetStartDateForCurrentTrail());
-            metadataPackage.put("EndDate", DateTime.now().toString());
+            metadataPackage.put("EndDate", Long.toString(System.currentTimeMillis()));
             metadataPackage.put("StartingIndex", index);
 
             int localTrailId = mPreferencesAPI.GetLocalTrailId();
@@ -241,7 +223,7 @@ public class TrailManagerWorker {
         mPreferencesAPI.SetUserTracking(true);
 
         // Start our trail. note that the local trial id is saved to preferences inside this method
-        dbc.SaveTrailStart(null, DateTime.now().toString());
+        dbc.SaveTrailStart(null, Long.toString(System.currentTimeMillis()));
 
         // Shouldnt really be putting this shit here.
         getFirstPoint();
@@ -420,8 +402,8 @@ public class TrailManagerWorker {
                 }
 
                 // Build up and send response
-                RequestBody requestBody = new MultipartBuilder()
-                        .type(MultipartBuilder.FORM)
+                RequestBody requestBody = new MultipartBody.Builder()
+                        .setType(MultipartBody.FORM)
                         .addFormDataPart("file", "data", RequestBody.create(MEDIA_TYPE, sourceFile))
                         .build();
 

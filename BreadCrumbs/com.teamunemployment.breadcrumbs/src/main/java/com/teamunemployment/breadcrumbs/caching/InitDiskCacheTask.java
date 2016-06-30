@@ -3,8 +3,6 @@ package com.teamunemployment.breadcrumbs.caching;
 import android.os.AsyncTask;
 import android.util.Log;
 
-import com.jakewharton.disklrucache.DiskLruCache;
-
 import java.io.File;
 import java.io.IOException;
 

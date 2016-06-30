@@ -12,12 +12,10 @@ import android.test.RenamingDelegatingContext;
 import android.test.suitebuilder.annotation.SmallTest;
 import android.util.Log;
 
-import com.teamunemployment.breadcrumbs.Location.PathSense.Activity.PathSenseActivityManager;
 import com.teamunemployment.breadcrumbs.Network.LoadBalancer;
 import com.teamunemployment.breadcrumbs.Trails.TrailManagerWorker;
 import com.teamunemployment.breadcrumbs.database.DatabaseController;
 
-import org.joda.time.DateTime;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.junit.Before;
@@ -66,7 +64,7 @@ public class ApplicationTest {
 
     @Test
     public void TestWeCanCreateTrailSummary() {
-        db.SaveTrailStart("1", DateTime.now().toString());
+        db.SaveTrailStart("1", Long.toString(System.currentTimeMillis()));
         assertTrue(db.GetTrailSummary("1") != null);
     }
 
@@ -90,8 +88,6 @@ public class ApplicationTest {
             int eventId = 0;
             double latitude = 123;
             double longitude = -123;
-            String mime = ".jpg";
-            String timeStamp = DateTime.now().toString();
             byte[] media = getBitmapAsByteArray(image);
             String icon = "test";
             String placeId = "123456789";
@@ -161,36 +157,24 @@ public class ApplicationTest {
 
     @Test
     public void TestThatRestZoneCanBeSavedToDB() {
-        db.SaveRestZone("0", 1, 123.000, -123.000, "123456789", DateTime.now().toString());
-        db.SaveRestZone("0", 2, 123.000, -122.000, "123456", DateTime.now().toString());
-        db.SaveRestZone("0", 3, 123.000, -121.000, "123454456", DateTime.now().toString());
-        db.SaveRestZone("0", 4,123.000, -121.000, "123454456",DateTime.now().toString());
+        db.SaveRestZone("0", 1, 123.000, -123.000, "123456789", Long.toString(System.currentTimeMillis()));
+        db.SaveRestZone("0", 2, 123.000, -122.000, "123456", Long.toString(System.currentTimeMillis()));
+        db.SaveRestZone("0", 3, 123.000, -121.000, "123454456", Long.toString(System.currentTimeMillis()));
+        db.SaveRestZone("0", 4,123.000, -121.000, "123454456",Long.toString(System.currentTimeMillis()));
 
         JSONObject jsonObject = db.GetAllRestZonesForATrail("0");
         Log.d("TEST", "REST Zones Count: " + jsonObject.length());
         assertTrue(jsonObject.length() == 4);
     }
 
-    @Test
-    public void TestThatRestZoneCanBeIdentified() {
-        PathSenseActivityManager pathSenseActivityManager = new PathSenseActivityManager();
-        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(mContext);
-
-        // This is kind of a hack to get the event to trigger every time. Yea im good at writing tests.
-        preferences.edit().putInt("FIRST_REST_MILLIS", 2).commit();
-
-        // Check for the rest zone.
-        boolean result = pathSenseActivityManager.checkForRestZone("STILL", preferences);
-        assertTrue(result);
-    }
 
     @Test
     public void IngegrationTestSimulateTrailBehaviour() throws IOException {
 
         // Create restZones
-        db.SaveRestZone("0", 1, 123.000, -123.000, "123456789", DateTime.now().toString());
-        db.SaveRestZone("0", 2, 123.000, -122.000, "123456", DateTime.now().toString());
-        db.SaveRestZone("0", 3,123.000, -121.000, "123454456",DateTime.now().toString());
+        db.SaveRestZone("0", 1, 123.000, -123.000, "123456789", Long.toString(System.currentTimeMillis()));
+        db.SaveRestZone("0", 2, 123.000, -122.000, "123456", Long.toString(System.currentTimeMillis()));
+        db.SaveRestZone("0", 3,123.000, -121.000, "123454456",Long.toString(System.currentTimeMillis()));
 
         // Create gps points
         URL url = new URL("http://104.199.132.109:8080/images/6504.jpg");
@@ -203,7 +187,6 @@ public class ApplicationTest {
         double latitude = 123;
         double longitude = -123;
         String mime = ".jpg";
-        String timeStamp = DateTime.now().toString();
         byte[] media = getBitmapAsByteArray(image);
         String icon = "test";
         String placeId = "123456789";
@@ -222,7 +205,6 @@ public class ApplicationTest {
         double latitude2 = 123;
         double longitude2 = -123;
         String mime2 = ".jpg";
-        String timeStamp2 = DateTime.now().toString();
         byte[] media2 = getBitmapAsByteArray(image);
         String icon2 = "test";
         String placeId2 = "123456789";

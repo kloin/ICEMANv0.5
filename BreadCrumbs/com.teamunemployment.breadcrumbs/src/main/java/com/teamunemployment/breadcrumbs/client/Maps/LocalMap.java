@@ -53,15 +53,12 @@ import com.teamunemployment.breadcrumbs.database.DatabaseController;
 import com.teamunemployment.breadcrumbs.database.Models.LocalTrailModel;
 import com.teamunemployment.breadcrumbs.database.Models.TrailSummaryModel;
 
-
-import org.joda.time.DateTime;
-import org.joda.time.Days;
-import org.joda.time.Hours;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.text.MessageFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 
@@ -189,8 +186,8 @@ public class LocalMap extends MapViewer {
                         //toggleButton(publishFab);
                     }
                 }
-            databaseController.SetLastUpdate(Integer.toString(preferencesAPI.GetLocalTrailId()), DateTime.now().toString());
-            setLastUpdate(DateTime.now());
+            databaseController.SetLastUpdate(Integer.toString(preferencesAPI.GetLocalTrailId()), Long.toString(System.currentTimeMillis()));
+            //setLastUpdate(DateTime.now());
             }
         };
 
@@ -506,42 +503,9 @@ public class LocalMap extends MapViewer {
             name = "My Trip";
         }
         trailTitle.setText(name);
-        if (trailSummaryModel.GetLastUpdate() != null) {
-            setLastUpdate(new DateTime(trailSummaryModel.GetLastUpdate()));
-        }
     }
 
-    /**
-     * Set the last update on the bottom bar in hours or days (depending on how long its been)
-     * @param lastUpdate The date time of the last update.
-     */
-    private void setLastUpdate(DateTime lastUpdate) {
-        TextView lastUpdateTextView = (TextView) findViewById(R.id.last_update);
 
-        DateTime currentDate = DateTime.now();
-        int days = Days.daysBetween(lastUpdate.toLocalDate(), currentDate.toLocalDate()).getDays();
-        if (days < 1) {
-            int hours = Hours.hoursBetween(lastUpdate.toLocalDate(), currentDate.toLocalDate()).getHours();
-            if (hours < 1) {
-                lastUpdateTextView.setText("Today");
-                lastUpdateTextView.setTextColor(Color.parseColor("#00E676"));
-                return;
-            }
-            if (hours == 1) {
-                lastUpdateTextView.setText("1 hour ago");
-                return;
-            }
-            lastUpdateTextView.setText(hours + " hours ago");
-            return;
-        }
-
-        if (days == 1) {
-            lastUpdateTextView.setText("1 day ago");
-            return;
-        }
-
-        lastUpdateTextView.setText(days + " days ago");
-    }
 
     private void drawLocalTrailOnMap() {
         if (databaseController == null) {
