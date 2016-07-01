@@ -57,6 +57,7 @@ public class StoryBoardActivity extends Activity {
 
     FloatingActionButton mFab;
     @Bind(R.id.back_to_map) FloatingActionButton backFab;
+
     private ArrayList<CrumbCardDataObject> mCrumbObjects;
     private CrumbCardDataObject mLastObject;
     private StoryBoardController storyBoardController;

@@ -111,6 +111,7 @@ public class MapViewer extends Activity implements OnMapClickListener, OnMapLong
 	public static final int READ_ONLY_MODE = 0;
 	private static final String FIRST_TIME_FLAG = "FIRST_TIME_BRO";
 
+	private Marker meMarker;
 	public int TRAIL_COVER_PHOTO_HEIGHT;
 	public int SCROLLABLE_HEIGHT = 0;
 	public int BOTTOM_SHEET_STATE = 0;
@@ -559,7 +560,6 @@ public class MapViewer extends Activity implements OnMapClickListener, OnMapLong
 	}
 
 
-
 	public void FetchMyLocation() {
 		SimpleGps simpleGps = new SimpleGps(context);
 		Location location = simpleGps.GetInstantLocation();
@@ -569,12 +569,13 @@ public class MapViewer extends Activity implements OnMapClickListener, OnMapLong
 
  		mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(
 				new LatLng(location.getLatitude(), location.getLongitude()), 13), 500, null);
+		if (meMarker != null) {
+			mMap.addMarker(new MarkerOptions()
+					.position(new LatLng(location.getLatitude(), location.getLongitude()))
+					.icon(BitmapDescriptorFactory.fromResource(R.drawable.red_me_12)));
+		}
 
-		mMap.addCircle(new CircleOptions()
-				.center(new LatLng(location.getLatitude(), location.getLongitude()))
-				.radius(30)
-				.strokeColor(Color.BLUE)
-				.fillColor(Color.BLUE));
+
 		if (LOOKIING_AT_MAP) {
 //			CameraPosition cameraPosition = new CameraPosition.Builder()
 //					.target(new LatLng(location.getLatitude(), location.getLongitude()))      // Sets the center of the map to location user
@@ -585,7 +586,7 @@ public class MapViewer extends Activity implements OnMapClickListener, OnMapLong
 //			mMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
 			HAVE_ZOOMED = true;
 		}
-	}
+}
 
 	public void DisplayObjects (JSONArray objects) throws JSONException {
 		JSONObject next = null;
@@ -706,7 +707,7 @@ public class MapViewer extends Activity implements OnMapClickListener, OnMapLong
 				listOfPoints = parseNonEncodedPolyline(polyline);
 				listOfPoints = addLastPointToList(listOfPoints);
 				Log.d("UIINDICATOR", " WE are on the UI Thread: " +Utils.WeAreRunningOnTheUIThread());
-				DrawPolyline(listOfPoints, "#FFFF0000", SKINNY_WIDTH);
+				DrawPolyline(listOfPoints, "#03A9F4", MEDIUM_WIDTH);
 			}
 			count += 1;
 		}
@@ -725,7 +726,7 @@ public class MapViewer extends Activity implements OnMapClickListener, OnMapLong
 		List<LatLng> latLngs = new ArrayList<>();
 		latLngs.add(originBase);
 		latLngs.add(originHead);
-		DrawPolyline(latLngs, "#FFFF0000", SKINNY_WIDTH);
+		DrawPolyline(latLngs, "#03A9F4", MEDIUM_WIDTH);
 
 		LatLng destBase = listOfPoints.get(listOfPoints.size()-1);
 		LatLng destHead = new LatLng(Double.parseDouble(headLat), Double.parseDouble(headLon));
@@ -733,7 +734,7 @@ public class MapViewer extends Activity implements OnMapClickListener, OnMapLong
 		endPoints.add(destBase);
 		endPoints.add(destHead);
 
-		DrawPolyline(endPoints, "#FFFF0000", SKINNY_WIDTH);
+		DrawPolyline(endPoints, "#03A9F4", MEDIUM_WIDTH);
 	}
 
 	// Link encoded polylines with their base/head locations.
@@ -748,7 +749,7 @@ public class MapViewer extends Activity implements OnMapClickListener, OnMapLong
 		List<LatLng> latLngs = new ArrayList<>();
 		latLngs.add(originBase);
 		latLngs.add(originHead);
-		DrawPolyline(latLngs, "#FFFF0000", SKINNY_WIDTH);
+		DrawPolyline(latLngs, "#03A9F4", MEDIUM_WIDTH);
 
 		LatLng destBase = listOfPoints.get(listOfPoints.size()-1);
 		LatLng destHead = new LatLng(headLat, headLon);
@@ -756,7 +757,7 @@ public class MapViewer extends Activity implements OnMapClickListener, OnMapLong
 		endPoints.add(destBase);
 		endPoints.add(destHead);
 
-		DrawPolyline(endPoints, "#FFFF0000", SKINNY_WIDTH);
+		DrawPolyline(endPoints, "#03A9F4", SKINNY_WIDTH);
 	}
 
 
@@ -929,7 +930,7 @@ public class MapViewer extends Activity implements OnMapClickListener, OnMapLong
 	 * @param listOfPoints The list of points that we want to draw.
      */
 	public void DrawPolyline(List<LatLng> listOfPoints) {
-		final PolylineOptions options = new PolylineOptions().width(12).color(Color.parseColor("#E57373")).geodesic(true);
+		final PolylineOptions options = new PolylineOptions().width(12).color(Color.parseColor("#03A9F4")).geodesic(true);
 		for (int z = 0; z < listOfPoints.size(); z++) {
 			LatLng point = listOfPoints.get(z);
 			options.add(point);
@@ -1549,7 +1550,7 @@ public class MapViewer extends Activity implements OnMapClickListener, OnMapLong
 			} else {
 				listOfPoints = parseNonEncodedPolyline(polyline.polyline);
 				Log.d("UIINDICATOR", " WE are on the UI Thread: " +Utils.WeAreRunningOnTheUIThread());
-				DrawPolyline(listOfPoints, "#FFFF0000", SKINNY_WIDTH);
+				DrawPolyline(listOfPoints, "#03A9F4", MEDIUM_WIDTH);
 			}
 		}
 	}

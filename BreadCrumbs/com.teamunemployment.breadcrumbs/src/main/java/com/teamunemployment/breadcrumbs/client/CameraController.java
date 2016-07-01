@@ -130,7 +130,7 @@ public class CameraController extends SurfaceView implements SurfaceHolder.Callb
         Camera.Parameters parameters = mCamera.getParameters();
         Camera.Size size = getOptimalPreviewSize(parameters.getSupportedPictureSizes());
         if (parameters.getFocusMode() == null || parameters.getFocusMode().equals("auto")) {
-            parameters.setFocusMode(Camera.Parameters.FOCUS_MODE_AUTO);
+            parameters.setFocusMode(Camera.Parameters.FOCUS_MODE_CONTINUOUS_PICTURE);
         }
 
         // Store this for later reference
@@ -180,7 +180,8 @@ public class CameraController extends SurfaceView implements SurfaceHolder.Callb
     @Override
     public void surfaceDestroyed(SurfaceHolder holder) {
         // empty. Take care of releasing the Camera preview in your activity.
-        if (isPreviewRunning && mCamera != null) {
+        if (mCamera != null) {
+            Log.d("Camera", "Shutting down camera");
             mCamera.stopPreview();
             mCamera.release();
             mCamera = null;
@@ -199,7 +200,7 @@ public class CameraController extends SurfaceView implements SurfaceHolder.Callb
                 cameraHeight = size.height;
                 cameraWidth = size.width;
                 if (parameters.getFocusMode() == null) {
-                    parameters.setFocusMode(Camera.Parameters.FOCUS_MODE_AUTO);
+                    parameters.setFocusMode(Camera.Parameters.FOCUS_MODE_CONTINUOUS_PICTURE);
                 }
 
                 parameters.setPictureSize(size.width, size.height);
@@ -268,7 +269,7 @@ public class CameraController extends SurfaceView implements SurfaceHolder.Callb
         cameraHeight = size.height;
         cameraWidth = size.width;
         if (parameters.getFocusMode() == null) {
-            parameters.setFocusMode(Camera.Parameters.FOCUS_MODE_AUTO);
+            parameters.setFocusMode(Camera.Parameters.FOCUS_MODE_CONTINUOUS_PICTURE);
         }
 
         parameters.setPictureSize(size.width, size.height);
@@ -334,12 +335,15 @@ public class CameraController extends SurfaceView implements SurfaceHolder.Callb
         // Some phones do dumb shit if the camera isnt locked. No wonder this class is depreciated.
         mCamera.lock();
         List<Camera.Size> supportedSizes = mCamera.getParameters().getSupportedVideoSizes();
-
+        Camera.Parameters parameters = mCamera.getParameters();
+        if (parameters.getFocusMode().equals(Camera.Parameters.FOCUS_MODE_CONTINUOUS_PICTURE)) {
+            parameters.setFocusMode(Camera.Parameters.FOCUS_MODE_AUTO);
+        }
         // If the supported video sizes are the same as the preview sizes, the above call returns null. No idea why anyone ever thought that was a good idea.
         if (supportedSizes == null) {
             supportedSizes = mCamera.getParameters().getSupportedPreviewSizes();
         }
-
+        mCamera.setParameters(parameters);
         recorder = new MediaRecorder();
         mCamera.unlock();
         recorder.setCamera(mCamera);

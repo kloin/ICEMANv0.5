@@ -183,6 +183,7 @@ public class StoryBoardController {
                 // We have no data to add, so we need to just add nulls that will do nothing.
                 StoryBoardModel storyBoardModel = new StoryBoardModel(count, null, images.get(count), mProgressBars.get(count), null);
                 storyBoardModels.add(count, storyBoardModel);
+                mLastObject = storyBoardModel;
             }
             count += 1;
         }
@@ -192,6 +193,8 @@ public class StoryBoardController {
             public void run() {
                 // Do something after 5s = 5000ms
                 StartLoadingWorkerProcess();
+                setPlaceName();
+                setDescription();
             }
         }, 1000);
     }
@@ -410,7 +413,7 @@ public class StoryBoardController {
         }
         // Updates the view.
         setCrumbCount();
-        setPlaceName();
+
         mLastObject = nextModel;
         currentModel.ImageView.setVisibility(View.GONE);
         currentModel.ProgressBar.setVisibility(View.GONE);
@@ -464,6 +467,9 @@ public class StoryBoardController {
                 videoProgressTimer.SetTimerDuration(5000);
             }
         }
+
+        setPlaceName();
+        setDescription();
     }
 
     /*
@@ -603,7 +609,16 @@ public class StoryBoardController {
             placeName = (TextView) act.findViewById(R.id.place_name);
         }
 
-        placeName.setText(mLastObject.CrumbData.GetPlaceName());
+        if(mLastObject.CrumbData != null) {
+            placeName.setText(mLastObject.CrumbData.GetPlaceName());
+        }
+    }
+
+    private void setDescription() {
+        TextView caption = (TextView) act.findViewById(R.id.caption);
+        if (mLastObject.CrumbData != null) {
+            caption.setText(mLastObject.CrumbData.GetDescripton());
+        }
     }
 
     private void setCrumbCount() {

@@ -75,7 +75,7 @@ public class CameraCapture extends AppCompatActivity {
 				CameraController cameraController = new CameraController(context);
 				cameraHolder.addView(cameraController);
 			}
-		}, 100);
+		}, 500);
 
 	}
 

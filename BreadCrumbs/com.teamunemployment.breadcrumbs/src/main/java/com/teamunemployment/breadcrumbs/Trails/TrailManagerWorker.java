@@ -64,6 +64,7 @@ public class TrailManagerWorker {
     private PreferencesAPI mPreferencesAPI;
     private Iterator<String> crumbsIterator;
     private JSONObject crumbsWithMedia;
+
     public TrailManagerWorker(Context context) {
         mContext = context;
         dbc = new DatabaseController(context);
@@ -72,7 +73,7 @@ public class TrailManagerWorker {
     }
 
     /**
-     * Method to publish a new or updated trail to the server.
+     * Method to upload a new trail or any updates to an exiting trail to the server.
      *
      * @param trailId The server trail Id of the trail that we want to save.
      */
@@ -103,19 +104,22 @@ public class TrailManagerWorker {
             metadataPackage.put("StartingIndex", index);
 
             int localTrailId = mPreferencesAPI.GetLocalTrailId();
-            JSONObject metadata = dbc.GetAllActivityData(localTrailId);
+
+            int publishpoint = dbc.GetPublishPoint(localTrailId);
+            // Need to fetch this shit from a pointer, so that we can do multipule uploads.
+            JSONObject metadata = dbc.GetAllUnsavedActivityData(localTrailId, publishpoint);
 
             savePath(metadata, trailId);
             // Fetch crumb data. Remember this may be an update
             int crumbsIndex = mPreferencesAPI.GetLastSavedMediaCrumbIndex();
-            crumbsWithMedia= dbc.GetCrumbsWithMedia(localTrailString, crumbsIndex);
+            crumbsWithMedia = dbc.GetCrumbsWithMedia(localTrailString, crumbsIndex);
 
             // Save the metadata for the trail
             saveMetadata(metadataPackage, trailId);
 
             // Save the crumbs in this trail
             saveCrumbs(crumbsWithMedia);
-        } catch(JSONException e) {
+        } catch (JSONException e) {
             e.printStackTrace();
         }
     }
@@ -170,10 +174,11 @@ public class TrailManagerWorker {
 
     /**
      * Create an event in the metadata database.
+     *
      * @param eventType The type of event that we are creating metadata for. See {@link #TRAIL_START}
      *                  to see the list of possible events. THis is not an exhaustive list - it will
      *                  need to be added too.
-     * @param location The GPS location of the event that we are saving.
+     * @param location  The GPS location of the event that we are saving.
      */
     public void CreateEventMetadata(int eventType, Location location) {
         // Fetch placeId
@@ -196,16 +201,16 @@ public class TrailManagerWorker {
         // Save event to appropriate database
         switch (eventType) {
             case TRAIL_START:
-                dbc.AddMetadata(eventId, " ",location.getLatitude(), location.getLongitude(), trailId, TRAIL_START, mPreferencesAPI.GetTransportMethod());
+                dbc.AddMetadata(eventId, " ", location.getLatitude(), location.getLongitude(), trailId, TRAIL_START, mPreferencesAPI.GetTransportMethod());
                 break;
             case TRAIL_END:
-                dbc.AddMetadata(eventId, " ",location.getLatitude(), location.getLongitude(), trailId, TRAIL_END, mPreferencesAPI.GetTransportMethod());
+                dbc.AddMetadata(eventId, " ", location.getLatitude(), location.getLongitude(), trailId, TRAIL_END, mPreferencesAPI.GetTransportMethod());
                 break;
             case CRUMB:
-                dbc.AddMetadata(eventId, " ",location.getLatitude(), location.getLongitude(), trailId, CRUMB, mPreferencesAPI.GetTransportMethod());
+                dbc.AddMetadata(eventId, " ", location.getLatitude(), location.getLongitude(), trailId, CRUMB, mPreferencesAPI.GetTransportMethod());
                 break;
             case REST_ZONE:
-                dbc.AddMetadata(eventId, " ",location.getLatitude(), location.getLongitude(), trailId, REST_ZONE, mPreferencesAPI.GetTransportMethod());
+                dbc.AddMetadata(eventId, " ", location.getLatitude(), location.getLongitude(), trailId, REST_ZONE, mPreferencesAPI.GetTransportMethod());
                 break;
         }
     }
@@ -240,7 +245,7 @@ public class TrailManagerWorker {
             simpleGps.FetchFineLocation(new SimpleGps.Callback() {
                 @Override
                 public void doCallback(Location location) {
-                    dbc.SaveActivityPoint(7,7,location.getLatitude(),location.getLongitude(),0);
+                    dbc.SaveActivityPoint(7, 7, location.getLatitude(), location.getLongitude(), 0);
                 }
             });
         }
@@ -266,27 +271,27 @@ public class TrailManagerWorker {
         // Grab the first in the iterator, and let the inner class move through the rest. This is crucial because
         // if we iterator through here things will fuck up because we are on a different thread.
 
-            try {
-                // Check to ensure that we have data.
-                if (!crumbsIterator.hasNext()) {
-                    Log.d(TAG, "Attempted to save but we have not crumbs to save :(");
-                    showFinishedNotification();
-                    return;
-                }
-
-                // Grab the key
-                String key = crumbsIterator.next().toString();
-
-                // Grab the JSON using the key and create a crumb.
-                JSONObject crumbJSON = crumbsWithMedia.getJSONObject(key);
-                Crumb crumb = new Crumb(crumbJSON);
-
-                // Start the process.
-                saveCrumb(crumb);
-            } catch (JSONException e) {
-                Log.e(TAG, "Failed to find jsonObejct. Stack trace follows.");
-                e.printStackTrace();
+        try {
+            // Check to ensure that we have data.
+            if (!crumbsIterator.hasNext()) {
+                Log.d(TAG, "Attempted to save but we have not crumbs to save :(");
+                showFinishedNotification();
+                return;
             }
+
+            // Grab the key
+            String key = crumbsIterator.next().toString();
+
+            // Grab the JSON using the key and create a crumb.
+            JSONObject crumbJSON = crumbsWithMedia.getJSONObject(key);
+            Crumb crumb = new Crumb(crumbJSON);
+
+            // Start the process.
+            saveCrumb(crumb);
+        } catch (JSONException e) {
+            Log.e(TAG, "Failed to find jsonObejct. Stack trace follows.");
+            e.printStackTrace();
+        }
     }
 
     private int saveCrumb(Crumb crumb /*, callback*/) {
@@ -312,7 +317,7 @@ public class TrailManagerWorker {
         final String eventId = crumb.GetEventId();
 
         // Do save with url
-        final String fileName =  Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES).toString() + "/"+ eventId + ".mp4";
+        final String fileName = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES).toString() + "/" + eventId + ".mp4";
 
         // send request, then do callback
         // Send request to save our crumb. If successfull, it will trigger this method but with
@@ -354,7 +359,7 @@ public class TrailManagerWorker {
      * to process the saving of the crumbs individually and in linear order, so that if it fails at
      * any point (e.g overloaded server, network connectivity issues) we know what point in the trail
      * we were up to / had saved.
-     *
+     * <p/>
      * This class was designed to be used by the background service process, so there is no need to worry about
      * finishing activites etc, but we do need to be aware that we are still running on the main thread,
      * so heavy computation should be avoided/moved off the UI thread.
@@ -369,7 +374,7 @@ public class TrailManagerWorker {
         }
 
         // Pass in the callback and the url to our constructor.
-        public LocalMediaUpload(String url, Crumb crumb){
+        public LocalMediaUpload(String url, Crumb crumb) {
             this.url = url;
             this.crumb = crumb;
         }
@@ -416,22 +421,22 @@ public class TrailManagerWorker {
                 OkHttpClient client = new OkHttpClient();
                 Response response = client.newCall(request).execute();
 
-                    // Update the saved crumb index
-                    if(crumb.GetMediaType().endsWith("4")) {
-                        saveThumbnail(crumb, response.body().string());
-                    }
-                    mPreferencesAPI.SetLastSavedMediaCrumbIndex(crumb.GetIndex());
-                    if (crumbsIterator.hasNext()) {
-                        // go to next and do save
-                        String key = crumbsIterator.next();
-                        JSONObject JSONcrumb = crumbsWithMedia.getJSONObject(key);
-                        Crumb lcoalCrumb = new Crumb(JSONcrumb);
-                        saveCrumb(lcoalCrumb);
-                    } else {
-                        showFinishedNotification();
-                        mPreferencesAPI.SetIsUploading(false);
-                    }
-                    // other wise just exit out.
+                // Update the saved crumb index
+                if (crumb.GetMediaType().endsWith("4")) {
+                    saveThumbnail(crumb, response.body().string());
+                }
+                mPreferencesAPI.SetLastSavedMediaCrumbIndex(crumb.GetIndex());
+                if (crumbsIterator.hasNext()) {
+                    // go to next and do save
+                    String key = crumbsIterator.next();
+                    JSONObject JSONcrumb = crumbsWithMedia.getJSONObject(key);
+                    Crumb lcoalCrumb = new Crumb(JSONcrumb);
+                    saveCrumb(lcoalCrumb);
+                } else {
+                    showFinishedNotification();
+                    mPreferencesAPI.SetIsUploading(false);
+                }
+                // other wise just exit out.
                 return response.body().string();
             } catch (UnknownHostException | UnsupportedEncodingException e) {
                 Log.e("IMAGESAVE", "Error: " + e.getLocalizedMessage());
@@ -457,17 +462,17 @@ public class TrailManagerWorker {
     }
 
     private void saveThumbnail(Crumb crumb, String crumbDatabaseId) {
-        String fileName = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES).toString() + "/"+crumb.GetEventId() + ".mp4";
+        String fileName = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES).toString() + "/" + crumb.GetEventId() + ".mp4";
         Bitmap bitmap;
         long id = com.teamunemployment.breadcrumbs.RandomUsefulShit.Utils.FetchContentIdFromFilePath(fileName, mContext.getContentResolver());
 
         ContentResolver crThumb = mContext.getContentResolver();
-        BitmapFactory.Options options=new BitmapFactory.Options();
+        BitmapFactory.Options options = new BitmapFactory.Options();
         options.inSampleSize = 1;
         bitmap = MediaStore.Video.Thumbnails.getThumbnail(crThumb, id, MediaStore.Video.Thumbnails.MICRO_KIND, options);
 
         // Save our bitmap here.
-        String url = LoadBalancer.RequestServerAddress() + "/rest/Crumb/SaveImageToDatabase/"+crumbDatabaseId+"T";
+        String url = LoadBalancer.RequestServerAddress() + "/rest/Crumb/SaveImageToDatabase/" + crumbDatabaseId + "T";
         UploadFile uploadFile = new UploadFile(url, null, bitmap);
         uploadFile.execute();
     }

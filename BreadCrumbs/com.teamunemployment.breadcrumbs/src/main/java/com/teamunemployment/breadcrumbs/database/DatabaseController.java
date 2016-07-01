@@ -41,6 +41,7 @@ import java.util.Date;
  */
 public class DatabaseController extends SQLiteOpenHelper {
 
+    private static final int DATABASE_VERSION = 2;
     private static final String POLYLINES = "polylines";
 	private static final String DATABASE_NAME="users";
     private static final String TRAIL_POINTS_INDEX = "trailIndexDb";
@@ -51,28 +52,34 @@ public class DatabaseController extends SQLiteOpenHelper {
     private static final String RESTZONES = "restZoneDb";
     private static final String METADATA = "metadataDb";
     private static final String WEATHER = "weatherDb";
-
+    private static final String USERS = "users_db";
 	public static final String USERID="userid";
 	public static final String USERNAME="username";
 	public static final String AGE="age";
 	public static final String PIN="pin";
     public static final String TRAILID="trailid";
-
+    //public static final String
     private static final String TAG = "DBC";
     private Context mContext;
 	private SQLiteDatabase db;
 
     private PreferencesAPI mPreferencesApi;
 	public DatabaseController(Context context) {
-		super(context, "users", null, 1);
+		super(context, "users", null, DATABASE_VERSION);
         this.mContext = context;
         mPreferencesApi = new PreferencesAPI(context);
 	}
 
 	@Override
-	public void onUpgrade(SQLiteDatabase arg0, int arg1, int arg2) {
-		// TODO Auto-generated method stub
-	}
+	public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
+        Log.d(TAG, "Updating from version: " + oldVersion + " to version: "+ newVersion);
+        // Upgade from version one to two
+        if (oldVersion == 1 && newVersion == 2) {
+            String upgradeQuery = "ALTER TABLE " + TRAIL_SUMMARY +" ADD COLUMN PublishPoint INTEGER";
+            db.execSQL(upgradeQuery);
+        }
+
+    }
 
 	public void SaveUser(String userId, String userName, int age, String pin) {
 		ContentValues cv = new ContentValues();
@@ -543,6 +550,13 @@ public class DatabaseController extends SQLiteOpenHelper {
                 "HeadLatitude REAL," +
                 "HeadLongitude REAL,"+
                 "Polyline TEXT);");
+
+        db.execSQL("CREATE TABLE " + USERS + " (_id INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                "UserId INTEGER," +
+                "Web TEXT," +
+                "About TEXT," +
+                "Username TEXT," +
+                "ProfilePicId INTEGER);");
     }
 
     public void SaveActivityPoint(int currentActivity, int pastActivity, Double latitude, Double longitude, int granularity) {
@@ -731,16 +745,21 @@ public class DatabaseController extends SQLiteOpenHelper {
     }
 
     public void updateTrailSavedPoint(String trailId, int count) {
-//        ContentValues cv = new ContentValues();
-//        cv.put("SavedIndex", count); //These Fields should be your String values of actual column names
-//
-//        SQLiteDatabase localDb = getWritableDatabase();
-//        localDb.update(TRAIL_SUMMARY, cv, "TrailId=" + trailId, null);
-//        localDb.close();
-//
-//        mPreferencesApi.SetCurrentIndex(count);
 
         String query = "UPDATE "+TRAIL_SUMMARY + " SET SavedIndex="+ count+ " WHERE _id = "+trailId;
+        db = getWritableDatabase();
+        Cursor cursor = db.rawQuery(query, null);
+
+        // WHY DOES THIS MAKE IT WORK? I FUCKING HATE SQL. If you remove this line, it wont update the row.
+        cursor.getCount();
+
+        cursor.close();
+        db.close();
+    }
+
+    public void updateTrailPublishPoint(String trailId, int index) {
+
+        String query = "UPDATE "+TRAIL_SUMMARY + " SET PublishPoint="+ index+ " WHERE _id = "+trailId;
         db = getWritableDatabase();
         Cursor cursor = db.rawQuery(query, null);
 
@@ -1063,6 +1082,59 @@ public class DatabaseController extends SQLiteOpenHelper {
     }
 
     /**
+     *
+     * Tis is a pretty shitty code but it should be safe. This area needs a rewrite so I'll do that in the future, this is "for now"...
+     * Grab all the gps points from the database that we have saved from a local database.
+     * @param localTrailId
+     * @param index We only are interested in data above the index, as this was the last 'Save' point
+     * @return This is the jsonObject of all the activity recordings that we have made.
+     */
+    public JSONObject  GetAllUnsavedActivityData(int localTrailId, int index) {
+        if (index > 0) {
+            index -= 1; // This stops us skipping a line. pretty shitty fix but fck it.
+        }
+
+        JSONObject metadata = new JSONObject();
+        Cursor constantsCursor=getReadableDatabase().rawQuery("SELECT * FROM "+GPS_TABLE+" WHERE trailId ="+localTrailId +" ORDER BY _id", null);
+        int currentIndex = 0;
+
+        // Need reference index because the server reads from 0, but the current index will only be 0 on first use case.
+        int referenceIndex = 0;
+        while (constantsCursor.moveToNext()) {
+            JSONObject metadataNode = new JSONObject();
+
+            // Data to grab
+            Double latitude = constantsCursor.getDouble(constantsCursor.getColumnIndex("Latitude"));
+            Double longitude = constantsCursor.getDouble(constantsCursor.getColumnIndex("Longitude"));
+            int activity = constantsCursor.getInt(constantsCursor.getColumnIndex("LastActivity"));
+            int currentActivity = constantsCursor.getInt(constantsCursor.getColumnIndex("CurrentActivity"));
+            int granularity = constantsCursor.getInt(constantsCursor.getColumnIndex("Granularity"));
+
+            if (currentIndex >= index) {
+                // Save our single point as a single node, and add it to the overall object that is
+                // going to be sent to the server.
+                try {
+                    metadataNode.put(Models.Crumb.LATITUDE, Double.toString(latitude));
+                    metadataNode.put(Models.Crumb.LONGITUDE, Double.toString(longitude));
+                    metadataNode.put("LastActivity", Integer.toString(activity));
+                    metadataNode.put("CurrentActivity", Integer.toString(currentActivity));
+                    metadataNode.put("Granularity", Integer.toString(granularity));
+                    // This wraps the object so that the first point is not a gps point, which means that it wont track properly
+                    metadata.put(Integer.toString(referenceIndex), metadataNode);
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+                referenceIndex += 1;
+            }
+            currentIndex += 1;
+        }
+
+        updateTrailPublishPoint(Integer.toString(localTrailId), currentIndex-1);
+
+        return metadata;
+    }
+
+    /**
      * Grab all the gps points from the database that we have saved from a local database.
      * @param localTrailId
      * @param index We only are interested in data above the index, as this was the last 'Save' point
@@ -1233,5 +1305,47 @@ public class DatabaseController extends SQLiteOpenHelper {
         }
 
         return new TripPath(polylines);
+    }
+
+    public String GetUserName(long userId) {
+        Cursor constantsCursor=getReadableDatabase().rawQuery("SELECT * FROM " + USERS + " WHERE UserId =" + userId, null);
+        constantsCursor.moveToFirst();
+
+        String userName = constantsCursor.getString(constantsCursor.getColumnIndex("Username"));
+        return userName;
+    }
+
+    public String GetUserAbout(long userId) {
+        Cursor constantsCursor=getReadableDatabase().rawQuery("SELECT * FROM " + USERS + " WHERE UserId =" + userId, null);
+        constantsCursor.moveToFirst();
+
+        String about = constantsCursor.getString(constantsCursor.getColumnIndex("About"));
+        return about;
+    }
+
+    public String getUserWeb(long userId) {
+        Cursor constantsCursor=getReadableDatabase().rawQuery("SELECT * FROM " + USERS + " WHERE UserId =" + userId, null);
+        constantsCursor.moveToFirst();
+
+        String web = constantsCursor.getString(constantsCursor.getColumnIndex("Web"));
+        return web;
+    }
+
+    public String GetUserProfilePic(long userId) {
+        Cursor constantsCursor=getReadableDatabase().rawQuery("SELECT * FROM " + USERS + " WHERE UserId =" + userId, null);
+        constantsCursor.moveToFirst();
+
+        String picId = constantsCursor.getString(constantsCursor.getColumnIndex("ProfilePicId"));
+        return picId;
+    }
+
+    public int GetPublishPoint(int trailId) {
+        Cursor constantsCursor=getReadableDatabase().rawQuery("SELECT * FROM " + TRAIL_SUMMARY + " WHERE _id =" + trailId + " ORDER BY _id",
+                null);
+        if (constantsCursor.moveToFirst()) {
+            int count = constantsCursor.getInt(constantsCursor.getColumnIndex("PublishPoint"));
+            return count;
+        }
+        return 0;
     }
 }

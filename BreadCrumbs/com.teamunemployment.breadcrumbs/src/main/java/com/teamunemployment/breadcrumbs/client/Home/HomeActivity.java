@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.PersistableBundle;
 import android.preference.PreferenceManager;
 import android.provider.MediaStore;
 import android.support.annotation.IdRes;
@@ -92,20 +93,18 @@ public class HomeActivity extends AppCompatActivity {
         if (CURRENT_TAB == -1) {
             CURRENT_TAB = 0;
         }
-
+        fragNavController.clearStack();
         //bottomBar.selectTabAtPosition(CURRENT_TAB, false);
         switch (CURRENT_TAB) {
             case FragNavController.TAB1:
                 bottomBar.selectTabAtPosition(0, false);
-                fragNavController.switchTab(FragNavController.TAB1);
                 break;
             case FragNavController.TAB2:
                 bottomBar.selectTabAtPosition(1, false);
-                fragNavController.switchTab(FragNavController.TAB2);
+
                 break;
             case FragNavController.TAB3:
                 bottomBar.selectTabAtPosition(4, false);
-                fragNavController.switchTab(FragNavController.TAB3);
                 break;
         }
     }
@@ -114,6 +113,7 @@ public class HomeActivity extends AppCompatActivity {
         bottomBar = BottomBar.attach(this, savedInstanceState);
         bottomBar.noTopOffset();
         bottomBar.noNavBarGoodness();
+        bottomBar.noResizeGoodness();
         bottomBar.setItemsFromMenu(R.menu.bottombar_menu, new OnMenuTabClickListener() {
             @Override
             public void onMenuTabSelected(@IdRes int menuItemId) {
@@ -126,7 +126,7 @@ public class HomeActivity extends AppCompatActivity {
                             public void run() {
                                 fragNavController.switchTab(FragNavController.TAB1);
                             }
-                        }, 80);
+                        }, 120);
                     } else if(menuItemId == R.id.bottomBarItemTwo) {
                         CURRENT_TAB = FragNavController.TAB2;
                         Handler handler = new Handler();
@@ -135,11 +135,10 @@ public class HomeActivity extends AppCompatActivity {
                             public void run() {
                                 fragNavController.switchTab(FragNavController.TAB2);
                             }
-                        }, 80);
+                        }, 120);
                     } else if(menuItemId == R.id.bottomBarItemThree) {
                         preferencesAPI.SetCurrentTab(CURRENT_TAB);
-
-                        openCamera();
+                        openCamera(CURRENT_TAB);
                     } else if(menuItemId == R.id.bottomBarItemFour) {
                         preferencesAPI.SetCurrentTab(CURRENT_TAB);
                         launchMyTripViewer();
@@ -153,7 +152,7 @@ public class HomeActivity extends AppCompatActivity {
                                 preferencesAPI.SetCurrentTab(CURRENT_TAB);
                                 fragNavController.switchTab(FragNavController.TAB3);
                             }
-                        }, 80);
+                        }, 120);
 
 //                    fragNavController.switchTab(FragNavController.TAB5);
                         // should launch profile in fragment here
@@ -169,6 +168,13 @@ public class HomeActivity extends AppCompatActivity {
 
             }
         });
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState, PersistableBundle outPersistentState) {
+        // Seeing if this fixes crashes.
+        super.onSaveInstanceState(outState);
+        bottomBar.onSaveInstanceState(outState);
     }
 
     private void launchMyTripViewer() {
@@ -196,8 +202,7 @@ public class HomeActivity extends AppCompatActivity {
                     newIntent.setClassName("com.teamunemployment.breadcrumbs", "com.teamunemployment.breadcrumbs.client.Maps.LocalMap");
                     startActivity(newIntent);
                 }
-            }, 60);
-
+            }, 120);
         }
     }
 
@@ -255,7 +260,14 @@ public class HomeActivity extends AppCompatActivity {
         fragNavController = new FragNavController(getSupportFragmentManager(),R.id.fragment_container,fragments);
     }
 
-    private void openCamera() {
+    private void openCamera(int currentTabPosition) {
+
+        int localTrailId = preferencesAPI.GetLocalTrailId();
+        if (localTrailId == -1) {
+            // We have no trail. We need to notify the user of this and give them the option of creating a trail.
+            showCreateNewTrailForCameraDialog(currentTabPosition);
+            return;
+        }
         //int permissionCheckAudio = ContextCompat.checkSelfPermission()
         int permissionCheckCam = ContextCompat.checkSelfPermission(context,
                 Manifest.permission.CAMERA);
@@ -291,6 +303,26 @@ public class HomeActivity extends AppCompatActivity {
             }, 60);
 
         }
+    }
+
+    private void showCreateNewTrailForCameraDialog(int tabWeAreComingFrom) {
+        SimpleMaterialDesignDialog.Build(context)
+                .SetTitle("Camera")
+                .SetTextBody("You cannot add content if you have not created a trip. Do you want to create a trip now?")
+                .SetActionWording("Create trail")
+                .UseCancelButton(true)
+                .SetCallBack(createTrailCallback())
+                .SetCancelCallback(createCancelNewTripCallback(tabWeAreComingFrom))
+                .Show();
+    }
+
+    private IDialogCallback createCancelNewTripCallback(final int tabWeAreComingFrom) {
+        return new IDialogCallback() {
+            @Override
+            public void DoCallback() {
+                bottomBar.selectTabAtPosition(tabWeAreComingFrom, false);
+            }
+        };
     }
 
     private void requestPermissionForCamera(String[] requiredPermissions) {

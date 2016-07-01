@@ -87,7 +87,9 @@ public class SaveCrumbModel {
 
     // check if our location is less than 1 min old. If it isnt, we need to get
     public boolean validateLocation(Location location) {
-        if (location)
+        if (location == null) {
+            return false;
+        }
         return location.getTime() > System.currentTimeMillis() - 60000;
     }
 
