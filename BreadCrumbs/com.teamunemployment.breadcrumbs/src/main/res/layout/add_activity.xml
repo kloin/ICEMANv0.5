@@ -17,6 +17,12 @@
             style="@style/CodeFont"
             android:text="Loading Camera"/>
     </RelativeLayout>
+    <View
+        android:id="@+id/flash_overlay"
+        android:background="@color/white"
+        android:visibility="gone"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"/>
 
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/backButtonCapture"

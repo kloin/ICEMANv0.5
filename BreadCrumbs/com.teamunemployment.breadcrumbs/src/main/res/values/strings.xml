@@ -16,4 +16,7 @@
     <string name="app_id">rkgstxw0QjQXNZXQIZQdKY99wLY=</string>
     <string name="facebook_app_id">668335369892920</string>
     <string name="tap_to_change_cover_image">Tap to Change Cover Image</string>
+    <string name="tap_to_select_a_new_profile_picture">Tap to select</string>
+    <string name="profile">Profile</string>
+    <string name="trips">Trips</string>
 </resources>

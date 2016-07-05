@@ -65,6 +65,8 @@ public class TrailManagerWorker {
     private Iterator<String> crumbsIterator;
     private JSONObject crumbsWithMedia;
 
+    private int HACK_KEY = 0;
+
     public TrailManagerWorker(Context context) {
         mContext = context;
         dbc = new DatabaseController(context);
@@ -130,7 +132,7 @@ public class TrailManagerWorker {
                 serverTrailId);
         url = url.replaceAll(" ", "%20");
 
-        // We should not be sending JSON as url encoded parameters. I know in some places we do and that is wrong. This ius the correct way to do it.
+        // We should not be sending JSON as url encoded parameters. I know in some places we do and that is wrong. This is the correct way to do it.
         AsyncSendLargeJsonParam asyncJSON = new AsyncSendLargeJsonParam(url, new AsyncSendLargeJsonParam.RequestListener() {
             @Override
             public void onFinished(String result) throws JSONException {
@@ -268,33 +270,34 @@ public class TrailManagerWorker {
 
         Log.d(TAG, "Saving Crumbs with these keys: " + crumbsIterator.toString());
 
-        // Grab the first in the iterator, and let the inner class move through the rest. This is crucial because
-        // if we iterator through here things will fuck up because we are on a different thread.
-
         try {
             // Check to ensure that we have data.
-            if (!crumbsIterator.hasNext()) {
-                Log.d(TAG, "Attempted to save but we have not crumbs to save :(");
-                showFinishedNotification();
-                return;
+            int id = 0;
+            while (crumbsIterator.hasNext()) {
+
+                // Grab the key
+                String key = Integer.toString(id);//crumbsIterator.next().toString();
+
+                // Grab the JSON using the key and create a crumb.
+                JSONObject crumbJSON = crumbsWithMedia.getJSONObject(key);
+                Crumb crumb = new Crumb(crumbJSON);
+
+                // Start the process.
+                saveCrumb(crumb);
+                crumbsIterator.next();
+                id += 1;
             }
 
-            // Grab the key
-            String key = crumbsIterator.next().toString();
+            showFinishedNotification();
+            mPreferencesAPI.SetIsUploading(false);
 
-            // Grab the JSON using the key and create a crumb.
-            JSONObject crumbJSON = crumbsWithMedia.getJSONObject(key);
-            Crumb crumb = new Crumb(crumbJSON);
-
-            // Start the process.
-            saveCrumb(crumb);
         } catch (JSONException e) {
             Log.e(TAG, "Failed to find jsonObejct. Stack trace follows.");
             e.printStackTrace();
         }
     }
 
-    private int saveCrumb(Crumb crumb /*, callback*/) {
+    private int saveCrumb(Crumb crumb) {
         // Create url request
         String url = MessageFormat.format("{0}/rest/login/savecrumb/{1}/{2}/{3}/{4}/{5}/{6}/{7}/{8}/{9}/{10}/{11}/{12}",
                 LoadBalancer.RequestServerAddress(),
@@ -319,15 +322,54 @@ public class TrailManagerWorker {
         // Do save with url
         final String fileName = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES).toString() + "/" + eventId + ".mp4";
 
-        // send request, then do callback
-        // Send request to save our crumb. If successfull, it will trigger this method but with
-        // data for the next item so that we iterator through the objects, saving each in a linear fashion.
-        LocalMediaUpload upload = new LocalMediaUpload(url, crumb);
-        upload.execute();
+        try {
+
+            File sourceFile;
+            MediaType MEDIA_TYPE;
+
+            // Build up the file path and mime type based on the media type. We need to know this for sending to the server.
+            if (crumb.GetMediaType().equals(".mp4")) {
+                String filePath = com.teamunemployment.breadcrumbs.RandomUsefulShit.Utils.FetchLocalPathToVideoFile(crumb.GetEventId());
+                sourceFile = new File(filePath);
+                MEDIA_TYPE = MediaType.parse("image/mp4");
+            } else {
+                String filePath = com.teamunemployment.breadcrumbs.RandomUsefulShit.Utils.FetchLocalPathToImageFile(crumb.GetEventId());
+                sourceFile = new File(filePath);
+                MEDIA_TYPE = MediaType.parse("image/jpg");
+            }
+
+            // Build up and send response
+            RequestBody requestBody = new MultipartBody.Builder()
+                    .setType(MultipartBody.FORM)
+                    .addFormDataPart("file", "data", RequestBody.create(MEDIA_TYPE, sourceFile))
+                    .build();
+
+            Request request = new Request.Builder()
+                    .url(url)
+                    .post(requestBody)
+                    .build();
+
+            OkHttpClient client = new OkHttpClient();
+
+            // Response contains the new Id.
+            Response response = client.newCall(request).execute();
+
+            // Update the saved crumb index
+            if (crumb.GetMediaType().endsWith("4")) {
+              //  saveThumbnail(crumb, response.body().string());
+            }
+            mPreferencesAPI.SetLastSavedMediaCrumbIndex(crumb.GetIndex());
+        } catch (UnknownHostException | UnsupportedEncodingException e) {
+            Log.e("IMAGESAVE", "Error: " + e.getLocalizedMessage());
+        } catch (Exception e) {
+            Log.e("IMAGESAVE", "Other Error: " + e.getLocalizedMessage());
+        }
 
         // By deafault this means success. Not sure this is correct.
         return 0;
     }
+
+
 
     /**
      * @return The metadata for this trail.
@@ -354,6 +396,8 @@ public class TrailManagerWorker {
     }
 
     /**
+     * THIS IS SHIT
+     * ====================
      * Simple inner class to handle the async uploading of a file to the server. We have this in here
      * because we want the network request to run off the main UI thread, but we also want to be able
      * to process the saving of the crumbs individually and in linear order, so that if it fails at
@@ -390,59 +434,7 @@ public class TrailManagerWorker {
         }
 
         private String uploadFile() {
-            try {
 
-                File sourceFile;
-                MediaType MEDIA_TYPE;
-
-                // Build up the file path and mime type based on the media type. We need to know this for sending to the server.
-                if (crumb.GetMediaType().equals(".mp4")) {
-                    String filePath = com.teamunemployment.breadcrumbs.RandomUsefulShit.Utils.FetchLocalPathToVideoFile(crumb.GetEventId());
-                    sourceFile = new File(filePath);
-                    MEDIA_TYPE = MediaType.parse("image/mp4");
-                } else {
-                    String filePath = com.teamunemployment.breadcrumbs.RandomUsefulShit.Utils.FetchLocalPathToImageFile(crumb.GetEventId());
-                    sourceFile = new File(filePath);
-                    MEDIA_TYPE = MediaType.parse("image/jpg");
-                }
-
-                // Build up and send response
-                RequestBody requestBody = new MultipartBody.Builder()
-                        .setType(MultipartBody.FORM)
-                        .addFormDataPart("file", "data", RequestBody.create(MEDIA_TYPE, sourceFile))
-                        .build();
-
-                Request request = new Request.Builder()
-                        .url(url)
-                        .post(requestBody)
-                        .build();
-
-
-                OkHttpClient client = new OkHttpClient();
-                Response response = client.newCall(request).execute();
-
-                // Update the saved crumb index
-                if (crumb.GetMediaType().endsWith("4")) {
-                    saveThumbnail(crumb, response.body().string());
-                }
-                mPreferencesAPI.SetLastSavedMediaCrumbIndex(crumb.GetIndex());
-                if (crumbsIterator.hasNext()) {
-                    // go to next and do save
-                    String key = crumbsIterator.next();
-                    JSONObject JSONcrumb = crumbsWithMedia.getJSONObject(key);
-                    Crumb lcoalCrumb = new Crumb(JSONcrumb);
-                    saveCrumb(lcoalCrumb);
-                } else {
-                    showFinishedNotification();
-                    mPreferencesAPI.SetIsUploading(false);
-                }
-                // other wise just exit out.
-                return response.body().string();
-            } catch (UnknownHostException | UnsupportedEncodingException e) {
-                Log.e("IMAGESAVE", "Error: " + e.getLocalizedMessage());
-            } catch (Exception e) {
-                Log.e("IMAGESAVE", "Other Error: " + e.getLocalizedMessage());
-            }
             return null;
         }
 

@@ -125,7 +125,6 @@
                         style="@style/Widget.AppCompat.EditText"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:layout_alignRight="@+id/edit_toggle_fab"
                         android:layout_below="@+id/details_header"
                         android:layout_marginLeft="30dp"
                         android:enabled="false"

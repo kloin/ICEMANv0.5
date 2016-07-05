@@ -12,7 +12,6 @@ public interface SaveCrumbActivityContract {
         void setPlaceName(String text);
         void setDescription(String text);
         void showMessage(String message);
-        void setEditTextDescriptionVisibility(int visibility);
-        void setTextViewDescriptionVisibility(int visibility);
+        void setEditTextEnabled(boolean enabled);
     }
 }

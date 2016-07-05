@@ -11,6 +11,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.Matrix;
+import android.graphics.Point;
 import android.hardware.Camera;
 import android.location.Location;
 import android.location.LocationListener;
@@ -77,10 +78,12 @@ public class CameraController extends SurfaceView implements SurfaceHolder.Callb
     private final static int VIDEO = 1;
     private final static int PHOTO = 0;
     private int CAMERA_MODE = VIDEO;
-
+    private boolean TAKING_PHOTO = false;
     private LocationManager locationManager;
     private ArrayList<Location> locations = new ArrayList<>();
     private Timer t;
+
+    private float aspectRatio = 0.000000f;
     /*
         Default constructors for a custom surfaceView.
      */
@@ -108,10 +111,22 @@ public class CameraController extends SurfaceView implements SurfaceHolder.Callb
 
     @Override
     public void surfaceCreated(SurfaceHolder holder) {
+        WindowManager windowManager = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
+        Display display = windowManager.getDefaultDisplay();
+        Point size = new Point();
+        display.getSize(size);
+
+        float width = size.x;
+        float height = size.y;
+
+        aspectRatio = width/height;
+        Log.d("CAM", "Aspect ratio is : " + aspectRatio);
         setUpCamera(holder);
     }
 
     private void setUpCamera(SurfaceHolder holder) {
+        TAKING_PHOTO = false;
+
         // Set the height of the camera to be the same as the width so we get a square.
         mHolder = holder;
         videoTimer = 0;
@@ -129,6 +144,7 @@ public class CameraController extends SurfaceView implements SurfaceHolder.Callb
         mCamera.setDisplayOrientation(90);
         Camera.Parameters parameters = mCamera.getParameters();
         Camera.Size size = getOptimalPreviewSize(parameters.getSupportedPictureSizes());
+        Camera.Size preview = getOptimalPreviewSize(parameters.getSupportedPreviewSizes());
         if (parameters.getFocusMode() == null || parameters.getFocusMode().equals("auto")) {
             parameters.setFocusMode(Camera.Parameters.FOCUS_MODE_CONTINUOUS_PICTURE);
         }
@@ -136,6 +152,7 @@ public class CameraController extends SurfaceView implements SurfaceHolder.Callb
         // Store this for later reference
         cameraHeight = size.height;
         cameraWidth = size.width;
+        parameters.setPreviewSize(size.width, size.height);
         parameters.setPictureSize(size.width, size.height);
         mCamera.setParameters(parameters);
         CheckOrientationIsNotAllFuckingRetarded(parameters, display);
@@ -153,6 +170,8 @@ public class CameraController extends SurfaceView implements SurfaceHolder.Callb
     For some reason every phone i have tested this on, android sets the default preview to be sideways.
     Even when activity is limited to portrait.
     Why the fuck this is ever a thing i will never know.
+
+    This method seems really dodgey, but its been tested on a lot of phones and it seems pretty sweet.
      */
     private void CheckOrientationIsNotAllFuckingRetarded(Camera.Parameters parameters, Display display) {
         if (display.getRotation() == Surface.ROTATION_0) {
@@ -219,15 +238,22 @@ public class CameraController extends SurfaceView implements SurfaceHolder.Callb
 
         // Try to find a size match which suits the whole screen minus the menu on the left.
         for (Camera.Size size : sizes) {
+            // TODO : Make camera work for phones that have different orientations.
+            float height = size.height;
+            float width = size.width;
+            float sizeAR = height / width;
             Log.d("CAM", "Checking size: width = " + size.width + ", Height = "+size.height);
-            if (size.height <1000 && size.height >= 720) {
+            if (size.height <1000 && size.height >= 720 && sizeAR == aspectRatio) {
+
+                // Logging in relation to the aspect ratio
+                Log.d("Camera Size", "Chosen size is - Height: " + size.height + " Width: " + size.width );
                 return size;
             }
         }
 
         // If we cannot find the one that matches the aspect ratio, ignore the requirement.
         if (optimalSize == null) {
-            // TODO : Backup in case we don't get a size.
+            // grab the biggest size that we have then
             return sizes.get(0);
         }
 
@@ -238,7 +264,6 @@ public class CameraController extends SurfaceView implements SurfaceHolder.Callb
         // Source: http://stackoverflow.com/questions/7942378/android-camera-will-not-work-startpreview-fails
         Camera.Size optimalSize = null;
 
-        // Try to find a size match which suits the whole screen minus the menu on the left.
         for (Camera.Size size : sizes) {
             Log.d("CAM", "Checking size: width = " + size.width + ", Height = "+size.height);
             if (size.height <500) {
@@ -246,7 +271,6 @@ public class CameraController extends SurfaceView implements SurfaceHolder.Callb
             }
         }
 
-        // If we cannot find the one that matches the aspect ratio, ignore the requirement.
         if (optimalSize == null) {
             // TODO : Backup in case we don't get a size.
             return sizes.get(sizes.size()-2); // random number really
@@ -272,8 +296,8 @@ public class CameraController extends SurfaceView implements SurfaceHolder.Callb
             parameters.setFocusMode(Camera.Parameters.FOCUS_MODE_CONTINUOUS_PICTURE);
         }
 
+        parameters.setPreviewSize(size.width, size.height);
         parameters.setPictureSize(size.width, size.height);
-        mCamera.setParameters(parameters);
         mCamera.setParameters(parameters);
         isPreviewRunning = true;
         mCamera.autoFocus(this);
@@ -320,18 +344,8 @@ public class CameraController extends SurfaceView implements SurfaceHolder.Callb
         backCameraOpen = false;
     }
 
-    // release the camera and its preview
-    private void releaseCameraAndPreview() {
-        mCamera.stopPreview();
-        if (mCamera != null) {
-            mCamera.release();
-            mCamera = null;
-        }
-    }
-
     // Set up the camera to record video
     private boolean setUpVideoCamera() {
-
         // Some phones do dumb shit if the camera isnt locked. No wonder this class is depreciated.
         mCamera.lock();
         List<Camera.Size> supportedSizes = mCamera.getParameters().getSupportedVideoSizes();
@@ -351,7 +365,6 @@ public class CameraController extends SurfaceView implements SurfaceHolder.Callb
 
         recorder.setVideoSource(MediaRecorder.VideoSource.DEFAULT);
 
-        CamcorderProfile cpHigh = CamcorderProfile.get(CamcorderProfile.QUALITY_480P);
         if (backCameraOpen) {
             recorder.setOrientationHint(90);
         } else {
@@ -366,6 +379,8 @@ public class CameraController extends SurfaceView implements SurfaceHolder.Callb
 
         // Mp4 makes file size significantly smaller.
         recorder.setVideoEncoder(MediaRecorder.VideoEncoder.MPEG_4_SP);
+        recorder.setVideoFrameRate(30);
+
         //recorder.setProfile(cpHigh);
 
         fileName = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES).toString();
@@ -377,7 +392,6 @@ public class CameraController extends SurfaceView implements SurfaceHolder.Callb
         // I Add the +1 because later in the piece(before saving, I increment the event Id. This entire class needs a rework.
         fileName += "/"+ eventId+ ".mp4"; //
         recorder.setOutputFile(fileName);
-
         recorder.setPreviewDisplay(mHolder.getSurface());
         try{
             recorder.prepare();
@@ -390,8 +404,6 @@ public class CameraController extends SurfaceView implements SurfaceHolder.Callb
         video = true;
         return video;
     }
-
-
 
     private boolean disableVideoCamera() {
         recorder.reset();
@@ -419,7 +431,6 @@ public class CameraController extends SurfaceView implements SurfaceHolder.Callb
                         Toast.makeText(context, "Cannot toggle while filming", Toast.LENGTH_SHORT).show();
                         return;
                     }
-
                     CAMERA_MODE = PHOTO;
                     // Change to red
                     cameraButton.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor("#F44336")));
@@ -441,9 +452,12 @@ public class CameraController extends SurfaceView implements SurfaceHolder.Callb
            @Override
            public void onClick(View v) {
                // Take a photo
-               if (CAMERA_MODE == PHOTO) {
+               if (CAMERA_MODE == PHOTO && !TAKING_PHOTO) {
+                   TAKING_PHOTO = true;
+                   final View flashoverlay = (View) context.findViewById(R.id.flash_overlay);
+                   SimpleAnimations.FlashView(flashoverlay);
                    mCamera.takePicture(null, rawCallback, jpegCallback);
-               } else {
+               } else if (CAMERA_MODE == VIDEO){
                    toggleVideo(cameraButton);
                    // set the color to a pressed blue color.
                }
@@ -486,7 +500,6 @@ public class CameraController extends SurfaceView implements SurfaceHolder.Callb
             recorder.start();
         }
     }
-
 
     private void startTimer() {
         t=new Timer();
@@ -576,12 +589,4 @@ public class CameraController extends SurfaceView implements SurfaceHolder.Callb
     public void onAutoFocus(boolean success, Camera camera) {
 
     }
-
-/*
-    private void dispatchTakeVideoIntent() {
-        Intent takeVideoIntent = new Intent(MediaStore.ACTION_VIDEO_CAPTURE);
-        if (takeVideoIntent.resolveActivity(context.getPackageManager()) != null) {
-            context.startActivityForResult(takeVideoIntent, REQUEST_VIDEO_CAPTURE);
-        }
-    }*/
 }

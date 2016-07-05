@@ -18,6 +18,8 @@ import com.teamunemployment.breadcrumbs.Facebook.AccountManager;
 import com.teamunemployment.breadcrumbs.Framework.JsonHandler;
 import com.teamunemployment.breadcrumbs.Network.LoadBalancer;
 import com.teamunemployment.breadcrumbs.Network.ServiceProxy.AsyncDataRetrieval;
+import com.teamunemployment.breadcrumbs.Network.ServiceProxy.HTTPRequestHandler;
+import com.teamunemployment.breadcrumbs.Network.ServiceProxy.SimpleNetworkApi;
 import com.teamunemployment.breadcrumbs.PreferencesAPI;
 import com.teamunemployment.breadcrumbs.client.Animations.SimpleAnimations;
 import com.teamunemployment.breadcrumbs.client.Cards.ImageChooserGridViewAdapter;
@@ -92,8 +94,9 @@ public class GridImageSelector extends Fragment {
                         String newPicId = idsArray.get(position);
                         new PreferencesAPI(context).SetUserCoverPhoto(newPicId);
                         Activity activityContext = (Activity) context;
+
                         Intent returnIntent = new Intent();
-                        returnIntent.putExtra("ProfileId", newPicId);
+                        returnIntent.putExtra("ProfilePicId", newPicId);
                         activityContext.setResult(1, returnIntent);
                         activityContext.finish();
                     }

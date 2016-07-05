@@ -2,8 +2,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
 
     package="com.teamunemployment.breadcrumbs"
-    android:versionCode="9"
-    android:versionName="8.03">
+    android:versionCode="10"
+    android:versionName="0.04">
 
     <permission android:name="com.teamunemployment.breadcrumbs.permission.C2D_MESSAGE"
         android:protectionLevel="signature" />
@@ -98,33 +98,20 @@
         <service android:name=".BackgroundServices.StopTrackingIntent" android:exported="false" />
         <service android:name=".BackgroundServices.UploadTrailService" android:exported="false"/>
         <service android:name=".BackgroundServices.SaveCrumbService" android:exported="false"/>
+        <service android:name=".client.ImageChooser.SaveLocalImageAsProfilePic" android:exported="false"/>
 
         <activity android:name=".client.TrailManager" android:screenOrientation="portrait">
-        </activity>
-        <activity android:name=".client.CrumbViewer.CommentViewer" android:screenOrientation="portrait">
-        </activity>
-        <activity android:name=".Trails.EditMyTrail"
-            android:screenOrientation="portrait">
         </activity>
         <activity android:name=".client.ImageChooser.LocalPhotoImageSelector" android:screenOrientation="portrait"></activity>
         <activity android:name=".client.NavMenu.Profile.ProfilePageViewer"
             android:screenOrientation="portrait"></activity>
         <activity android:name=".Map.MapActivity"></activity>
-        <activity
-            android:name=".client.SelectedEventViewerBase"
-            android:screenOrientation="portrait">
-        </activity>
-        <activity android:name="com.teamunemployment.breadcrumbs.client.ImageViewer"
-            android:screenOrientation="portrait"
-            android:windowSoftInputMode="stateHidden"> <!-- hide keyboard by default -->
-        </activity>
         <activity android:name=".client.Home.HomeActivity" android:screenOrientation="portrait"/>
         <activity android:name=".client.Camera.CameraCapture"
             android:screenOrientation="portrait">
         </activity>
+        <activity android:name=".Profile.data.View.ProfileActivity" android:screenOrientation="portrait"/>
         <activity android:name=".client.BreadCrumbsImageSelector"
-            android:screenOrientation="portrait"></activity>
-        <activity android:name=".client.CrumbViewer.CrumbsHolder"
             android:screenOrientation="portrait"></activity>
         <activity android:name="com.teamunemployment.breadcrumbs.client.tabs.SaveEventFragment"
             android:screenOrientation="portrait">
@@ -175,7 +162,7 @@
         AIzaSyCfkLHIJIAnKKwd5S4nLMN5apRtWj28rwc- debug key-->
         <meta-data
             android:name="com.google.android.geo.API_KEY"
-            android:value="AIzaSyD1tXj_z3zgxB-5tPG8H9sXS4NCBWAJosA"/>
+            android:value="AIzaSyBQ9w6VrGGquOHwERNrc_jAx_jcm8mrKQw"/>
 
         <meta-data android:name="com.facebook.sdk.ApplicationId" android:value="@string/facebook_app_id"/>
         <!-- Pathsense APIs -->

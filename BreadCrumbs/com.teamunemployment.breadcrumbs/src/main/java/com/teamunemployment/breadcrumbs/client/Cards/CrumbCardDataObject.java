@@ -20,8 +20,11 @@ public class CrumbCardDataObject implements Parcelable{
     private Double latitude;
     private Double longitude;
     private int isLocal; // 0 is local, 1 is server
+    private float descXPos;
+    private float descYPos;
 
-    public CrumbCardDataObject(String dataType, String crumbId, String placeId, Double latitude, Double longitude, int isLocal, String placeName, String description) {
+    public CrumbCardDataObject(String dataType, String crumbId, String placeId, Double latitude, Double longitude,
+                               int isLocal, String placeName, String description, float descXpos, float descYpos) {
         this.dataType = dataType;
         this.crumbId = crumbId;
         this.placeName = placeName;
@@ -30,6 +33,8 @@ public class CrumbCardDataObject implements Parcelable{
         this.longitude = longitude;
         this.latitude = latitude;
         this.isLocal = isLocal;
+        this.descXPos = descXpos;
+        this.descYPos = descYpos;
     }
 
     protected CrumbCardDataObject(Parcel in) {
@@ -41,6 +46,8 @@ public class CrumbCardDataObject implements Parcelable{
         longitude = in.readDouble();
         latitude = in.readDouble();
         isLocal = in.readInt();
+        descXPos = in.readFloat();
+        descYPos = in.readFloat();
     }
 
     public static final Creator<CrumbCardDataObject> CREATOR = new Creator<CrumbCardDataObject>() {
@@ -85,6 +92,15 @@ public class CrumbCardDataObject implements Parcelable{
     public String GetDescripton() {
         return description;
     }
+
+    public float GetDescriptionXPosition() {
+        return descXPos;
+    }
+
+    public float GetDescriptionYPosition() {
+        return descYPos;
+    }
+
     @Override
     public int describeContents() {
         return 0;
@@ -100,5 +116,7 @@ public class CrumbCardDataObject implements Parcelable{
         dest.writeDouble(latitude);
         dest.writeDouble(longitude);
         dest.writeInt(isLocal);
+        dest.writeFloat(descXPos);
+        dest.writeFloat(descYPos);
     }
 }

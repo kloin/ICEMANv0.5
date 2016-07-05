@@ -21,6 +21,9 @@ public class NetworkConnectivityManager {
                 context.getSystemService(Context.CONNECTIVITY_SERVICE);
 
         NetworkInfo activeInfo = connMgr.getActiveNetworkInfo();
+        if (activeInfo == null) {
+            return false;
+        }
         return activeInfo.getType() == ConnectivityManager.TYPE_WIFI;
     }
 
@@ -29,6 +32,9 @@ public class NetworkConnectivityManager {
                 context.getSystemService(Context.CONNECTIVITY_SERVICE);
 
         NetworkInfo activeInfo = connMgr.getActiveNetworkInfo();
+        if (activeInfo == null) {
+            return false;
+        }
         return activeInfo.getType() == ConnectivityManager.TYPE_MOBILE;
     }
 }

@@ -239,7 +239,7 @@ public class SaveVideoActivity  extends Activity implements TextureView.SurfaceT
         String localTrailId = Integer.toString(mPreferencesApi.GetLocalTrailId());
 
         // save our crumb to the db. It will be saved to the server when we publish
-        dbc.SaveCrumb(localTrailId," ", userId, eventId, location.getLatitude(), location.getLongitude(), ".mp4", timeStamp, "icon", placeId, suburb, city, country);
+        dbc.SaveCrumb(localTrailId," ", userId, eventId, location.getLatitude(), location.getLongitude(), ".mp4", timeStamp, "icon", placeId, suburb, city, country, 0,0);
         TrailManagerWorker trailManagerWorker = new TrailManagerWorker(context);
         trailManagerWorker.CreateEventMetadata(TrailManagerWorker.CRUMB, location);
     }

@@ -32,7 +32,6 @@ import com.teamunemployment.breadcrumbs.database.DatabaseController;
  * @author Josiah Kendall
  */
 public class SaveCrumbModel {
-    public static int READ_ONLY_MODE = View.VISIBLE;
     private SimpleGps simpleGps;
     private CrumbToSaveDetails details;
     private SaveCrumbPresenter presenter;
@@ -41,12 +40,19 @@ public class SaveCrumbModel {
     private Location location;
     private String placeName;
 
-    private int editableDescriptionVisibility = View.GONE;
-    private int uneditableDescriptionVisibility = View.VISIBLE;
+    private float descriptionPositionX;
+    private float descriptionPositionY;
+
+
+    public void setDescriptionPosition(float x, float y) {
+        descriptionPositionX = x;
+        descriptionPositionY = y;
+    }
 
     public interface MediaLoader {
         void loadMedia();
     }
+
     public SaveCrumbModel(SimpleGps simpleGps, CrumbToSaveDetails details, SaveCrumbPresenter presenter) {
         this.simpleGps = simpleGps;
         this.details = details;
@@ -62,14 +68,20 @@ public class SaveCrumbModel {
                 }
             }
         }).start();
+
         setLocation();
     }
 
     private void setLocation() {
         location = fetchLocation();
         if (validateLocation(location)) {
-            placeName = fetchLocationName(location);
-            presenter.setLocation(placeName);
+            new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    placeName = fetchLocationName(location);
+                    presenter.setLocation(placeName);
+                }
+            }).start();
         } else {
             simpleGps.FetchFineLocation(onLocationFound());
         }
@@ -175,13 +187,14 @@ public class SaveCrumbModel {
             }).start();
         }
 
-
         // Need to launch intent service to save object.
         Intent saveCrumbService = new Intent(context, SaveCrumbService.class);
         saveCrumbService.putExtra("IsPhoto", details.IS_PHOTO);
         saveCrumbService.putExtra("EventId", eventId);
         saveCrumbService.putExtra("Description", description);
         saveCrumbService.putExtra("PlaceName", placeName);
+        saveCrumbService.putExtra("PositionX", descriptionPositionX);
+        saveCrumbService.putExtra("PositionY", descriptionPositionY);
 
         context.startService(saveCrumbService);
         preferencesAPI.SetEventId(eventId+1); // This is a flag - should be saved in the DB because user can clear shared preferences
@@ -194,27 +207,5 @@ public class SaveCrumbModel {
 
     public void CleanUp() {
         GlobalContainer.GetContainerInstance().SetBitMap(null);
-    }
-
-    public void setEditDescription() {
-        editableDescriptionVisibility = View.VISIBLE;
-        uneditableDescriptionVisibility = View.GONE;
-        updateViews();
-    }
-
-    public void setReadOnlyDescription() {
-        editableDescriptionVisibility = View.GONE;
-        uneditableDescriptionVisibility = View.VISIBLE;
-        updateViews();
-        presenter.setDescriptionText(description);
-    }
-
-    private void updateViews() {
-        presenter.setDescriptionEditTextVisibility(editableDescriptionVisibility);
-        presenter.setDescriptionTextViewVisibility(uneditableDescriptionVisibility);
-    }
-
-    public int GetCurrentDescriptionState() {
-        return uneditableDescriptionVisibility;
     }
 }

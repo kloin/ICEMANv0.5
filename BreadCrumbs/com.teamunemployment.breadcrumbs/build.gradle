@@ -16,8 +16,8 @@ android {
         applicationId "com.teamunemployment.breadcrumbs"
         minSdkVersion 16
         targetSdkVersion 24
-        versionCode 11
-        versionName "B8.0.3"
+        versionCode 12
+        versionName "B0.0.4"
         testInstrumentationRunner 'android.support.test.runner.AndroidJUnitRunner'
         generatedDensities = []
     }
@@ -84,6 +84,8 @@ dependencies {
     compile 'com.ncapdevi:frag-nav:1.0.3'
     compile 'com.devbrackets.android:exomedia:2.5.6'
     compile 'com.squareup.retrofit2:retrofit:2.1.0'
+    compile 'com.google.code.gson:gson:2.5'
+    compile 'com.squareup.retrofit2:converter-gson:2.1.0'
 
     testCompile 'junit:junit:4.12'
     testCompile "org.mockito:mockito-core:1.+"

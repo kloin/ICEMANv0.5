@@ -1,47 +1,31 @@
 package com.teamunemployment.breadcrumbs.client.Home;
 
 import android.Manifest;
-import android.app.PendingIntent;
-import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.PersistableBundle;
-import android.preference.PreferenceManager;
-import android.provider.MediaStore;
 import android.support.annotation.IdRes;
-import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
-import android.view.View;
-import android.widget.TextView;
-import android.widget.Toast;
 
-import com.bumptech.glide.Glide;
-import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
-import com.google.android.gms.location.ActivityRecognition;
 import com.ncapdevi.fragnav.FragNavController;
 import com.roughike.bottombar.BottomBar;
-import com.roughike.bottombar.BottomBarBadge;
 import com.roughike.bottombar.OnMenuTabClickListener;
 import com.teamunemployment.breadcrumbs.ActivityRecognition.ActivityController;
-import com.teamunemployment.breadcrumbs.ActivityRecognition.ActivityHandler;
 import com.teamunemployment.breadcrumbs.Dialogs.IDialogCallback;
 import com.teamunemployment.breadcrumbs.Dialogs.SimpleMaterialDesignDialog;
-import com.teamunemployment.breadcrumbs.Network.LoadBalancer;
-import com.teamunemployment.breadcrumbs.Network.ServiceProxy.AsyncDataRetrieval;
 import com.teamunemployment.breadcrumbs.PreferencesAPI;
+import com.teamunemployment.breadcrumbs.Profile.data.View.ProfileActivity;
 import com.teamunemployment.breadcrumbs.R;
 import com.teamunemployment.breadcrumbs.Trails.TrailManagerWorker;
-import com.teamunemployment.breadcrumbs.client.NavMenu.Profile.ProfilePageFragment;
 import com.teamunemployment.breadcrumbs.client.tabs.ExploreTabFragment;
 import com.teamunemployment.breadcrumbs.client.tabs.HomeTabFragment;
-import com.teamunemployment.breadcrumbs.client.tabs.subtabs.ExploreTab;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -253,10 +237,10 @@ public class HomeActivity extends AppCompatActivity {
     }
 
     private void initialiseFragHolder() {
-        List<Fragment> fragments = new ArrayList<>(5);
+        List<Fragment> fragments = new ArrayList<>(3);
         fragments.add(new HomeTabFragment());
         fragments.add(new ExploreTabFragment());
-        fragments.add(new ProfilePageFragment());
+        fragments.add(new ProfileActivity());
         fragNavController = new FragNavController(getSupportFragmentManager(),R.id.fragment_container,fragments);
     }
 

@@ -1,5 +1,7 @@
 package com.teamunemployment.breadcrumbs.Profile.data;
 
+import com.teamunemployment.breadcrumbs.Trails.Trip;
+
 import java.util.ArrayList;
 
 /**
@@ -14,7 +16,7 @@ public interface ProfileRepositoryContract {
 
     String getProfilePictureId(long userId);
 
-    ArrayList<String> getUserTrailIds(long userId);
+    ArrayList<Trip> getUserTrips(long userId);
 
     void saveUserName(String username, long userId);
 
@@ -23,6 +25,8 @@ public interface ProfileRepositoryContract {
     void saveUserWeb(String website, long userId);
 
     void saveProfilePictureId(String profilePicId, long userId);
+
+    void saveUserTrips(ArrayList<Trip> trips);
 
 
 

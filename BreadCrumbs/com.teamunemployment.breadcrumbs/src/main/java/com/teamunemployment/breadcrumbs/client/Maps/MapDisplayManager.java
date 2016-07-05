@@ -180,9 +180,11 @@ public class MapDisplayManager implements GoogleMap.OnMarkerClickListener, Googl
                 Intent viewCrumbsIntent = new Intent(context, StoryBoardActivity.class);
                 ArrayList<CrumbCardDataObject> crumbs = new ArrayList<>();
 
-                CrumbCardDataObject tempCard = new CrumbCardDataObject(clusterItem.getExtension(), clusterItem.getId(), clusterItem.getPlaceId(), clusterItem.getPosition().latitude, clusterItem.getPosition().longitude, clusterItem.GetIsLocal(), clusterItem.getSuburb(), clusterItem.getDescription());
+                CrumbCardDataObject tempCard = new CrumbCardDataObject(clusterItem.getExtension(),
+                        clusterItem.getId(), clusterItem.getPlaceId(),
+                        clusterItem.getPosition().latitude, clusterItem.getPosition().longitude, clusterItem.GetIsLocal(), clusterItem.getSuburb(), clusterItem.getDescription(), clusterItem.getDescriptionPosX(), clusterItem.getDescriptionPosY());
                 crumbs.add(tempCard);
-                viewCrumbsIntent.putExtra("StartingObject", new CrumbCardDataObject(clusterItem.getExtension(), clusterItem.getId(), clusterItem.getPlaceId(),clusterItem.getPosition().latitude, clusterItem.getPosition().longitude, clusterItem.GetIsLocal(), clusterItem.getSuburb(), clusterItem.getDescription()));
+                viewCrumbsIntent.putExtra("StartingObject", new CrumbCardDataObject(clusterItem.getExtension(), clusterItem.getId(), clusterItem.getPlaceId(),clusterItem.getPosition().latitude, clusterItem.getPosition().longitude, clusterItem.GetIsLocal(), clusterItem.getSuburb(), clusterItem.getDescription(), clusterItem.getDescriptionPosX(), clusterItem.getDescriptionPosY()));
                 viewCrumbsIntent.putParcelableArrayListExtra("CrumbArray", mDataObjects);
                 boolean isOwnTrail = clusterItem.GetIsLocal() == 0;
                 viewCrumbsIntent.putExtra("UserOwnsTrail", isOwnTrail);
@@ -265,6 +267,14 @@ public class MapDisplayManager implements GoogleMap.OnMarkerClickListener, Googl
         final String country = crumb.getString("Country"); // Not required
         final String timeStamp = crumb.getString("TimeStamp"); // Not required
         final String description = crumb.getString("Chat"); //Not required
+        String posXString = null;
+        String posYString = null;
+        if (crumb.has("DescPosX")) {
+            posXString  = crumb.getString("DescPosX");
+        }
+        if (crumb.has("DescPosY")) {
+            posYString = crumb.getString("DescPosY");
+        }
 
         String placeName = suburb;
         if (suburb == null || suburb.isEmpty() || suburb.equals("null")) {
@@ -274,14 +284,25 @@ public class MapDisplayManager implements GoogleMap.OnMarkerClickListener, Googl
             }
         }
 
-        mDataObjects.add(new CrumbCardDataObject(mediaType, id, placeId, Latitude, Longitude, 1, placeName, description));
+        float x = 0;
+        float y = 0;
+        if (posXString != null) {
+             x = Float.parseFloat(posXString);
+        }
+
+        if (posYString != null) {
+            y = Float.parseFloat(posYString);
+        }
+        mDataObjects.add(new CrumbCardDataObject(mediaType, id, placeId, Latitude, Longitude, 1, placeName, description, x, y));
 
         if (!local) {
+            final float finalX = x;
+            final float finalY = y;
             AsyncFetchThumbnail asyncDataRetrieval = new AsyncFetchThumbnail(id, new AsyncFetchThumbnail.RequestListener() {
                 @Override
                 public void onFinished(Bitmap result) {
                     //mapInstance.setMyLocationEnabled(false);
-                    DisplayCrumb displayCrumb = new DisplayCrumb(Latitude, Longitude, mediaType, id, R.drawable.wine_glass, placeId,suburb, city, country, timeStamp, description, result, 1);
+                    DisplayCrumb displayCrumb = new DisplayCrumb(Latitude, Longitude, mediaType, id, R.drawable.wine_glass, placeId,suburb, city, country, timeStamp, description, result, 1, finalX, finalY);
                     clusterManager.addItem(displayCrumb);
                     clusterManager.cluster();
                 }
@@ -293,7 +314,7 @@ public class MapDisplayManager implements GoogleMap.OnMarkerClickListener, Googl
             final String eventId = crumb.getString("eventId");
             Bitmap bitmap = fetchBitmapFromLocalFile(eventId, mediaType);
 
-            DisplayCrumb displayCrumb = new DisplayCrumb(Latitude, Longitude, mediaType, id, R.drawable.wine_glass, placeId,suburb, city, country, timeStamp, description, bitmap, 0);
+            DisplayCrumb displayCrumb = new DisplayCrumb(Latitude, Longitude, mediaType, id, R.drawable.wine_glass, placeId,suburb, city, country, timeStamp, description, bitmap, 0, x , y);
             clusterManager.addItem(displayCrumb);
         }
     }
@@ -328,6 +349,23 @@ public class MapDisplayManager implements GoogleMap.OnMarkerClickListener, Googl
         final String country = fetchStringPropertyFromJSON(Models.Crumb.COUNTRY, crumb);
         final String timeStamp = fetchStringPropertyFromJSON(Models.Crumb.TIMESTAMP, crumb);
         final String description = fetchStringPropertyFromJSON(Models.Crumb.DESCRIPTION, crumb);
+        String posXString = null;
+        String posYString = null;
+        if (crumb.has("DescPosX")) {
+            posXString  = crumb.getString("DescPosX");
+        }
+        if (crumb.has("DescPosY")) {
+            posYString = crumb.getString("DescPosY");
+        }
+        float x = 0;
+        float y = 0;
+        if (posXString != null) {
+            x = Float.parseFloat(posXString);
+        }
+
+        if (posYString != null) {
+            y = Float.parseFloat(posYString);
+        }
 
         String placeName = suburb;
         if (suburb == null || suburb.isEmpty() || suburb.equals("null")) {
@@ -339,9 +377,9 @@ public class MapDisplayManager implements GoogleMap.OnMarkerClickListener, Googl
             placeName = placeName + ", " + city;
         }
             Log.d(TAG, "Loading location crumb with and Id: " + id + " and a description of: " + description);
-        mDataObjects.add(new CrumbCardDataObject(mediaType, eventId, placeId, Latitude, Longitude, 0, placeName, description));
+        mDataObjects.add(new CrumbCardDataObject(mediaType, eventId, placeId, Latitude, Longitude, 0, placeName, description, x, y));
         Bitmap bitmap = fetchBitmapFromLocalFile(eventId, mediaType); // Needs to be async
-        DisplayCrumb displayCrumb = new DisplayCrumb(Latitude, Longitude, mediaType, id, R.drawable.wine_glass, placeId,suburb, city, country, timeStamp, description, bitmap, 0);
+        DisplayCrumb displayCrumb = new DisplayCrumb(Latitude, Longitude, mediaType, id, R.drawable.wine_glass, placeId,suburb, city, country, timeStamp, description, bitmap, 0, x, y);
         clusterManager.addItem(displayCrumb);
 
         //Cluster manager doesnt normally update unless you change the map. This method forces it to update.

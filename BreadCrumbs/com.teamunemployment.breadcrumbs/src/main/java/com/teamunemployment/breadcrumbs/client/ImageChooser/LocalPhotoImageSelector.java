@@ -1,6 +1,7 @@
 package com.teamunemployment.breadcrumbs.client.ImageChooser;
 
 import android.app.Activity;
+import android.app.IntentService;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
@@ -175,29 +176,13 @@ public class LocalPhotoImageSelector extends Activity {
      */
     private void UploadProfileImage(int position) {
 
-        // Root of the local images folder.
-        Uri images = MediaStore.Images.Media.EXTERNAL_CONTENT_URI;
+        String id = ids.get(position);
+        String userId = new PreferencesAPI(this).GetUserId();
+        Intent saveIntent = new Intent(this, SaveLocalImageAsProfilePic.class);
 
-        final Uri uri = Uri.parse(images + "/" + ids.get(position));
-
-        // FetchMedia
-        ImageLoadingManager imageLoadingManager = new ImageLoadingManager(mContext);
-        Bitmap bitmap = null;
-        try {
-            bitmap = imageLoadingManager.GetFull720Bitmap(uri);
-        } catch (IOException e) {
-            e.printStackTrace();
-            // Fuck all we can do here.
-            Toast.makeText(mContext, "Saving failed.. :(", Toast.LENGTH_SHORT).show();
-            return;
-        }
-        // Save our id locally for future reference.
-        new PreferencesAPI(mContext).SetUserCoverPhoto(ids.get(position)+"L");
-
-        // Save our bitmap by the local id. THis allows us to reference both the remote and local version with the same Id.
-        String url = LoadBalancer.RequestServerAddress() + "/rest/Crumb/SaveImageToDatabase/"+ids.get(position)+"L";
-        UploadFile uploadFile = new UploadFile(url, null, bitmap);
-        uploadFile.execute();
+        saveIntent.putExtra("Id", id);
+        saveIntent.putExtra("UserId", userId);
+        startService(saveIntent);
 
         // Tell the tabs activity (from previously) that we have saved and want to go back to the profile page.
         Intent returnIntent = new Intent();

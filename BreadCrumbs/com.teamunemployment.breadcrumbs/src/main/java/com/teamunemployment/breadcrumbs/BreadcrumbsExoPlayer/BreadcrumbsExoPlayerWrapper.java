@@ -188,6 +188,10 @@ public class BreadcrumbsExoPlayerWrapper implements BreadcrumbsExoPlayer.Listene
             player.prepare();
             playerNeedsPrepare = false;
         }
+        if (VideoSurface.getSurfaceTexture() == null) {
+            Log.d("Exoplayer", "Video surface was null for some reason. This might be getting caused by opening a video as we close.");
+            return;
+        }
         player.setSurface(new Surface(VideoSurface.getSurfaceTexture()));
         // player.setSurface(surfaceView.getHolder().getSurface());
         player.setPlayWhenReady(playWhenReady);

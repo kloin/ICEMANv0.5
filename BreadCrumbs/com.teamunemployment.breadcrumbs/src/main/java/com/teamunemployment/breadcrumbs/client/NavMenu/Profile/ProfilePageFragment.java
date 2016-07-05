@@ -419,7 +419,6 @@ public class ProfilePageFragment extends Fragment {
             descriptionTextView.setVisibility(View.GONE);
             websiteTextView.setVisibility(View.GONE);
 
-
             // Set the edit texts visible
             EditText aboutEdit = (EditText) rootView.findViewById(R.id.bio_edit_text);
             EditText webEdit = (EditText) rootView.findViewById(R.id.web_edit_text);

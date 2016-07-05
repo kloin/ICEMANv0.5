@@ -154,16 +154,6 @@ public class CrumbModelUnitTests{
         verify(presenter, times(1)).showMessage("Descriptions are limited to 140 characters");
     }
 
-    @Test
-    public void TestThatWeShowEditTextWhenWeClickOnDescriptionTextView() {
-        setUp();
-        model.setEditDescription();
-        Assert.assertTrue(model.GetCurrentDescriptionState() == View.GONE);
-
-        verify(presenter, times(1)).setDescriptionEditTextVisibility(View.VISIBLE);
-        verify(presenter, times(1)).setDescriptionTextViewVisibility(View.GONE);
-    }
-
 
     @Test
     public void EnsureThatWeCanShowTextViewWhenWeClickOnImageAndEditTextIsVisible() {

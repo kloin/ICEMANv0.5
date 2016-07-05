@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/root"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
     <!-- Layout for CRUMBS -->
@@ -13,8 +14,25 @@
             android:layout_width="match_parent"
             android:scaleType="centerCrop"
             android:layout_height="match_parent" />
-    </RelativeLayout>
 
+    </RelativeLayout>
+    <EditText
+        android:id="@+id/description_floating"
+        android:padding="20dp"
+        android:textSize="32sp"
+        android:textColor="@color/white"
+        android:background="@null"
+        android:enabled="false"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
+    <TextView
+        android:id="@+id/description_floating_cover"
+        android:layout_alignTop="@+id/description_floating"
+        android:layout_alignLeft="@+id/description_floating"
+        android:layout_alignRight="@+id/description_floating"
+        android:layout_alignBottom="@+id/description_floating"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/done_button"
         android:layout_width="wrap_content"
@@ -22,52 +40,31 @@
         android:src="@drawable/ic_action_accept"
         app:backgroundTint="@color/good_to_go"
         android:layout_alignParentBottom="true"
-        android:layout_alignParentRight="true"
-        android:layout_margin="16dp"/>
+        android:layout_centerInParent="true"
+        android:layout_marginRight="10dp"
+        android:layout_marginBottom="20dp"
+        android:layout_marginTop="10dp"/>
 
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/backAddScreen"
         app:fabSize="mini"
         android:layout_alignParentRight="true"
         android:layout_above="@+id/done_button"
-        android:layout_margin="20dp"
+        android:layout_marginRight="10dp"
         app:backgroundTint="@color/white"
         android:src="@drawable/ic_action_cancel"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content" />
-    
-    <android.support.v7.widget.CardView
-        android:id="@+id/description_holder"
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/set_edit_text"
+        android:layout_above="@+id/backAddScreen"
+        app:backgroundTint="@color/white"
+        app:fabSize="mini"
+        android:layout_alignParentRight="true"
+        android:layout_margin="10dp"
+        android:src="@drawable/ic_action_edit"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="20dp"
-        android:background="@null"
-        android:layout_marginLeft="-10dp"
-        android:layout_alignParentBottom="true">
-        <RelativeLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content">
-            <EditText
-                android:id="@+id/description"
-                android:padding="10dp"
-                android:layout_marginLeft="10dp"
-                android:visibility="invisible"
-                android:hint="Description ..."
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
-            <TextView
-                android:id="@+id/description_view"
-                android:padding="10dp"
-                android:layout_marginLeft="10dp"
-                android:singleLine="true"
-                android:ellipsize="end"
-                android:text="Tap to add description"
-                android:layout_alignBottom="@+id/description"
-                android:layout_alignTop="@+id/description"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
-        </RelativeLayout>
-    </android.support.v7.widget.CardView>
+        android:layout_height="wrap_content"/>
 
     <android.support.v7.widget.CardView
         android:layout_width="wrap_content"

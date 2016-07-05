@@ -3,10 +3,11 @@ package com.teamunemployment.breadcrumbs.SaveCrumb;
 import android.graphics.Bitmap;
 
 /**
- * Created by jek40 on 22/06/2016.
+ * @author Josiah Kendall
  */
 public class SaveCrumbPresenter {
 
+    private boolean editTextIsEditable = false;
     private SaveCrumbActivityContract.ICrumbDisplay activityView;
 
     public SaveCrumbPresenter(SaveCrumbActivityContract.ICrumbDisplay view) {
@@ -31,11 +32,14 @@ public class SaveCrumbPresenter {
         activityView.showMessage(message);
     }
 
-    public void setDescriptionTextViewVisibility(int visibility) {
-        activityView.setTextViewDescriptionVisibility(visibility);
+    // Toggle the floating description.
+    public void toggleEditText() {
+        if (editTextIsEditable) {
+            editTextIsEditable = false;
+        } else {
+            editTextIsEditable = true;
+        }
+        activityView.setEditTextEnabled(editTextIsEditable);
     }
 
-    public void setDescriptionEditTextVisibility(int visibility) {
-        activityView.setEditTextDescriptionVisibility(visibility);
-    }
 }

@@ -30,8 +30,8 @@ public class ProfileRepoTests {
         RemoteProfileRepository remoteProfileRepository = Mockito.mock(RemoteProfileRepository.class);
         Mockito.doReturn("Test").when(remoteProfileRepository).getUserName(1);
 
-        ProfileRepository profileRepository = new ProfileRepository(contract, localProfileRepository, remoteProfileRepository);
-        profileRepository.getUserName(1);
+        ProfileRepository profileRepository = new ProfileRepository(localProfileRepository, remoteProfileRepository);
+        profileRepository.getUserName(1, contract);
 
         // We should call getUserName on the local repo once, and the remote repo once.
         verify(remoteProfileRepository, times(1)).getUserName(1);
@@ -55,8 +55,8 @@ public class ProfileRepoTests {
         RemoteProfileRepository remoteProfileRepository = Mockito.mock(RemoteProfileRepository.class);
         Mockito.doReturn("Test2").when(remoteProfileRepository).getUserName(1);
 
-        ProfileRepository profileRepository = new ProfileRepository(contract, localProfileRepository, remoteProfileRepository);
-        profileRepository.getUserName(1);
+        ProfileRepository profileRepository = new ProfileRepository(localProfileRepository, remoteProfileRepository);
+        profileRepository.getUserName(1, contract);
 
         verify(contract, times(2)).setUserName(any(String.class));
         verify(contract, times(1)).setUserName("Test1");
@@ -76,8 +76,8 @@ public class ProfileRepoTests {
         RemoteProfileRepository remoteProfileRepository = Mockito.mock(RemoteProfileRepository.class);
         Mockito.doReturn("Test1").when(remoteProfileRepository).getUserName(1);
 
-        ProfileRepository profileRepository = new ProfileRepository(contract, localProfileRepository, remoteProfileRepository);
-        profileRepository.getUserName(1);
+        ProfileRepository profileRepository = new ProfileRepository(localProfileRepository, remoteProfileRepository);
+        profileRepository.getUserName(1, contract);
 
         verify(contract, times(1)).setUserName(any(String.class));
         verify(contract, times(1)).setUserName("Test1");
@@ -101,8 +101,8 @@ public class ProfileRepoTests {
         Mockito.doReturn("Hi Im Joe").when(remoteProfileRepository).getUserAbout(1);
 
         // Do method now that mock rules are set
-        ProfileRepository profileRepository = new ProfileRepository(contract, localProfileRepository, remoteProfileRepository);
-        profileRepository.getUserAbout(1);
+        ProfileRepository profileRepository = new ProfileRepository(localProfileRepository, remoteProfileRepository);
+        profileRepository.getUserAbout(1, contract);
 
         // Should call for service once each repo
         verify(localProfileRepository, times(1)).getUserAbout(1);
@@ -123,8 +123,8 @@ public class ProfileRepoTests {
         RemoteProfileRepository remoteProfileRepository = Mockito.mock(RemoteProfileRepository.class);
         Mockito.doReturn("Test2").when(remoteProfileRepository).getUserAbout(1);
 
-        ProfileRepository profileRepository = new ProfileRepository(contract, localProfileRepository, remoteProfileRepository);
-        profileRepository.getUserAbout(1);
+        ProfileRepository profileRepository = new ProfileRepository(localProfileRepository, remoteProfileRepository);
+        profileRepository.getUserAbout(1,contract);
 
         verify(contract, times(2)).setAbout(any(String.class));
         verify(contract, times(1)).setAbout("Test1");
@@ -145,8 +145,8 @@ public class ProfileRepoTests {
         RemoteProfileRepository remoteProfileRepository = Mockito.mock(RemoteProfileRepository.class);
         Mockito.doReturn("Test1").when(remoteProfileRepository).getUserAbout(1);
 
-        ProfileRepository profileRepository = new ProfileRepository(contract, localProfileRepository, remoteProfileRepository);
-        profileRepository.getUserAbout(1);
+        ProfileRepository profileRepository = new ProfileRepository(localProfileRepository, remoteProfileRepository);
+        profileRepository.getUserAbout(1, contract);
 
         verify(contract, times(1)).setAbout(any(String.class));
         verify(contract, times(1)).setAbout("Test1");
@@ -170,8 +170,8 @@ public class ProfileRepoTests {
         Mockito.doReturn("Hi Im Joe").when(remoteProfileRepository).getUserWeb(1);
 
         // Do method now that mock rules are set
-        ProfileRepository profileRepository = new ProfileRepository(contract, localProfileRepository, remoteProfileRepository);
-        profileRepository.getUserWeb(1);
+        ProfileRepository profileRepository = new ProfileRepository(localProfileRepository, remoteProfileRepository);
+        profileRepository.getUserWeb(1, contract);
 
         // Should call for service once each repo
         verify(localProfileRepository, times(1)).getUserWeb(1);
@@ -192,8 +192,8 @@ public class ProfileRepoTests {
         RemoteProfileRepository remoteProfileRepository = Mockito.mock(RemoteProfileRepository.class);
         Mockito.doReturn("Test2").when(remoteProfileRepository).getUserWeb(1);
 
-        ProfileRepository profileRepository = new ProfileRepository(contract, localProfileRepository, remoteProfileRepository);
-        profileRepository.getUserWeb(1);
+        ProfileRepository profileRepository = new ProfileRepository(localProfileRepository, remoteProfileRepository);
+        profileRepository.getUserWeb(1, contract);
 
         verify(contract, times(2)).setUserWeb(any(String.class));
         verify(contract, times(1)).setUserWeb("Test1");
@@ -214,8 +214,8 @@ public class ProfileRepoTests {
         RemoteProfileRepository remoteProfileRepository = Mockito.mock(RemoteProfileRepository.class);
         Mockito.doReturn("Test1").when(remoteProfileRepository).getUserWeb(1);
 
-        ProfileRepository profileRepository = new ProfileRepository(contract, localProfileRepository, remoteProfileRepository);
-        profileRepository.getUserWeb(1);
+        ProfileRepository profileRepository = new ProfileRepository(localProfileRepository, remoteProfileRepository);
+        profileRepository.getUserWeb(1, contract);
 
         verify(contract, times(1)).setUserWeb(any(String.class));
         verify(contract, times(1)).setUserWeb("Test1");
@@ -239,8 +239,8 @@ public class ProfileRepoTests {
         Mockito.doReturn("Hi Im Joe").when(remoteProfileRepository).getProfilePictureId(1);
 
         // Do method now that mock rules are set
-        ProfileRepository profileRepository = new ProfileRepository(contract, localProfileRepository, remoteProfileRepository);
-        profileRepository.getProfilePictureId(1);
+        ProfileRepository profileRepository = new ProfileRepository(localProfileRepository, remoteProfileRepository);
+        profileRepository.getProfilePictureId(1, contract);
 
         // Should call for service once each repo
         verify(localProfileRepository, times(1)).getProfilePictureId(1);
@@ -261,8 +261,8 @@ public class ProfileRepoTests {
         RemoteProfileRepository remoteProfileRepository = Mockito.mock(RemoteProfileRepository.class);
         Mockito.doReturn("Test2").when(remoteProfileRepository).getProfilePictureId(1);
 
-        ProfileRepository profileRepository = new ProfileRepository(contract, localProfileRepository, remoteProfileRepository);
-        profileRepository.getProfilePictureId(1);
+        ProfileRepository profileRepository = new ProfileRepository(localProfileRepository, remoteProfileRepository);
+        profileRepository.getProfilePictureId(1, contract);
 
         verify(contract, times(2)).setUserProfilePicId(any(String.class));
         verify(contract, times(1)).setUserProfilePicId("Test1");
@@ -283,8 +283,8 @@ public class ProfileRepoTests {
         RemoteProfileRepository remoteProfileRepository = Mockito.mock(RemoteProfileRepository.class);
         Mockito.doReturn("Test1").when(remoteProfileRepository).getProfilePictureId(1);
 
-        ProfileRepository profileRepository = new ProfileRepository(contract, localProfileRepository, remoteProfileRepository);
-        profileRepository.getProfilePictureId(1);
+        ProfileRepository profileRepository = new ProfileRepository(localProfileRepository, remoteProfileRepository);
+        profileRepository.getProfilePictureId(1, contract);
 
         verify(contract, times(1)).setUserProfilePicId(any(String.class));
         verify(contract, times(1)).setUserProfilePicId("Test1");

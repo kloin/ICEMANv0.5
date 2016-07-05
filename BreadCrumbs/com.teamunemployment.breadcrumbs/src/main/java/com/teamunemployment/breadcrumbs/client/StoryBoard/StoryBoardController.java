@@ -11,6 +11,7 @@ import android.view.TextureView;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -618,6 +619,13 @@ public class StoryBoardController {
         TextView caption = (TextView) act.findViewById(R.id.caption);
         if (mLastObject.CrumbData != null) {
             caption.setText(mLastObject.CrumbData.GetDescripton());
+            RelativeLayout relativeLayout = (RelativeLayout) act.findViewById(R.id.root);
+            TextView description = new TextView(act);
+            description.setText(mLastObject.CrumbData.GetDescripton());
+            relativeLayout.addView(description);
+            description.setX(mLastObject.CrumbData.GetDescriptionXPosition());
+            description.setY(mLastObject.CrumbData.GetDescriptionYPosition());
+
         }
     }
 

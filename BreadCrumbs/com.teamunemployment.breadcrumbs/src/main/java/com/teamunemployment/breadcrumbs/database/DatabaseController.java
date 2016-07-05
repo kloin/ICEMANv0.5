@@ -21,6 +21,7 @@ import com.teamunemployment.breadcrumbs.Network.ServiceProxy.AsyncPost;
 import com.teamunemployment.breadcrumbs.Preferences.Preferences;
 import com.teamunemployment.breadcrumbs.PreferencesAPI;
 import com.teamunemployment.breadcrumbs.Trails.TrailManagerWorker;
+import com.teamunemployment.breadcrumbs.Trails.Trip;
 import com.teamunemployment.breadcrumbs.caching.TextCaching;
 import com.teamunemployment.breadcrumbs.caching.Utils;
 import com.teamunemployment.breadcrumbs.data.BreadcrumbsEncodedPolyline;
@@ -35,17 +36,18 @@ import java.io.IOException;
 import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.Iterator;
 
 /*
  * This is the class used to create and help with local storage. Uses SQLite
  */
 public class DatabaseController extends SQLiteOpenHelper {
 
-    private static final int DATABASE_VERSION = 2;
+    private static final int DATABASE_VERSION = 4;
     private static final String POLYLINES = "polylines";
 	private static final String DATABASE_NAME="users";
     private static final String TRAIL_POINTS_INDEX = "trailIndexDb";
-
+    private static final String TRIP_TABLE = "Trips_db";
     private static final String GPS_TABLE = "GPS_POINTS";
     private static final String TRAIL_SUMMARY = "trailsSummaryDb";
     private static final String CRUMBS = "crumbsDb";
@@ -78,7 +80,21 @@ public class DatabaseController extends SQLiteOpenHelper {
             String upgradeQuery = "ALTER TABLE " + TRAIL_SUMMARY +" ADD COLUMN PublishPoint INTEGER";
             db.execSQL(upgradeQuery);
         }
-
+        if (oldVersion == 2 && newVersion == 3) {
+            db.execSQL("CREATE TABLE " + TRIP_TABLE + " (_id INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                    "UserId INTEGER," +
+                    "StartDate TEXT," +
+                    "CoverPhotoId TEXT," +
+                    "Description TEXT," +
+                    "Id INTEGER,"+
+                    "Views INTEGER);");
+        }
+        if (oldVersion == 3 && newVersion == 4) {
+            String upgradeQuery = "ALTER TABLE " + CRUMBS +" ADD COLUMN descPosX REAL";
+            db.execSQL(upgradeQuery);
+            upgradeQuery = "ALTER TABLE " + CRUMBS +" ADD COLUMN descPosY REAL";
+            db.execSQL(upgradeQuery);
+        }
     }
 
 	public void SaveUser(String userId, String userName, int age, String pin) {
@@ -326,7 +342,9 @@ public class DatabaseController extends SQLiteOpenHelper {
     }
 
     // Store our crumbs and details to the database until we are ready to save.
-    public void SaveCrumb(String trailId, String description, String userId, int eventId, double latitude, double longitude, String mime, String timeStamp, String icon, String placeId, String suburb, String city, String country) {
+    public void SaveCrumb(String trailId, String description, String userId, int eventId, double latitude,
+                          double longitude, String mime, String timeStamp, String icon, String placeId,
+                          String suburb, String city, String country, float descriptionPositionX, float descriptionPositonY) {
 
         ContentValues cv = new ContentValues();
         cv.put("trailId", trailId);
@@ -342,6 +360,8 @@ public class DatabaseController extends SQLiteOpenHelper {
         cv.put("mime", mime);
         cv.put("longitude", longitude);
         cv.put("latitude", latitude);
+        cv.put("descPosX", descriptionPositionX);
+        cv.put("descPosY", descriptionPositonY);
 
         SQLiteDatabase localDb = getWritableDatabase();
         long id = localDb.insert(CRUMBS, null, cv);
@@ -352,12 +372,6 @@ public class DatabaseController extends SQLiteOpenHelper {
         }
         AddMetadata(eventId, timeStamp, latitude, longitude, trailId, TrailManagerWorker.CRUMB, mPreferencesApi.GetTransportMethod());
     }
-
-
-//    public String GetCrumbDescription(String trailId) {
-//        Cursor constantsCursor=getReadableDatabase().rawQuery("SELECT * FROM trailPoints WHERE eventId ="+eventId+" ORDER BY timeStamp", null);
-//
-//    }
 
     public void SaveVideoCrumb(String trailId, String userId, int eventId, double latitude, double longitude, String mime, String timeStamp, String icon,String placeId, String suburb, String city,
                                String country) {
@@ -376,25 +390,6 @@ public class DatabaseController extends SQLiteOpenHelper {
         cv.put("longitude", longitude);
         cv.put("latitude", latitude);
 
-
-    }
-
-
-    // UGGGH WHY IS THIS HERE.
-    private void saveVideoToLocalFile(int eventId, byte[] media) {
-        String path = Utils.getExternalCacheDir(mContext) + "/"+eventId+".bcv";
-
-        // Use this to save the file as bcv (breadcrumbsvideo - just so that people cant open it.
-        try {
-            Utils.SaveVideo(path, media);
-        } catch (IOException e) {
-            Log.d("BC/DBC", "Saving video failed. Stack trace follows.");
-            e.printStackTrace();
-        }
-    }
-
-    private void saveMediaToLocalFile(int eventId, byte[] media) {
-        // Convert to base64
 
     }
 
@@ -454,12 +449,8 @@ public class DatabaseController extends SQLiteOpenHelper {
 
 	@Override
 	public void onCreate(SQLiteDatabase db) {
-		// TODO Auto-generated method stub
         this.db = db;
 
-        /*
-            Here we build up all our databases.
-         */
         db.execSQL("CREATE TABLE users (_id INTEGER PRIMARY KEY AUTOINCREMENT, userid TEXT," +
                 "username TEXT, " +
                 "age TEXT," +
@@ -494,8 +485,10 @@ public class DatabaseController extends SQLiteOpenHelper {
                 "country TEXT," +
                 "timeStamp TEXT, " +
                 "mime TEXT," +
-                "latitude REAL, " +
-                "longitude REAL);");
+                "latitude REAL," +
+                "longitude REAL," +
+                "descPosX REAL," +
+                "descPosY REAL);");
 
         // Database for RestZones.
         db.execSQL("CREATE TABLE " + RESTZONES + " (_id INTEGER PRIMARY KEY AUTOINCREMENT, " +
@@ -506,7 +499,7 @@ public class DatabaseController extends SQLiteOpenHelper {
                 "latitude REAL, " +
                 "longitude REAL);");
 
-    // Database for metadata.
+        // Database for metadata.
         db.execSQL("CREATE TABLE " + METADATA + " (_id INTEGER PRIMARY KEY AUTOINCREMENT, " +
                 "eventId TEXT, " +
                 "trailId TEXT, " +
@@ -532,7 +525,8 @@ public class DatabaseController extends SQLiteOpenHelper {
                 "CoverPhotoId TEXT," +
                 "StartDate TIMESTAMP," +
                 "LastUpdate TIMESTAMP," +
-                "IsPublished INTEGER);");
+                "IsPublished INTEGER,"+
+                "PublishPoint INTEGER);");
 
         db.execSQL("CREATE TABLE " + GPS_TABLE + " (_id INTEGER PRIMARY KEY AUTOINCREMENT, " +
             "TrailId TEXT," +
@@ -557,6 +551,14 @@ public class DatabaseController extends SQLiteOpenHelper {
                 "About TEXT," +
                 "Username TEXT," +
                 "ProfilePicId INTEGER);");
+
+        db.execSQL("CREATE TABLE " + TRIP_TABLE + " (_id INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                "UserId INTEGER," +
+                "StartDate TEXT," +
+                "CoverPhotoId TEXT," +
+                "Description TEXT," +
+                "Id INTEGER,"+
+                "Views INTEGER);");
     }
 
     public void SaveActivityPoint(int currentActivity, int pastActivity, Double latitude, Double longitude, int granularity) {
@@ -576,7 +578,6 @@ public class DatabaseController extends SQLiteOpenHelper {
 
         SQLiteDatabase localDb = getWritableDatabase();
         localDb.insert(GPS_TABLE, null, cv);
-        localDb.close();
         Log.d(TAG, "Successfully saved an activity point to the database. current Activity: " + currentActivity);
     }
 
@@ -754,7 +755,6 @@ public class DatabaseController extends SQLiteOpenHelper {
         cursor.getCount();
 
         cursor.close();
-        db.close();
     }
 
     public void updateTrailPublishPoint(String trailId, int index) {
@@ -767,7 +767,6 @@ public class DatabaseController extends SQLiteOpenHelper {
         cursor.getCount();
 
         cursor.close();
-        db.close();
     }
 
     public JSONObject GetTrailSummary(String trailId) {
@@ -810,7 +809,6 @@ public class DatabaseController extends SQLiteOpenHelper {
         cursor.getCount();
 
         cursor.close();
-        db.close();
     }
 
     public JSONObject getCrumbsWithoutMedia(String trailId) {
@@ -951,6 +949,8 @@ public class DatabaseController extends SQLiteOpenHelper {
             String suburb = constantsCursor.getString(constantsCursor.getColumnIndex("suburb"));
             String city = constantsCursor.getString(constantsCursor.getColumnIndex("city"));
             String mime = constantsCursor.getString(constantsCursor.getColumnIndex("mime"));
+            String decXPos = constantsCursor.getString(constantsCursor.getColumnIndex("descPosX"));
+            String decYPos = constantsCursor.getString(constantsCursor.getColumnIndex("descPosY"));
             try {
 
                 node.put(Models.Crumb.EVENT_ID, eventId);
@@ -966,6 +966,8 @@ public class DatabaseController extends SQLiteOpenHelper {
                 node.put(Models.Crumb.COUNTRY, "NZ");
                 node.put(Models.Crumb.EXTENSION, mime);
                 node.put(Models.Crumb.ID, id);
+                node.put(Models.Crumb.DESC_POS_X, decXPos);
+                node.put(Models.Crumb.DESC_POS_Y, decYPos);
 
                 returnObject.put(Integer.toString(count), node);
                 count += 1;
@@ -1309,34 +1311,40 @@ public class DatabaseController extends SQLiteOpenHelper {
 
     public String GetUserName(long userId) {
         Cursor constantsCursor=getReadableDatabase().rawQuery("SELECT * FROM " + USERS + " WHERE UserId =" + userId, null);
-        constantsCursor.moveToFirst();
+        if(constantsCursor.moveToFirst()) {
+            String userName = constantsCursor.getString(constantsCursor.getColumnIndex("Username"));
+            return userName;
+        }
+        return null;
 
-        String userName = constantsCursor.getString(constantsCursor.getColumnIndex("Username"));
-        return userName;
     }
 
     public String GetUserAbout(long userId) {
         Cursor constantsCursor=getReadableDatabase().rawQuery("SELECT * FROM " + USERS + " WHERE UserId =" + userId, null);
-        constantsCursor.moveToFirst();
+        if (constantsCursor.moveToFirst()) {
+            String about = constantsCursor.getString(constantsCursor.getColumnIndex("About"));
+            return about;
+        }
+        return null;
 
-        String about = constantsCursor.getString(constantsCursor.getColumnIndex("About"));
-        return about;
     }
 
     public String getUserWeb(long userId) {
         Cursor constantsCursor=getReadableDatabase().rawQuery("SELECT * FROM " + USERS + " WHERE UserId =" + userId, null);
-        constantsCursor.moveToFirst();
-
-        String web = constantsCursor.getString(constantsCursor.getColumnIndex("Web"));
-        return web;
+        if (constantsCursor.moveToFirst()) {
+            String web = constantsCursor.getString(constantsCursor.getColumnIndex("Web"));
+            return web;
+        }
+        return null;
     }
 
     public String GetUserProfilePic(long userId) {
         Cursor constantsCursor=getReadableDatabase().rawQuery("SELECT * FROM " + USERS + " WHERE UserId =" + userId, null);
-        constantsCursor.moveToFirst();
-
-        String picId = constantsCursor.getString(constantsCursor.getColumnIndex("ProfilePicId"));
-        return picId;
+        if(constantsCursor.moveToFirst()) {
+            String picId = constantsCursor.getString(constantsCursor.getColumnIndex("ProfilePicId"));
+            return picId;
+        }
+        return null;
     }
 
     public int GetPublishPoint(int trailId) {
@@ -1348,4 +1356,95 @@ public class DatabaseController extends SQLiteOpenHelper {
         }
         return 0;
     }
+
+    public void SaveUserProfilePicId(long userId, String profilePicId) {
+
+        ContentValues values = new ContentValues();
+        values.put("ProfilePicId", Integer.parseInt(profilePicId));
+        SQLiteDatabase lcoaldb = getWritableDatabase();
+        long result = lcoaldb.update(USERS, values, "UserId" +" = ?",
+                new String[] { String.valueOf(userId)});
+
+        if(result <= 0){
+            values.put("UserId", (int) userId);
+            result = lcoaldb.insert(USERS, null, values);
+        }
+    }
+
+    public void SaveUserName(long userId, String text) {
+        ContentValues values = new ContentValues();
+        values.put("Username", text);
+        SQLiteDatabase db = getWritableDatabase();
+        long result = db.update(USERS, values,"UserId" +" = ?",
+                new String[] { String.valueOf(userId)});
+
+        if(result <= 0){
+            values.put("UserId", (int) userId);
+            result = db.insert(USERS, null, values);
+        }
+    }
+
+    public void SaveUserWebField(long userId, String text) {
+        ContentValues values = new ContentValues();
+        values.put("Web", text);
+        SQLiteDatabase lcoalDb  = getWritableDatabase();
+        long result = lcoalDb.update(USERS, values,"UserId" +" = ?",
+                new String[] { String.valueOf(userId)});
+
+        if(result <= 0){
+            values.put("UserId", (int) userId);
+            result = lcoalDb.insert(USERS, null, values);
+        }
+    }
+
+    public void SaveUserAboutField(long userId, String text) {
+        ContentValues values = new ContentValues();
+        values.put("About", text);
+        SQLiteDatabase lcoalDb  = getWritableDatabase();
+        long result = lcoalDb.update(USERS, values, "UserId" +" = ?",
+                new String[] { String.valueOf(userId)});
+
+        if(result <= 0){
+            values.put("UserId", (int) userId);
+            result = lcoalDb.insert(USERS, null, values);
+        }
+    }
+
+    public void SaveUserTrips(ArrayList<Trip> trips) {
+        // For each trip
+        Iterator<Trip> tripIterator = trips.iterator();
+        while(tripIterator.hasNext()) {
+            Trip trip = tripIterator.next();
+            saveUserTrip(trip);
+        }
+        // try update the id with the values.
+        // if it wont update, save it
+    }
+
+    private void saveUserTrip(Trip trip) {
+        ContentValues values = new ContentValues();
+        int userId = Integer.parseInt(trip.getUserId());
+        values.put("UserId", userId);
+        values.put("StartDate", trip.getStartDate());
+        values.put("CoverPhotoId", trip.getCoverPhotoId());
+        values.put("Description", trip.getDescription());
+        values.put("Id", trip.getId());
+        SQLiteDatabase lcoalDb  = getWritableDatabase();
+        long result = lcoalDb.update(USERS, values, "UserId" +" = ?",
+                new String[] { trip.getUserId()});
+        if(result <= 0){
+            result = lcoalDb.insert(USERS, null, values);
+        }
+        lcoalDb.close();
+    }
+
+    /*
+    db.execSQL("CREATE TABLE " + TRIP_TABLE + " (_id INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                "UserId INTEGER," +
+                "StartDate TEXT," +
+                "CoverPhotoId TEXT," +
+                "Description TEXT," +
+                "Id INTEGER,"+
+                "Views INTEGER);");
+     */
 }

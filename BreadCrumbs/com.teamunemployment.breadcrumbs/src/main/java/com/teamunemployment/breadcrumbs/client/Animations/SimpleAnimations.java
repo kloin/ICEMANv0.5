@@ -50,6 +50,41 @@ public class SimpleAnimations {
         view.setVisibility(View.VISIBLE);
     }
 
+    // Fade in a given view.
+    public static void FlashView(final View view) {
+        Animation fadeIn = new AlphaAnimation(0.0f, 0.5f);
+        fadeIn.setInterpolator(new DecelerateInterpolator()); //add this
+        fadeIn.setDuration(50);
+
+        AnimationSet animation = new AnimationSet(false); //change to false
+        animation.addAnimation(fadeIn);
+        animation.setAnimationListener(new Animation.AnimationListener() {
+            @Override
+            public void onAnimationStart(Animation animation) {
+
+            }
+
+            @Override
+            public void onAnimationEnd(Animation animation) {
+                Animation fadeout = new AlphaAnimation(0.5f, 0.0f);
+                fadeout.setInterpolator(new DecelerateInterpolator()); //add this
+                fadeout.setDuration(50);
+
+                AnimationSet reverseAnimation = new AnimationSet(false); //change to false
+                reverseAnimation.addAnimation(fadeout);
+                view.setVisibility(View.GONE);
+            }
+
+            @Override
+            public void onAnimationRepeat(Animation animation) {
+
+            }
+        });
+        view.setAnimation(animation);
+        view.setVisibility(View.VISIBLE);
+
+    }
+
     /**
      * Shrink a {@link FloatingActionButton} into a state of invisibility, over a given duration
      * @param fab The fab to hide.

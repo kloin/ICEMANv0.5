@@ -18,6 +18,8 @@ public class Models {
         public static final String DESCRIPTION = "Chat";
         public static final String EVENT_ID = "EventId";
         public static final String USER_ID = "UserId";
+        public static final String DESC_POS_X = "DescPosX";
+        public static final String DESC_POS_Y = "DescPosY";
 
     }
 
