@@ -421,7 +421,8 @@ public class LocalMap extends MapViewer {
         TextView tellThemToSelectACoverPhoto = (TextView) act.findViewById(R.id.cover_photo_prompt);
         SimpleAnimations.FadeInView(tellThemToSelectACoverPhoto);
         tellThemToSelectACoverPhoto.setOnClickListener(selectACoverPhoto());
-        SimpleAnimations.ShrinkToggleAFab(bottomSheetFab, "#00E676", context.getResources().getDrawable(R.drawable.ic_action_accept));
+        bottomSheetFab.setBackgroundTintList(ColorStateList.valueOf((context.getResources().getColor(R.color.good_to_go))));
+        bottomSheetFab.setImageDrawable(context.getResources().getDrawable(R.drawable.ic_action_accept));
     }
 
     private View.OnClickListener selectACoverPhoto() {
@@ -457,7 +458,8 @@ public class LocalMap extends MapViewer {
         }
 
         // Set the trail
-        SimpleAnimations.ShrinkToggleAFab(bottomSheetFab, "#ffffff", context.getResources().getDrawable(R.drawable.ic_action_edit));
+        bottomSheetFab.setBackgroundTintList(ColorStateList.valueOf((context.getResources().getColor(R.color.white))));
+        bottomSheetFab.setImageDrawable(context.getResources().getDrawable(R.drawable.ic_action_edit));
     }
 
     // save our trail name.

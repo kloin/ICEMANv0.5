@@ -39,7 +39,7 @@ public class SaveCrumbActivity extends AppCompatActivity implements SaveCrumbAct
     public static final String TAG = "SaveCrumbActivity";
     public int _xDelta = 0;
     public int _yDelta = 0;
-
+    public Point size;
     @Bind(R.id.done_button) FloatingActionButton saveCrumbFab;
     @Bind(R.id.place_name) TextView placeNameTextView;
     @Bind(R.id.media) ImageView mediaView;
@@ -70,10 +70,8 @@ public class SaveCrumbActivity extends AppCompatActivity implements SaveCrumbAct
         // Create presenter
         presenter = new SaveCrumbPresenter(this);
 
-
-
         Display dm = getWindowManager().getDefaultDisplay();
-        Point size = new Point();
+        size = new Point();
         dm.getSize(size);
 
         RelativeLayout.LayoutParams layoutParams = (RelativeLayout.LayoutParams) floatingDescription.getLayoutParams();
@@ -86,8 +84,6 @@ public class SaveCrumbActivity extends AppCompatActivity implements SaveCrumbAct
         floatingDescription.addTextChangedListener(this);
         floatingDescriptionCover.setOnTouchListener(this);
         floatingDescription.setOnTouchListener(this);
-        floatingDescription.setX(55);
-        floatingDescription.setY(55);
         LoadModel();
     }
 
@@ -217,17 +213,22 @@ public class SaveCrumbActivity extends AppCompatActivity implements SaveCrumbAct
             case MotionEvent.ACTION_POINTER_UP:
                 break;
             case MotionEvent.ACTION_MOVE:
+                int resultX =  X - _xDelta;
+                int resultY = Y - _yDelta;
+
                 RelativeLayout.LayoutParams layoutParams = (RelativeLayout.LayoutParams) view.getLayoutParams();
-                layoutParams.leftMargin = X - _xDelta;
-                layoutParams.topMargin = Y - _yDelta;
+
+                layoutParams.leftMargin =resultX;
+                layoutParams.topMargin = resultY;
                 layoutParams.rightMargin = -250;
                 layoutParams.bottomMargin = -250;
                 floatingDescription.setLayoutParams(layoutParams);
                 floatingDescriptionCover.setLayoutParams(layoutParams);
+                float percentX = (float) resultX / size.x;
+                float percentY = (float) resultY / size.y;
+                model.setDescriptionPosition(percentX, percentY);
                 break;
         }
-
-        model.setDescriptionPosition(view.getX(), view.getY());
         root.invalidate();
 
         // If we are using our edit text, we dont want to consume the touch event other wise our keyboard wont appear.

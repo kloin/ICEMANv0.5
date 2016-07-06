@@ -141,4 +141,22 @@ public class Crumb {
         }
         return -1;
     }
+
+    public double GetDescPosX() {
+        try {
+            return mCrumb.getDouble("DescPosX");
+        } catch (JSONException ex) {
+            Log.d("CrumbModel", "Failed to find the parameter DescPosX");
+        }
+        return -1;
+    }
+
+    public double GetDescPosY() {
+        try {
+            return mCrumb.getDouble("DescPosX");
+        } catch (JSONException ex) {
+            Log.d("CrumbModel", "Failed to find the parameter DescPosX");
+        }
+        return -1;
+    }
 }

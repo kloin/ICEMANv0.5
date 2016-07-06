@@ -74,12 +74,15 @@ public class DatabaseController extends SQLiteOpenHelper {
 
 	@Override
 	public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
+        // TODO: Need to fix this shit
         Log.d(TAG, "Updating from version: " + oldVersion + " to version: "+ newVersion);
         // Upgade from version one to two
         if (oldVersion == 1 && newVersion == 2) {
             String upgradeQuery = "ALTER TABLE " + TRAIL_SUMMARY +" ADD COLUMN PublishPoint INTEGER";
             db.execSQL(upgradeQuery);
+            oldVersion = 2;
         }
+
         if (oldVersion == 2 && newVersion == 3) {
             db.execSQL("CREATE TABLE " + TRIP_TABLE + " (_id INTEGER PRIMARY KEY AUTOINCREMENT, " +
                     "UserId INTEGER," +
@@ -88,6 +91,7 @@ public class DatabaseController extends SQLiteOpenHelper {
                     "Description TEXT," +
                     "Id INTEGER,"+
                     "Views INTEGER);");
+            oldVersion = 3;
         }
         if (oldVersion == 3 && newVersion == 4) {
             String upgradeQuery = "ALTER TABLE " + CRUMBS +" ADD COLUMN descPosX REAL";
@@ -860,9 +864,10 @@ public class DatabaseController extends SQLiteOpenHelper {
             String city = constantsCursor.getString(constantsCursor.getColumnIndex("city"));
             String mime = constantsCursor.getString(constantsCursor.getColumnIndex("mime"));
             int index = constantsCursor.getInt(constantsCursor.getColumnIndex("_id"));
+            String decXPos = constantsCursor.getString(constantsCursor.getColumnIndex("descPosX"));
+            String decYPos = constantsCursor.getString(constantsCursor.getColumnIndex("descPosY"));
 
             try {
-
                 node.put(Models.Crumb.EVENT_ID, eventId);
                 node.put(Models.Crumb.LATITUDE, latitude);
                 node.put(Models.Crumb.LONGITUDE, longitude);
@@ -873,6 +878,8 @@ public class DatabaseController extends SQLiteOpenHelper {
                 node.put(Models.Crumb.SUBURB, suburb);
                 node.put(Models.Crumb.CITY, city);
                 node.put(Models.Crumb.EXTENSION, mime);
+                node.put(Models.Crumb.DESC_POS_X, decXPos);
+                node.put(Models.Crumb.DESC_POS_Y, decYPos);
                 node.put("index", index);
                 returnObject.put(Integer.toString(count), node);
                 count += 1;
@@ -1437,14 +1444,4 @@ public class DatabaseController extends SQLiteOpenHelper {
         }
         lcoalDb.close();
     }
-
-    /*
-    db.execSQL("CREATE TABLE " + TRIP_TABLE + " (_id INTEGER PRIMARY KEY AUTOINCREMENT, " +
-                "UserId INTEGER," +
-                "StartDate TEXT," +
-                "CoverPhotoId TEXT," +
-                "Description TEXT," +
-                "Id INTEGER,"+
-                "Views INTEGER);");
-     */
 }

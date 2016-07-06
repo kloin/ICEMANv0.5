@@ -43,7 +43,6 @@ public class SaveCrumbModel {
     private float descriptionPositionX;
     private float descriptionPositionY;
 
-
     public void setDescriptionPosition(float x, float y) {
         descriptionPositionX = x;
         descriptionPositionY = y;

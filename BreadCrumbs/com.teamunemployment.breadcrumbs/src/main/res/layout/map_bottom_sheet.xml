@@ -48,6 +48,7 @@
                         android:layout_alignBottom="@id/trail_cover_photo"
                         android:layout_alignTop="@id/trail_cover_photo"
                         android:alpha="0.6"
+                        android:background="@color/black_semi_transparent"
                         android:gravity="center"
                         android:text="@string/tap_to_change_cover_image"
                         android:textColor="@color/white"

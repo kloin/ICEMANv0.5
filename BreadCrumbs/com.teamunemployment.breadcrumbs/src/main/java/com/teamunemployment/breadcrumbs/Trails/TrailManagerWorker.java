@@ -23,6 +23,7 @@ import com.teamunemployment.breadcrumbs.Network.ServiceProxy.AsyncSendLargeJsonP
 import com.teamunemployment.breadcrumbs.Network.ServiceProxy.UploadFile;
 import com.teamunemployment.breadcrumbs.PreferencesAPI;
 import com.teamunemployment.breadcrumbs.R;
+import com.teamunemployment.breadcrumbs.Trips.TripRepo;
 import com.teamunemployment.breadcrumbs.database.DatabaseController;
 
 import org.json.JSONException;
@@ -298,12 +299,15 @@ public class TrailManagerWorker {
     }
 
     private int saveCrumb(Crumb crumb) {
+        String trailId = Integer.toString(mPreferencesAPI.GetServerTrailId());
         // Create url request
-        String url = MessageFormat.format("{0}/rest/login/savecrumb/{1}/{2}/{3}/{4}/{5}/{6}/{7}/{8}/{9}/{10}/{11}/{12}",
+        String url = MessageFormat.format("{0}/rest/login/savecrumb/{1}/{2}/{3}/{4}/{5}/{6}/{7}/{8}/{9}/{10}/{11}/{12}/{13}/{14}",
                 LoadBalancer.RequestServerAddress(),
-                " ", // DOnt use description yet
+                crumb.GetDescription(),
+                crumb.GetDescPosX(),
+                crumb.GetDescPosY(),
                 crumb.GetUserId(),  //
-                Integer.toString(mPreferencesAPI.GetServerTrailId()), // Trail Id
+                trailId, // Trail Id
                 Double.toString(crumb.GetLatitude()), // latitude
                 Double.toString(crumb.GetLongitude()), // Longitude
                 " ", // icon
@@ -323,7 +327,6 @@ public class TrailManagerWorker {
         final String fileName = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES).toString() + "/" + eventId + ".mp4";
 
         try {
-
             File sourceFile;
             MediaType MEDIA_TYPE;
 
@@ -353,6 +356,16 @@ public class TrailManagerWorker {
 
             // Response contains the new Id.
             Response response = client.newCall(request).execute();
+            Log.d(TAG, "Response from save crumb: " + response.body().string());
+            String coverPhotoId = mPreferencesAPI.GetCurrentTrailCoverPhoto();
+
+            if (coverPhotoId.endsWith("L")) {
+                coverPhotoId = coverPhotoId.substring(0, coverPhotoId.length()-1);
+                if (crumb.GetEventId().equals(coverPhotoId)) {
+                    TripRepo tripRepo = new TripRepo();
+                    tripRepo.SaveCoverPhotoId(trailId,response.body().string());
+                }
+            }
 
             // Update the saved crumb index
             if (crumb.GetMediaType().endsWith("4")) {

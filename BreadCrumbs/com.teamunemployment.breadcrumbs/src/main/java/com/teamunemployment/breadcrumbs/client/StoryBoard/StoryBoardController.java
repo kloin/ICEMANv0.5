@@ -3,9 +3,11 @@ package com.teamunemployment.breadcrumbs.client.StoryBoard;
 import android.app.Activity;
 import android.content.Context;
 import android.graphics.Color;
+import android.graphics.Point;
 import android.os.Handler;
 import android.provider.ContactsContract;
 import android.util.Log;
+import android.view.Display;
 import android.view.SurfaceView;
 import android.view.TextureView;
 import android.view.View;
@@ -618,13 +620,20 @@ public class StoryBoardController {
     private void setDescription() {
         TextView caption = (TextView) act.findViewById(R.id.caption);
         if (mLastObject.CrumbData != null) {
-            caption.setText(mLastObject.CrumbData.GetDescripton());
             RelativeLayout relativeLayout = (RelativeLayout) act.findViewById(R.id.root);
-            TextView description = new TextView(act);
+            TextView description = (TextView) act.findViewById(R.id.floating_description);
+
             description.setText(mLastObject.CrumbData.GetDescripton());
-            relativeLayout.addView(description);
-            description.setX(mLastObject.CrumbData.GetDescriptionXPosition());
-            description.setY(mLastObject.CrumbData.GetDescriptionYPosition());
+            Display dm = act.getWindowManager().getDefaultDisplay();
+            Point size = new Point();
+            dm.getSize(size);
+
+            RelativeLayout.LayoutParams layoutParams = (RelativeLayout.LayoutParams) description.getLayoutParams();
+            layoutParams.leftMargin = (int) (size.x * mLastObject.CrumbData.GetDescriptionXPosition());
+            layoutParams.topMargin =  (int) (size.y * mLastObject.CrumbData.GetDescriptionYPosition());
+            layoutParams.rightMargin = -250;
+            layoutParams.bottomMargin = -250;
+            description.setLayoutParams(layoutParams);
 
         }
     }

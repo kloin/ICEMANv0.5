@@ -370,11 +370,12 @@ public class CameraController extends SurfaceView implements SurfaceHolder.Callb
         } else {
             recorder.setOrientationHint(270);
         }
-        recorder.setVideoEncodingBitRate(3200000);
+        recorder.setVideoEncodingBitRate(24000000);
         recorder.setOutputFormat(MediaRecorder.OutputFormat.DEFAULT);
         recorder.setAudioEncoder(MediaRecorder.AudioEncoder.AMR_NB);
         Camera.Size size = getOptimalVideoSize(supportedSizes);
-        recorder.setVideoSize(size.width, size.height);
+        recorder.setVideoSize(1920, 1080);
+      //  recorder.setVideoSize(size.width, size.height);
 
 
         // Mp4 makes file size significantly smaller.
