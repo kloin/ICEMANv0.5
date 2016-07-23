@@ -59,13 +59,6 @@ public class GridImageSelector extends Fragment {
 
     public void setShitUp() {
         emptyGridInfo = (TextView) rootView.findViewById(R.id.empty_grid_placeholder);
-        /*ImageButton backButton = (ImageButton) rootView.findViewById(R.id.backButtonCapture);
-        backButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                activityContext.finish();
-            }
-        });*/
         setUpGridAndListeners();
         //Get all trails then set the adapter.
     }

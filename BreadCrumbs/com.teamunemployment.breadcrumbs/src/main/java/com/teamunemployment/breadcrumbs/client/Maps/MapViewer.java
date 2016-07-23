@@ -168,9 +168,6 @@ public class MapViewer extends Activity implements OnMapClickListener, OnMapLong
         ((MapFragment) getFragmentManager().findFragmentById(R.id.map)).getMapAsync(this);
 		mContext = this;
 		trailId = this.getIntent().getStringExtra("TrailId");
-
-
-
 	}
 
 	private void doSetupShit() {
@@ -211,6 +208,7 @@ public class MapViewer extends Activity implements OnMapClickListener, OnMapLong
 			}, 1200);
 		}
 	}
+
 	private void setUpTrailState() {
 		SetUpDetailsItems();
 	}
@@ -687,6 +685,9 @@ public class MapViewer extends Activity implements OnMapClickListener, OnMapLong
 	private void processResultRunnable(String result) throws JSONException {
 		//Trace.beginSection("Process result");
 		Log.d(TAG, "processResult: creating  JSONObject. Time: " + System.currentTimeMillis());
+		if (result == null) {
+			result = "{}";
+		}
 		JSONObject jsonObject = new JSONObject(result);
 		Log.d(TAG, "processResult: created  JSONObject. Time: " + System.currentTimeMillis());
 		Iterator<String> keys = jsonObject.keys();

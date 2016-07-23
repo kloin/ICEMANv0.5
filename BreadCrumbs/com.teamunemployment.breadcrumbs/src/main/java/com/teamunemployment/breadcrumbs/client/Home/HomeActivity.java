@@ -13,6 +13,7 @@ import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 
+import com.google.android.exoplayer.C;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.ncapdevi.fragnav.FragNavController;
 import com.roughike.bottombar.BottomBar;
@@ -20,8 +21,9 @@ import com.roughike.bottombar.OnMenuTabClickListener;
 import com.teamunemployment.breadcrumbs.ActivityRecognition.ActivityController;
 import com.teamunemployment.breadcrumbs.Dialogs.IDialogCallback;
 import com.teamunemployment.breadcrumbs.Dialogs.SimpleMaterialDesignDialog;
+import com.teamunemployment.breadcrumbs.Explore.ExploreFragment;
 import com.teamunemployment.breadcrumbs.PreferencesAPI;
-import com.teamunemployment.breadcrumbs.Profile.data.View.ProfileActivity;
+import com.teamunemployment.breadcrumbs.Profile.data.View.ProfileFragment;
 import com.teamunemployment.breadcrumbs.R;
 import com.teamunemployment.breadcrumbs.Trails.TrailManagerWorker;
 import com.teamunemployment.breadcrumbs.client.tabs.ExploreTabFragment;
@@ -45,6 +47,9 @@ public class HomeActivity extends AppCompatActivity {
 
     private GoogleApiClient googleApiClient;
     private AppCompatActivity context;
+
+    static final int PICK_PROFILE_REQUEST = 1;
+    private static final int WRITE_EXTERNAL_STORAGE_REQUEST = 5;
 
     private int CURRENT_TAB = 0;
 
@@ -75,9 +80,9 @@ public class HomeActivity extends AppCompatActivity {
         }
         CURRENT_TAB = preferencesAPI.GetCurrentTab();
         if (CURRENT_TAB == -1) {
-            CURRENT_TAB = 0;
+            CURRENT_TAB = 1;
         }
-        fragNavController.clearStack();
+        //fragNavController.clearStack();
         //bottomBar.selectTabAtPosition(CURRENT_TAB, false);
         switch (CURRENT_TAB) {
             case FragNavController.TAB1:
@@ -85,7 +90,6 @@ public class HomeActivity extends AppCompatActivity {
                 break;
             case FragNavController.TAB2:
                 bottomBar.selectTabAtPosition(1, false);
-
                 break;
             case FragNavController.TAB3:
                 bottomBar.selectTabAtPosition(4, false);
@@ -104,6 +108,7 @@ public class HomeActivity extends AppCompatActivity {
                 try {
                     if (menuItemId == R.id.bottomBarItemOne) {
                         CURRENT_TAB = FragNavController.TAB1;
+                        preferencesAPI.SetCurrentTab(CURRENT_TAB);
                         Handler handler = new Handler();
                         handler.postDelayed(new Runnable(){
                             @Override
@@ -113,6 +118,7 @@ public class HomeActivity extends AppCompatActivity {
                         }, 120);
                     } else if(menuItemId == R.id.bottomBarItemTwo) {
                         CURRENT_TAB = FragNavController.TAB2;
+                        preferencesAPI.SetCurrentTab(CURRENT_TAB);
                         Handler handler = new Handler();
                         handler.postDelayed(new Runnable(){
                             @Override
@@ -163,7 +169,6 @@ public class HomeActivity extends AppCompatActivity {
 
     private void launchMyTripViewer() {
         final int localTrail = preferencesAPI.GetLocalTrailId();
-
         // Show up the create trail dialog.
         if (localTrail == -1) {
             SimpleMaterialDesignDialog.Build(context)
@@ -174,8 +179,7 @@ public class HomeActivity extends AppCompatActivity {
                     .SetCallBack(createTrailCallback())
                     .Show();
             return;
-        }
-        else {
+        } else {
             Handler handler = new Handler();
             handler.postDelayed(new Runnable(){
                 @Override
@@ -239,8 +243,8 @@ public class HomeActivity extends AppCompatActivity {
     private void initialiseFragHolder() {
         List<Fragment> fragments = new ArrayList<>(3);
         fragments.add(new HomeTabFragment());
-        fragments.add(new ExploreTabFragment());
-        fragments.add(new ProfileActivity());
+        fragments.add(new ExploreFragment());
+        fragments.add(new ProfileFragment());
         fragNavController = new FragNavController(getSupportFragmentManager(),R.id.fragment_container,fragments);
     }
 
@@ -249,33 +253,9 @@ public class HomeActivity extends AppCompatActivity {
         int localTrailId = preferencesAPI.GetLocalTrailId();
         if (localTrailId == -1) {
             // We have no trail. We need to notify the user of this and give them the option of creating a trail.
-            showCreateNewTrailForCameraDialog(currentTabPosition);
-            return;
+            TrailManagerWorker trailManagerWorker = new TrailManagerWorker(context);
+            trailManagerWorker.StartLocalTrail();
         }
-        //int permissionCheckAudio = ContextCompat.checkSelfPermission()
-        int permissionCheckCam = ContextCompat.checkSelfPermission(context,
-                Manifest.permission.CAMERA);
-        int permissionCheckAudio = ContextCompat.checkSelfPermission(context,
-                Manifest.permission.RECORD_AUDIO);
-        int permissionCheckWriteToExternalStorage = ContextCompat.checkSelfPermission(context,
-                Manifest.permission.WRITE_EXTERNAL_STORAGE);
-
-        ArrayList<String> permissionsArrayList = new ArrayList<String>();
-        if (permissionCheckCam == PackageManager.PERMISSION_DENIED) {
-            permissionsArrayList.add(Manifest.permission.CAMERA);
-        }
-        if (permissionCheckAudio == PackageManager.PERMISSION_DENIED) {
-            permissionsArrayList.add(Manifest.permission.RECORD_AUDIO);
-        }
-        if (permissionCheckWriteToExternalStorage == PackageManager.PERMISSION_DENIED) {
-            permissionsArrayList.add(Manifest.permission.WRITE_EXTERNAL_STORAGE);
-        }
-
-        if (permissionsArrayList.size() > 0) {
-            requestPermissionForCamera( permissionsArrayList.toArray(new String[0]));
-        }
-
-        if (permissionsArrayList.size() == 0 ) {
             Handler handler = new Handler();
             handler.postDelayed(new Runnable(){
                 @Override
@@ -285,34 +265,6 @@ public class HomeActivity extends AppCompatActivity {
                     startActivity(newIntent);
                 }
             }, 60);
-
-        }
-    }
-
-    private void showCreateNewTrailForCameraDialog(int tabWeAreComingFrom) {
-        SimpleMaterialDesignDialog.Build(context)
-                .SetTitle("Camera")
-                .SetTextBody("You cannot add content if you have not created a trip. Do you want to create a trip now?")
-                .SetActionWording("Create trail")
-                .UseCancelButton(true)
-                .SetCallBack(createTrailCallback())
-                .SetCancelCallback(createCancelNewTripCallback(tabWeAreComingFrom))
-                .Show();
-    }
-
-    private IDialogCallback createCancelNewTripCallback(final int tabWeAreComingFrom) {
-        return new IDialogCallback() {
-            @Override
-            public void DoCallback() {
-                bottomBar.selectTabAtPosition(tabWeAreComingFrom, false);
-            }
-        };
-    }
-
-    private void requestPermissionForCamera(String[] requiredPermissions) {
-            ActivityCompat.requestPermissions(context,
-                    requiredPermissions,
-                    CAMERA_REQUESTED_PERMISSION);
     }
 
     @Override
@@ -330,9 +282,7 @@ public class HomeActivity extends AppCompatActivity {
                         newIntent.setClassName("com.teamunemployment.breadcrumbs", "com.teamunemployment.breadcrumbs.client.Camera.CameraCapture");
                         startActivity(newIntent);
                     }
-
                 } else {
-
                     Log.d(TAG, "User refuesed to give camera permission. What a fucken idiot.");
                 }
                 return;
@@ -350,8 +300,13 @@ public class HomeActivity extends AppCompatActivity {
                 }
             }
 
-            // other 'case' lines to check for other
-            // permissions this app might request
+            case WRITE_EXTERNAL_STORAGE_REQUEST : {
+                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    Intent intent = new Intent();
+                    intent.setClassName("com.teamunemployment.breadcrumbs", "com.teamunemployment.breadcrumbs.client.ImageChooser.ImageChooserTabWrapper");
+                    startActivityForResult(intent, PICK_PROFILE_REQUEST);
+                }
+            }
         }
     }
 

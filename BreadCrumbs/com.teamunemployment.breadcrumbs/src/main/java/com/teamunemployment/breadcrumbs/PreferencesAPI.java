@@ -6,6 +6,7 @@ import android.preference.PreferenceManager;
 import android.support.annotation.Nullable;
 
 import com.google.android.gms.location.DetectedActivity;
+import com.google.firebase.analytics.FirebaseAnalytics;
 
 
 /**
@@ -17,6 +18,10 @@ public class PreferencesAPI {
     private Context mContext;
     private SharedPreferences mPreferences;
     private static PreferencesAPI mPreferencesApi;
+
+    private FirebaseAnalytics firebaseAnalytics;
+
+    private static final String FOLLOWING_KEY = "FOLLOWING";
     public PreferencesAPI(Context context) {
         mContext = context;
         mPreferences = PreferenceManager.getDefaultSharedPreferences(context);
@@ -28,6 +33,22 @@ public class PreferencesAPI {
             return false;
         }
         return currentActivity.equals(DetectedActivity.IN_VEHICLE);
+    }
+
+    public void setHaveShownFollowingUserNotification(boolean yes) {
+        mPreferences.edit().putBoolean(FOLLOWING_KEY, yes).apply();
+    }
+
+    public boolean haveShowUserFollowingNotification() {
+        return mPreferences.getBoolean(FOLLOWING_KEY, false);
+    }
+
+    public void SetViewingProfileId(long id) {
+        mPreferences.edit().putLong("PROFILE_VIEW_ID", id).apply();
+    }
+
+    public long GetViewingProfileId() {
+        return mPreferences.getLong("PROFILE_VIEW_ID", -1);
     }
 
     // save our local trail Id
@@ -68,7 +89,7 @@ public class PreferencesAPI {
     }
 
     public String GetUserId() {
-        return mPreferences.getString("USERID", null);
+        return mPreferences.getString("USERID", "0");
     }
 
     public void SetUserId(String userId) {

@@ -153,7 +153,7 @@ public class Crumb {
 
     public double GetDescPosY() {
         try {
-            return mCrumb.getDouble("DescPosX");
+            return mCrumb.getDouble("DescPosY");
         } catch (JSONException ex) {
             Log.d("CrumbModel", "Failed to find the parameter DescPosX");
         }

@@ -19,11 +19,14 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.google.firebase.analytics.FirebaseAnalytics;
 import com.teamunemployment.breadcrumbs.CustomElements.FancyFollow;
 import com.teamunemployment.breadcrumbs.Network.ServiceProxy.AsyncFetchThumbnail;
 import com.teamunemployment.breadcrumbs.Network.ServiceProxy.HTTPRequestHandler;
 import com.teamunemployment.breadcrumbs.Network.ServiceProxy.SimpleNetworkApi;
 import com.teamunemployment.breadcrumbs.Network.ServiceProxy.UpdateViewElementWithProperty;
+import com.teamunemployment.breadcrumbs.PreferencesAPI;
+import com.teamunemployment.breadcrumbs.Trips.TripRepo;
 import com.teamunemployment.breadcrumbs.caching.TextCachingInterface;
 import com.teamunemployment.breadcrumbs.Network.LoadBalancer;
 import com.teamunemployment.breadcrumbs.Network.ServiceProxy.AsyncDataRetrieval;
@@ -51,7 +54,7 @@ public class HomeCardAdapter extends RecyclerView.Adapter<HomeCardAdapter.ViewHo
     private String LAST_CACHED_TIME = "LAST_CACHED_TIME";
     private final String TAG = "HOME_CARD";
     private TextCaching mTextCaching;
-
+    private FirebaseAnalytics firebaseAnalytics;
     // Provide a reference to the views for each data item
     // Complex data items may need more than one view per item, and
     // you provide access to all the views for a data item in a view holder
@@ -70,6 +73,7 @@ public class HomeCardAdapter extends RecyclerView.Adapter<HomeCardAdapter.ViewHo
         mDataset = myDataset;
         mContext = context;
         userId = PreferenceManager.getDefaultSharedPreferences(context).getString("USERID", "-1");
+        firebaseAnalytics = FirebaseAnalytics.getInstance(context);
     }
 
     // Create new views (invoked by the layout manager)
@@ -79,8 +83,8 @@ public class HomeCardAdapter extends RecyclerView.Adapter<HomeCardAdapter.ViewHo
         // create a new view
         View v = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.home_base_card_base_view, parent, false);
-        CardView card = (CardView) v.findViewById(R.id.card_view);
-        card.setPreventCornerOverlap(false);
+     //   CardView card = (CardView) v.findViewById(R.id.card_view);
+       // card.setPreventCornerOverlap(false);
         ViewHolder vh = new ViewHolder(v);
         return vh;
     }
@@ -95,6 +99,15 @@ public class HomeCardAdapter extends RecyclerView.Adapter<HomeCardAdapter.ViewHo
 
     private void FetchAndBindObject(final LinearLayout card, final String trailId, final int position) {
         Log.d(TAG, "Begin loading card at position : " +position);
+
+//        final TextView deleteButton = (TextView) card.findViewById(R.id.delete_temp_button);
+//        deleteButton.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                TripRepo tripRepo = new TripRepo();
+//                tripRepo.DeleteTrip(trailId);
+//            }
+//        });
 
         // This is our url.
         final String keyUrl = "TrailManagerGetBaseDetailsForATrail" + trailId;
@@ -167,6 +180,7 @@ public class HomeCardAdapter extends RecyclerView.Adapter<HomeCardAdapter.ViewHo
 
         // Temp - for managing all the messy as fuk shit.
         setTempDeleteButton(card, trailId);
+
         // Need to fetch description with the other data but icbf
         final String key = trailId + "Description";
         String descriptionUrl = LoadBalancer.RequestServerAddress() +"/rest/login/GetPropertyFromNode/"+trailId+"/Description";
@@ -211,8 +225,8 @@ public class HomeCardAdapter extends RecyclerView.Adapter<HomeCardAdapter.ViewHo
             // Fetch our data, then
             JSONObject resultJSON = new JSONObject(result);
             // These four should all exist. The fifth we have to check for.
-            String desc = resultJSON.get("description").toString();
-            String title = resultJSON.get("trailName").toString();
+            final String desc = resultJSON.get("description").toString();
+            final String title = resultJSON.get("trailName").toString();
             final String trailsUserId = resultJSON.get("userId").toString();
             String views = resultJSON.get("views").toString() + " views";
             final String userName = resultJSON.get("userName").toString();
@@ -223,7 +237,6 @@ public class HomeCardAdapter extends RecyclerView.Adapter<HomeCardAdapter.ViewHo
             TextView viewsTextView = (TextView) card.findViewById(R.id.trail_views);
             final Activity act = (Activity) mContext;
             final CoordinatorLayout coordinatorLayout = (CoordinatorLayout) act.findViewById(R.id.main_content);
-            final FancyButton followButton = (FancyButton) card.findViewById(R.id.follow_button);
             final TextView detailsButton = (TextView) card.findViewById(R.id.details_button);
            // TextView description = (TextView) card.findViewById(R.id.trail_description);
 //            description.setText(desc);
@@ -234,6 +247,7 @@ public class HomeCardAdapter extends RecyclerView.Adapter<HomeCardAdapter.ViewHo
             holder.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
+                    addViewSomeonesTripAnalytics(trailId, title);
                     Intent TrailViewer = new Intent();
                     TrailViewer.setClassName("com.teamunemployment.breadcrumbs", "com.teamunemployment.breadcrumbs.client.Maps.MapViewer");
                     Bundle extras = new Bundle();
@@ -254,21 +268,22 @@ public class HomeCardAdapter extends RecyclerView.Adapter<HomeCardAdapter.ViewHo
                     mContext.startActivity(TrailViewer);
                 }
             });
+
             belongsTo.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     // Launch our profile
                     Intent profileIntent = new Intent();
-                    profileIntent.setClassName("com.teamunemployment.breadcrumbs", "com.teamunemployment.breadcrumbs.client.NavMenu.Profile.ProfilePageViewer");
-                    profileIntent.putExtra("userId", trailsUserId);
+                    profileIntent.setClassName("com.teamunemployment.breadcrumbs", "com.teamunemployment.breadcrumbs.Profile.data.View.ProfileActivity");
+                    profileIntent.putExtra("UserId", Long.parseLong(trailsUserId));
                     profileIntent.putExtra("name", userName);
                     mContext.startActivity(profileIntent);
                 }
             });
 
             String currentUserId = PreferenceManager.getDefaultSharedPreferences(mContext).getString("USERID", null);
-            FancyFollow customFollowButton = new FancyFollow(currentUserId, trailsUserId, followButton, mContext);
-            customFollowButton.init();
+            //FancyFollow customFollowButton = new FancyFollow(currentUserId, trailsUserId, followButton, mContext);
+            //  customFollowButton.init();
             // Load cover photo here and set it
             if (resultJSON.has("coverPhotoId")) {
                 String coverId = resultJSON.getString("coverPhotoId");
@@ -293,14 +308,22 @@ public class HomeCardAdapter extends RecyclerView.Adapter<HomeCardAdapter.ViewHo
         }
     }
 
+    private void addViewSomeonesTripAnalytics(String id, String tripName) {
+        Bundle bundle = new Bundle();
+        bundle.putString(FirebaseAnalytics.Param.ITEM_ID, id);
+        bundle.putString(FirebaseAnalytics.Param.ITEM_NAME, tripName);
+        bundle.putString(FirebaseAnalytics.Param.CONTENT_TYPE, "trip");
+        firebaseAnalytics.logEvent(FirebaseAnalytics.Event.VIEW_ITEM, bundle);
+    }
+
     private View.OnClickListener getProfilePicClickListener(final String trailsUserId, final String userName) {
         return new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 // Launch our profile
                 Intent profileIntent = new Intent();
-                profileIntent.setClassName("com.teamunemployment.breadcrumbs", "com.teamunemployment.breadcrumbs.client.NavMenu.Profile.ProfilePageViewer");
-                profileIntent.putExtra("userId", trailsUserId);
+                profileIntent.setClassName("com.teamunemployment.breadcrumbs", "com.teamunemployment.breadcrumbs.Profile.data.View.ProfileActivity");
+                profileIntent.putExtra("UserId", Long.parseLong(trailsUserId));
                 profileIntent.putExtra("name", userName);
                 mContext.startActivity(profileIntent);
             }

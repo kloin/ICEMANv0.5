@@ -1,13 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.design.widget.CoordinatorLayout
+    android:id="@+id/root"
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:layout_marginBottom="-60dp">
     <android.support.design.widget.AppBarLayout
         android:id="@+id/app_bar_layout_profile"
         android:layout_width="match_parent"
+
         android:layout_height="20dp">
         <android.support.design.widget.CollapsingToolbarLayout
             android:id="@+id/collapsable_toolbar_holder"
@@ -59,8 +62,6 @@
 
         </android.support.design.widget.CollapsingToolbarLayout>
     </android.support.design.widget.AppBarLayout>
-
-
     <android.support.v4.widget.NestedScrollView
         android:layout_gravity="fill_vertical"
         android:background="@color/white"
@@ -71,6 +72,10 @@
             <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1px"
+                    android:background="@color/my_divider"/>
                 <TextView
                     android:id="@+id/profile_header"
                     android:layout_margin="12dp"
@@ -78,30 +83,53 @@
                     android:text="@string/profile"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"/>
+                <ImageView
+                    android:id="@+id/about_icon"
+                    android:src="@drawable/ic_description_black_24dp"
+                    android:alpha="0.54"
+
+                    android:layout_marginLeft="12dp"
+                    android:layout_alignTop="@+id/user_about"
+                    android:layout_alignBottom="@+id/user_about"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"/>
                 <TextView
                     android:id="@+id/user_about"
+                    android:layout_toRightOf="@+id/about_icon"
+                    android:layout_marginLeft="6dp"
+                    android:layout_marginRight="18dp"
+                    android:layout_marginBottom="12dp"
                     android:layout_below="@+id/profile_header"
-                    android:layout_alignStart="@+id/profile_header"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_alignLeft="@+id/profile_header"/>
+                    android:layout_height="wrap_content"/>
+
                 <EditText
                     android:id="@+id/user_about_edit"
                     android:layout_below="@+id/profile_header"
+                    android:layout_toRightOf="@+id/about_icon"
                     android:background="@null"
-                    android:layout_alignLeft="@+id/profile_header"
                     android:inputType="textMultiLine"
                     style="?android:attr/textViewStyle"
                     android:hint="About you"
                     android:visibility="gone"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"/>
-
+                <ImageView
+                    android:id="@+id/website_icon"
+                    android:src="@drawable/ic_web_black_24dp"
+                    android:alpha="0.54"
+                    android:layout_below="@+id/user_about"
+                    android:layout_marginLeft="12dp"
+                    android:layout_alignTop="@+id/user_web"
+                    android:layout_alignBottom="@+id/user_web"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"/>
                 <TextView
                     android:id="@+id/user_web"
+                    android:layout_marginLeft="6dp"
                     android:layout_below="@+id/user_about"
-                    android:layout_alignLeft="@+id/profile_header"
-                    android:layout_marginRight="12dp"
+                    android:layout_toRightOf="@+id/website_icon"
+                    android:layout_marginRight="18dp"
                     android:layout_marginBottom="20dp"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"/>
@@ -110,11 +138,12 @@
                     android:id="@+id/user_web_edit"
                     style="?android:attr/textViewStyle"
                     android:background="@null"
-                    android:layout_alignLeft="@+id/profile_header"
+                    android:layout_toRightOf="@+id/website_icon"
+                    android:layout_marginRight="18dp"
                     android:layout_marginBottom="20dp"
                     android:inputType="textMultiLine"
                     android:visibility="gone"
-                    android:hint="Webstite"
+                    android:hint="Website"
                     android:layout_below="@+id/user_about"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"/>
@@ -132,7 +161,17 @@
                     android:padding="12dp"
                     style="@style/TextAppearance.AppCompat.Title"
                     android:layout_below="@+id/profile_divider"
-                    android:layout_width="match_parent"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"/>
+                <TextView
+                    android:id="@+id/trips_count"
+                    android:text="(0)"
+                    android:layout_alignTop="@+id/trips_header"
+                    android:layout_alignBottom="@+id/trips_header"
+                    android:gravity="center"
+                    android:layout_below="@+id/profile_divider"
+                    android:layout_toRightOf="@+id/trips_header"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"/>
                 <LinearLayout
                     android:id="@+id/trips_list_view"
@@ -146,7 +185,17 @@
         android:id="@+id/profile_edit_fab"
         android:layout_width="wrap_content"
         app:backgroundTint="@color/white"
-        android:src="@drawable/ic_action_edit"
+        android:src="@drawable/ic_border_color_black_24dp"
+        android:layout_height="wrap_content"
+        app:layout_anchor="@+id/app_bar_layout_profile"
+        android:layout_marginRight="20dp"
+        app:layout_anchorGravity="bottom|right|end"/>
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/profile_follow_fab"
+        android:layout_width="wrap_content"
+        android:visibility="gone"
+        app:backgroundTint="@color/white"
+        android:src="@drawable/ic_account_plus_black_24dp"
         android:layout_height="wrap_content"
         app:layout_anchor="@+id/app_bar_layout_profile"
         android:layout_marginRight="20dp"

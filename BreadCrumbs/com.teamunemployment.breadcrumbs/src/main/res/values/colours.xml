@@ -4,7 +4,7 @@
     <color name="accent">#F06292</color>
     <color name="accentLight">#F06292</color>
     <color name="home_pressed">#BA68C8</color>
-    <color name="good_to_go">#00E676</color>
+    <color name="good_to_go">#4CAF50</color>
     <color name="black_semi_transparent">#B2000000</color>
     <color name="background">#e5e5e5</color>
     <color name="half_black">#808080</color>
@@ -16,6 +16,7 @@
     <color name="pink_pressed">#ec407a</color>
     <color name="blue_semi_transparent">#805677fc</color>
     <color name="blue_semi_transparent_pressed">#80738ffe</color>
+    <color name="light_blue">#80D8FF</color>
     <color name="ColorPrimary">#03A9F4</color>
     <color name="ColorPrimaryDark">#0288D1</color>
     <color name="ColorPrimaryLight">#BBDEFB</color>
@@ -23,4 +24,6 @@
     <color name="my_secondary_text">#727272</color>
     <color name="my_icons">#FFFFFF</color>
     <color name="my_divider">#B6B6B6</color>
+    <color name="purple_500">#9C27B0</color>
+    <color name="pink_500">#E91E63</color>
 </resources>

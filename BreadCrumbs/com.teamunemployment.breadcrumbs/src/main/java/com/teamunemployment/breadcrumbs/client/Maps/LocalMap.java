@@ -483,7 +483,7 @@ public class LocalMap extends MapViewer {
         setCoverPhoto(preferencesAPI.GetCurrentTrailCoverPhoto());
 
         TrailSummaryModel trailSummaryModel = new TrailSummaryModel(databaseController.GetTrailSummary(trailId));
-        LocalTrailModel localTrailModel = new LocalTrailModel(databaseController.GetAllCrumbs("0"));
+        LocalTrailModel localTrailModel = new LocalTrailModel(databaseController.GetAllCrumbs(Integer.toString(preferencesAPI.GetLocalTrailId())));
 
         TextView days = (TextView) bottomSheet.findViewById(R.id.duration_details);
         days.setText(trailSummaryModel.GetDaysDuration() + " Days");
@@ -502,7 +502,7 @@ public class LocalMap extends MapViewer {
         TextView trailTitle = (TextView) findViewById(R.id.bottom_sheet_trail_title);
         String name = trailSummaryModel.GetTripName();
         if (name == null || name.isEmpty()) {
-            name = "My Trip";
+            name = "...";
         }
         trailTitle.setText(name);
     }

@@ -64,5 +64,10 @@
         <item name="android:textColorSecondary">@color/my_secondary_text</item>
     </style>
 
+    <style name="CustomProgressBarHorizontal" parent="android:Widget.ProgressBar.Horizontal">
+        <item name="android:progressDrawable">@drawable/breadcrumbs_horizontal_progress_bar</item>
+        <item name="android:minHeight">20dp</item>
+        <item name="android:maxHeight">40dp</item>
+    </style>
 </resources>
 

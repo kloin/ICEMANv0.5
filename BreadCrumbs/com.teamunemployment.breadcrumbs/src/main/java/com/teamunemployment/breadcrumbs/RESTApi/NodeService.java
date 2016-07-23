@@ -24,4 +24,13 @@ public interface NodeService {
 
     @GET("TrailManager/GetThreePublishedTrips/{NodeId}")
     Call<ArrayList<Trip>> getTopThreeTripsForAUser(@Path("NodeId") String nodeId);
+
+    @GET("TrailManager/GetTwentyTrips")
+    Call<ArrayList<Trip>> getTwentyTrips();
+
+    @GET("TrailManager/GetTwentyTripIds")
+    Call<ResponseBody> getTwentyTripIds();
+
+    @GET("TrailManager/GetTrip/{TripId}")
+    Call<Trip> getTrip(@Path("TripId") String tripId);
 }

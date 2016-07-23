@@ -7,14 +7,29 @@ import android.util.Log;
 
 import com.google.android.gms.maps.model.LatLng;
 import com.google.maps.android.PolyUtil;
+import com.teamunemployment.breadcrumbs.Explore.Data.ExploreLocalRepository;
+import com.teamunemployment.breadcrumbs.Explore.Data.ExploreRemoteRepository;
+import com.teamunemployment.breadcrumbs.Network.LoadBalancer;
+import com.teamunemployment.breadcrumbs.RESTApi.NodeService;
+import com.teamunemployment.breadcrumbs.RESTApi.UserService;
+import com.teamunemployment.breadcrumbs.Trails.Trip;
 import com.teamunemployment.breadcrumbs.database.DatabaseController;
 
+import org.json.JSONException;
+import org.json.JSONObject;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mockito;
 
+import java.io.IOException;
 import java.util.List;
+
+import okhttp3.Interceptor;
+import okhttp3.OkHttpClient;
+import okhttp3.Response;
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
 
 import static org.junit.Assert.*;
 
@@ -23,22 +38,66 @@ import static org.junit.Assert.*;
  */
 public class ExampleUnitTest {
     private DatabaseController mDbc;
+    private Context context;
+
     @Before
     public void setup() {
-        Context context = Mockito.mock(Context.class);
-        mDbc = new DatabaseController(context);
+        context = Mockito.mock(Context.class);
+       // mDbc = new DatabaseController(context);
+    }
+
+    private String generateMockJSON() throws JSONException {
+        return "{\"StartDate\":\"2016-06-01\",\"CoverPhotoId\":\"17826\",\"Views\":\"0\",\"Description\":\" \",\"UserId\":\"11136\",\"TrailName\":\"Raglan trip\",\"Id\":\"17734\",\"Distance\":\"0\"}";
     }
     @Test
-    public void addition_isCorrect() throws Exception {
-        assertEquals(true,true);
+    public void TestThatWeCanLoadTrip() throws JSONException {
+
+        String result = generateMockJSON();
+        OkHttpClient okHttpClient = new OkHttpClient.Builder()
+                .addInterceptor(
+                        new MockClient(context, result, 200)
+                ).build();
+
+
+        Retrofit retrofit = new Retrofit.Builder()
+                // .addCallAdapterFactory(RxJavaCallAdapterFactory.create())
+                .addConverterFactory(GsonConverterFactory.create())
+                .baseUrl(LoadBalancer.RequestServerAddress() + "/rest/")
+                .client(okHttpClient)
+                .build();
+
+        UserService userService = retrofit.create(UserService.class);
+        NodeService nodeService = retrofit.create(NodeService.class);
+
+        ExploreRemoteRepository remoteRepository = new ExploreRemoteRepository(userService, nodeService);
+        Trip trip = remoteRepository.LoadTrip(0);
+
+        Assert.assertTrue(trip.getTrailName().equals("Raglan trip"));
     }
 
     @Test
-    public void TestDecoding() {
-        List<LatLng> latLongList = PolyUtil.decode("_p~iF~ps|U");
-        LatLng listitem = latLongList.get(0);
-        Assert.assertTrue(listitem.latitude == 38.5);
-        Assert.assertTrue(listitem.longitude == -120.2);
+    public void TestThatLoadingBadTripfailsQuietly() throws JSONException {
+        String result = "{}";
+        OkHttpClient okHttpClient = new OkHttpClient.Builder()
+                .addInterceptor(
+                        new MockClient(context, result, 200)
+                ).build();
+
+
+        Retrofit retrofit = new Retrofit.Builder()
+                // .addCallAdapterFactory(RxJavaCallAdapterFactory.create())
+                .addConverterFactory(GsonConverterFactory.create())
+                .baseUrl(LoadBalancer.RequestServerAddress() + "/rest/")
+                .client(okHttpClient)
+                .build();
+
+        UserService userService = retrofit.create(UserService.class);
+        NodeService nodeService = retrofit.create(NodeService.class);
+
+        ExploreRemoteRepository remoteRepository = new ExploreRemoteRepository(userService, nodeService);
+        Trip trip = remoteRepository.LoadTrip(0);
+
+        Assert.assertTrue(trip !=null);
     }
 
 

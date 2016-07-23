@@ -10,28 +10,28 @@ public class Trip {
 
     @SerializedName("StartDate")
     @Expose
-    private String startDate;
+    private String startDate = "";
     @SerializedName("CoverPhotoId")
     @Expose
-    private String coverPhotoId;
+    private String coverPhotoId = "";
     @SerializedName("Views")
     @Expose
-    private String views;
+    private String views = "";
     @SerializedName("Description")
     @Expose
-    private String description;
+    private String description = "";
     @SerializedName("UserId")
     @Expose
-    private String userId;
+    private String userId = "";
     @SerializedName("TrailName")
     @Expose
-    private String trailName;
+    private String trailName = "";
     @SerializedName("Id")
     @Expose
-    private String id;
+    private String id = "";
     @SerializedName("Distance")
     @Expose
-    private String distance;
+    private String distance = "";
 
     /**
      *
@@ -177,4 +177,18 @@ public class Trip {
         this.distance = distance;
     }
 
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == null) {
+            return false;
+        }
+
+        Trip compareVal = (Trip) obj;
+        return (this.getCoverPhotoId().equals(compareVal.getCoverPhotoId()) &&
+                this.getDescription().equals(compareVal.getDescription()) &&
+                this.getViews().equals(compareVal.getViews()) &&
+                this.getUserId().equals(compareVal.getUserId()) &&
+                this.getDistance().equals(compareVal.getDistance()) &&
+                this.getId().equals(compareVal.getId()));
+    }
 }

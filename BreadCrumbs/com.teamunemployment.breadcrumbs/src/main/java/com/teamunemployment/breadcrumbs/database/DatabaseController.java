@@ -9,6 +9,7 @@ import android.database.sqlite.SQLiteException;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.location.Location;
 import android.preference.PreferenceManager;
+import android.support.annotation.Nullable;
 import android.util.Base64;
 import android.util.Log;
 
@@ -22,6 +23,7 @@ import com.teamunemployment.breadcrumbs.Preferences.Preferences;
 import com.teamunemployment.breadcrumbs.PreferencesAPI;
 import com.teamunemployment.breadcrumbs.Trails.TrailManagerWorker;
 import com.teamunemployment.breadcrumbs.Trails.Trip;
+import com.teamunemployment.breadcrumbs.User;
 import com.teamunemployment.breadcrumbs.caching.TextCaching;
 import com.teamunemployment.breadcrumbs.caching.Utils;
 import com.teamunemployment.breadcrumbs.data.BreadcrumbsEncodedPolyline;
@@ -43,7 +45,7 @@ import java.util.Iterator;
  */
 public class DatabaseController extends SQLiteOpenHelper {
 
-    private static final int DATABASE_VERSION = 4;
+    private static final int DATABASE_VERSION = 5;
     private static final String POLYLINES = "polylines";
 	private static final String DATABASE_NAME="users";
     private static final String TRAIL_POINTS_INDEX = "trailIndexDb";
@@ -60,6 +62,7 @@ public class DatabaseController extends SQLiteOpenHelper {
 	public static final String AGE="age";
 	public static final String PIN="pin";
     public static final String TRAILID="trailid";
+    private static final String FOLLOWING_TABLE = "following_table";
     //public static final String
     private static final String TAG = "DBC";
     private Context mContext;
@@ -83,21 +86,39 @@ public class DatabaseController extends SQLiteOpenHelper {
             oldVersion = 2;
         }
 
-        if (oldVersion == 2 && newVersion == 3) {
+        if (newVersion > 3) {
             db.execSQL("CREATE TABLE " + TRIP_TABLE + " (_id INTEGER PRIMARY KEY AUTOINCREMENT, " +
                     "UserId INTEGER," +
                     "StartDate TEXT," +
                     "CoverPhotoId TEXT," +
+                    "TrailName TEXT," +
                     "Description TEXT," +
                     "Id INTEGER,"+
-                    "Views INTEGER);");
-            oldVersion = 3;
+                    "Views INTEGER," +
+                    "Distance TEXT);");
+
         }
+
+        if (newVersion > 4 && oldVersion > 3) {
+            String upgradeQuery = "ALTER TABLE " + TRIP_TABLE +" ADD COLUMN TrailName TEXT";
+            String upgrade2 = "ALTER TABLE " + TRIP_TABLE +" ADD COLUMN Distance TEXT";
+            String usersUpgrade = "ALTER TABLE " + USERS + " ADD COLUMN ProfilePicId INTEGER";
+            db.execSQL(upgradeQuery);
+            db.execSQL(upgrade2);
+            db.execSQL(usersUpgrade);
+        }
+
         if (oldVersion == 3 && newVersion == 4) {
             String upgradeQuery = "ALTER TABLE " + CRUMBS +" ADD COLUMN descPosX REAL";
             db.execSQL(upgradeQuery);
             upgradeQuery = "ALTER TABLE " + CRUMBS +" ADD COLUMN descPosY REAL";
             db.execSQL(upgradeQuery);
+        }
+
+        if ( newVersion > 4) {
+            db.execSQL("CREATE TABLE " + FOLLOWING_TABLE + " (_id INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                    "UserId INTEGER," +
+                    "FollowedUserId INTEGER);");
         }
     }
 
@@ -559,10 +580,16 @@ public class DatabaseController extends SQLiteOpenHelper {
         db.execSQL("CREATE TABLE " + TRIP_TABLE + " (_id INTEGER PRIMARY KEY AUTOINCREMENT, " +
                 "UserId INTEGER," +
                 "StartDate TEXT," +
+                "TrailName TEXT," +
                 "CoverPhotoId TEXT," +
                 "Description TEXT," +
                 "Id INTEGER,"+
+                "Distance Text," +
                 "Views INTEGER);");
+
+        db.execSQL("CREATE TABLE " + FOLLOWING_TABLE + " (_id INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                "UserId INTEGER," +
+                "FollowedUserId INTEGER);");
     }
 
     public void SaveActivityPoint(int currentActivity, int pastActivity, Double latitude, Double longitude, int granularity) {
@@ -866,7 +893,6 @@ public class DatabaseController extends SQLiteOpenHelper {
             int index = constantsCursor.getInt(constantsCursor.getColumnIndex("_id"));
             String decXPos = constantsCursor.getString(constantsCursor.getColumnIndex("descPosX"));
             String decYPos = constantsCursor.getString(constantsCursor.getColumnIndex("descPosY"));
-
             try {
                 node.put(Models.Crumb.EVENT_ID, eventId);
                 node.put(Models.Crumb.LATITUDE, latitude);
@@ -887,16 +913,15 @@ public class DatabaseController extends SQLiteOpenHelper {
                 Log.e("DBC", "failed to get crumbs with media");
                 e.printStackTrace();
             }
-
         }
         return returnObject;
     }
 
     public void SaveTrailName(String trailName, int trailId) {
 
-        String query = "UPDATE "+TRAIL_SUMMARY + " SET TrailName='"+trailName + "' WHERE _id = "+Integer.toString(trailId);
+        String query = "UPDATE "+TRAIL_SUMMARY + " SET TrailName= ? WHERE _id = "+Integer.toString(trailId);
         db = getWritableDatabase();
-        Cursor cursor = db.rawQuery(query, null);
+        Cursor cursor = db.rawQuery(query, new String[] {trailName});
 
         // WHY DOES THIS MAKE IT WORK? I FUCKING HATE SQL. If you remove this line, it wont update the row.
         cursor.getCount();
@@ -1424,6 +1449,7 @@ public class DatabaseController extends SQLiteOpenHelper {
             Trip trip = tripIterator.next();
             saveUserTrip(trip);
         }
+
         // try update the id with the values.
         // if it wont update, save it
     }
@@ -1443,5 +1469,126 @@ public class DatabaseController extends SQLiteOpenHelper {
             result = lcoalDb.insert(USERS, null, values);
         }
         lcoalDb.close();
+    }
+
+    public void SetUserFollowingAnotherUser(long broadcastUserId, long followingUserId) {
+        ContentValues values = new ContentValues();
+        values.put("UserId", followingUserId);
+        values.put("FollowedUserId", broadcastUserId);
+        SQLiteDatabase localDB = getWritableDatabase();
+        localDB.insert(FOLLOWING_TABLE, null, values);
+    }
+
+    public void RemoveBroadcaster(long broadcastUserId, long followingUserId) {
+        SQLiteDatabase localDb = getWritableDatabase();
+        localDb.delete(FOLLOWING_TABLE, "UserId = ? AND FollowedUserId = ?", new String[] {Long.toString(followingUserId), Long.toString(broadcastUserId)});
+        localDb.close();
+    }
+
+    public boolean isUserFollowingOtherUser(long userId, long visitorId) {
+        Cursor constantsCursor=getReadableDatabase().rawQuery("SELECT * FROM " + FOLLOWING_TABLE + " WHERE UserId = ? AND FollowedUserId = ?",
+                new String[] {Long.toString(visitorId), Long.toString(userId)});
+        if (constantsCursor.moveToFirst()) {
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * Return an instance of the trip with the corresponding id. Returns null if trip was not found.
+     * @param tripId
+     * @return The trip that correlates with the trip Id, or null if a trip was not found.
+     */
+    @Nullable
+    public Trip LoadTrip(long tripId) {
+        Cursor constantsCursor=getReadableDatabase().rawQuery("SELECT * FROM " + TRIP_TABLE + " WHERE  Id = " + Long.toString(tripId), null);
+        if(constantsCursor.moveToFirst()) {
+            int userId = constantsCursor.getInt(constantsCursor.getColumnIndex("UserId"));
+            String coverPhotoId = constantsCursor.getString(constantsCursor.getColumnIndex("CoverPhotoId"));
+            String description = constantsCursor.getString(constantsCursor.getColumnIndex("Description"));
+            String views = constantsCursor.getString(constantsCursor.getColumnIndex("Views"));
+            String trailName = constantsCursor.getString(constantsCursor.getColumnIndex("TrailName"));
+            String startDate = constantsCursor.getString(constantsCursor.getColumnIndex("StartDate"));
+            Trip trip = new Trip();
+            trip.setCoverPhotoId(coverPhotoId);
+            trip.setDescription(description);
+            trip.setDistance("0");
+            trip.setId(Long.toString(tripId));
+            trip.setUserId(Integer.toString(userId));
+            trip.setTrailName(trailName);
+            trip.setViews(views);
+            trip.setStartDate(startDate);
+            return trip;
+        }
+
+        return null;
+    }
+
+    /*
+    "UserId INTEGER," +
+                "StartDate TEXT," +
+                "CoverPhotoId TEXT," +
+                "Description TEXT," +
+                "Id INTEGER,"+
+                "Views INTEGER);"
+     */
+
+    public void SaveTrip(Trip remoteTrip, long tripId) {
+        // First delete any preexisting trips with the same id.
+        deleteAnyPreexistingTrip(tripId);
+        ContentValues values = new ContentValues();
+        values.put("UserId", remoteTrip.getUserId());
+        values.put("StartDate", remoteTrip.getStartDate());
+        values.put("CoverPhotoId", remoteTrip.getCoverPhotoId());
+        values.put("Description", remoteTrip.getDescription());
+        values.put("TrailName", remoteTrip.getTrailName());
+        values.put("Id", Long.toString(tripId));
+        values.put("Views", remoteTrip.getViews());
+        values.put("Distance", "0");
+        SQLiteDatabase localDB = getWritableDatabase();
+        localDB.insert(TRIP_TABLE, null, values);
+    }
+
+    private void deleteAnyPreexistingTrip(long tripId) {
+        SQLiteDatabase localDb = getWritableDatabase();
+        localDb.delete(TRIP_TABLE, "Id = ?", new String[] {Long.toString(tripId)});
+
+    }
+
+    public void SaveUser(User user) {
+        deleteAnyPreExistingUser(user.getId());
+        ContentValues values = new ContentValues();
+        values.put("UserId", Integer.parseInt(user.getId()));
+        values.put("Web", user.getWeb());
+        values.put("Username", user.getUsername());
+        values.put("ProfilePicId", user.getProfilePicId());
+        SQLiteDatabase localDB = getWritableDatabase();
+        localDB.insert(USERS, null, values);
+    }
+
+    private void deleteAnyPreExistingUser(String userId) {
+        SQLiteDatabase localDb = getWritableDatabase();
+        localDb.delete(USERS, "UserId = ?", new String[] {userId});
+    }
+
+    @Nullable
+    public User GetUser(String userId) {
+        Cursor constantsCursor=getReadableDatabase().rawQuery("SELECT * FROM " + USERS + " WHERE  UserId = ?", new String[] {userId});
+        if(constantsCursor.moveToFirst()) {
+
+            int profilePicId = constantsCursor.getInt(constantsCursor.getColumnIndex("ProfilePicId"));
+            String about = constantsCursor.getString(constantsCursor.getColumnIndex("About"));
+            String username = constantsCursor.getString(constantsCursor.getColumnIndex("Username"));
+            String web = constantsCursor.getString(constantsCursor.getColumnIndex("Web"));
+
+            User user = new User();
+            user.setProfilePicId(Integer.toString(profilePicId));
+            user.setAbout(about);
+            user.setUsername(username);
+            user.setWeb(web);
+            return user;
+        }
+
+        return null;
     }
 }

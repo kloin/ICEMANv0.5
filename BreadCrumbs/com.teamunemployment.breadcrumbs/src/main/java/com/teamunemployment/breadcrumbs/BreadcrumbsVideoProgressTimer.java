@@ -26,6 +26,10 @@ public class BreadcrumbsVideoProgressTimer {
         public void OnFinished();
     }
 
+    public boolean getPauseState() {
+        return paused;
+    }
+
     public void startTimerWithCallback(ITimer callback) {
         this.iTimer = callback;
         startTimer();

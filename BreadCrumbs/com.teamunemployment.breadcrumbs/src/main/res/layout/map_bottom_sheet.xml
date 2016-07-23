@@ -8,7 +8,8 @@
             type="com.teamunemployment.breadcrumbs.data.TripDetails" />
     </data>
 
-    <android.support.design.widget.CoordinatorLayout xmlns:fancy="http://schemas.android.com/apk/res-auto"
+    <android.support.design.widget.CoordinatorLayout
+        xmlns:fancy="http://schemas.android.com/apk/res-auto"
         android:id="@+id/bottom_sheet"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -38,7 +39,7 @@
                     <ImageView
                         android:id="@+id/trail_cover_photo"
                         android:layout_width="match_parent"
-                        android:layout_height="200px"
+                        android:layout_height="0dp"
                         android:scaleType="centerCrop" />
 
                     <TextView

@@ -7,6 +7,8 @@ import android.net.Uri;
 import android.provider.MediaStore;
 
 import com.teamunemployment.breadcrumbs.Network.LoadBalancer;
+import com.teamunemployment.breadcrumbs.Network.NetworkConnectivityManager;
+import com.teamunemployment.breadcrumbs.PreferencesAPI;
 import com.teamunemployment.breadcrumbs.Profile.data.model.ProfileModel;
 import com.teamunemployment.breadcrumbs.Trails.Trip;
 import com.teamunemployment.breadcrumbs.client.Image.ImageLoadingManager;
@@ -39,11 +41,17 @@ public class Presenter implements ProfileContract.PresenterContract {
      * Start loading the data to be shown.
      */
     public void Start() {
+        String deviceUserId = new PreferencesAPI(context).GetUserId();
+        model.setUserState(Long.parseLong(deviceUserId));
         model.LoadUserAbout(userId);
         model.LoadUserName(userId);
         model.LoadUserProfileId(userId);
         model.LoadUserWebsite(userId);
         model.LoadTripIds(userId);
+        model.LoadUserFollowing();
+        if (!NetworkConnectivityManager.IsNetworkAvailable(context)) {
+            view.showMessage("No Network Connection available.");
+        }
     }
 
     @Override
@@ -69,11 +77,33 @@ public class Presenter implements ProfileContract.PresenterContract {
     @Override
     public void setProfilePicture(String id) {
         if (id == null || id.equals("0")) {
-            view.setProfileClickPromptAsVisible();
+            view.setMissingProfileBackground();
             return;
         }
         String url = LoadBalancer.RequestCurrentDataAddress() + "/images/"+id+".jpg";
         view.setProfilePicture(url);
+    }
+
+    @Override
+    public void setUserTripsCount(int count) {
+        view.setUserTripsCount("("+count+")");
+    }
+
+    @Override
+    public void setUserReadOnly() {
+        view.setUserEditButtonVisible(false);
+        view.setUserFollowButtonVisibile(true);
+    }
+
+    @Override
+    public void setUserEditable() {
+        view.setUserEditButtonVisible(true);
+        view.setUserFollowButtonVisibile(false);
+    }
+
+    @Override
+    public void setUserFollowingState(boolean isFollowing) {
+        view.setIAmFollowingThisUser(isFollowing);
     }
 
     public void HandleEditToggle() {
@@ -91,6 +121,16 @@ public class Presenter implements ProfileContract.PresenterContract {
             view.setUserWebsiteAsReadOnly();
             view.setProfileClickPromptAsGone();
         }
+    }
+
+    public void HandleProfileFollow() {
+        model.FollowUser();
+        view.setIAmFollowingThisUser(true);
+    }
+
+    public void HandleProfileUnfollow() {
+        model.UnFollowUser();
+        view.setIAmFollowingThisUser(false);
     }
 
     public void SaveNewProfilePicId(long userId, String coverPhotoPic) {

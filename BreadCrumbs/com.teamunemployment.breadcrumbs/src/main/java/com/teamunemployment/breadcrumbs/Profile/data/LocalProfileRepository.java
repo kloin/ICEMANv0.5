@@ -67,4 +67,16 @@ public class LocalProfileRepository implements ProfileRepositoryContract {
     public void saveUserTrips(ArrayList<Trip> trips) {
         databaseController.SaveUserTrips(trips);
     }
+
+    public void setUserFolliwingAnotherUser(long broadcastUserId, long followingUserId) {
+            databaseController.SetUserFollowingAnotherUser(broadcastUserId, followingUserId);
+    }
+
+    public void setUserNotFollowingAnotherUser(long broadcastUserId, long followingUserId) {
+        databaseController.RemoveBroadcaster(broadcastUserId, followingUserId);
+    }
+
+    public boolean isUserFollowingOtherUser(long userId, long visitorId) {
+        return databaseController.isUserFollowingOtherUser(userId, visitorId);
+    }
 }

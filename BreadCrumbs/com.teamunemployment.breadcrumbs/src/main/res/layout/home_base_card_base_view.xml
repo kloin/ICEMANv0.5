@@ -1,22 +1,12 @@
 <LinearLayout
+    android:orientation="vertical"
     android:layout_height="wrap_content"
     android:layout_width="match_parent"
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:fancy="http://schemas.android.com/apk/res-auto"
     android:id="@+id/storyBoardItem"
     android:background="#e5e5e5">
-    <android.support.v7.widget.CardView
-        xmlns:card_view="http://schemas.android.com/apk/res-auto"
-        android:id="@+id/card_view"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_margin="5dp"
-        card_view:cardCornerRadius="1dp"
-        card_view:cardElevation="1dp">
-        <LinearLayout
-            android:orientation="vertical"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="72dp">
@@ -40,27 +30,15 @@
                 android:layout_height="wrap_content"
                 android:textColor="@color/my_primary_text" />
 
-            <mehdi.sakout.fancybuttons.FancyButton
-                android:id="@+id/follow_button"
-                android:layout_width="110dp"
-                android:layout_height="25dp"
-                android:layout_marginTop="12dp"
-                android:paddingLeft="10dp"
-                android:paddingRight="10dp"
-                android:layout_alignParentRight="true"
-                android:tint="@color/ColorPrimary"
-                android:layout_marginRight="10dp"
-                android:layout_marginBottom="10dp"
-                fancy:fb_borderColor="@color/ColorPrimary"
-                fancy:fb_borderWidth="1dp"
-                fancy:fb_defaultColor="@color/white"
-                fancy:fb_focusColor="@color/ColorPrimaryLight"
-                fancy:fb_fontIconSize="1dp"
-                fancy:fb_iconPosition="right"
-                fancy:fb_radius="1dp"
-                fancy:fb_text="FOLLOW"
-                fancy:fb_textSize="14sp"
-                fancy:fb_textColor="@color/ColorPrimary"/>
+        <TextView
+            android:id="@+id/delete_temp_button"
+            android:text="delete"
+            android:visibility="gone"
+            android:layout_alignParentRight="true"
+            android:padding="15dp"
+            android:textColor="@color/red"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
             <TextView
                 android:id="@+id/trail_views"
                 android:layout_width="wrap_content"
@@ -160,6 +138,4 @@
                 android:layout_height="wrap_content" />
             <!--                android:layout_marginLeft="105dp"-->
         </RelativeLayout>
-    </LinearLayout>
-    </android.support.v7.widget.CardView>
 </LinearLayout>

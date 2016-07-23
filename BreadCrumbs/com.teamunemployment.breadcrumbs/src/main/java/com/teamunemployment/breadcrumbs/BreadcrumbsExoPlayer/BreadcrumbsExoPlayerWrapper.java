@@ -241,18 +241,6 @@ public class BreadcrumbsExoPlayerWrapper implements BreadcrumbsExoPlayer.Listene
 
         mtx.setRectToRect(screen, src, Matrix.ScaleToFit.FILL);
         mtx.postRotate(unappliedRotationDegrees, screen.centerX(), screen.centerY());
-//        String TAG = "VideoView.Size()";
-//        Point size = new Point();
-//        display.getSize(size);
-//        final Matrix mtx=new Matrix();
-////        RectF drawableRect = new RectF(0, 0, size.x, size.y);
-////        RectF viewRect = new RectF(0, 0, size.x, size.y);
-////        mtx.setRectToRect(drawableRect, viewRect, Matrix.ScaleToFit.START);
-//        float scalex = (float) width / (float) height;
-//        float scaley = (float) height / (float) width;
-//        //mtx.preTranslate(-1, 1);
-//        mtx.postRotate(unappliedRotationDegrees,size.y/2, size.x/2);
-//        mtx.postScale(scaley, scalex, 0, size.y);
         Activity activity = (Activity) context;
         activity.runOnUiThread(new Runnable() {
             @Override
@@ -260,38 +248,6 @@ public class BreadcrumbsExoPlayerWrapper implements BreadcrumbsExoPlayer.Listene
                 VideoSurface.setTransform(mtx);
             }
         });
-        //setScaleType(ScaleType.CENTER_CROP);
-//
-//        Matrix matrix = new Matrix();
-//        matrix.setRotate(unappliedRotationDegrees);
-//        VideoSurface.setTransform(matrix);
-////
-//
-//        params.height = 1820;
-//        DisplayMetrics displayMetrics = new DisplayMetrics();
-//        display.getRealMetrics(displayMetrics);
-//        Log.d(TAG, "Screen Width:" + size.x);
-//        Log.d(TAG, "Screen WIdth:" + size.y);
-//        Log.d(TAG, "densityDpi" + displayMetrics.densityDpi);
-//        Log.d(TAG, "density" + displayMetrics.density);
-//        Log.d(TAG, displayMetrics.xdpi + ": xdpi");
-//        Log.d(TAG, displayMetrics.ydpi + ": ydpi");
-//        Log.d(TAG, "widthPixels" + displayMetrics.widthPixels);
-//        Log.d(TAG, "heightPixels" + displayMetrics.heightPixels);
-//        Log.d(TAG, "scaledDensity" + displayMetrics.scaledDensity);
-//
-//        VideoSurface.setMinimumHeight(size.y);
-//
-//        params.width = size.x;
-//        params.height = RelativeLayout.LayoutParams.MATCH_PARENT;
-//        Log.d(TAG, "VideoView wisth: "+ width *5);
-//        Log.d(TAG, "VideoView height: "+ height *5);
-////        params.height = height*4;
-////        params.width = width*4;
-//        VideoSurface.setLayoutParams(params);
-
-//        VideoSurface.setMinimumHeight(size.x);
-//        VideoSurface.setMinimumWidth(size.y);
     }
 
     private void updateMatrixOnLayout() {

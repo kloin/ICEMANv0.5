@@ -75,6 +75,8 @@ public class SaveCrumbActivity extends AppCompatActivity implements SaveCrumbAct
         dm.getSize(size);
 
         RelativeLayout.LayoutParams layoutParams = (RelativeLayout.LayoutParams) floatingDescription.getLayoutParams();
+        _xDelta = (int) (size.x * 0.4);
+        _yDelta = (int) (size.y * 0.4);
         layoutParams.leftMargin = (int) (size.x * 0.4);
         layoutParams.topMargin =  (int) (size.y * 0.4);
         layoutParams.rightMargin = -250;

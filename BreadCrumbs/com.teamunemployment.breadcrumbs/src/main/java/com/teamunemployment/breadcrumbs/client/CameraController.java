@@ -59,7 +59,7 @@ import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 
-public class CameraController extends SurfaceView implements SurfaceHolder.Callback, Camera.AutoFocusCallback {
+public class CameraController extends SurfaceView implements SurfaceHolder.Callback {
     private SurfaceHolder mHolder;
     private Camera mCamera;
     private Boolean isPreviewRunning = false;
@@ -83,6 +83,7 @@ public class CameraController extends SurfaceView implements SurfaceHolder.Callb
     private ArrayList<Location> locations = new ArrayList<>();
     private Timer t;
 
+    private FloatingActionButton cameraButton;
     private float aspectRatio = 0.000000f;
     /*
         Default constructors for a custom surfaceView.
@@ -152,7 +153,7 @@ public class CameraController extends SurfaceView implements SurfaceHolder.Callb
         // Store this for later reference
         cameraHeight = size.height;
         cameraWidth = size.width;
-        parameters.setPreviewSize(size.width, size.height);
+        parameters.setPreviewSize(preview.width, preview.height);
         parameters.setPictureSize(size.width, size.height);
         mCamera.setParameters(parameters);
         CheckOrientationIsNotAllFuckingRetarded(parameters, display);
@@ -192,8 +193,6 @@ public class CameraController extends SurfaceView implements SurfaceHolder.Callb
                 }
             }
         });
-
-        //otherwise, if we are front camera change to back
     }
 
     @Override
@@ -203,6 +202,7 @@ public class CameraController extends SurfaceView implements SurfaceHolder.Callb
             Log.d("Camera", "Shutting down camera");
             mCamera.stopPreview();
             mCamera.release();
+            recorder = null;
             mCamera = null;
             isPreviewRunning = false;
         }
@@ -266,7 +266,7 @@ public class CameraController extends SurfaceView implements SurfaceHolder.Callb
 
         for (Camera.Size size : sizes) {
             Log.d("CAM", "Checking size: width = " + size.width + ", Height = "+size.height);
-            if (size.height <500) {
+            if (size.height <750) {
                 return size;
             }
         }
@@ -300,7 +300,6 @@ public class CameraController extends SurfaceView implements SurfaceHolder.Callb
         parameters.setPictureSize(size.width, size.height);
         mCamera.setParameters(parameters);
         isPreviewRunning = true;
-        mCamera.autoFocus(this);
 
         try {
             Display display = ((WindowManager)context.getSystemService(context.WINDOW_SERVICE)).getDefaultDisplay();
@@ -327,7 +326,6 @@ public class CameraController extends SurfaceView implements SurfaceHolder.Callb
         List<Camera.Size> previewSizes = parameters.getSupportedPreviewSizes();
         Camera.Size size = getOptimalPreviewSize(sizes);
         Camera.Size previewSize = getOptimalPreviewSize(previewSizes);
-        //parameters.setJpegQuality(50);
         parameters.setPreviewSize(previewSize.width,previewSize.height);
         parameters.setPictureSize(size.width, size.height);
         mCamera.setParameters(parameters);
@@ -353,13 +351,15 @@ public class CameraController extends SurfaceView implements SurfaceHolder.Callb
         if (parameters.getFocusMode().equals(Camera.Parameters.FOCUS_MODE_CONTINUOUS_PICTURE)) {
             parameters.setFocusMode(Camera.Parameters.FOCUS_MODE_AUTO);
         }
+
         // If the supported video sizes are the same as the preview sizes, the above call returns null. No idea why anyone ever thought that was a good idea.
         if (supportedSizes == null) {
             supportedSizes = mCamera.getParameters().getSupportedPreviewSizes();
         }
         mCamera.setParameters(parameters);
-        recorder = new MediaRecorder();
+
         mCamera.unlock();
+        recorder = new MediaRecorder();
         recorder.setCamera(mCamera);
         recorder.setAudioSource(MediaRecorder.AudioSource.DEFAULT);
 
@@ -370,19 +370,16 @@ public class CameraController extends SurfaceView implements SurfaceHolder.Callb
         } else {
             recorder.setOrientationHint(270);
         }
-        recorder.setVideoEncodingBitRate(24000000);
+        recorder.setVideoEncodingBitRate(6000000);
         recorder.setOutputFormat(MediaRecorder.OutputFormat.DEFAULT);
         recorder.setAudioEncoder(MediaRecorder.AudioEncoder.AMR_NB);
         Camera.Size size = getOptimalVideoSize(supportedSizes);
-        recorder.setVideoSize(1920, 1080);
-      //  recorder.setVideoSize(size.width, size.height);
-
+       // size = supportedSizes.get(0);
+        recorder.setVideoSize(size.width, size.height);
 
         // Mp4 makes file size significantly smaller.
         recorder.setVideoEncoder(MediaRecorder.VideoEncoder.MPEG_4_SP);
         recorder.setVideoFrameRate(30);
-
-        //recorder.setProfile(cpHigh);
 
         fileName = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES).toString();
         int eventId = new PreferencesAPI(context).GetEventId();
@@ -390,13 +387,18 @@ public class CameraController extends SurfaceView implements SurfaceHolder.Callb
         if (eventId == -1) {
             eventId = 0;
         }
-        // I Add the +1 because later in the piece(before saving, I increment the event Id. This entire class needs a rework.
         fileName += "/"+ eventId+ ".mp4"; //
+        File fileTest = new File(fileName);
+        if (fileTest.exists()) {
+            fileTest.delete();
+        }
         recorder.setOutputFile(fileName);
         recorder.setPreviewDisplay(mHolder.getSurface());
         try{
             recorder.prepare();
         } catch (Exception e) {
+            Log.d("RECORDER","Recorder failed to prepare");
+            e.printStackTrace();
             String message = e.getMessage();
             recorder.release();
             recorder = null;
@@ -407,12 +409,19 @@ public class CameraController extends SurfaceView implements SurfaceHolder.Callb
     }
 
     private boolean disableVideoCamera() {
-        recorder.reset();
-        recorder.release();
-        mCamera.lock();
-        mCamera.stopPreview();
-        mCamera.release();
-        mCamera = null;
+        if (mCamera != null) {
+            Log.d("Camera", "Shutting down camera");
+            recorder.stop();
+            recorder.reset();
+            recorder.release();
+
+            recorder = null;
+            //mCamera.release();
+           // recorder.release();
+            //recorder = null;
+           // mCamera = null;
+            isPreviewRunning = false;
+        }
         video = false;
         return true;
     }
@@ -421,7 +430,7 @@ public class CameraController extends SurfaceView implements SurfaceHolder.Callb
         Listener for when the user takes a photo.
      */
     public void SetupCameraButtonListener() {
-        final FloatingActionButton cameraButton = (FloatingActionButton) context.findViewById(R.id.captureButton);
+        cameraButton = (FloatingActionButton) context.findViewById(R.id.captureButton);
         final FloatingActionButton videoButton = (FloatingActionButton) context.findViewById(R.id.videoButton);
 
         videoButton.setOnClickListener(new FloatingActionButton.OnClickListener() {
@@ -479,7 +488,6 @@ public class CameraController extends SurfaceView implements SurfaceHolder.Callb
         if (currentlyFilming) {
             t.cancel();
             cameraButton.setBackgroundTintList(ColorStateList.valueOf(getResources().getColor(R.color.ColorPrimary)));
-            recorder.stop();
             disableVideoCamera();
             currentlyFilming = false;
             // Launch video intent to save the video.
@@ -494,11 +502,14 @@ public class CameraController extends SurfaceView implements SurfaceHolder.Callb
             cameraButton.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor("#BBDEFB")));
             currentlyFilming = true;
             //doProgressShit(50);
-            startTimer();
             // Set up our video camera. This is different from taking a photo
             setUpVideoCamera();
            // videoButton.setBackgroundColor(getResources().getColor(R.color.accent));
+           // mCamera.unlock();
+           // mCamera.unlock();
             recorder.start();
+            startTimer();
+
         }
     }
 
@@ -515,8 +526,8 @@ public class CameraController extends SurfaceView implements SurfaceHolder.Callb
                     progressBar.setProgress(videoTimer);
                 } else {
                     // Stop video, and go to the next page
-                    stopRecorderAndOpenViewScreen();
                     t.cancel();
+                    stopRecorderAndOpenViewScreen();
                 }
             }
         }, 50, 50);
@@ -524,9 +535,14 @@ public class CameraController extends SurfaceView implements SurfaceHolder.Callb
 
     private void stopRecorderAndOpenViewScreen() {
         if (recorder!= null) {
-            recorder.stop();
             disableVideoCamera();
             currentlyFilming = false;
+            context.runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    cameraButton.setBackgroundTintList(ColorStateList.valueOf(getResources().getColor(R.color.ColorPrimary)));
+                }
+            });
 
             // Launch video intent to save the video.
             Intent save = new Intent();
@@ -584,10 +600,5 @@ public class CameraController extends SurfaceView implements SurfaceHolder.Callb
             fos.close();
         }
         return mypath.getPath();
-    }
-
-    @Override
-    public void onAutoFocus(boolean success, Camera camera) {
-
     }
 }

@@ -108,7 +108,7 @@ public class HTTPRequestHandler {
         if (result == null) {
             if (!NetworkConnectivityManager.IsNetworkAvailable(context)) {
                 Log.d("NETWORK", "No network connection available.");
-                return null;
+                return "";
             }
             OkHttpClient client = new OkHttpClient();
             try {
@@ -123,6 +123,10 @@ public class HTTPRequestHandler {
                 e.printStackTrace();
             }
         }
+        if (result == null) {
+            result = "";
+        }
+
         return result;
     }
 

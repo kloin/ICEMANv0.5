@@ -2,6 +2,7 @@ package com.teamunemployment.breadcrumbs.client.Camera;
 
 import android.Manifest;
 import android.app.ActionBar;
+import android.app.Activity;
 import android.content.Context;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
@@ -48,6 +49,8 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 
 public class CameraCapture extends AppCompatActivity {
+
+	private static final int CAMERA_REQUESTED_PERMISSION = 9;
 	private LocationManager locationManager;
 	private ArrayList<Location> locations = new ArrayList<>();
 
@@ -63,11 +66,50 @@ public class CameraCapture extends AppCompatActivity {
 		ButterKnife.bind(this);
 		context = this;
 		setBackButtonListener();
-		startCamera();
+		String [] permissionsRequired = checkCameraPermissions();
+		startCamera(permissionsRequired);
 	}
 
-	private void startCamera() {
+	private String[] checkCameraPermissions() {
+		//int permissionCheckAudio = ContextCompat.checkSelfPermission()
+		int permissionCheckCam = ContextCompat.checkSelfPermission(context,
+				Manifest.permission.CAMERA);
+		int permissionCheckAudio = ContextCompat.checkSelfPermission(context,
+				Manifest.permission.RECORD_AUDIO);
+		int permissionCheckWriteToExternalStorage = ContextCompat.checkSelfPermission(context,
+				Manifest.permission.WRITE_EXTERNAL_STORAGE);
 
+		ArrayList<String> permissionsArrayList = new ArrayList<String>();
+		if (permissionCheckCam == PackageManager.PERMISSION_DENIED) {
+			permissionsArrayList.add(Manifest.permission.CAMERA);
+		}
+		if (permissionCheckAudio == PackageManager.PERMISSION_DENIED) {
+			permissionsArrayList.add(Manifest.permission.RECORD_AUDIO);
+		}
+		if (permissionCheckWriteToExternalStorage == PackageManager.PERMISSION_DENIED) {
+			permissionsArrayList.add(Manifest.permission.WRITE_EXTERNAL_STORAGE);
+		}
+
+
+		return permissionsArrayList.toArray(new String[0]);
+
+	}
+
+	private void requestPermissionForCamera(String[] requiredPermissions) {
+		ActivityCompat.requestPermissions((Activity) context,
+				requiredPermissions,
+				CAMERA_REQUESTED_PERMISSION);
+	}
+	private void startCamera(String[] requiredPermissions) {
+
+		if (requiredPermissions.length > 0 ) {
+			requestPermissionForCamera(requiredPermissions);
+		} else {
+			addCameraToView();
+		}
+	}
+
+	private void addCameraToView() {
 		Handler handler = new Handler();
 		handler.postDelayed(new Runnable() {
 			@Override
@@ -76,7 +118,6 @@ public class CameraCapture extends AppCompatActivity {
 				cameraHolder.addView(cameraController);
 			}
 		}, 500);
-
 	}
 
 
@@ -92,8 +133,7 @@ public class CameraCapture extends AppCompatActivity {
 
 
 	@Override
-	public void onRequestPermissionsResult(int requestCode,
-										   String permissions[], int[] grantResults) {
+	public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults) {
 		switch (requestCode) {
 			case 1: {
 				// If request is cancelled, the result arrays are empty.
@@ -109,6 +149,11 @@ public class CameraCapture extends AppCompatActivity {
 					// functionality that depends on this permission.
 				}
 				return;
+			}
+			case CAMERA_REQUESTED_PERMISSION : {
+				if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+					addCameraToView();
+				}
 			}
 
 			// other 'case' lines to check for other

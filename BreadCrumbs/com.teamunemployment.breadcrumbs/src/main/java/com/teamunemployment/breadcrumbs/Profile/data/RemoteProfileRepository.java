@@ -2,12 +2,16 @@ package com.teamunemployment.breadcrumbs.Profile.data;
 
 import android.util.Log;
 
+import com.teamunemployment.breadcrumbs.Network.LoadBalancer;
+import com.teamunemployment.breadcrumbs.Network.NetworkConnectivityManager;
 import com.teamunemployment.breadcrumbs.RESTApi.NodeService;
 import com.teamunemployment.breadcrumbs.Trails.Trip;
 
 import java.io.IOException;
 import java.util.ArrayList;
 
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
 import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Response;
@@ -48,6 +52,7 @@ public class RemoteProfileRepository implements ProfileRepositoryContract {
             Log.d("RemoteRepo_Profile", "User Id is -1. Serious issue");
             return null;
         }
+
         Call<ResponseBody> call = nodeService.getStringProperty(Long.toString(userId), "About");
         try {
             Response<ResponseBody> response = call.execute();
@@ -186,5 +191,55 @@ public class RemoteProfileRepository implements ProfileRepositoryContract {
     @Override
     public void saveUserTrips(ArrayList<Trip> trips) {
 
+    }
+
+    public void setUserFolliwingAnotherUser(long broadcastUserId, long followingUserId) {
+        Log.d(TAG, "User " + followingUserId + " now following other user: " +broadcastUserId);
+        OkHttpClient client = new OkHttpClient();
+        String url = LoadBalancer.RequestServerAddress() + "/rest/User/PinUserForUser/"+followingUserId+"/"+broadcastUserId;
+        Request request = new Request.Builder()
+                .url(url)
+                .build();
+        try {
+            okhttp3.Response response = client.newCall(request).execute();
+            // Should we retry here?
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void setUserNotFollowingAnotherUser(long broadcastUserId, long followingUserId) {
+        Log.d(TAG, "User " + followingUserId + " is no longer following other user: " +broadcastUserId);
+        OkHttpClient client = new OkHttpClient();
+        String url = LoadBalancer.RequestServerAddress() + "/rest/User/UnPinUserForUser/"+followingUserId+"/"+broadcastUserId;
+        Request request = new Request.Builder()
+                .url(url)
+                .build();
+        try {
+            okhttp3.Response response = client.newCall(request).execute();
+            // Should we retry here?
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+    }
+
+    public  boolean isUserFollowingOtherUser(long userId, long visitorId) {
+        Log.d(TAG, "checking if user " + visitorId + " is following user: " +userId);
+        OkHttpClient client = new OkHttpClient();
+        String url = LoadBalancer.RequestServerAddress() + "/rest/User/IsUserFollowingOtherUser/"+visitorId+"/"+userId;
+        Request request = new Request.Builder()
+                .url(url)
+                .build();
+        try {
+            okhttp3.Response response = client.newCall(request).execute();
+            String stringBool = response.body().string();
+            return Boolean.parseBoolean(stringBool);
+            // Should we retry here?
+        } catch (IOException e) {
+            e.printStackTrace();
+            Log.d(TAG, "User following check failed");
+        }
+        return false;
     }
 }

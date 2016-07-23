@@ -28,7 +28,12 @@ public interface ProfileContract {
         void setUserWebsiteAsReadOnly();
         void setUserWebsiteAsEditable();
         void setUserAboutAsEditable();
-        void setUserTripsCount();
+        void setUserTripsCount(String count);
+        void showMessage(String message);
+        void setMissingProfileBackground();
+        void setUserFollowButtonVisibile(boolean visible);
+        void setUserEditButtonVisible(boolean visible);
+        void setIAmFollowingThisUser(boolean followingThisUser);
 
     }
 
@@ -39,7 +44,10 @@ public interface ProfileContract {
         void setUserWeb(String website);
         void setUserTrips(ArrayList<Trip> trips);
         void setProfilePicture(String id);
-
+        void setUserTripsCount(int count);
+        void setUserReadOnly();
+        void setUserEditable();
+        void setUserFollowingState(boolean isFollowing);
     }
 
 

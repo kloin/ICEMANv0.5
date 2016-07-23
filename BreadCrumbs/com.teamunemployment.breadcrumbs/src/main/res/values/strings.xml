@@ -18,5 +18,5 @@
     <string name="tap_to_change_cover_image">Tap to Change Cover Image</string>
     <string name="tap_to_select_a_new_profile_picture">Tap to select</string>
     <string name="profile">Profile</string>
-    <string name="trips">Trips</string>
+    <string name="trips">Albums</string>
 </resources>

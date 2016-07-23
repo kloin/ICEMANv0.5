@@ -100,6 +100,8 @@ public class HomeTabFragment extends Fragment {
         //    use a linear layout manager
         mLayoutManager = new LinearLayoutManager(context);
         mRecyclerView.setLayoutManager(mLayoutManager);
+        TextView heading = (TextView) rootView.findViewById(R.id.heading);
+        heading.setText("Home");
         loadTrails();
         setUpListenerForNewTrailButton();
     }
@@ -167,7 +169,6 @@ public class HomeTabFragment extends Fragment {
     }
 
     public void setUpRefreshLayout() {
-
         mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
                 @Override
                 public void onRefresh() {
@@ -343,6 +344,7 @@ public class HomeTabFragment extends Fragment {
         mRecyclerView.setAdapter(mAdapter);
     }
 
+    // CAN TAKE THIS TO THE MODEL
     // Covert our json result into an arrayList
     private ArrayList<String> convertJSONToArrayList(JSONObject result) {
         Iterator<String> keys = result.keys();

@@ -13,7 +13,7 @@ import okhttp3.Response;
 /**
  * Created by jek40 on 6/07/2016.
  */
-public class PostTripService {
+public class SimpleTripService {
 
     private OkHttpClient client = new OkHttpClient();
     private static final MediaType JSON
@@ -34,5 +34,18 @@ public class PostTripService {
                 .build();
         Response response = client.newCall(request).execute();
         return response.body().string();
+    }
+
+    /**
+     * Delete a node from the database. Deletes the node and all its relationships
+     * @param nodeId The string value of the node id.
+     */
+    public void DeleteNode(String nodeId) {
+        String url = LoadBalancer.RequestServerAddress() + "/rest/login/DeleteNode/" + nodeId;
+        try {
+            simpleHttpRequest(url);
+        } catch (IOException ex) {
+            ex.printStackTrace();
+        }
     }
 }

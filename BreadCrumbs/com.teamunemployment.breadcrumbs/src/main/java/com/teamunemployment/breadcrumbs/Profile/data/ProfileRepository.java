@@ -39,7 +39,6 @@ public class ProfileRepository {
                 // Lets save some network requests and do it
                 localProfileRepository.saveUserName(remoteUserName, userId);
             }
-
         }
     }
 
@@ -143,5 +142,24 @@ public class ProfileRepository {
     public void saveProfilePictureId(String profilePicId, long userId) {
         localProfileRepository.saveProfilePictureId(profilePicId, userId);
         remoteProfileRepository.saveProfilePictureId(profilePicId, userId);
+    }
+
+    public void setUserFollowingAnotherUser(long broadcastUserId, long followingUserId) {
+        localProfileRepository.setUserFolliwingAnotherUser(broadcastUserId, followingUserId);
+        remoteProfileRepository.setUserFolliwingAnotherUser(broadcastUserId, followingUserId);
+    }
+
+    public void setUserNotFollowingAnotherUser(long broadcastUserId, long followingUserId) {
+        localProfileRepository.setUserNotFollowingAnotherUser(broadcastUserId, followingUserId);
+        remoteProfileRepository.setUserNotFollowingAnotherUser(broadcastUserId, followingUserId);
+    }
+
+    public void getFollowingStatus(long userId, long visitorId,  RepositoryResponseContract responseContract) {
+        boolean localFollowingStatus = localProfileRepository.isUserFollowingOtherUser(userId, visitorId);
+        responseContract.setUseFollowingStatus(localFollowingStatus);
+
+        boolean remoteFollowingStatus = remoteProfileRepository.isUserFollowingOtherUser(userId, visitorId);
+        responseContract.setUseFollowingStatus(remoteFollowingStatus);
+
     }
 }

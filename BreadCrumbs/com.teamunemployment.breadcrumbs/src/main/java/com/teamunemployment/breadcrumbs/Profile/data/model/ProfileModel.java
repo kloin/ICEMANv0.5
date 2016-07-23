@@ -9,6 +9,8 @@ import android.util.Log;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Target;
 import com.teamunemployment.breadcrumbs.Network.LoadBalancer;
+import com.teamunemployment.breadcrumbs.Preferences.Preferences;
+import com.teamunemployment.breadcrumbs.PreferencesAPI;
 import com.teamunemployment.breadcrumbs.Profile.data.LocalProfileRepository;
 import com.teamunemployment.breadcrumbs.Profile.data.Presenter.ProfileContract;
 import com.teamunemployment.breadcrumbs.Profile.data.ProfileRepository;
@@ -29,7 +31,11 @@ public class ProfileModel implements RepositoryResponseContract {
 
     private static final String TAG = "ProfileModel";
 
+    // User id is the owner of the page.
     private long userId;
+
+    // This is the user id of the person visiting the page, i.e the user.
+    private long visitorId;
 
     private RepositoryResponseContract contract;
     private boolean editable = false;
@@ -54,6 +60,8 @@ public class ProfileModel implements RepositoryResponseContract {
         RemoteProfileRepository remoteProfileRepository = RemoteRepositoryFactory.GetRemoteProfileRepository();
         LocalProfileRepository localProfileRepository = new LocalProfileRepository(databaseController);
         repository = new ProfileRepository(localProfileRepository, remoteProfileRepository);
+
+        this.visitorId = Long.parseLong(new PreferencesAPI(context).GetUserId());
     }
 
     /**
@@ -104,7 +112,6 @@ public class ProfileModel implements RepositoryResponseContract {
     }
 
     public void LoadUserName(final long userId) {
-
         new Thread(new Runnable() {
             @Override
             public void run() {
@@ -140,6 +147,14 @@ public class ProfileModel implements RepositoryResponseContract {
         }).start();
     }
 
+    public void setUserState(long loggedInUserId) {
+        if (userId != loggedInUserId) {
+            presenter.setUserReadOnly();
+        } else {
+            presenter.setUserEditable();
+        }
+    }
+
     @Override
     public void setUserName(String userName) {
         presenter.setUserName(userName);
@@ -157,12 +172,20 @@ public class ProfileModel implements RepositoryResponseContract {
 
     @Override
     public void setUserTrips(ArrayList<Trip> trips) {
-        presenter.setUserTrips(trips);
+        if (trips != null) {
+            presenter.setUserTripsCount(trips.size());
+            presenter.setUserTrips(trips);
+        }
     }
 
     @Override
     public void setUserProfilePicId(String id) {
             presenter.setProfilePicture(id);
+    }
+
+    @Override
+    public void setUseFollowingStatus(boolean isFollowing) {
+        presenter.setUserFollowingState(isFollowing);
     }
 
     public boolean getEditable() {
@@ -191,6 +214,34 @@ public class ProfileModel implements RepositoryResponseContract {
             @Override
             public void run() {
                 repository.saveProfilePictureId(coverPhotoPic, userId);
+            }
+        }).start();
+    }
+
+    public void FollowUser() {
+        // do user save
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                repository.setUserFollowingAnotherUser(userId, visitorId);
+            }
+        }).start();
+    }
+
+    public void UnFollowUser() {
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                repository.setUserNotFollowingAnotherUser(userId, visitorId);
+            }
+        }).start();
+    }
+
+    public void LoadUserFollowing() {
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                repository.getFollowingStatus(userId, visitorId, contract);
             }
         }).start();
     }

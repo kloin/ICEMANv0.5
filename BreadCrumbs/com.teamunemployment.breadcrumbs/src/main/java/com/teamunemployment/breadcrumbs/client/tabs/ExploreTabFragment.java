@@ -5,6 +5,7 @@ import android.support.v7.widget.CardView;
 import android.util.Log;
 import android.view.View;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 
 import com.teamunemployment.breadcrumbs.Network.LoadBalancer;
 import com.teamunemployment.breadcrumbs.Network.ServiceProxy.AsyncDataRetrieval;
@@ -24,6 +25,13 @@ public class ExploreTabFragment extends HomeTabFragment {
     private static final String TAG = "EXPLORE_TAB";
 
     @Override
+    public void onStart() {
+        super.onStart();
+        TextView heading = (TextView) rootView.findViewById(R.id.heading);
+        heading.setText("Discover");
+    }
+
+    @Override
     public String ConstructDataUrl() {
         String url = LoadBalancer.RequestServerAddress() + "/rest/TrailManager/GetAllTrailIds";
         Log.d(TAG, "Attempting to load Trails with URL: " + url);
@@ -40,6 +48,7 @@ public class ExploreTabFragment extends HomeTabFragment {
                 // Refresh items
                 refresh();
             }
+
             public void refresh() {
                 // Load all trails here
                 //reloadTrails();

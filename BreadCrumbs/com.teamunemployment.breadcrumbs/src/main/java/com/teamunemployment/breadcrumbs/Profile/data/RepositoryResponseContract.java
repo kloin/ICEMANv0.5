@@ -14,5 +14,6 @@ public interface RepositoryResponseContract {
     void setUserWeb(String website);
     void setUserTrips(ArrayList<Trip> trips);
     void setUserProfilePicId(String id);
+    void setUseFollowingStatus(boolean isFoolowing);
 
 }

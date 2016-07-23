@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                android:layout_width="match_parent"
+                android:id="@+id/root"
+                android:layout_height="wrap_content">
+            <View
+                android:layout_alignParentTop="true"
+                android:layout_width="match_parent"
+                android:background="@color/my_divider"
+                android:layout_height="1px"/>
+            <de.hdodenhof.circleimageview.CircleImageView
+                android:id="@+id/profilePicture"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:layout_margin="12dp"
+                android:src="@drawable/profile"/>
+
+            <TextView
+                android:id="@+id/belongs_to"
+                android:tag="1234445"
+                android:textSize="14sp"
+                android:text="Test User"
+                android:gravity="center"
+                android:layout_alignTop="@+id/profilePicture"
+                android:layout_alignBottom="@+id/profilePicture"
+                android:layout_toRightOf="@+id/profilePicture"
+                android:layout_width="wrap_content"
+                style="@style/CodeFont"
+                android:layout_height="wrap_content"
+                android:textColor="@color/my_primary_text" />
+
+            <TextView
+                android:id="@+id/view_count"
+                android:text="364"
+                android:layout_alignParentRight="true"
+                android:layout_marginRight="16dp"
+                android:layout_alignTop="@+id/belongs_to"
+                android:layout_alignBottom="@+id/belongs_to"
+                android:gravity="center"
+                android:textColor="@color/good_to_go"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+
+        <ImageView
+            android:id="@+id/plays_icon"
+            android:layout_alignBottom="@+id/belongs_to"
+            android:layout_alignTop="@+id/belongs_to"
+            android:layout_toLeftOf="@+id/view_count"
+            android:gravity="center"
+            android:src="@drawable/exomedia_ic_play_arrow_black"
+            android:alpha="0.54"
+            android:layout_width="20dp"
+            android:layout_height="20dp"/>
+        <RelativeLayout
+            android:id="@+id/item_holder"
+            android:layout_below="@+id/profilePicture"
+            android:layout_width="match_parent"
+            android:layout_height="350dp">
+
+            <ImageView
+                android:id="@+id/main_photo"
+                android:adjustViewBounds="true"
+                android:visibility="visible"
+                android:scaleType="centerCrop"
+                android:background="@color/white"
+                android:layout_width="match_parent"
+                android:layout_height="350dp" />
+
+            <TextView
+                android:id="@+id/Title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="This is a title"
+                android:layout_weight="6"
+                android:layout_margin="10dp"
+                android:textColor="@color/white"
+                style="@style/Base.TextAppearance.AppCompat.Title"
+                android:ellipsize="end"
+                android:singleLine="true"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentBottom="true"/>
+        </RelativeLayout>
+</RelativeLayout>

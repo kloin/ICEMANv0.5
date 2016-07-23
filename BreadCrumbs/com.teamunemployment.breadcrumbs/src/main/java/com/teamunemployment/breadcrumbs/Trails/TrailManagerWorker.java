@@ -488,7 +488,7 @@ public class TrailManagerWorker {
 // Sets an ID for the notification, so it can be updated
         int notifyID = 8;
         NotificationCompat.Builder mNotifyBuilder = new NotificationCompat.Builder(mContext)
-                .setContentTitle("Upload Complete")
+                .setContentTitle("Breadcrumbs")
                 .setContentText("Sucessfully updated your trip.")
                 .setSmallIcon(R.drawable.ic_cloud_done_white_24dp);
         mNotificationManager.notify(

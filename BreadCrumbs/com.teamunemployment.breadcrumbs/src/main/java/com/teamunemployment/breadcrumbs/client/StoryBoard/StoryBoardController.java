@@ -4,8 +4,11 @@ import android.app.Activity;
 import android.content.Context;
 import android.graphics.Color;
 import android.graphics.Point;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Handler;
 import android.provider.ContactsContract;
+import android.telephony.TelephonyManager;
 import android.util.Log;
 import android.view.Display;
 import android.view.SurfaceView;
@@ -25,6 +28,7 @@ import com.teamunemployment.breadcrumbs.BreadcrumbsExoPlayer.BreadcrumbsExoPlaye
 import com.teamunemployment.breadcrumbs.BreadcrumbsExoPlayer.BreadcrumbsExoPlayerWrapper;
 import com.teamunemployment.breadcrumbs.BreadcrumbsVideoProgressTimer;
 import com.teamunemployment.breadcrumbs.Network.LoadBalancer;
+import com.teamunemployment.breadcrumbs.Network.NetworkConnectivityManager;
 import com.teamunemployment.breadcrumbs.Network.ServiceProxy.HTTPRequestHandler;
 import com.teamunemployment.breadcrumbs.Network.ServiceProxy.UpdateViewElementWithProperty;
 import com.teamunemployment.breadcrumbs.R;
@@ -73,8 +77,9 @@ public class StoryBoardController {
     private TextView placeName;
     // Flag for when we have been buffering. This means that we have to restart the timer.
     private boolean beenBuffering = false;
-
     private int seekingTo = 0;
+
+    private int targetResolution = 280;
 
     private FinishedListener finishedListener;
 
@@ -96,20 +101,73 @@ public class StoryBoardController {
         setCrumbCount();
     }
 
+    /**
+     * A simple method to guess what the BEST CASE speeds may be for a network. This is just
+     * estimates.
+     * @return
+     */
+    private int determineInitialNetworkConnection() {
+        if (NetworkConnectivityManager.IsNetworkAvailable(mContext)) {
+            return -1;
+        }
+
+        int type = NetworkConnectivityManager.getAvailableNetworkType(mContext);
+        if (type == 1) {
+            return NetworkConnectivityManager.WIFI_CONNECTION;
+        }
+
+        // Slow connectioin
+        if (type == TelephonyManager.NETWORK_TYPE_1xRTT
+                || type == TelephonyManager.NETWORK_TYPE_CDMA
+                || type == TelephonyManager.NETWORK_TYPE_EDGE
+                || type == TelephonyManager.NETWORK_TYPE_GPRS
+                || type == TelephonyManager.NETWORK_TYPE_EVDO_0
+                || type == TelephonyManager.NETWORK_TYPE_EHRPD
+                || type == TelephonyManager.NETWORK_TYPE_IDEN) {
+            return NetworkConnectivityManager.SLOW_MOBILE_CONNECTION;
+        }
+
+        // Medium connection
+        if (type == TelephonyManager.NETWORK_TYPE_UMTS
+                || type == TelephonyManager.NETWORK_TYPE_EVDO_A
+                || type == TelephonyManager.NETWORK_TYPE_HSDPA
+                || type == TelephonyManager.NETWORK_TYPE_EVDO_B) {
+            return NetworkConnectivityManager.MEDIUM_MOBILE_CONNECTION;
+        }
+
+        if (type == TelephonyManager.NETWORK_TYPE_HSUPA
+                || type == TelephonyManager.NETWORK_TYPE_HSPA) {
+            return NetworkConnectivityManager.FAST_MOBILE_CONNECTION;
+        }
+
+        return NetworkConnectivityManager.UNKNOWN_MOBILE_CONNECTION; // means we couldnt find a correct network, but we are mobile
+    }
+
     /*
         Set up the timer back to the position it was when we last exited this activity.
         @Param time - the time of the timer in milliseconds.
      */
     public void SetUpRestoredTimer(int time) {
-        if (time <= 200) {
+        if (time <= 100) {
             videoProgressTimer.SetDisplayTimer(0);
             return;
         }
-        videoProgressTimer.SetDisplayTimer(time-200);
-        seekingTo = time-200;
+        videoProgressTimer.SetDisplayTimer(time-100);
+        seekingTo = time-100;
     }
 
     public void Start() {
+        int connection = determineInitialNetworkConnection();
+        if (connection == NetworkConnectivityManager.WIFI_CONNECTION) {
+            targetResolution = 640;
+        }
+        else if(connection == NetworkConnectivityManager.FAST_MOBILE_CONNECTION) {
+            targetResolution = 360;
+        }
+
+        else {
+            targetResolution = 280;
+        }
         init();
     }
 
@@ -199,7 +257,7 @@ public class StoryBoardController {
                 setPlaceName();
                 setDescription();
             }
-        }, 1000);
+        }, 100);
     }
 
     // This method triggers the loading to start. Loading continues until we are 2(3?) ahead. This  method only displays the first object, click handlers takke care of the rest.
@@ -235,6 +293,7 @@ public class StoryBoardController {
             }
         } else {
             currentObject.PlayerWrapper.VideoSurface.setVisibility(View.VISIBLE);
+            currentObject.PlayerWrapper.VideoSurface.setAlpha(1);
             currentObject.PlayerWrapper.BuildPlayerAndSeek(true, seekingTo); // This means that it will start playing when built
         }
     }
@@ -259,7 +318,7 @@ public class StoryBoardController {
                    model.PlayerWrapper.BuildLocalDatasource(Utils.FetchLocalPathToVideoFile(model.CrumbData.GetCrumbId()));
                 } else {
                     // Load from external datasource
-                    model.PlayerWrapper.BeginLoading(LoadBalancer.RequestCurrentDataAddress() + "/images/"+model.CrumbData.GetCrumbId()+".mp4");
+                    model.PlayerWrapper.BeginLoading(LoadBalancer.RequestCurrentDataAddress() + "/images/"+model.CrumbData.GetCrumbId()+"." + targetResolution + ".mp4");
                 }
 
                 // Carry on.
@@ -320,8 +379,7 @@ public class StoryBoardController {
 
                                     // Set up the progress timer
                                     long duration = displayModel.PlayerWrapper.player.getDuration();
-                                    if (duration > 0) {
-                                       videoProgressTimer.StopTimer();
+                                    if (duration > 0 && !videoProgressTimer.getPauseState()) {
                                         videoProgressTimer.SetTimerDuration((int) duration);
                                         videoProgressTimer.startTimer();
                                     }
@@ -437,7 +495,6 @@ public class StoryBoardController {
         // Nulling the crumb data is not vital, but it stops accifental use down the line.
         displayModel = nextModel;
 
-
         // Decide if its photo.
         if (nextModel.CrumbData.GetDataType().equals(".jpg")) {
             Log.d(TAG, "Setting Visibility for item ");
@@ -446,6 +503,8 @@ public class StoryBoardController {
                 awaitingPhotoLoad = true;
                 nextModel.ProgressBar.setVisibility(View.VISIBLE);
                 videoProgressTimer.StopTimer();
+                videoProgressTimer.ResetTimer();
+
             } else {
                 if (videoProgressTimer != null) {
                     videoProgressTimer.StopTimer();
@@ -467,7 +526,8 @@ public class StoryBoardController {
             if (videoProgressTimer != null) {
                 videoProgressTimer.StopTimer();
                 videoProgressTimer.ResetTimer();
-                videoProgressTimer.SetTimerDuration(5000);
+                videoProgressTimer.SetTimerDuration((int) nextModel.PlayerWrapper.player.getDuration());
+                videoProgressTimer.startTimer();
             }
         }
 
@@ -606,7 +666,6 @@ public class StoryBoardController {
         }
     }
 
-    //
     private void setPlaceName() {
         if (placeName == null) {
             placeName = (TextView) act.findViewById(R.id.place_name);
@@ -618,19 +677,22 @@ public class StoryBoardController {
     }
 
     private void setDescription() {
-        TextView caption = (TextView) act.findViewById(R.id.caption);
-        if (mLastObject.CrumbData != null) {
+        if (displayModel.CrumbData != null) {
             RelativeLayout relativeLayout = (RelativeLayout) act.findViewById(R.id.root);
             TextView description = (TextView) act.findViewById(R.id.floating_description);
 
-            description.setText(mLastObject.CrumbData.GetDescripton());
+            String descriptionText = displayModel.CrumbData.GetDescripton();
+            if (descriptionText == null || descriptionText.equals("null")) {
+                descriptionText = "";
+            }
+            description.setText(descriptionText);
             Display dm = act.getWindowManager().getDefaultDisplay();
             Point size = new Point();
             dm.getSize(size);
 
             RelativeLayout.LayoutParams layoutParams = (RelativeLayout.LayoutParams) description.getLayoutParams();
-            layoutParams.leftMargin = (int) (size.x * mLastObject.CrumbData.GetDescriptionXPosition());
-            layoutParams.topMargin =  (int) (size.y * mLastObject.CrumbData.GetDescriptionYPosition());
+            layoutParams.leftMargin = (int) (size.x * displayModel.CrumbData.GetDescriptionXPosition());
+            layoutParams.topMargin =  (int) (size.y * displayModel.CrumbData.GetDescriptionYPosition());
             layoutParams.rightMargin = -250;
             layoutParams.bottomMargin = -250;
             description.setLayoutParams(layoutParams);

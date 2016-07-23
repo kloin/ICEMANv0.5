@@ -1,10 +1,9 @@
 package com.teamunemployment.breadcrumbs;
 
 /**
- * Created by jek40 on 22/06/2016.
+ * @author Josiah Kendall
  */
 public class BasicThreadPoolTest {
-
     private static BasicThreadPoolTest myThreadPoolInstance;
 
     private BasicThreadPoolTest() {
