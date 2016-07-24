@@ -26,10 +26,49 @@ import com.breadcrumbs.models.Trail;
 import com.breadcrumbs.models.TrailMetadata;
 import com.breadcrumbs.models.UserService;
 import java.util.ArrayList;
+import javax.ws.rs.Produces;
 
 @Path("/TrailManager")
 public class RESTTrailManager {
-	
+        @GET
+        @Produces(MediaType.TEXT_PLAIN)
+        public String respondAsReady() {
+            return "/SaveTrailPoints/{(Consumes JSON)}\n" +
+                "/GetDurationOfTrailInDays/{TrailId}\n" +
+                "/GetThreePublishedTrips/{UserId}\n" +
+                    "/GetAllTrailsForAUser/{UserId}\n" +
+                    "/GetAllTrailPoints/{TrailId}\n" +
+                    "/SetCoverPhotoForTrail/{TrailId}/{ImageId}\n" +
+                    "/AddTrailView/{TrailId}\n" +
+                    "/GetTrailViews/{TrailId}\n" +
+                    "/UserLikesTrail/{UserId}/{TrailId}\n" +
+                    "/GetLikesForTrail/{TrailId}\n" +
+                    "/GetNumberOfCrumbsForATrail/{TrailId}\n" +
+                    "/GetNumberOfPhotosInATrail/{TrailId}\n" +
+                    "/GetAllPhotoIdsForATrail/{TrailId}\n" +
+                    "/GetNumberOfTrailsAUserOwns/{UserId}\n" +
+                    "/GetAllSavedCrumbIdsForATrail/{TrailId}\n" +
+                    "/GetAllTrailIds\n" +
+                    "/GetBaseDetailsForATrail/{TrailId}\n" +
+                    "/GetDisplayVariablesForATrail/{TrailId}\n" +
+                    "/GetNumberOfVideosInATrail/{TrailId}\n" +
+                    "/DeleteAllTrails\n" +
+                    "/FollowTrail/{TrailId}/{UserId}\n" +
+                    "/GetNumberOfFollowersForATrail/{TrailId}\n" +
+                    "/SaveMetaData/{trailId}\n" +
+                    "/ProcessMetadataWithNoSave\n" +
+                    "/SaveMetadataAndReturnIt/{TrailId}\n" +
+                    "/FetchMetadata/{TrailId}\n" +
+                    "/SaveRestZones/{zones}/{trailId}\n" +
+                    "/SavePath/{TrailId}\n" +
+                    "/CalculatePath/{TrailId}/(consumes JSON)\n" +
+                    "/GetSavedPath/{TrailId}\n" +
+                    "/GetMapDetails/{TripId}\n" +
+                    "/GetAllTripIdsForAUser/{UserId}" +
+                    "/GetTrip/{TripId}" +
+                    "/GetFavouritedTripsForAUser/{UserId}/{MaxCount}" +
+                    "/GetIdsOfMostPopularTrips/{MaxCount}";
+        }
 	/* The problem heere is that 
 	 * I need to know the last trailSaved. How does the client know this?
 	 * I need to be able to save the last
@@ -45,25 +84,59 @@ public class RESTTrailManager {
 		System.out.println("Saved these trails: " + TrailPoints);
 		return trail.SaveJSONOfTrailPoints(TrailPointsJSON);
 	}
-	
+        
+        @GET
+        @Path("/GetTwentyTripIds") 
+        public String GetTwentyTripIds() {
+            Trail trail = new Trail();
+            return trail.GetIdsOfTwentyMostPopularTrips();
+        }
+        
+        @GET
+        @Path("/GetIdsOfMostPopularTrips/{MaxCount}")
+        public String GetIdsOfMostPopularTrips(@PathParam("MaxCount") String max) {
+            Trail trail = new Trail();
+            return trail.GetIdsOfPopularTrips(max);
+        }
+        
+        @GET
+        @Path("/GetFavouritedTripsForAUser/{UserId}/{MaxCount}")
+        public String GetFavouritedTripsForAUser(@PathParam("UserId") String userId, @PathParam("MaxCount") String count) {
+            Trail trail = new Trail();
+            return trail.GetPinnedTripsForAUser(userId, count);
+        }
+        
+        @GET
+	@Path("/GetTrip/{TripId}")
+        public String GetTrip(@PathParam("TripId") String tripId) {
+            Trail trail = new Trail();
+            return trail.GetTrip(tripId);
+        }
         /*
             Get the number of days this trail took.
         */
 	@GET
 	@Path("/GetDurationOfTrailInDays/{TrailId}")
 	public String GetDurationOfTrailInDays(@PathParam("TrailId") String TrailId) {
-		   DBMaster dbMaster = DBMaster.GetAnInstanceOfDBMaster();
-		   String startDate = dbMaster.GetStringPropertyFromNode(TrailId, "StartDate").toString();
-		  
-		   Date date = new Date();
-		   SimpleDateFormat dt1 = new SimpleDateFormat("yyyy-MM-dd");
-		   String currentDate = dt1.format(date);
-		   
-		   LocalDate currentLocalDate = new LocalDate(currentDate);
-		   LocalDate startLocalDate = new LocalDate(startDate);
-		   int days = Days.daysBetween(startLocalDate, currentLocalDate).getDays();
-		   return Integer.toString(days);
+            DBMaster dbMaster = DBMaster.GetAnInstanceOfDBMaster();
+            String startDate = dbMaster.GetStringPropertyFromNode(TrailId, "StartDate").toString();
+
+            Date date = new Date();
+            SimpleDateFormat dt1 = new SimpleDateFormat("yyyy-MM-dd");
+            String currentDate = dt1.format(date);
+
+            LocalDate currentLocalDate = new LocalDate(currentDate);
+            LocalDate startLocalDate = new LocalDate(startDate);
+            int days = Days.daysBetween(startLocalDate, currentLocalDate).getDays();
+            return Integer.toString(days);
 	}
+        
+        @GET
+        @Path("/GetThreePublishedTrips/{UserId}")
+        public String GetThreePublishedTrips(@PathParam("UserId") String userId) {
+            Trail trail = new Trail();
+            return trail.GetTopThreeTripsForAUser(userId);
+        }
 	
         /*
             Fetch a list of all the trails for a user. Pretty sure this returns more than ids.
@@ -78,8 +151,8 @@ public class RESTTrailManager {
 	@GET
 	@Path("/GetAllTrailPoints/{TrailId}")
 	public String GetAllTrailPoints(@PathParam("TrailId") String TrailId) {
-		Trail trail = new Trail();
-		return trail.GetAllTrailPointsForATrail(TrailId);
+            Trail trail = new Trail();
+            return trail.GetAllTrailPointsForATrail(TrailId);
 	}
 	
 	// Returns path to the trail we want to load.
@@ -141,13 +214,6 @@ public class RESTTrailManager {
 		return trail.GetNumberOfCrumbsForATrail(TrailId);
 	}
         
-//        @GET
-//        @Path("/GetAllPhotoCrumbsForATrail/{TrailId")
-//        public String GetAllPhotoCrumbsForATrail(@PathParam("TrailId") String TrailId) {
-//		Trail trail = new Trail();
-//		return trail.GetAllPhotoIdsForATrail(TrailId);
-//	}
-        
         @GET
         @Path("/GetNumberOfPhotosInATrail/{TrailId}")
         public String GetNumberOfPhotosInATrail(@PathParam("TrailId") String TrailId) {
@@ -208,6 +274,7 @@ public class RESTTrailManager {
             Trail trail = new Trail();
             return trail.GetNumberOfVideosInATrail(TrailId);
         }
+        
 	@GET
 	@Path("DeleteAllTrails") 
 	public void DeleteAllTrails() {
@@ -276,7 +343,6 @@ public class RESTTrailManager {
     @GET
     @Path("/SaveRestZones/{zones}/{trailId}")
     public String SaveRestZonesForTrail(@PathParam("zones") String zones, @PathParam("trailId") String trailId) {
-    	
     	return "200";
     }
     
@@ -307,6 +373,25 @@ public class RESTTrailManager {
         JSONObject jsonObject = tripManager.FetchPathForTrip(trailId);
         return jsonObject.toString();
     }
+    
+    @GET
+    @Path("/GetMapDetails/{TripId}")
+    public String GetMapDetails(@PathParam("TripId") String tripId) {
+        Trail trail =  new Trail();
+         DBMaster dbMaster = DBMaster.GetAnInstanceOfDBMaster();
+        String views = trail.GetNumberOfViewsForATrail(tripId);
+        String duration = GetDurationOfTrailInDays(tripId);
+        String trailName = dbMaster.GetStringPropertyFromNode(tripId, "TrailName").toString();
+        return views + ","+duration + ","+trailName;
+    }
+    
+    @GET
+    @Path("/GetAllTripIdsForAUser/{UserId}")
+    public String GetAllTripIdsForAUser(@PathParam("UserId") String userId) {
+        Trail trail = new Trail();
+        return trail.FindAllPinnedTrailsForAUser(userId);
+    }
+    
     
     
 }

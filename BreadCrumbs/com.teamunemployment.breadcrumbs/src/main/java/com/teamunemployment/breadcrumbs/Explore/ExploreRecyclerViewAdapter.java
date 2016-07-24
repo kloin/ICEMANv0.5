@@ -1,10 +1,15 @@
 package com.teamunemployment.breadcrumbs.Explore;
 
 import android.content.Context;
+import android.content.Intent;
+import android.graphics.Color;
+import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.StaggeredGridLayoutManager;
+import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,9 +17,13 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.firebase.analytics.FirebaseAnalytics;
 import com.squareup.picasso.Picasso;
+import com.teamunemployment.breadcrumbs.Explore.Adapter.BannerCard;
+import com.teamunemployment.breadcrumbs.Explore.Adapter.FullCard;
+import com.teamunemployment.breadcrumbs.Explore.Adapter.HalfCard;
 import com.teamunemployment.breadcrumbs.Network.LoadBalancer;
 import com.teamunemployment.breadcrumbs.R;
 import com.teamunemployment.breadcrumbs.Trails.Trip;
@@ -23,12 +32,15 @@ import com.teamunemployment.breadcrumbs.client.Cards.HomeCardAdapter;
 
 import java.util.ArrayList;
 
+import butterknife.Bind;
+import butterknife.ButterKnife;
+import butterknife.OnClick;
 import de.hdodenhof.circleimageview.CircleImageView;
 
 /**
  * @author Josiah Kendall
  */
-public class ExploreRecyclerViewAdapter extends RecyclerView.Adapter<ExploreRecyclerViewAdapter.ViewHolder> implements RecyclerViewAdapterContract {
+public class ExploreRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     private ArrayList<ExploreCardModel> dataset;
     private Model model;
@@ -47,104 +59,107 @@ public class ExploreRecyclerViewAdapter extends RecyclerView.Adapter<ExploreRecy
     }
 
     @Override
-    public void bindTripToCard(final Trip trip, View card, ExploreCardModel cardModel) {
-        final ImageView imageView = (ImageView) card.findViewById(R.id.main_photo);
-        final TextView viewCount = (TextView) card.findViewById(R.id.view_count);
-        final TextView trailName = (TextView) card.findViewById(R.id.Title);
-        appCompatActivityContext.runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                Picasso.with(context).load(LoadBalancer.RequestCurrentDataAddress() + "/images/"+ trip.getCoverPhotoId()+".jpg").into(imageView);
-                viewCount.setText(trip.getViews());
-                trailName.setText(trip.getTrailName());
-            }
-        });
-
-        model.LoadUserDetailsForCard(trip.getUserId(), (RelativeLayout) card, instance);
-
-    }
-
-    @Override
-    public void bindUserDetailsToTripCard(final User user, View card) {
-        final TextView belongsTo = (TextView) card.findViewById(R.id.belongs_to);
-        final CircleImageView profilePic = (CircleImageView) card.findViewById(R.id.profilePicture);
-        appCompatActivityContext.runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                belongsTo.setText(user.getUsername());
-                Picasso.with(context).load(LoadBalancer.RequestCurrentDataAddress() + "/images/"+ user.getProfilePicId()+"T.jpg").into(profilePic);
-            }
-        });
-
-    }
-
-    public static class ViewHolder extends RecyclerView.ViewHolder {
-        // Each data item is just a string in this case
-        public RelativeLayout CardInner;
-        public ViewHolder(View v) {
-            super(v);
-            CardInner = (RelativeLayout)v;
-        }
-    }
-
-    @Override
     public int getItemViewType(int position) {
         return dataset.get(position).getViewType();
     }
 
     @Override
-    public ExploreRecyclerViewAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         // create a new view
         return createExploreCardView(parent, viewType);
     }
 
-    private ViewHolder createExploreCardView(ViewGroup parent, int viewType) {
-        if (viewType == ExploreCardModel.FOLLOWING_CARD) {
-            View v = LayoutInflater.from(parent.getContext())
-                    .inflate(R.layout.explore_following_card, parent, false);
-//            CardView card = (CardView) v.findViewById(R.id.card_view);
-//            card.setPreventCornerOverlap(false);
-            ViewHolder vh = new ViewHolder(v);
-            return vh;
+    private RecyclerView.ViewHolder createExploreCardView(ViewGroup parent, int viewType) {
+        switch (viewType) {
+            case ExploreCardModel.FOLLOWING_CARD:
+                View v = LayoutInflater.from(parent.getContext())
+                        .inflate(R.layout.favourite_half_card, parent, false);
+                HalfCard vh = new HalfCard(v, appCompatActivityContext);
+                return vh;
+
+            case ExploreCardModel.TRENDING_CARD:
+                View view2 = LayoutInflater.from(parent.getContext())
+                        .inflate(R.layout.explore_following_card, parent, false);
+                FullCard fullCard = new FullCard(view2, appCompatActivityContext);
+                return fullCard;
         }
 
-        // Else make devider
+        // Else make banner
         View v = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.explore_header, parent, false);
-       // CardView card = (CardView) v.findViewById(R.id.card_view);
-        //card.setPreventCornerOverlap(false);
-        ViewHolder vh = new ViewHolder(v);
+        BannerCard vh = new BannerCard(v, appCompatActivityContext);
         return vh;
     }
 
     @Override
-    public void onBindViewHolder(final ExploreRecyclerViewAdapter.ViewHolder holder, int position) {
-        // Load details for the card. Not 100 on how this is going to work yet.
+    public void onBindViewHolder(final RecyclerView.ViewHolder holder, int position) {
 
         final ExploreCardModel cardModel = dataset.get(position);
 
         int viewType = cardModel.getViewType();
 
         switch (viewType) {
-            case ExploreCardModel.FOLLOWING_CARD:
+            case ExploreCardModel.FOLLOWING_CARD :
+                final HalfCard viewHolder = (HalfCard) holder;
+                scaleImage(viewHolder.getMainPhoto());
                 new Thread(new Runnable() {
                     @Override
                     public void run() {
-                        model.LoadSingleTrip(cardModel, holder.CardInner, instance);
+                        model.LoadSingleTrip(cardModel, viewHolder);
                     }
                 }).start();
                 break;
-            case ExploreCardModel.HEADER_CARD:
-                bindHeader(holder, cardModel);
+            case ExploreCardModel.FOLLOWING_HEADER:
+                bindHeader(holder, "Following", appCompatActivityContext.getResources().getColor(R.color.red_300), R.drawable.ic_action_person);
                 break;
+            case ExploreCardModel.LOCAL_CARD:
+                break;
+            case ExploreCardModel.TRENDING_HEADER:
+                bindHeader(holder, "Trending", appCompatActivityContext.getResources().getColor(R.color.blue_300), R.drawable.ic_trending_up_white_24dp);
+                break;
+            case ExploreCardModel.TRENDING_CARD:
+                final FullCard fullCard = (FullCard) holder;
+                StaggeredGridLayoutManager.LayoutParams layoutParams = (StaggeredGridLayoutManager.LayoutParams) fullCard.itemView.getLayoutParams();
+                layoutParams.setFullSpan(true);
+                new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        model.LoadSingleTrip(cardModel, fullCard);
+                    }
+                }).start();
         }
     }
 
-    private void bindHeader(ViewHolder holder, ExploreCardModel cardModel) {
-
+    /**
+     * Simple method which calculates the width of the screen.
+     * @return The screen width of the device in pixels.
+     */
+    private int calculateScreenWidth() {
+        DisplayMetrics displaymetrics = new DisplayMetrics();
+        appCompatActivityContext.getWindowManager().getDefaultDisplay().getMetrics(displaymetrics);
+        int height = displaymetrics.widthPixels /2;
+        return height;
     }
 
+    private void scaleImage(ImageView view) {
 
+            // Set the imageView height to be the same as the width.
+            ViewGroup.LayoutParams layoutParams = view.getLayoutParams();
+            int TRAIL_COVER_PHOTO_HEIGHT = calculateScreenWidth();
+            layoutParams.height = TRAIL_COVER_PHOTO_HEIGHT;
+            view.setLayoutParams(layoutParams);
+    }
+
+    private void bindHeader(RecyclerView.ViewHolder holder, String text, int color, int drawableIconReference) {
+        // Get background, and set color.
+        // get text, and setColor
+        BannerCard headerHolder = (BannerCard) holder;
+        StaggeredGridLayoutManager.LayoutParams layoutParams = (StaggeredGridLayoutManager.LayoutParams) headerHolder.itemView.getLayoutParams();
+        layoutParams.setFullSpan(true);
+        headerHolder.getHeader().setText(text);
+        headerHolder.getWrapper().setBackgroundColor(color);
+        headerHolder.getHeaderIcon().setImageResource(drawableIconReference);
+    }
 
     @Override
     public int getItemCount() {
@@ -152,19 +167,17 @@ public class ExploreRecyclerViewAdapter extends RecyclerView.Adapter<ExploreRecy
     }
 
     @Override
-    public void onViewRecycled(ViewHolder holder) {
-        RelativeLayout card = holder.CardInner;
-        ImageView imageView = (ImageView) card.findViewById(R.id.main_photo);
-        if (imageView != null) {
-            imageView.setImageDrawable(null);
-            TextView title = (TextView) card.findViewById(R.id.Title);
-            title.setText(null);
-            TextView userName = (TextView) card.findViewById(R.id.belongs_to);
-            userName.setText("");
-            CircleImageView profilePic = (CircleImageView) card.findViewById(R.id.profilePicture);
-            profilePic.setImageResource(R.drawable.profileblank);
-        }
+    public void onViewRecycled(RecyclerView.ViewHolder holder) {
 
-
+//        ImageView imageView = (ImageView) card.findViewById(R.id.main_photo);
+//        if (imageView != null) {
+//            imageView.setImageDrawable(null);
+//            TextView title = (TextView) card.findViewById(R.id.Title);
+//            title.setText(null);
+//            TextView userName = (TextView) card.findViewById(R.id.belongs_to);
+//            userName.setText("");
+//            CircleImageView profilePic = (CircleImageView) card.findViewById(R.id.profilePicture);
+//            profilePic.setImageResource(R.drawable.profileblank);
+//        }
     }
 }

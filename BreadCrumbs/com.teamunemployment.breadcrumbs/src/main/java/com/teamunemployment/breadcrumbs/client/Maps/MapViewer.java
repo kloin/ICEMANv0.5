@@ -72,6 +72,7 @@ import com.google.android.gms.maps.GoogleMap.OnMarkerClickListener;
 import com.google.android.gms.maps.MapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
+import com.teamunemployment.breadcrumbs.RESTApi.UserService;
 import com.teamunemployment.breadcrumbs.RandomUsefulShit.Utils;
 import com.teamunemployment.breadcrumbs.Trails.TrailManagerWorker;
 import com.teamunemployment.breadcrumbs.caching.TextCaching;
@@ -97,6 +98,12 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
+
+import okhttp3.ResponseBody;
+import retrofit2.Call;
+import retrofit2.Response;
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
 
 /*
  * View model for the map. This shows all the points on the map, and loads up the photos when clicked.
@@ -375,7 +382,29 @@ public class MapViewer extends Activity implements OnMapClickListener, OnMapLong
 		if(!WE_LIKE) {
 			bottomSheetFab.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor("#FF4081")));
 			bottomSheetFab.setImageDrawable(context.getResources().getDrawable(R.drawable.ic_favorite_border_white_24dp));
-			Snackbar.make(coordinatorLayout, "Liked +1", Snackbar.LENGTH_SHORT).show();
+
+			// Actually add this to our favourites
+			Retrofit retrofit = new Retrofit.Builder()
+					// .addCallAdapterFactory(RxJavaCallAdapterFactory.create())
+					.addConverterFactory(GsonConverterFactory.create())
+					.baseUrl(LoadBalancer.RequestServerAddress() + "/rest/")
+					.build();
+
+			final UserService userService = retrofit.create(UserService.class);
+			final String userId = new PreferencesAPI(context).GetUserId();
+			new Thread(new Runnable() {
+				@Override
+				public void run() {
+					Call<ResponseBody> result = userService.PinTrailForUser(userId, trailId);
+					try {
+						Response<ResponseBody> responseBodyResponse = result.execute();
+						Log.d(TAG, "Response is: " + responseBodyResponse.code());
+					} catch (IOException e) {
+						e.printStackTrace();
+					}
+				}
+			}).start();
+			Snackbar.make(coordinatorLayout, "Added to favourites", Snackbar.LENGTH_SHORT).show();
 			WE_LIKE = true;
 		} else {
 			// Unlike
@@ -385,8 +414,6 @@ public class MapViewer extends Activity implements OnMapClickListener, OnMapLong
 		}
 
 	}
-
-
 
 	/**
 	 * Define what we do when the bottom sheet is slid up.

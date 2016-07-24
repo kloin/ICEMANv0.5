@@ -46,12 +46,14 @@ import com.breadcrumbs.database.*;
 import com.breadcrumbs.database.DBMaster.myLabels;
 import com.breadcrumbs.database.DBMaster.myRelationships;
 import com.breadcrumbs.gcm.GcmSender;
+import com.breadcrumbs.heavylifting.Compression.SynchronizedCompressionBacklog;
 import com.breadcrumbs.models.*;
 import com.breadcrumbs.retrieval.*;
 import com.sun.jersey.multipart.BodyPart;
 import com.sun.jersey.multipart.BodyPartEntity;
 import com.sun.jersey.multipart.MultiPart;
 import com.sun.jersey.multipart.impl.MultiPartReaderServerSide;
+import java.util.concurrent.BlockingQueue;
 
 /*
  * This is the base of the server. This is our rest class that recieves all requests
@@ -62,11 +64,48 @@ public class RetrieveData {
 	
     private DBMaster dbMaster;
 
+    @GET
+    @Produces(MediaType.TEXT_PLAIN)
+    @Path("/Index")
+    public String Index() {
+        return "/Crumb\n" +
+                "/Search\n" +
+                "/TrailManager\n" +
+                "/User\n" +
+                "UserDetail\n";
+    }
     // Basic "is the service running" test
     @GET
     @Produces(MediaType.TEXT_PLAIN)
     public String respondAsReady() {
-        return "Welcome to B C SERVER. ";
+        return "/CompressionQueueSize\n"+
+                "/getAllCrumbsForATrail/{id}\n"+
+                "/getallCrumbIdsForAUser/{id}\n" +
+                "/getallCrumbsForAUser/{id}\n" +
+                "/getallTrailsForAUser/{id}\n" +
+                "/savecrumb/{chat}/{userId}/{trailId}/{latitude}/{longitude}/{icon}/{extension}/{placeId}/{suburb}/{city}/{country}/{timeStamp}\n" +
+                "/saveCrumbWithVideo/{crumbId}\n" +
+                "/AttemptToLogInUser/{UserName}/{Pin}\n"+
+                "/CreateNewUser/{UserName}/{Pin}/{Age}/{Sex}/{GcmId}/{Email}/{FacebookLoginId}\n" +
+                "/DeleteNode/{nodeId}\n" +
+                "/GetUser/{userId}\n" +
+                "/SaveComment/{UserId}/{EntityId}/{CommentText}\n" +
+                "/LoadCommentsForEvent/{EventId}\n" +
+                "/DeleteEntityAndAllRelationships/{EntityId}\n" +
+                "/GetSpecifiedTrails/{trailString}\n" +
+                "/GetAllTrails\n" +
+                "/GetPropertyFromNode/{NodeId}/{Property}\n" +
+                "/SaveStringPropertyToNode/{NodeId}/{Property}/{PropertyValue}\n" +
+                "/GetMultipleParametersForNode/{NodeId}/{Paramaters}\n" +
+                "/GetPropertiesForNode/{NodeId}/{Properties}\n" +
+                "/ComrpessVideo/{NodeId}\n";
+    }
+    
+    @GET
+    @Path("/CompressionQueueSize")
+    public String GetCompressionQueueSize() {
+        BlockingQueue<String> queue = SynchronizedCompressionBacklog.GetInstance().GetQueue();
+        return Integer.toString(queue.size());
     }
         
     @GET
@@ -93,6 +132,7 @@ public class RetrieveData {
     	System.out.println("working");
         return nc.GetAllRelatedNodesIds(id, myLabels.Crumb, "UserId", "Title").toString();	
     }
+    
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     @Path("getallCrumbsForAUser/{id}")
@@ -128,6 +168,43 @@ public class RetrieveData {
     					   @PathParam("timeStamp") String timeStamp) {
     	Crumb crumb = new Crumb();    	
     	return crumb.AddCrumb(chat, userId, trailId, latitude, longitude, icon, extension, placeId, suburb, city, country, timeStamp); 
+    }
+    
+    @POST
+    @Consumes(MediaType.MULTIPART_FORM_DATA)
+    @Path("/savecrumb/{chat}/{posX}/{posY}/{userId}/{trailId}/{latitude}/{longitude}/{icon}/{extension}/{placeId}/{suburb}/{city}/{country}/{timeStamp}")
+    public String SaveCrumbWithFloatingDescription (
+            MultiPart data,
+            @PathParam("chat")String chat,
+            @PathParam("posX") String posX,
+            @PathParam("posY") String posY,
+            @PathParam("userId")String userId,
+            @PathParam("trailId")String trailId,
+            @PathParam("latitude")String latitude,
+            @PathParam("longitude")String longitude,
+            @PathParam("icon")String icon,
+            @PathParam("extension") String extension,
+            @PathParam("placeId") String placeId,
+            @PathParam("suburb") String suburb,
+            @PathParam("city") String city,
+            @PathParam("country") String country,
+            @PathParam("timeStamp") String timeStamp) {
+    	Crumb crumb = new Crumb();    	
+    	String id = crumb.AddCrumbWithFloatingDescription(chat, posX, posY, userId, trailId, latitude, longitude, icon, extension, placeId, suburb, city, country, timeStamp); 
+        
+        // Now save the multipart data (our image/video).
+        List<BodyPart> parts = data.getBodyParts();
+        BodyPartEntity bpe = (BodyPartEntity) parts.get(0).getEntity();
+        InputStream stream = bpe.getInputStream();
+        
+        int savingMediaResult = crumb.saveMedia(stream, extension, id, trailId);
+        if (savingMediaResult == 0) {
+            return id; 
+        } else {
+            // Delete crumb metadata that we have saved.
+            DeleteNode(id);
+            return "Error";
+        }
     }
         
     @GET
@@ -264,6 +341,7 @@ public class RetrieveData {
     	UserService userService = new UserService();
     	return userService.AttemptToLogInUser(UserName, pin);
     }
+    
     @GET
     @Path("/CreateNewUser/{UserName}/{Pin}/{Age}/{Sex}/{GcmId}/{Email}/{FacebookLoginId}")
     @Produces(MediaType.APPLICATION_JSON)
@@ -427,4 +505,11 @@ public class RetrieveData {
    }
     
  
+   @GET
+   @Path("/ComrpessVideo/{NodeId}") 
+   public String CompressVideo(@PathParam("NodeId") String nodeId) {
+       Crumb crumb = new Crumb();
+       crumb.compressVideo(nodeId);
+       return "Added video. Compression queue now : " + GetCompressionQueueSize();
+   }
 }

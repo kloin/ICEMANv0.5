@@ -29,6 +29,19 @@ import org.neo4j.graphdb.Node;
 public class RESTCrumb {
 	private DBMaster dbm;
 
+    @GET
+    @Produces(MediaType.TEXT_PLAIN)
+    public String respondAsReady() {
+        return "/GetLatitudeAndLogitudeForCrumb/{CrumbId}\n" +
+                "/DeleteCrumb/{CrumbId}\n" +
+                "/UploadProfileImage/{UserId}\n" +
+                "/UploadProfilePictureForUser/{UserId}\n"+
+                "/GetPropertyFromCrumb/{CrumbId}/{Property}\n" +
+                "/GetAllImageCrumbIdsForAUser/{id}\n" +
+                "/UserLikesCrumb/{CrumbId}/{UserId}\n" +
+                "/GetNumberOfLikesForCrumb/{CrumbId}\n" +
+                "/SaveImageToDatabase/{FileName}\n";
+    }
         /*
             Get the latitude and longitude for a crumb. Pretty self explainatory.
         */
@@ -84,6 +97,31 @@ public class RESTCrumb {
 
             dbm.CreateRelationship(crumb, trail, DBMaster.myRelationships.Part_Of);	
             return String.valueOf(crumbId);
+        }
+        
+        @POST
+        @Path("UploadProfilePictureForUser/{UserId}")
+        public String UploadProfilePictureForAUser(MultiPart data, @PathParam("UserId") String userId) {
+            Hashtable<String, Object> keysAndItems = new Hashtable<String, Object>();
+            keysAndItems.put("UserId", userId);
+            keysAndItems.put("public", false);
+            
+            Trail trailManager = new Trail();
+            dbm = DBMaster.GetAnInstanceOfDBMaster();
+            int crumbId = dbm.SaveNode(keysAndItems, com.breadcrumbs.database.DBMaster.myLabels.Image);	
+            Node crumb = dbm.RetrieveNode(crumbId);
+            Node user = dbm.RetrieveNode(Integer.parseInt(userId));
+
+            Crumb crumbModel = new Crumb();
+            dbm.CreateRelationship(crumb, user, DBMaster.myRelationships.Part_Of);
+            List<BodyPart> parts = data.getBodyParts();
+            BodyPartEntity bpe = (BodyPartEntity) parts.get(0).getEntity();
+            InputStream stream = bpe.getInputStream();
+            String newNodeIdString = Integer.toString(crumbId);
+            crumbModel.ConvertAndSaveImage(stream, newNodeIdString);
+            DBMaster dbMaster = DBMaster.GetAnInstanceOfDBMaster();
+            dbMaster.UpdateNodeWithCypherQuery(userId, "ProfilePicId", Integer.toString(crumbId));
+            return newNodeIdString;
         }
         
         /*

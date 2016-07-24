@@ -10,10 +10,51 @@ import com.breadcrumbs.database.DBMaster;
 import com.breadcrumbs.gcm.GcmMessages;
 import com.breadcrumbs.models.Trail;
 import com.breadcrumbs.models.UserService;
+import javax.ws.rs.Produces;
+import javax.ws.rs.core.MediaType;
 
 @Path("/User")
 public class RESTUser {
 	
+        @GET
+        @Produces(MediaType.TEXT_PLAIN)
+        public String respondAsReady() {
+            return "/GetAllPinnedTrailsForAUser/{UserId}\n" +
+                    "/PinTrailForUser/{UserId}/{TrailId}\n" +
+                    "/FindUserByFacebookId/{FacebookUserId}\n" +
+                    "/FetchUserDetails/{Email}\n" +
+                    "/GetAllPinnedUsersForAUser/{UserId}\n" +
+                    "/GetNumberOfFollowersForAUser/{UserId}\n" +
+                    "/GetAllHomePageTrailIdsForAUser/{UserId}\n" +
+                    "/UnpintrailForUser/{UserId}/{TrailId}\n" +
+                    "/UnPinUserForUser/{UserId}/{UserId2}\n" +
+                    "/IsUserFollowingOtherUser/{BroadcastUserId}/{VisitorId}\n" +
+                    "/DeleteAccount/{UserId}\n" +
+                    "/PinUserForUser/{FollowingUser}/{FollowedUser}\n" +
+                    "/GetAllEditibleTrailsForAUser/{UserId}\n" +
+                    "/GetUserName/{UserId}\n" +
+                    "/GetContactsForAUser/{UserId}\n" +
+                    "/SendFriendRequest/{UserId}/{UserId2}\n" +
+                    "/AddContact/{UserId}/{UserId2}\n" +
+                    "/GetAllSavedCrumbIdsForAUser/{UserId}\n" +
+                    "/GetAllSavedPhotoIdsForAUser/{UserId}\n" +
+                    "/GetUser/{UserId}";
+        }
+        
+        @GET
+        @Path("GetUser/{UserId}")
+        public String GetUser(@PathParam("UserId") String userId) {
+            UserService user = new UserService();
+            return user.GetUser(userId);
+        }
+        
+        @GET
+        @Path("GetTopThreeUnreadTripIds/{UserId}")
+        public String GetTopThreeUnreadTripIds(@PathParam("UserId") String userId) {
+            Trail trail = new Trail();
+            return trail.FindTopThreeTripIdsForAUser(userId);
+        }
+        
 	@GET
 	@Path("GetAllPinnedTrailsForAUser/{UserId}")
 	public String GetAllPinnedTrailsForAUser(@PathParam("UserId") String UserId) {
@@ -40,13 +81,22 @@ public class RESTUser {
 		UserService userService = new UserService();
 		return userService.CheckForUserExistenceUsingFacebookId(FacebookUserId);
 	}
-	
+        
 	@GET
 	@Path("FetchUserDetails/{Email}")
 	public String FetchUserDetails(@PathParam("Email") String Email) {
 		UserService userService = new UserService();
 		return userService.CheckForDetailsUsingEmailAddress(Email);
 	}
+        
+        @GET
+        @Path("/IsUserFollowingOtherUser/{BroadcastUserId}/{VisitorId}")
+        public String IsUserFollowingOtherUser(@PathParam("BroadcastUserId") String broadCastUserId, 
+                @PathParam("VisitorId") String visitorId) {
+            UserService userService = new UserService();
+            boolean isFollowing = userService.IsUserAFollowingUserB(visitorId, broadCastUserId);
+            return Boolean.toString(isFollowing);
+        }
         
 	@GET
 	@Path("GetAllPinnedUsersForAUser/{UserId}") 
@@ -101,8 +151,8 @@ public class RESTUser {
 			@PathParam("FollowedUser") String UserIdB) {
 		UserService user = new UserService();
 		user.PinUserForUser(UserIdA, UserIdB);
-		GcmMessages gcm = new GcmMessages();
-		gcm.SendUserNoficationWhenFollowed(UserIdB, UserIdA);
+		//GcmMessages gcm = new GcmMessages();
+		//gcm.SendUserNoficationWhenFollowed(UserIdB, UserIdA);
 		return "200";
 	}
 	
@@ -138,8 +188,7 @@ public class RESTUser {
 	
 	@GET
 	@Path("AddContact/{UserId}/{UserId2}") 
-	public String AddFriend(@PathParam("UserId") String UserId,
-									@PathParam("UserId2") String UserId2) {
+	public String AddFriend(@PathParam("UserId") String UserId, @PathParam("UserId2") String UserId2) {
 		UserService userService = new UserService();
 		return userService.AddContactForAUser(UserId, UserId2);
 	}
@@ -150,6 +199,11 @@ public class RESTUser {
 		UserService userService = new UserService();
 		return userService.GetAllCrumbIdsForAUser(UserId);
 	}
-	
-	
+        
+        @GET
+        @Path("GetAllSavedPhotoIdsForAUser/{UserId}")
+        public String GetAllSavedPhotoIdsForAUser(@PathParam("UserId") String userId) {
+            UserService userService = new UserService();
+            return userService.GetAllPhotoIdsForATrail(userId);
+        }
 }

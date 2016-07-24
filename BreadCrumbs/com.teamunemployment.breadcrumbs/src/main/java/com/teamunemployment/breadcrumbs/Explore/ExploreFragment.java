@@ -3,6 +3,7 @@ package com.teamunemployment.breadcrumbs.Explore;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Rect;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.design.widget.CoordinatorLayout;
@@ -11,6 +12,7 @@ import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -66,18 +68,42 @@ public class ExploreFragment extends Fragment implements ViewContract {
     @Override
     public void SetRecyclerViewAdapter(final RecyclerView.Adapter adapter) {
         final LinearLayoutManager layoutManager = new LinearLayoutManager(context);
+        final StaggeredGridLayoutManager staggeredGridLayoutManager = new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL);
         AppCompatActivity appCompatActivity = (AppCompatActivity) context;
         appCompatActivity.runOnUiThread(new Runnable() {
             @Override
             public void run() {
                 recyclerView.setAdapter(adapter);
-                recyclerView.setLayoutManager(layoutManager);
-
+                recyclerView.setLayoutManager(staggeredGridLayoutManager);
+                int spacingInPixels = 16;
+                recyclerView.addItemDecoration(new SpacesItemDecoration(spacingInPixels));
                 // Improves perf if we do not change the size of the Recycler view over the course of its lifecycle.
                 recyclerView.setHasFixedSize(true);
             }
         });
 
 
+
+    }
+
+    public class SpacesItemDecoration extends RecyclerView.ItemDecoration {
+        private int space;
+
+        public SpacesItemDecoration(int space) {
+            this.space = space;
+        }
+
+        @Override
+        public void getItemOffsets(Rect outRect, View view,
+                                   RecyclerView parent, RecyclerView.State state) {
+            outRect.left = space;
+            outRect.right = space;
+            outRect.bottom = space;
+            int spanIndex = ((StaggeredGridLayoutManager.LayoutParams) view.getLayoutParams()).getSpanIndex();
+            // Add top margin only for the first item to avoid double space between items
+            if (spanIndex == 1) {
+                outRect.left = 0;
+            }
+        }
     }
 }

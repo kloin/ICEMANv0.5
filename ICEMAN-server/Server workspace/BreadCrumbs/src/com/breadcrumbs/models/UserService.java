@@ -20,9 +20,11 @@ import com.breadcrumbs.database.NodeController;
 import tools.JSONSpecialist;
 
 import com.breadcrumbs.database.DBMaster.myRelationships;
+import org.neo4j.graphdb.Relationship;
 
 public class UserService {
 	private DBMaster dbMaster;
+        
 	/*
 	 * Fetch just the users name
 	 */
@@ -124,6 +126,12 @@ public class UserService {
 		String cypherQuery = "MATCH (crumb:Crumb) WHERE crumb.UserId = '"+userId+"' RETURN crumb";	
 		return dbMaster.ExecuteCypherQueryJSONStringReturnJustIds(cypherQuery);
 	}
+        
+        public String GetAllPhotoIdsForATrail(String userId) {
+            DBMaster dbMaster = DBMaster.GetAnInstanceOfDBMaster();
+            String cypherQuery = "MATCH (crumb:Crumb) WHERE crumb.UserId = '"+userId+"' AND crumb.Extension = '.jpg' RETURN crumb";	
+            return dbMaster.ExecuteCypherQueryJSONStringReturnJustIds(cypherQuery);
+	}
 
 	public void SetUserAbout(String userId, String description) {
 		DBMaster dbMaster = DBMaster.GetAnInstanceOfDBMaster();
@@ -151,6 +159,32 @@ public class UserService {
 		return null;
 	}
 
+        public boolean IsUserAFollowingUserB(String userAId, String userBId) {
+            DBMaster dbMaster = DBMaster.GetAnInstanceOfDBMaster();
+            
+            GraphDatabaseService _db = dbMaster.GetDatabaseInstance();
+            Transaction tx = _db.beginTx();
+            Node node = null;
+            try {
+                Node follower = dbMaster.RetrieveNode(Long.parseLong(userAId));
+                Node followed = dbMaster.RetrieveNode(Long.parseLong(userBId));
+                for (Relationship followedUserIds : follower.getRelationships()) {
+                    if (followedUserIds.getOtherNode(follower).equals(followed)) {
+                        return true;
+                    }
+                }
+            } catch (Exception ex) {
+                    System.out.println("Failed to retrieve node");
+                    ex.printStackTrace();
+                    tx.failure();
+                    return false;
+
+            } finally {
+                    tx.finish();
+            }
+            return false;
+        }
+        
 	public String GetAllPinnedUsers(String userId) {
 		DBMaster dbMaster = DBMaster.GetAnInstanceOfDBMaster();
 		String cypherQuery = "start n = node("+userId+") match n-[:Has_Pinned]->(user:User) return user";	
@@ -338,9 +372,6 @@ public class UserService {
 		}
 		
 		return "E500"; // Indicating that an error occurred
-		
-		
-		
 	}
 
 	private Node FetchUserNodeByUserName(String userName) {
@@ -349,5 +380,28 @@ public class UserService {
 		Node node = db.ExecuteCypherQueryReturnNode(query);
 		return node;
 	}
+
+    public String GetUser(String userId) {
+        DBMaster dbMaster = DBMaster.GetAnInstanceOfDBMaster();
+        GraphDatabaseService _db = dbMaster.GetDatabaseInstance();
+        Node userNode = dbMaster.RetrieveNode(Long.parseLong(userId));
+        if (userNode == null) {
+            return "500";
+        }
+        
+        Transaction tx = _db.beginTx();
+        try {
+            NodeConverter nodeConverter = new NodeConverter();
+            JSONObject result = nodeConverter.ConvertSingleNodeToJSON(userNode);
+            return result.toString();
+        } catch (Exception ex) {
+            System.out.println("Failed to retrieve node");
+            ex.printStackTrace();
+            tx.failure();
+            return "500";
+        } finally {
+            tx.finish();
+        }
+    }
 
 }

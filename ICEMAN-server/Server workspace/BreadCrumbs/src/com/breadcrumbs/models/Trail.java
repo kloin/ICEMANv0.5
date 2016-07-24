@@ -34,31 +34,39 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class Trail {
-		
+	public static final String TRAIL_NAME = "TrailName";
+        public static final String USER_ID = "UserId";
+        public static final String DESCRIPTION = "Description";
+        public static final String VIEWS = "Views";
+        public static final String COVER_PHOTO_ID = "CoverPhotoId";
+        public static final String DISTANCE = "Distance";
+        public static final String START_DATE = "StartDate";
+        
 	private DBMaster dbMaster;
 	private GraphDatabaseService dbInstance;
 	private NodeConverter nodeConverter;
+        
 	public String SaveTrail(String trailName, String userId, String description ) {
-		int views = 0;
-		Hashtable<String, Object> keysAndItems = new Hashtable<String, Object>();
-		keysAndItems.put("TrailName", trailName);
-		keysAndItems.put("UserId", userId);
-		keysAndItems.put("Description", description);
-		keysAndItems.put("Views", views);
-		keysAndItems.put("CoverPhotoId", "0");
-		keysAndItems.put("Distance", "0");
-		
-		Date date = new Date();
-		SimpleDateFormat dt1 = new SimpleDateFormat("yyyy-MM-dd");
-		
-		keysAndItems.put("StartDate", dt1.format(date));
-		dbMaster = DBMaster.GetAnInstanceOfDBMaster();
-		int trailId = dbMaster.SaveNode(keysAndItems, com.breadcrumbs.database.DBMaster.myLabels.Trail);	
-		Node trail = dbMaster.RetrieveNode(trailId);
-		Node User = dbMaster.RetrieveNode(Integer.parseInt(userId));
-		
-		dbMaster.CreateRelationship(User, trail, myRelationships.Controls);
-		return String.valueOf(trailId);		
+            int views = 0;
+            Hashtable<String, Object> keysAndItems = new Hashtable<String, Object>();
+            keysAndItems.put(TRAIL_NAME, trailName);
+            keysAndItems.put(USER_ID, userId);
+            keysAndItems.put(DESCRIPTION, description);
+            keysAndItems.put(VIEWS, views);
+            keysAndItems.put(COVER_PHOTO_ID, "0");
+            keysAndItems.put(DISTANCE, "0");
+
+            Date date = new Date();
+            SimpleDateFormat dt1 = new SimpleDateFormat("yyyy-MM-dd");
+
+            keysAndItems.put(START_DATE, dt1.format(date));
+            dbMaster = DBMaster.GetAnInstanceOfDBMaster();
+            int trailId = dbMaster.SaveNode(keysAndItems, com.breadcrumbs.database.DBMaster.myLabels.Trail);	
+            Node trail = dbMaster.RetrieveNode(trailId);
+            Node User = dbMaster.RetrieveNode(Integer.parseInt(userId));
+
+            dbMaster.CreateRelationship(User, trail, myRelationships.Controls);
+            return String.valueOf(trailId);		
 	}
 
 	
@@ -418,16 +426,23 @@ public class Trail {
 		String cypherQuery = "MATCH (n:Trail) RETURN n LIMIT 100";	
 		return dbMaster.ExecuteCypherQueryJSONStringReturn(cypherQuery);
 	}
-
-	/*
-	 * DELETE THIS SOON
-	 */
-	public void Obliterate() {
+        
+        public String GetIdsOfTwentyMostPopularTrips() {
 		DBMaster dbMaster = DBMaster.GetAnInstanceOfDBMaster();
-		String cypherQuery = "MATCH (n) OPTIONAL MATCH (n)-[r]-() DELETE n,r";	
-		dbMaster.ExecuteCypherQueryJSONStringReturn(cypherQuery);
-		// TODO Auto-generated method stub	
+		String cypherQuery = "MATCH (n:Trail) RETURN n ORDER BY n.Views LIMIT 20";	
+		return dbMaster.ExecuteCypherQueryReturnCSVString(cypherQuery);
 	}
+        
+        public String GetIdsOfPopularTrips(String limit) {
+		DBMaster dbMaster = DBMaster.GetAnInstanceOfDBMaster();
+		String cypherQuery = "MATCH (n:Trail) RETURN n ORDER BY n.Views";
+                if (Integer.parseInt(limit) > 0) {
+                    cypherQuery += " LIMIT " + limit;
+                }
+		return dbMaster.ExecuteCypherQueryReturnCSVString(cypherQuery);
+	}
+
+	
 
 	/*
 	 * Sets the cover photo Id on the trail so we can use it to set the trail background.
@@ -574,6 +589,12 @@ public class Trail {
         return dbMaster.ExecuteCypherQueryJSONStringReturnCrumbCardDetails(cypherQuery);    
     }
     
+    public String GetAllTripIdsForAUser(String userId) {
+        DBMaster dbMaster = DBMaster.GetAnInstanceOfDBMaster();
+        String cypherQuery = "start n = node("+userId+") match n-[rel:Point_In]->(Point) return Point";	
+        return dbMaster.ExecuteCypherQueryReturnPoint(cypherQuery);
+    }
+    
     public String GetNumberOfVideosInATrail(String trailId) {
         DBMaster dbMaster = DBMaster.GetAnInstanceOfDBMaster();
         String cypherQuery = "MATCH (crumb:Crumb) WHERE crumb.TrailId = '"+trailId+"' RETURN crumb";	
@@ -600,34 +621,79 @@ public class Trail {
     }
     
     private JSONObject fetchDirectionsFromGoogle(String urlString) {
-            try {
-                // Create the connection
-                URL url = new URL(urlString);
-                URLConnection conn = url.openConnection();
-                BufferedReader in = new BufferedReader(new InputStreamReader(conn.getInputStream()));
-                String inputLine;
+        try {
+            // Create the connection
+            URL url = new URL(urlString);
+            URLConnection conn = url.openConnection();
+            BufferedReader in = new BufferedReader(new InputStreamReader(conn.getInputStream()));
+            String inputLine;
 
-                StringBuilder response = new StringBuilder(); 
-                while ((inputLine = in.readLine()) != null)  {
-                    System.out.println(inputLine);
-                    response.append(inputLine);
-                    response.append('\r');                    
-                }
-                
-                in.close();
-                JSONObject jsonResponse = new JSONObject(response.toString());
-                return jsonResponse;
-
-                
-            } catch (MalformedURLException ex) {
-                Logger.getLogger(TrailManager20.class.getName()).log(Level.SEVERE, null, ex);
-            } catch (IOException ex) {
-                Logger.getLogger(TrailManager20.class.getName()).log(Level.SEVERE, null, ex);
+            StringBuilder response = new StringBuilder(); 
+            while ((inputLine = in.readLine()) != null)  {
+                System.out.println(inputLine);
+                response.append(inputLine);
+                response.append('\r');                    
             }
+
+            in.close();
+            JSONObject jsonResponse = new JSONObject(response.toString());
+            return jsonResponse;         
+        } catch (MalformedURLException ex) {
+            Logger.getLogger(TrailManager20.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (IOException ex) {
+            Logger.getLogger(TrailManager20.class.getName()).log(Level.SEVERE, null, ex);
+        }
             
-            return null;
+        return null;
+    }
+
+    public String GetTopThreeTripsForAUser(String userId) {
+        DBMaster dbMaster = DBMaster.GetAnInstanceOfDBMaster();
+        String cypherQuery = "start n = node("+userId+") match n-[rel:Controls]->(trail) return trail ORDER BY trail.Views LIMIT 3";	
+        return dbMaster.ExecuteCypherQueryJSONListStringReturn(cypherQuery);
+    }   
+
+    public String FindTopThreeTripIdsForAUser(String userId) {
+        DBMaster dbMaster = DBMaster.GetAnInstanceOfDBMaster();
+        String cypherQuery = "start n = node("+userId+") match n-[:Has_Pinned]->(trail:Trail) return trail ORDER by trail.Views LIMIT 3";	
+        return dbMaster.ExecuteCypherQueryJSONStringReturnJustIds(cypherQuery);		
+    }
+    
+    public String GetTrip(String tripId) {
+        DBMaster dbMaster = DBMaster.GetAnInstanceOfDBMaster();
+        GraphDatabaseService _db = dbMaster.GetDatabaseInstance();
+        Node tripNode = dbMaster.RetrieveNode(Long.parseLong(tripId));
+        if (tripNode == null) {
+            return "500";
         }
         
-        
-        
+        Transaction tx = _db.beginTx();
+        try {
+            NodeConverter nodeConverter = new NodeConverter();
+            JSONObject result = nodeConverter.ConvertSingleNodeToJSON(tripNode);
+            return result.toString();
+        } catch (Exception ex) {
+            System.out.println("Failed to retrieve node");
+            ex.printStackTrace();
+            tx.failure();
+            return "500";
+        } finally {
+            tx.finish();
+        }
+    }
+
+    /**
+     * Get The latest trips that a user follows.
+     * @param userId The userId
+     * @param count The count of users.
+     * @return The 
+     */
+    public String GetPinnedTripsForAUser(String userId, String count) {
+        DBMaster dbMaster = DBMaster.GetAnInstanceOfDBMaster();
+        String cypherQuery = "start n = node("+userId+") match n-[:Has_Pinned]->(trail:Trail) return trail ORDER by trail.Views";	
+        if (Integer.parseInt(count) > 0) {
+            cypherQuery += " LIMIT " + count;
+        }
+        return dbMaster.ExecuteCypherQueryReturnCSVString(cypherQuery);	
+    }
 }

@@ -1,9 +1,11 @@
 package com.teamunemployment.breadcrumbs.Explore;
 
 import android.content.Context;
+import android.support.v7.widget.RecyclerView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 
+import com.teamunemployment.breadcrumbs.Explore.Adapter.ExploreCardContract;
 import com.teamunemployment.breadcrumbs.Explore.Data.ExploreLocalRepository;
 import com.teamunemployment.breadcrumbs.Explore.Data.ExploreRemoteRepository;
 import com.teamunemployment.breadcrumbs.Network.LoadBalancer;
@@ -35,13 +37,21 @@ public class Model {
     }
 
     public ArrayList<ExploreCardModel> LoadModels(long userId) {
-        ArrayList<String> trips = LoadUpToTwentyPopularAlbumIdsFromAroundTheGlobe();
-        cardModels.add(new ExploreCardModel(ExploreCardModel.HEADER_CARD, "Around the world", R.drawable.ic_account_plus_grey600_24dp));
-        cardModels.addAll(addModels(trips, ExploreCardModel.FOLLOWING_CARD));
+        cardModels.add(new ExploreCardModel(ExploreCardModel.TRENDING_HEADER, "Trending", R.drawable.ic_location_on_white_24dp));
+        ArrayList<String> trendingTrips = remoteRepository.LoadPopularTrips(3);
+        cardModels.addAll(addModels(trendingTrips,ExploreCardModel.TRENDING_CARD ));
+        ArrayList<String> trips = LoadFollowingTrips(userId, 10);
+        if (trips.size() > 0) {
+            cardModels.add(new ExploreCardModel(ExploreCardModel.FOLLOWING_HEADER, "Following", R.drawable.ic_account_plus_grey600_24dp));
+            cardModels.addAll(addModels(trips, ExploreCardModel.FOLLOWING_CARD));
+        }
         return cardModels;
     }
 
-    //
+    public ArrayList<String> LoadFollowingTrips(long userId, int maxTrips) {
+        return remoteRepository.LoadFollowingTrips(userId, maxTrips);
+    }
+
     public ArrayList<String> LoadUpToTwentyPopularAlbumIdsFromAroundTheGlobe() {
         return remoteRepository.LoadTwentyGlobalTripIds();
     }
@@ -68,28 +78,28 @@ public class Model {
         return models;
     }
 
-    public void LoadSingleTrip(final ExploreCardModel cardModel, final RelativeLayout cardInner, final RecyclerViewAdapterContract cardViewContract) {
+    public void LoadSingleTrip(final ExploreCardModel cardModel, ExploreCardContract contract) {
         long tripId = Long.parseLong(cardModel.getData());
         Trip localTrip = localRepository.LoadTrip(tripId);
         if (localTrip != null) {
-            cardViewContract.bindTripToCard(localTrip, cardInner, cardModel);
+            contract.bindTrip(localTrip, this);
         }
         Trip remoteTrip = remoteRepository.LoadTrip(tripId);
 
         if (localTrip == null || (remoteTrip !=  null && !localTrip.equals(remoteTrip))) {
-            cardViewContract.bindTripToCard(remoteTrip, cardInner, cardModel);
+            contract.bindTrip(remoteTrip, this);
             localRepository.SaveTrip(remoteTrip, tripId);
         }
     }
 
-    public void LoadUserDetailsForCard(String userId, RelativeLayout cardInner, ExploreRecyclerViewAdapter instance) {
+    public void LoadUserDetailsForCard(String userId, ExploreCardContract contract) {
         User localUser = localRepository.GetUser(userId);
         if (localUser != null) {
-            instance.bindUserDetailsToTripCard(localUser,cardInner);
+            contract.bindUser(localUser);
         }
         User user = remoteRepository.LoadUser(userId);
         if (localUser == null || (user != null && !localUser.equals(user))) {
-            instance.bindUserDetailsToTripCard(user, cardInner);
+            contract.bindUser(user);
             localRepository.SaveUser(user);
         }
     }

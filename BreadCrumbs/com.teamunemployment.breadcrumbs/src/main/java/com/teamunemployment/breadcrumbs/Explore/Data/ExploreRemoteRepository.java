@@ -123,7 +123,38 @@ public class ExploreRemoteRepository {
             e.printStackTrace();
         }
         return null;
+    }
 
+    public ArrayList<String> LoadFollowingTrips(long userId, int max) {
+        Call<ResponseBody> call = nodeService.getFavouritedTripsForAUser(Long.toString(userId), Integer.toString(max));
+        try {
+            Response<ResponseBody> response = call.execute();
+            if (response.code() == 200) {
+                String commaSeperatedIds = response.body().string();
+                String[] ids = commaSeperatedIds.split(",");
+                ArrayList<String> idsArray = new ArrayList<>(Arrays.asList(ids));
+                return idsArray;
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return new ArrayList<>();
+    }
+
+    public ArrayList<String> LoadPopularTrips(int max) {
+        Call<ResponseBody> call = nodeService.getIdsOfMostPopularTrips(Integer.toString(max));
+        try {
+            Response<ResponseBody> response = call.execute();
+            if (response.code() == 200) {
+                String commaSeperatedIds = response.body().string();
+                String[] ids = commaSeperatedIds.split(",");
+                ArrayList<String> idsArray = new ArrayList<>(Arrays.asList(ids));
+                return idsArray;
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return new ArrayList<>();
     }
 
     public User LoadUser(String userId) {

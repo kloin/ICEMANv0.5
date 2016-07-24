@@ -10,6 +10,11 @@ public class ExploreCardModel {
     public static final int HEADER_CARD = 0;
     public static final int FOLLOWING_CARD = 1;
     public static final int LOCAL_CARD = 2;
+    public static final int TRENDING_HEADER = 3;
+    public static final int FOLLOWING_HEADER = 4;
+    public static final int LOCAL_HEADER = 5;
+    public static final int TRENDING_CARD = 6;
+
 
     private int viewType;
     private String data;

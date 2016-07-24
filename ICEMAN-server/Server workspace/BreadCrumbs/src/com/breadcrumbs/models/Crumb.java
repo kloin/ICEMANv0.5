@@ -1,6 +1,5 @@
 package com.breadcrumbs.models;
 
-
 import java.awt.Image;
 import java.awt.image.BufferedImage;
 import java.awt.image.RenderedImage;
@@ -25,44 +24,51 @@ import com.breadcrumbs.database.*;
 import com.breadcrumbs.database.DBMaster.TransactionCallback;
 import com.breadcrumbs.database.DBMaster.myLabels;
 import com.breadcrumbs.database.DBMaster.myRelationships;
+import com.breadcrumbs.heavylifting.Compression.CompressVideo;
+import com.breadcrumbs.heavylifting.Compression.CompressionContract;
+import com.breadcrumbs.heavylifting.Compression.SynchronizedCompressionBacklog;
+import com.breadcrumbs.heavylifting.CompressionManager;
 import com.sun.jersey.multipart.BodyPart;
 import com.sun.jersey.multipart.BodyPartEntity;
 import java.io.FileInputStream;
+import java.util.concurrent.BlockingQueue;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.neo4j.graphdb.GraphDatabaseService;
 import org.neo4j.graphdb.Transaction;
 public class Crumb {
 	
-	private DBMaster dbm;
-	public String AddCrumb(String chat, String userId, String trailId, String latitude, String longitude, String icon, String extension, String placeId, String suburb, String city, String country, String timeStamp) {
-		Trail trailManager = new Trail();
-		//create node using node controller
-		Hashtable<String, Object> keysAndItems = new Hashtable<String, Object>();
-		keysAndItems.put("Chat", chat);
-		keysAndItems.put("UserId", userId);
-		keysAndItems.put("TrailId", trailId);
-		keysAndItems.put("Latitude", latitude);
-		keysAndItems.put("Longitude", longitude);
-		keysAndItems.put("Icon", icon);
-		keysAndItems.put("Extension", extension);
-		keysAndItems.put("PlaceId", placeId);
-		keysAndItems.put("Suburb", suburb);
-		keysAndItems.put("City", city);
-		keysAndItems.put("Country", country);
-		keysAndItems.put("TimeStamp", timeStamp);
+    private DBMaster dbm;
+    public String AddCrumb(String chat, String userId, String trailId, String latitude, String longitude, String icon, String extension, String placeId, String suburb, String city, String country, String timeStamp) {
+            Trail trailManager = new Trail();
+            //create node using node controller
+            Hashtable<String, Object> keysAndItems = new Hashtable<String, Object>();
+            keysAndItems.put("Chat", chat);
+            keysAndItems.put("UserId", userId);
+            keysAndItems.put("TrailId", trailId);
+            keysAndItems.put("Latitude", latitude);
+            keysAndItems.put("Longitude", longitude);
+            keysAndItems.put("Icon", icon);
+            keysAndItems.put("Extension", extension);
+            keysAndItems.put("PlaceId", placeId);
+            keysAndItems.put("Suburb", suburb);
+            keysAndItems.put("City", city);
+            keysAndItems.put("Country", country);
+            keysAndItems.put("TimeStamp", timeStamp);
 
-		dbm = DBMaster.GetAnInstanceOfDBMaster();
-		int crumbId = dbm.SaveNode(keysAndItems, com.breadcrumbs.database.DBMaster.myLabels.Crumb);	
-		Node crumb = dbm.RetrieveNode(crumbId);
-		Node trail = dbm.RetrieveNode(Integer.parseInt(trailId));
+            dbm = DBMaster.GetAnInstanceOfDBMaster();
+            int crumbId = dbm.SaveNode(keysAndItems, com.breadcrumbs.database.DBMaster.myLabels.Crumb);	
+            Node crumb = dbm.RetrieveNode(crumbId);
+            Node trail = dbm.RetrieveNode(Integer.parseInt(trailId));
 
-		// Set the cover photo. This is being done automatically at the moment, but in the future we will
-                // need to check if the user has set a personal cover photo first.
-                trailManager.SetCoverPhoto(trailId, Integer.toString(crumbId));
-		dbm.CreateRelationship(crumb, trail, myRelationships.Part_Of);	
-		return String.valueOf(crumbId);
-	}
+            // Set the cover photo. This is being done automatically at the moment, but in the future we will
+            // need to check if the user has set a personal cover photo first.
+            trailManager.SetCoverPhoto(trailId, Integer.toString(crumbId));
+            dbm.CreateRelationship(crumb, trail, myRelationships.Part_Of);	
+            return String.valueOf(crumbId);
+    }
 	
-    public int ConvertAndSaveVideo(InputStream stream, String crumbId) {
+    public int ConvertAndSaveVideo(InputStream stream, final String crumbId) {
         int result = 0;             
         File targetFile = new File("/var/lib/tomcat7/webapps/images/"+crumbId+".mp4");
         byte[] buffer = new byte[1024];
@@ -83,7 +89,25 @@ public class Crumb {
             DeleteFile("/var/lib/tomcat7/webapps/images/"+crumbId+".mp4");
             e.printStackTrace();
         }
+        
+        // Grab our global blocking queue. Add our item to the backlog for compression.
+        compressVideo(crumbId);
+        
         return result;            
+    }
+    
+    public void compressVideo(String id) {
+        SynchronizedCompressionBacklog backlog = SynchronizedCompressionBacklog.GetInstance();
+        BlockingQueue<String> ids = backlog.GetQueue();
+        ids.add(id);
+        
+        // If its the first item, we need to start up the compression thread again as it would have stopped.
+        if (!backlog.isCompressing()) {
+            CompressionContract contract = new CompressVideo();
+            CompressionManager compressionManager = new CompressionManager(contract, ids);
+            new Thread(compressionManager).start();
+            backlog.setCompressing(true);
+        }
     }
     
     /**
@@ -98,11 +122,12 @@ public class Crumb {
             result = ConvertAndSaveVideo(inputStream, crumbId);
         } else {
             result = ConvertAndSaveImage(inputStream, crumbId);
-           updateCoverPhoto(trailId, crumbId);
+            updateCoverPhoto(trailId, crumbId);
         }
         
         return result;
     }
+    
     public void updateCoverPhoto(String trailId, String coverId) {
          if (trailHasCoverPhoto(trailId)) {
                 // Set trail as cover photo
@@ -270,11 +295,42 @@ public class Crumb {
 		return trail.GetNumberOfLikesForAnEntity(crumbId);		 
 	}
 	
-	/* removes a users like on a crumb */
-	public void RemoveLike(String userId, String crumbId) {
-		String cypherDelete = "START user=node(*) MATCH user-[rel:LIKES]->crumb WHERE id(user)="+userId+" AND id(crumb)= "+crumbId+" DELETE rel";
-		dbm = DBMaster.GetAnInstanceOfDBMaster();
-		dbm.ExecuteCypherQueryNoReturn(cypherDelete);
-	}
+    /* removes a users like on a crumb */
+    public void RemoveLike(String userId, String crumbId) {
+            String cypherDelete = "START user=node(*) MATCH user-[rel:LIKES]->crumb WHERE id(user)="+userId+" AND id(crumb)= "+crumbId+" DELETE rel";
+            dbm = DBMaster.GetAnInstanceOfDBMaster();
+            dbm.ExecuteCypherQueryNoReturn(cypherDelete);
+    }
+
+    public String AddCrumbWithFloatingDescription(String chat, String posX, String posY, String userId, String trailId, String latitude, String longitude, String icon, String extension, String placeId, String suburb, String city, String country, String timeStamp) {
+        Trail trailManager = new Trail();
+        //create node using node controller
+        Hashtable<String, Object> keysAndItems = new Hashtable<String, Object>();
+        keysAndItems.put("Chat", chat);
+        keysAndItems.put("DescPosX", posX);
+        keysAndItems.put("DescPosY", posY);
+        keysAndItems.put("UserId", userId);
+        keysAndItems.put("TrailId", trailId);
+        keysAndItems.put("Latitude", latitude);
+        keysAndItems.put("Longitude", longitude);
+        keysAndItems.put("Icon", icon);
+        keysAndItems.put("Extension", extension);
+        keysAndItems.put("PlaceId", placeId);
+        keysAndItems.put("Suburb", suburb);
+        keysAndItems.put("City", city);
+        keysAndItems.put("Country", country);
+        keysAndItems.put("TimeStamp", timeStamp);
+
+        dbm = DBMaster.GetAnInstanceOfDBMaster();
+        int crumbId = dbm.SaveNode(keysAndItems, com.breadcrumbs.database.DBMaster.myLabels.Crumb);	
+        Node crumb = dbm.RetrieveNode(crumbId);
+        Node trail = dbm.RetrieveNode(Integer.parseInt(trailId));
+
+        // Set the cover photo. This is being done automatically at the moment, but in the future we will
+        // need to check if the user has set a personal cover photo first.
+        trailManager.SetCoverPhoto(trailId, Integer.toString(crumbId));
+        dbm.CreateRelationship(crumb, trail, myRelationships.Part_Of);	
+        return String.valueOf(crumbId);
+    }
 	
 }

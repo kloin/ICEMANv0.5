@@ -89,10 +89,25 @@ public class TripManager {
             JSONObject node = new JSONObject();
             node.put("IsEncoded", line.isEncoded);
             node.put("Polyline", line.line);
+            if (line.baseLocation != null) {
+                node.put("BA", line.baseLocation.GetLatitude());
+                node.put("BO", line.baseLocation.GetLongitude());
+                
+                // We should have a head location if we have a base location
+                node.put("HA", line.headLocation.GetLatitude());
+                node.put("HO", line.headLocation.GetLongitude());
+            }
+            
             response.put(Integer.toString(index), node);
             index += 1;
         }
         
         return response;
+    }
+
+    public String GetMapDetails(String tripId) {
+        DBMaster dbMaster = DBMaster.GetAnInstanceOfDBMaster();
+        String cypherQuery = "start trail = node("+tripId+") return trail.Views, trail.TrailName, trail., trail.Views, trail.CoverPhotoId";		
+        return dbMaster.ExecuteCypherQueryReturnTrailDetails(cypherQuery);
     }
 }

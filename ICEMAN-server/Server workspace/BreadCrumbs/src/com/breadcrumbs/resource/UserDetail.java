@@ -11,10 +11,17 @@ import com.breadcrumbs.models.UserService;
 
 @Path("/UserDetail")
 public class UserDetail {
-	
+	 @GET
+        @Produces(MediaType.TEXT_PLAIN)
+        public String respondAsReady() {
+            return "GetUserName/{UserId}\n" +
+                "SaveUserAbout/{UserId}/{Description}\n" +
+                "StoreGCMClientInstanceID/{UserId}/{GCMInstanceID}\n";
+        }
+        
 	@GET
-    @Produces(MediaType.APPLICATION_JSON)
-    @Path("GetUserName/{UserId}")
+        @Produces(MediaType.APPLICATION_JSON)
+        @Path("GetUserName/{UserId}")
 	public String GetUserName(@PathParam("UserId") String userId) {
 		UserService userService = new UserService();
 		return userService.FetchUserName(userId);

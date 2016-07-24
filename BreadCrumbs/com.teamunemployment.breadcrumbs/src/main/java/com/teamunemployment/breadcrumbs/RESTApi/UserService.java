@@ -29,4 +29,7 @@ public interface UserService {
     @GET("User/GetUser/{UserId}")
     Call<User> GetUser(@Path("UserId") String userId);
 
+    @GET("User/PinTrailForUser/{UserId}/{TrailId}")
+    Call<ResponseBody> PinTrailForUser(@Path("UserId") String userId, @Path("TrailId") String trailId);
+
 }

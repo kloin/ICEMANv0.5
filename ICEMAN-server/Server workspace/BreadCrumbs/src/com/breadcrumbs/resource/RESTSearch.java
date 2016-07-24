@@ -7,10 +7,20 @@ import javax.ws.rs.PathParam;
 import org.json.JSONObject;
 
 import com.breadcrumbs.search.Search;
+import javax.ws.rs.Produces;
+import javax.ws.rs.core.MediaType;
 
 @Path("/Search")
 public class RESTSearch {
-		
+    
+    @GET
+    @Produces(MediaType.TEXT_PLAIN)
+    public String respondAsReady() {
+        return "/GeneralSearch/{SearchText}\n" +
+                "/TrailSearch/{SearchText}\n" +
+                "/UserSearch/{SearchText}\n";
+    }
+    
 	//This is a method that will search a users name, a trail name, and a collection (collections todo)
 	@GET
 	@Path("GeneralSearch/{SearchText}")

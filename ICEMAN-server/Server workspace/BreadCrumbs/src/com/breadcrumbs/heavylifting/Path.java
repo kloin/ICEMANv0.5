@@ -25,7 +25,6 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 /**
- *
  * @author jek40
  */
 public class Path {
@@ -94,7 +93,7 @@ public class Path {
             System.out.println("About to start");
             if (!started) {
                 // First time through use case.
-               // Grab the next node off the iterator. Assign our currentNode to
+                // Grab the next node off the iterator. Assign our currentNode to
                 // our base node, as we will be changing the currentnode more than the base node.
                 baseNode = nodeIterator.next();
                 currentNode = baseNode;
@@ -111,6 +110,13 @@ public class Path {
                     if (haveBeenDriving) {
                         // We want to calculate a driving event.
                         Polyline2 polyline = calculateDrivingEvent(baseNode, currentNode);
+                       
+//                        // If we have an encoded polyline, chances are that it wont draw directly to the correct points, because it maps to the road
+//                        if (polyline.isEncoded) {
+//                            String path = polyline.line;
+// 
+//                        }
+                        
                         baseNode = currentNode;
                         lineList.add(polyline);
                     } else {
@@ -210,6 +216,23 @@ public class Path {
     private PathNode recycleNode(PathNode oldNode) {
         return new PathNode(oldNode.GetJSON());
     }
+    
+    /**
+     * Caclculate walking directions for 
+     * @param baseNode
+     * @param destinationNode
+     * @return 
+     */
+    private Polyline2 calculateDirections(PathNode baseNode, PathNode destinationNode, String transportType) {
+         Location baseLocation = new Location(baseNode.GetLatitude(), baseNode.GetLongitude());
+        Location headLocation = new Location(destinationNode.GetLatitude(), destinationNode.GetLongitude());
+        String encodedPolyline = getGoogleDirectionsWithNoWaypoints(baseLocation, headLocation);
+        if (encodedPolyline == null) {
+            return calculateUnencodedPolyline(baseNode, baseNode);
+        }
+        polylineIndex += 1;
+        return new Polyline2(encodedPolyline, true, polylineIndex, baseLocation, headLocation);
+    }
 
     /**
      * Calculate the {@link Polyline2} between two points for a driving 
@@ -292,6 +315,11 @@ public class Path {
             String dLonString = Double.toString(destination.GetLongitude());
 
             baseUrl = baseUrl.concat(oLatString + "," + oLonString + "&destination="+dLatString + "," + dLonString);
+            
+//            // THe api request defaults to driving, so we dont need to worry about any of this shit
+//            if (transitType == StaticValues.WALKING) {
+//                baseUrl = baseUrl.concat("&transit=walking");
+//            }
           
             // Iterate through each of the points. Make the first the origin,
             // the last the destination and the rest of them the waypoints.
@@ -325,9 +353,13 @@ public class Path {
      * @return The {@link Polyline2} object with the walking line.
      */
     private Polyline2 calculateUnencodedPolyline(PathNode baseNode, PathNode headNode) {
-        String unEncodedPath = getWalkingPolyline(baseNode, headNode);
+        double distanceBetweenPoints = calculateDistance(baseNode.GetLatitude(), headNode.GetLatitude(), baseNode.GetLongitude(), headNode.GetLongitude(), 0, 0); 
+        if (distanceBetweenPoints > 1500) {
+            return calculateDrivingEvent(baseNode, headNode);
+        }
+        String path = getWalkingPolyline(baseNode, headNode);
         polylineIndex += 1;
-        return new Polyline2(unEncodedPath, false, polylineIndex);
+        return new Polyline2(path, false, polylineIndex);
     }
     
     private String getWalkingPolyline(PathNode baseNode, PathNode headNode) {

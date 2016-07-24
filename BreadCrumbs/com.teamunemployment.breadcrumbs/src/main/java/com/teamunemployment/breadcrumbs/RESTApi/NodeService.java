@@ -33,4 +33,10 @@ public interface NodeService {
 
     @GET("TrailManager/GetTrip/{TripId}")
     Call<Trip> getTrip(@Path("TripId") String tripId);
+
+    @GET("TrailManager/GetFavouritedTripsForAUser/{UserId}/{MaxCount}")
+    Call<ResponseBody> getFavouritedTripsForAUser(@Path("UserId") String userId, @Path("MaxCount") String maxCount);
+
+    @GET("TrailManager/GetIdsOfMostPopularTrips/{MaxCount}")
+    Call<ResponseBody> getIdsOfMostPopularTrips(@Path("MaxCount") String maxCount);
 }

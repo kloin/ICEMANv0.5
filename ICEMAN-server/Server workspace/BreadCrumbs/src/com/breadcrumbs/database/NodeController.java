@@ -22,6 +22,7 @@ import org.neo4j.cypher.javacompat.ExecutionResult;
 import com.breadcrumbs.database.DBMaster.myLabels;
 import com.breadcrumbs.database.DBMaster.myRelationships;
 import com.breadcrumbs.models.NodeConverter;
+import org.json.JSONArray;
 
 
 /*
@@ -121,6 +122,26 @@ public class NodeController implements INodeController {
 		
 		return json.toString();
 	}
+        public String convertIteratorToJSONArray(ExecutionResult result) {
+		//Convert our result into json;
+		Iterator<Map<String, Object>> it = result.iterator();
+		NodeConverter nodeConverter = new NodeConverter();
+		JSONObject json = new JSONObject();
+                JSONArray jsonArray = new JSONArray();
+		//DOnt know if this index shit is neccessary
+		int index = 0;
+		while (it.hasNext()) {
+			/* Haha im sorry let me explain. We know its an iterator of maps which, each have <KEY, NODE>, so we get that map.
+			 * Then, next line we want to get the values, which we know will be always just one node.
+			   Then, convert the collection to an array and get the first value (there will always only be one value).*/			 
+			Map nodeItemMap = it.next();
+			Collection valuesCollection = nodeItemMap.values();
+			Node tempNode = (Node) valuesCollection.toArray()[0];
+                        jsonArray.put(nodeConverter.ConvertSingleNodeToJSON(tempNode));			
+		}
+		
+		return jsonArray.toString();
+	}
 	
 	public String convertTrailPointToJSON(ExecutionResult result) {
 		//Convert our result into json;
@@ -163,6 +184,28 @@ public class NodeController implements INodeController {
 		}
 		
 		return json.toString();
+	}
+        
+        public String convertIteratorToCSVString(ExecutionResult result) {
+		Iterator<Map<String, Object>> it = result.iterator();
+		NodeConverter nodeConverter = new NodeConverter();
+		String resultCSV = null;
+		//DOnt know if this index shit is neccessary
+		int index = 0;
+		while (it.hasNext()) {
+			Map nodeItemMap = it.next();
+			Collection valuesCollection = nodeItemMap.values();
+			Node tempNode = (Node) valuesCollection.toArray()[0];
+                        if (resultCSV == null) {
+                            resultCSV = Long.toString(tempNode.getId());
+                        } else {
+                            resultCSV += ",";
+                            resultCSV += Long.toString(tempNode.getId());
+                        }
+			index+= 1;			
+		}
+		
+		return resultCSV;
 	}
         
         public String convertIteratorToJSONOfHomeCardDetails(ExecutionResult result) {

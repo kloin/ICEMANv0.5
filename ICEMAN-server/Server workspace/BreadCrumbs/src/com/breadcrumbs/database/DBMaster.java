@@ -22,6 +22,7 @@ import org.neo4j.graphdb.factory.GraphDatabaseFactory;
 
 import com.breadcrumbs.models.NodeConverter;
 import com.breadcrumbs.models.UserService;
+import org.json.JSONArray;
 
 /*
  * This class controls the database.
@@ -441,6 +442,33 @@ public class DBMaster {
 		
 		return nodeString;
 	}
+        
+        /*
+	 * Execute a cypher query with a string in JSON format as the return value.
+	 */
+	public String ExecuteCypherQueryJSONListStringReturn(String cypherQuery) {
+		
+                String resultString = "";
+		NodeController nc = new NodeController();
+		ExecutionEngine engine = new ExecutionEngine( _db );
+		ExecutionResult result = null;
+		Transaction tx = _db.beginTx();
+		try {
+		    result = engine.execute(cypherQuery);
+		    resultString = nc.convertIteratorToJSONArray(result);	
+                      
+		    tx.success();
+		} catch (Exception ex) {
+			ex.printStackTrace();
+			System.out.print("issues with fetching node and its relations");
+			tx.failure();
+			//return "failed";
+		} finally {
+			tx.close();
+		}
+		
+		return resultString;
+	}
 	
 	public String ExecuteCypherQueryReturnPoint(String cypherQuery) {
 		String nodeString = "";
@@ -500,6 +528,29 @@ public class DBMaster {
 		    JSONObject tempNode = new JSONObject(nc.convertIteratorToJSONOfJustIds(result));	
 		    nodeString = tempNode.toString();
 		    tx.success();
+		} catch (Exception ex) {
+			ex.printStackTrace();
+			System.out.print("issues with fetching node and its relations");
+			tx.failure();
+			//return "failed";
+		} finally {
+			tx.close();
+		}
+		
+		return nodeString;
+	}
+        
+        public String ExecuteCypherQueryReturnCSVString(String cypherQuery) {
+		String nodeString = "";
+		NodeController nc = new NodeController();
+		ExecutionEngine engine = new ExecutionEngine( _db );
+		ExecutionResult result = null;
+		Transaction tx = _db.beginTx();
+		try {
+		    result = engine.execute(cypherQuery);
+                    String resultCSVString = nc.convertIteratorToCSVString(result);	
+		    tx.success();
+                    return resultCSVString;
 		} catch (Exception ex) {
 			ex.printStackTrace();
 			System.out.print("issues with fetching node and its relations");

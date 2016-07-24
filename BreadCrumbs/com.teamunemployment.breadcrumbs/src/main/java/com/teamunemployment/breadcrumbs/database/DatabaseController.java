@@ -86,26 +86,11 @@ public class DatabaseController extends SQLiteOpenHelper {
             oldVersion = 2;
         }
 
-        if (newVersion > 3) {
-            db.execSQL("CREATE TABLE " + TRIP_TABLE + " (_id INTEGER PRIMARY KEY AUTOINCREMENT, " +
-                    "UserId INTEGER," +
-                    "StartDate TEXT," +
-                    "CoverPhotoId TEXT," +
-                    "TrailName TEXT," +
-                    "Description TEXT," +
-                    "Id INTEGER,"+
-                    "Views INTEGER," +
-                    "Distance TEXT);");
-
-        }
-
         if (newVersion > 4 && oldVersion > 3) {
             String upgradeQuery = "ALTER TABLE " + TRIP_TABLE +" ADD COLUMN TrailName TEXT";
             String upgrade2 = "ALTER TABLE " + TRIP_TABLE +" ADD COLUMN Distance TEXT";
-            String usersUpgrade = "ALTER TABLE " + USERS + " ADD COLUMN ProfilePicId INTEGER";
             db.execSQL(upgradeQuery);
             db.execSQL(upgrade2);
-            db.execSQL(usersUpgrade);
         }
 
         if (oldVersion == 3 && newVersion == 4) {
