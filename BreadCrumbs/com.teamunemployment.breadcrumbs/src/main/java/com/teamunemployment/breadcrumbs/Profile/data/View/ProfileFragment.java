@@ -92,6 +92,7 @@ public class ProfileFragment extends Fragment implements ProfileContract.ViewCon
     private AppCompatActivity appCompatActivity;
     private long userId;
     private PreferencesAPI preferencesAPI;
+    private boolean isOwner = false;
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -117,11 +118,13 @@ public class ProfileFragment extends Fragment implements ProfileContract.ViewCon
     private void setUserId(Bundle arguments) {
         if (arguments != null) {
             userId = arguments.getLong("UserId", -1);
+            isOwner = false;
         } else {
             userId = -1;
         }
 
         if (userId == -1) {
+            isOwner = true;
             PreferencesAPI preferencesAPI = new PreferencesAPI(appCompatActivity);
             userId = Long.parseLong(preferencesAPI.GetUserId());
         }
@@ -207,29 +210,8 @@ public class ProfileFragment extends Fragment implements ProfileContract.ViewCon
                             }
                         });
 
-                        TextView deleteButton = (TextView) item.findViewById(R.id.delete_button);
-                        deleteButton.setOnClickListener(new View.OnClickListener() {
-                            @Override
-                            public void onClick(View view) {
-                                IDialogCallback deleteCallback = new IDialogCallback() {
+                        setDelete(item, trips, finalIndex);
 
-                                    @Override
-                                    public void DoCallback() {
-                                        TripRepo tripRepo = new TripRepo();
-                                        tripRepo.DeleteTrip(trips.get(finalIndex).getId());
-                                        listView.removeView(item);
-                                    }
-                                };
-
-                                SimpleMaterialDesignDialog.Build(appCompatActivity)
-                                        .SetTextBody("Are you sure you want to delete this album? This action cannot be undone.")
-                                        .SetActionWording("DELETE")
-                                        .SetTitle("Delete Album")
-                                        .SetCallBack(deleteCallback)
-                                        .Show();
-
-                            }
-                        });
 
                     }
                 }
@@ -237,6 +219,34 @@ public class ProfileFragment extends Fragment implements ProfileContract.ViewCon
         }
     }
 
+    private void setDelete(final View item, final ArrayList<Trip> trips, final int finalIndex) {
+        TextView deleteButton = (TextView) item.findViewById(R.id.delete_button);
+        if (!isOwner) {
+            deleteButton.setVisibility(View.GONE);
+        }
+        deleteButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                IDialogCallback deleteCallback = new IDialogCallback() {
+
+                    @Override
+                    public void DoCallback() {
+                        TripRepo tripRepo = new TripRepo();
+                        tripRepo.DeleteTrip(trips.get(finalIndex).getId());
+                        listView.removeView(item);
+                    }
+                };
+
+                SimpleMaterialDesignDialog.Build(appCompatActivity)
+                        .SetTextBody("Are you sure you want to delete this album? This action cannot be undone.")
+                        .SetActionWording("DELETE")
+                        .SetTitle("Delete Album")
+                        .SetCallBack(deleteCallback)
+                        .Show();
+
+            }
+        });
+    }
     @Override
     public void setProfilePicture(final String url) {
         appCompatActivity.runOnUiThread(new Runnable() {
@@ -452,6 +462,11 @@ public class ProfileFragment extends Fragment implements ProfileContract.ViewCon
                 }
             }
         });
+
+    }
+
+    @Override
+    public void setDeleteButtonVisible(boolean isVisible) {
 
     }
 

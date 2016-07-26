@@ -66,7 +66,6 @@ public class ExtractorRendererBuilder implements BreadcrumbsExoPlayer.RendererBu
         if (!isLocal) {
             proxyCacheServer = Mp4ProxyCache.GetProxy(context);
             String proxyUrl = proxyCacheServer.getProxyUrl(uri.toString());
-
             proxyUri= Uri.parse(proxyUrl);
         } else {
             proxyUri = uri;

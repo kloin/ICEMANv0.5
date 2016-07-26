@@ -39,4 +39,27 @@ public interface NodeService {
 
     @GET("TrailManager/GetIdsOfMostPopularTrips/{MaxCount}")
     Call<ResponseBody> getIdsOfMostPopularTrips(@Path("MaxCount") String maxCount);
+
+    @GET("TrailManager/GetDurationOfTrailInDays/{TrailId}")
+    Call<ResponseBody> getDurationOfTrailInDays(@Path("TrailId") String trailId);
+
+    @GET("TrailManager/SetCoverPhotoForTrail/{TrailId}/{ImageId}")
+    Call<ResponseBody> setCoverPhotoForTrail(@Path("TrailId") String trailId, @Path("ImageId") String imageId);
+
+    @GET("TrailManager/AddTrailView/{TrailId}")
+    Call<ResponseBody> addTrailView(@Path("TrailId") String trailId);
+
+    @GET("TrailManager/GetTrailViews/{TrailId}")
+    Call<ResponseBody> getTrailViews(@Path("TrailId") String trailId);
+
+    @GET("TrailManager/UserLikesTrail/{UserId}/{TrailId}")
+    Call<ResponseBody> addLikeToTrail(@Path("UserId") String userId, @Path("TrailId") String trailId);
+
+    @GET("TrailManager/GetLIkesForTrail/{TrailId}")
+    Call<ResponseBody> getNumberOfLikesForATrail(@Path("TrailId") String trailId);
+
+    @GET("TrailManager/GetNumberOfCrumbsForATrail/{TrailId}")
+    Call<ResponseBody> getNumberOfCrumbsForATrail(@Path("TrailId") String trailId);
+
+
 }

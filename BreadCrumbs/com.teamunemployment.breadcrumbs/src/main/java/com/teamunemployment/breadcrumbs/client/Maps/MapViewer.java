@@ -72,6 +72,7 @@ import com.google.android.gms.maps.GoogleMap.OnMarkerClickListener;
 import com.google.android.gms.maps.MapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
+import com.teamunemployment.breadcrumbs.RESTApi.NodeService;
 import com.teamunemployment.breadcrumbs.RESTApi.UserService;
 import com.teamunemployment.breadcrumbs.RandomUsefulShit.Utils;
 import com.teamunemployment.breadcrumbs.Trails.TrailManagerWorker;
@@ -175,6 +176,7 @@ public class MapViewer extends Activity implements OnMapClickListener, OnMapLong
         ((MapFragment) getFragmentManager().findFragmentById(R.id.map)).getMapAsync(this);
 		mContext = this;
 		trailId = this.getIntent().getStringExtra("TrailId");
+		addViewToTrail(trailId);
 	}
 
 	private void doSetupShit() {
@@ -1055,17 +1057,24 @@ public class MapViewer extends Activity implements OnMapClickListener, OnMapLong
 	 * When we view this trail, we need to add a view to it.
 	 * @param trailId The trail to add a view to.
      */
-	private void addViewToTrail(String trailId) {
-		clientRequestProxy  = new AsyncDataRetrieval(LoadBalancer.RequestServerAddress() +
-				"/rest/TrailManager/AddTrailView/"+trailId,
-				new AsyncDataRetrieval.RequestListener() {
+	private void addViewToTrail(final String trailId) {
+		Retrofit retrofit = new Retrofit.Builder()
+				// .addCallAdapterFactory(RxJavaCallAdapterFactory.create())
+				.addConverterFactory(GsonConverterFactory.create())
+				.baseUrl(LoadBalancer.RequestServerAddress() + "/rest/")
+				.build();
+		final NodeService nodeService = retrofit.create(NodeService.class);
+		new Thread(new Runnable() {
 			@Override
-			public void onFinished(String result) {
-				// Dont actually need to do anything with this result, so I just log it.
-				Log.i("MapViewer.ViewUpdate", "Successfully added view to map. Status : " + result);
+			public void run() {
+				Call<ResponseBody> responseCall = nodeService.addTrailView(trailId);
+				try {
+					responseCall.execute();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
 			}
-		}, this);
-		clientRequestProxy.execute();
+		}).start();
 	}
 
 	@Override

@@ -28,6 +28,8 @@ import butterknife.ButterKnife;
 
 /**
  * @author Josiah Kendall.
+ *
+ * This fragment is the "Feed" tab.
  */
 public class ExploreFragment extends Fragment implements ViewContract {
     private final String TAG = "EXPLORE";
@@ -67,7 +69,7 @@ public class ExploreFragment extends Fragment implements ViewContract {
 
     @Override
     public void SetRecyclerViewAdapter(final RecyclerView.Adapter adapter) {
-        final LinearLayoutManager layoutManager = new LinearLayoutManager(context);
+        // Have a staggered grid so that we can have two abreast if we choose.
         final StaggeredGridLayoutManager staggeredGridLayoutManager = new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL);
         AppCompatActivity appCompatActivity = (AppCompatActivity) context;
         appCompatActivity.runOnUiThread(new Runnable() {
@@ -75,15 +77,15 @@ public class ExploreFragment extends Fragment implements ViewContract {
             public void run() {
                 recyclerView.setAdapter(adapter);
                 recyclerView.setLayoutManager(staggeredGridLayoutManager);
-                int spacingInPixels = 16;
+
+                // Set up the spaceing between the grid items
+                int spacingInPixels = 8;
                 recyclerView.addItemDecoration(new SpacesItemDecoration(spacingInPixels));
+
                 // Improves perf if we do not change the size of the Recycler view over the course of its lifecycle.
                 recyclerView.setHasFixedSize(true);
             }
         });
-
-
-
     }
 
     public class SpacesItemDecoration extends RecyclerView.ItemDecoration {
@@ -94,15 +96,19 @@ public class ExploreFragment extends Fragment implements ViewContract {
         }
 
         @Override
-        public void getItemOffsets(Rect outRect, View view,
-                                   RecyclerView parent, RecyclerView.State state) {
-            outRect.left = space;
-            outRect.right = space;
-            outRect.bottom = space;
-            int spanIndex = ((StaggeredGridLayoutManager.LayoutParams) view.getLayoutParams()).getSpanIndex();
-            // Add top margin only for the first item to avoid double space between items
-            if (spanIndex == 1) {
-                outRect.left = 0;
+        public void getItemOffsets(Rect outRect, View view, RecyclerView parent, RecyclerView.State state) {
+
+            // We only want to add spacing to grid items. Items that are full span we dont want margin.
+            if (!((StaggeredGridLayoutManager.LayoutParams) view.getLayoutParams()).isFullSpan()) {
+                outRect.left = space;
+                outRect.top = space;
+                outRect.right = space;
+                outRect.bottom = space;
+                int spanIndex = ((StaggeredGridLayoutManager.LayoutParams) view.getLayoutParams()).getSpanIndex();
+                // Add top margin only for the first item to avoid double space between items (in the middle of the grid).
+                if (spanIndex == 1) {
+                    outRect.left = 0;
+                }
             }
         }
     }

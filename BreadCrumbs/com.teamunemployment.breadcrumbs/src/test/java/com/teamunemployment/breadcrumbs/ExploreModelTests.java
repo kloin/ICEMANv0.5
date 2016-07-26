@@ -3,6 +3,7 @@ package com.teamunemployment.breadcrumbs;
 import android.view.View;
 import android.widget.LinearLayout;
 
+import com.teamunemployment.breadcrumbs.Explore.Adapter.ExploreCardContract;
 import com.teamunemployment.breadcrumbs.Explore.Data.ExploreLocalRepository;
 import com.teamunemployment.breadcrumbs.Explore.Data.ExploreRemoteRepository;
 import com.teamunemployment.breadcrumbs.Explore.ExploreCardModel;
@@ -32,14 +33,14 @@ public class ExploreModelTests {
         ExploreRemoteRepository remoteRepository = Mockito.mock(ExploreRemoteRepository.class);
         ExploreLocalRepository localRepository = Mockito.mock(ExploreLocalRepository.class);
 
-        RecyclerViewAdapterContract view = Mockito.mock(RecyclerViewAdapterContract.class);
+        ExploreCardContract view = Mockito.mock(ExploreCardContract.class);
         Model model = new Model(localRepository, remoteRepository);
         when(localRepository.LoadTrip(any(Long.class))).thenReturn(getTrip1());
         when(remoteRepository.LoadTrip(any(Long.class))).thenReturn(getTrip1());
         ExploreCardModel exploreCardModel = new ExploreCardModel(ExploreCardModel.FOLLOWING_CARD, "1");
-        model.LoadSingleTrip(exploreCardModel, Mockito.mock(LinearLayout.class), view);
+        model.LoadSingleTrip(Long.parseLong(exploreCardModel.getData()), view);
 
-        verify(view, times(1)).bindTripToCard(any(Trip.class), any(View.class), any(ExploreCardModel.class));
+        verify(view, times(1)).bindTrip(any(Trip.class), any(Model.class));
     }
 
     private Trip getTrip1() {
@@ -73,15 +74,14 @@ public class ExploreModelTests {
         ExploreRemoteRepository remoteRepository = Mockito.mock(ExploreRemoteRepository.class);
         ExploreLocalRepository localRepository = Mockito.mock(ExploreLocalRepository.class);
 
-        RecyclerViewAdapterContract view = Mockito.mock(RecyclerViewAdapterContract.class);
+        ExploreCardContract view = Mockito.mock(ExploreCardContract.class);
         Model model = new Model(localRepository, remoteRepository);
 
         ExploreCardModel exploreCardModel = new ExploreCardModel(ExploreCardModel.FOLLOWING_CARD, "1");
         when(localRepository.LoadTrip(any(Long.class))).thenReturn(getTrip1());
         when(remoteRepository.LoadTrip(any(Long.class))).thenReturn(getTrip2());
-        model.LoadSingleTrip(exploreCardModel, null, view);
-
-        verify(view, times(2)).bindTripToCard(any(Trip.class), any(View.class), any(ExploreCardModel.class));
+        model.LoadSingleTrip(Long.parseLong(exploreCardModel.getData()), view);
+        verify(view, times(2)).bindTrip(any(Trip.class), any(Model.class));
     }
 
     @Test
@@ -89,15 +89,15 @@ public class ExploreModelTests {
         ExploreRemoteRepository remoteRepository = Mockito.mock(ExploreRemoteRepository.class);
         ExploreLocalRepository localRepository = Mockito.mock(ExploreLocalRepository.class);
 
-        RecyclerViewAdapterContract view = Mockito.mock(RecyclerViewAdapterContract.class);
+        ExploreCardContract view = Mockito.mock(ExploreCardContract.class);
         Model model = new Model(localRepository, remoteRepository);
 
         ExploreCardModel exploreCardModel = new ExploreCardModel(ExploreCardModel.FOLLOWING_CARD, "1");
         when(localRepository.LoadTrip(any(Long.class))).thenReturn(null);
         when(remoteRepository.LoadTrip(any(Long.class))).thenReturn(getTrip2());
-        model.LoadSingleTrip(exploreCardModel, null, view);
+        model.LoadSingleTrip(Long.parseLong(exploreCardModel.getData()), view);
 
-        verify(view, times(1)).bindTripToCard(any(Trip.class), any(View.class), any(ExploreCardModel.class));
+        verify(view, times(1)).bindTrip(any(Trip.class), any(Model.class));
     }
 
     @Test
@@ -105,14 +105,14 @@ public class ExploreModelTests {
         ExploreRemoteRepository remoteRepository = Mockito.mock(ExploreRemoteRepository.class);
         ExploreLocalRepository localRepository = Mockito.mock(ExploreLocalRepository.class);
 
-        RecyclerViewAdapterContract view = Mockito.mock(RecyclerViewAdapterContract.class);
+        ExploreCardContract view = Mockito.mock(ExploreCardContract.class);
         Model model = new Model(localRepository, remoteRepository);
 
         when(localRepository.LoadTrip(any(Long.class))).thenReturn(null);
         when(remoteRepository.LoadTrip(any(Long.class))).thenReturn(getTrip2());
 
         ExploreCardModel exploreCardModel = new ExploreCardModel(ExploreCardModel.FOLLOWING_CARD, "1");
-        model.LoadSingleTrip(exploreCardModel, null, view);
+        model.LoadSingleTrip(Long.parseLong(exploreCardModel.getData()), view);
 
         verify(localRepository, times(1)).SaveTrip(any(Trip.class), any(Long.class));
     }
@@ -122,14 +122,14 @@ public class ExploreModelTests {
         ExploreRemoteRepository remoteRepository = Mockito.mock(ExploreRemoteRepository.class);
         ExploreLocalRepository localRepository = Mockito.mock(ExploreLocalRepository.class);
 
-        RecyclerViewAdapterContract view = Mockito.mock(RecyclerViewAdapterContract.class);
+        ExploreCardContract view = Mockito.mock(ExploreCardContract.class);
         Model model = new Model(localRepository, remoteRepository);
 
         ExploreCardModel exploreCardModel = new ExploreCardModel(ExploreCardModel.FOLLOWING_CARD, "1");
 
         when(localRepository.LoadTrip(any(Long.class))).thenReturn(getTrip1());
         when(remoteRepository.LoadTrip(any(Long.class))).thenReturn(getTrip2());
-        model.LoadSingleTrip(exploreCardModel, null, view);
+        model.LoadSingleTrip(Long.parseLong(exploreCardModel.getData()), view);
         verify(localRepository, times(1)).SaveTrip(any(Trip.class), any(Long.class));
     }
 
@@ -138,14 +138,14 @@ public class ExploreModelTests {
         ExploreRemoteRepository remoteRepository = Mockito.mock(ExploreRemoteRepository.class);
         ExploreLocalRepository localRepository = Mockito.mock(ExploreLocalRepository.class);
 
-        RecyclerViewAdapterContract view = Mockito.mock(RecyclerViewAdapterContract.class);
+        ExploreCardContract view = Mockito.mock(ExploreCardContract.class);
         Model model = new Model(localRepository, remoteRepository);
 
         ExploreCardModel exploreCardModel = new ExploreCardModel(ExploreCardModel.FOLLOWING_CARD, "1");
         when(localRepository.LoadTrip(any(Long.class))).thenReturn(getTrip1());
         when(remoteRepository.LoadTrip(any(Long.class))).thenReturn(getTrip1());
 
-        model.LoadSingleTrip(exploreCardModel, null, view);
+        model.LoadSingleTrip(Long.parseLong(exploreCardModel.getData()), view);
         verify(localRepository, times(0)).SaveTrip(any(Trip.class), any(Long.class));
     }
 }

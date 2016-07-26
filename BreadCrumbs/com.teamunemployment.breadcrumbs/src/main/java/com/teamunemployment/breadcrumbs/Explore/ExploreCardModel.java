@@ -14,6 +14,8 @@ public class ExploreCardModel {
     public static final int FOLLOWING_HEADER = 4;
     public static final int LOCAL_HEADER = 5;
     public static final int TRENDING_CARD = 6;
+    public static final int GLOBAL_HEADER = 7;
+    public static final int GLOBAL_CARD = 8;
 
 
     private int viewType;

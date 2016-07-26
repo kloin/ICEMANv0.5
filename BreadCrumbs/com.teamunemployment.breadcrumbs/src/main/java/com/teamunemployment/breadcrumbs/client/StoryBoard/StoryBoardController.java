@@ -107,7 +107,7 @@ public class StoryBoardController {
      * @return
      */
     private int determineInitialNetworkConnection() {
-        if (NetworkConnectivityManager.IsNetworkAvailable(mContext)) {
+        if (!NetworkConnectivityManager.IsNetworkAvailable(mContext)) {
             return -1;
         }
 

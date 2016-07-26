@@ -89,10 +89,7 @@ public class HomeActivity extends AppCompatActivity {
                 bottomBar.selectTabAtPosition(0, false);
                 break;
             case FragNavController.TAB2:
-                bottomBar.selectTabAtPosition(1, false);
-                break;
-            case FragNavController.TAB3:
-                bottomBar.selectTabAtPosition(4, false);
+                bottomBar.selectTabAtPosition(3, false);
                 break;
         }
     }
@@ -106,7 +103,8 @@ public class HomeActivity extends AppCompatActivity {
             @Override
             public void onMenuTabSelected(@IdRes int menuItemId) {
                 try {
-                    if (menuItemId == R.id.bottomBarItemOne) {
+
+                     if(menuItemId == R.id.bottomBarItemTwo) {
                         CURRENT_TAB = FragNavController.TAB1;
                         preferencesAPI.SetCurrentTab(CURRENT_TAB);
                         Handler handler = new Handler();
@@ -114,16 +112,6 @@ public class HomeActivity extends AppCompatActivity {
                             @Override
                             public void run() {
                                 fragNavController.switchTab(FragNavController.TAB1);
-                            }
-                        }, 120);
-                    } else if(menuItemId == R.id.bottomBarItemTwo) {
-                        CURRENT_TAB = FragNavController.TAB2;
-                        preferencesAPI.SetCurrentTab(CURRENT_TAB);
-                        Handler handler = new Handler();
-                        handler.postDelayed(new Runnable(){
-                            @Override
-                            public void run() {
-                                fragNavController.switchTab(FragNavController.TAB2);
                             }
                         }, 120);
                     } else if(menuItemId == R.id.bottomBarItemThree) {
@@ -138,9 +126,9 @@ public class HomeActivity extends AppCompatActivity {
                         handler.postDelayed(new Runnable(){
                             @Override
                             public void run() {
-                                CURRENT_TAB = FragNavController.TAB3;
+                                CURRENT_TAB = FragNavController.TAB2;
                                 preferencesAPI.SetCurrentTab(CURRENT_TAB);
-                                fragNavController.switchTab(FragNavController.TAB3);
+                                fragNavController.switchTab(FragNavController.TAB2);
                             }
                         }, 120);
 
@@ -242,7 +230,7 @@ public class HomeActivity extends AppCompatActivity {
 
     private void initialiseFragHolder() {
         List<Fragment> fragments = new ArrayList<>(3);
-        fragments.add(new HomeTabFragment());
+       // fragments.add(new HomeTabFragment());
         fragments.add(new ExploreFragment());
         fragments.add(new ProfileFragment());
         fragNavController = new FragNavController(getSupportFragmentManager(),R.id.fragment_container,fragments);

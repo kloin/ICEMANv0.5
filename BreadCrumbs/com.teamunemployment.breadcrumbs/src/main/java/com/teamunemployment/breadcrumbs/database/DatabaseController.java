@@ -45,7 +45,7 @@ import java.util.Iterator;
  */
 public class DatabaseController extends SQLiteOpenHelper {
 
-    private static final int DATABASE_VERSION = 5;
+    private static final int DATABASE_VERSION = 6;
     private static final String POLYLINES = "polylines";
 	private static final String DATABASE_NAME="users";
     private static final String TRAIL_POINTS_INDEX = "trailIndexDb";
@@ -80,31 +80,34 @@ public class DatabaseController extends SQLiteOpenHelper {
         // TODO: Need to fix this shit
         Log.d(TAG, "Updating from version: " + oldVersion + " to version: "+ newVersion);
         // Upgade from version one to two
-        if (oldVersion == 1 && newVersion == 2) {
+        if (oldVersion == 1) {
             String upgradeQuery = "ALTER TABLE " + TRAIL_SUMMARY +" ADD COLUMN PublishPoint INTEGER";
             db.execSQL(upgradeQuery);
             oldVersion = 2;
         }
 
-        if (newVersion > 4 && oldVersion > 3) {
+        if (oldVersion == 3) {
             String upgradeQuery = "ALTER TABLE " + TRIP_TABLE +" ADD COLUMN TrailName TEXT";
             String upgrade2 = "ALTER TABLE " + TRIP_TABLE +" ADD COLUMN Distance TEXT";
             db.execSQL(upgradeQuery);
             db.execSQL(upgrade2);
+            oldVersion = 4;
         }
 
-        if (oldVersion == 3 && newVersion == 4) {
+        if (oldVersion == 4) {
             String upgradeQuery = "ALTER TABLE " + CRUMBS +" ADD COLUMN descPosX REAL";
             db.execSQL(upgradeQuery);
             upgradeQuery = "ALTER TABLE " + CRUMBS +" ADD COLUMN descPosY REAL";
             db.execSQL(upgradeQuery);
+            oldVersion = 5;
         }
 
-        if ( newVersion > 4) {
-            db.execSQL("CREATE TABLE " + FOLLOWING_TABLE + " (_id INTEGER PRIMARY KEY AUTOINCREMENT, " +
-                    "UserId INTEGER," +
-                    "FollowedUserId INTEGER);");
-        }
+//        if ( oldVersion ==5) {
+//            db.execSQL("CREATE TABLE " + FOLLOWING_TABLE + " (_id INTEGER PRIMARY KEY AUTOINCREMENT, " +
+//                    "UserId INTEGER," +
+//                    "FollowedUserId INTEGER);");
+//            oldVersion = 6;
+//        }
     }
 
 	public void SaveUser(String userId, String userName, int age, String pin) {

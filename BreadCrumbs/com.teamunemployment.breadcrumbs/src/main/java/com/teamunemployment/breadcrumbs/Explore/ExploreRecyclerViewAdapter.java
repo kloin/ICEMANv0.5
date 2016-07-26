@@ -39,6 +39,7 @@ import de.hdodenhof.circleimageview.CircleImageView;
 
 /**
  * @author Josiah Kendall
+ * The adapter for our feed recyclerview.
  */
 public class ExploreRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
@@ -82,6 +83,11 @@ public class ExploreRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVie
                         .inflate(R.layout.explore_following_card, parent, false);
                 FullCard fullCard = new FullCard(view2, appCompatActivityContext);
                 return fullCard;
+            case ExploreCardModel.GLOBAL_CARD:
+                View view3 = LayoutInflater.from(parent.getContext())
+                        .inflate(R.layout.explore_following_card, parent, false);
+                FullCard fullCard2 = new FullCard(view3, appCompatActivityContext);
+                return fullCard2;
         }
 
         // Else make banner
@@ -105,12 +111,12 @@ public class ExploreRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVie
                 new Thread(new Runnable() {
                     @Override
                     public void run() {
-                        model.LoadSingleTrip(cardModel, viewHolder);
+                        model.LoadSingleTrip(Long.parseLong(cardModel.getData()), viewHolder);
                     }
                 }).start();
                 break;
             case ExploreCardModel.FOLLOWING_HEADER:
-                bindHeader(holder, "Following", appCompatActivityContext.getResources().getColor(R.color.red_300), R.drawable.ic_action_person);
+                bindHeader(holder, "Favourites", appCompatActivityContext.getResources().getColor(R.color.red_300), R.drawable.ic_favorite_border_white_24dp);
                 break;
             case ExploreCardModel.LOCAL_CARD:
                 break;
@@ -124,9 +130,24 @@ public class ExploreRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVie
                 new Thread(new Runnable() {
                     @Override
                     public void run() {
-                        model.LoadSingleTrip(cardModel, fullCard);
+                        model.LoadSingleTrip(Long.parseLong(cardModel.getData()), fullCard);
                     }
                 }).start();
+                break;
+            case ExploreCardModel.GLOBAL_HEADER:
+                bindHeader(holder, "Around the Globe", appCompatActivityContext.getResources().getColor(R.color.good_to_go), R.drawable.ic_public_white_24dp);
+                break;
+            case ExploreCardModel.GLOBAL_CARD:
+                final FullCard global = (FullCard) holder;
+                StaggeredGridLayoutManager.LayoutParams fullSpan = (StaggeredGridLayoutManager.LayoutParams) global.itemView.getLayoutParams();
+                fullSpan.setFullSpan(true);
+                new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        model.LoadSingleTrip(Long.parseLong(cardModel.getData()), global);
+                    }
+                }).start();
+                break;
         }
     }
 

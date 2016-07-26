@@ -1,16 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
                 android:layout_width="wrap_content"
+                android:background="@drawable/rounded_card"
                 android:layout_height="wrap_content">
 
         <ImageView
             android:id="@+id/main_photo"
+            android:layout_margin="1dp"
             android:scaleType="centerCrop"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"/>
         <View
             android:background="@color/black_semi_transparent"
-            android:alpha="0.2"
+            android:alpha="0.3"
             android:layout_alignTop="@+id/main_photo"
             android:layout_alignRight="@+id/main_photo"
             android:layout_alignBottom="@+id/main_photo"
@@ -21,10 +23,10 @@
         <TextView
             android:id="@+id/Title"
             android:textSize="16sp"
-            android:layout_margin="6dp"
+            android:textStyle="bold"
+            android:layout_margin="12dp"
             android:textColor="@color/white"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_alignParentBottom="true"/>
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
 
 </RelativeLayout>

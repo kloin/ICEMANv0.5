@@ -1,28 +1,18 @@
 package com.teamunemployment.breadcrumbs.Explore;
 
-import android.content.Context;
-import android.support.v7.widget.RecyclerView;
-import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
-
 import com.teamunemployment.breadcrumbs.Explore.Adapter.ExploreCardContract;
 import com.teamunemployment.breadcrumbs.Explore.Data.ExploreLocalRepository;
 import com.teamunemployment.breadcrumbs.Explore.Data.ExploreRemoteRepository;
-import com.teamunemployment.breadcrumbs.Network.LoadBalancer;
 import com.teamunemployment.breadcrumbs.R;
-import com.teamunemployment.breadcrumbs.RESTApi.NodeService;
-import com.teamunemployment.breadcrumbs.RESTApi.UserService;
 import com.teamunemployment.breadcrumbs.Trails.Trip;
 import com.teamunemployment.breadcrumbs.User;
-import com.teamunemployment.breadcrumbs.database.DatabaseController;
 
 import java.util.ArrayList;
 
-import retrofit2.Retrofit;
-import retrofit2.converter.gson.GsonConverterFactory;
-
 /**
  * @author Josiah Kendall.
+ *
+ * The model for the "Explore" or "Feed" page.
  */
 public class Model {
 
@@ -32,19 +22,52 @@ public class Model {
     private ArrayList<ExploreCardModel> cardModels = new ArrayList<>();
 
     public Model(ExploreLocalRepository localRepo, ExploreRemoteRepository remoteRepo) {
+
+        // Dependencies.
         this.remoteRepository = remoteRepo;
         this.localRepository = localRepo;
     }
 
-    public ArrayList<ExploreCardModel> LoadModels(long userId) {
-        cardModels.add(new ExploreCardModel(ExploreCardModel.TRENDING_HEADER, "Trending", R.drawable.ic_location_on_white_24dp));
-        ArrayList<String> trendingTrips = remoteRepository.LoadPopularTrips(3);
-        cardModels.addAll(addModels(trendingTrips,ExploreCardModel.TRENDING_CARD ));
-        ArrayList<String> trips = LoadFollowingTrips(userId, 10);
+    /**
+     * Load the ids that we want to display. Does as it souns. Each of the cards that we display
+     * on the recycler view has a corresponding id. That is loaded intially here. At runtime we use
+     * this Id to load the data associated with the trip.
+     * @param userId The user id of the user currently logged in. Not sure how neccessary this param is.
+     * @return AN Array list of {@link ExploreCardModel} for use in the RecyclerView adapter.
+     */
+    public ArrayList<ExploreCardModel> LoadIdsForAllTheAlbumsWeWantToDisplay(long userId) {
+
+        // This is a master list of ids to ensure theat we dont add the same trip twice.
+        ArrayList<String> ids = new ArrayList<>();
+
+        // Load up to ten trips that we are following.
+        ArrayList<String> trips = LoadFollowingTrips(userId, 4);
+
+        // Load following trips.
         if (trips.size() > 0) {
             cardModels.add(new ExploreCardModel(ExploreCardModel.FOLLOWING_HEADER, "Following", R.drawable.ic_account_plus_grey600_24dp));
-            cardModels.addAll(addModels(trips, ExploreCardModel.FOLLOWING_CARD));
+            cardModels.addAll(addModels(trips, ExploreCardModel.FOLLOWING_CARD, ids));
         }
+
+        // add trending banner
+        cardModels.add(new ExploreCardModel(ExploreCardModel.TRENDING_HEADER, "Trending", R.drawable.ic_location_on_white_24dp));
+
+        // Loading trending trips
+        ArrayList<String> trendingTrips = remoteRepository.LoadPopularTrips(3);
+        cardModels.addAll(addModels(trendingTrips,ExploreCardModel.TRENDING_CARD, ids));
+
+        // Add these trips to the master list
+        ids.addAll(trendingTrips);
+
+        // Load a bunch of global trip
+        ArrayList<String> global = remoteRepository.LoadTwentyGlobalTripIds();
+        if (global.size() > 0) {
+            cardModels.add(new ExploreCardModel(ExploreCardModel.GLOBAL_HEADER, "Global", R.drawable.ic_account_plus_grey600_24dp));
+            cardModels.addAll(addModels(global, ExploreCardModel.GLOBAL_CARD, ids));
+        }
+
+
+
         return cardModels;
     }
 
@@ -57,7 +80,6 @@ public class Model {
     }
 
     public ArrayList<Trip> LoadThreeUpdatedFollowingTrips(long userId) {
-
         return remoteRepository.LoadTop3FollowTrips(userId);
     }
 
@@ -69,17 +91,20 @@ public class Model {
         return remoteRepository.LoadGlobalTrips();
     }
 
-    private ArrayList<ExploreCardModel> addModels(ArrayList<String> ids, int viewType) {
+    // Add the models to our currently existing models, making sure the we dont add the same item twice.
+    private ArrayList<ExploreCardModel> addModels(ArrayList<String> ids, int viewType, ArrayList<String> preExistingIds) {
         ArrayList<ExploreCardModel> models = new ArrayList<>();
         for (String id: ids) {
-            models.add(new ExploreCardModel(viewType, id));
+            if (!preExistingIds.contains(id)) {
+                models.add(new ExploreCardModel(viewType, id));
+            }
         }
 
         return models;
     }
 
-    public void LoadSingleTrip(final ExploreCardModel cardModel, ExploreCardContract contract) {
-        long tripId = Long.parseLong(cardModel.getData());
+    // Load the details for a trip, given its id.
+    public void LoadSingleTrip(final long tripId, ExploreCardContract contract) {
         Trip localTrip = localRepository.LoadTrip(tripId);
         if (localTrip != null) {
             contract.bindTrip(localTrip, this);
