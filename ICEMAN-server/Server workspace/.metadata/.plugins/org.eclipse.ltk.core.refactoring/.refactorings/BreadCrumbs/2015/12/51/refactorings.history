@@ -1,4 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<session version="1.0">
-<refactoring comment="Rename type &apos;com.breadcrumbs.gcm.GcmDownStreamSender&apos; to &apos;GcmSender&apos;&#x0D;&#x0A;- Original project: &apos;BreadCrumbs&apos;&#x0D;&#x0A;- Original element: &apos;com.breadcrumbs.gcm.GcmDownStreamSender&apos;&#x0D;&#x0A;- Renamed element: &apos;com.breadcrumbs.gcm.GcmSender&apos;&#x0D;&#x0A;- Update references to refactored element&#x0D;&#x0A;- Update textual occurrences in comments and strings" description="Rename type &apos;GcmDownStreamSender&apos;" flags="589830" id="org.eclipse.jdt.ui.rename.type" input="/src&lt;com.breadcrumbs.gcm{GcmDownStreamSender.java[GcmDownStreamSender" matchStrategy="1" name="GcmSender" qualified="false" references="true" similarDeclarations="false" stamp="1450317164713" textual="false" version="1.0"/>
-</session>
