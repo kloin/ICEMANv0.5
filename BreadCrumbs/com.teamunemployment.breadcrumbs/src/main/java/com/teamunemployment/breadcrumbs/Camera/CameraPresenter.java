@@ -19,7 +19,7 @@ public class CameraPresenter implements PresenterForActivityContract {
     private CameraModel model;
 
     @Inject
-    public CameraPresenter(CameraViewObjectContract viewContract, CameraModel model) {
+    public CameraPresenter(CameraModel model) {
         this.viewContract = viewContract;
         this.model = model;
     }

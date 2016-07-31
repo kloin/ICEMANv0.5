@@ -8,6 +8,8 @@ import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.view.TextureView;
 
+import com.teamunemployment.breadcrumbs.App;
+import com.teamunemployment.breadcrumbs.AppComponent;
 import com.teamunemployment.breadcrumbs.R;
 
 import butterknife.Bind;
@@ -24,10 +26,9 @@ public class CameraView extends AppCompatActivity implements CameraViewObjectCon
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        CameraModel model = new CameraModel();
-
-        presenter = new CameraPresenter(this, model);
-        presenter.start();
+        //AppComponent component =
+       // presenter =
+        //presenter.start();
     }
 
     @Override
@@ -39,13 +40,13 @@ public class CameraView extends AppCompatActivity implements CameraViewObjectCon
     @Override
     protected void onRestart() {
         presenter.stop();
-        presenter.start();
+        presenter.start(this);
         super.onRestart();
     }
 
     @Override
     protected void onResume() {
-        presenter.start();
+        presenter.start(this);
         super.onResume();
     }
 

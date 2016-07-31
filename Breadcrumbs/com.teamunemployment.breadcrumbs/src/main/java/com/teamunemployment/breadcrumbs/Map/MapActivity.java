@@ -39,7 +39,6 @@ import com.teamunemployment.breadcrumbs.data.source.LocalRepository.TripLocalDat
 import com.teamunemployment.breadcrumbs.data.source.RemoteRepository.RemoteTripDataSource;
 import com.teamunemployment.breadcrumbs.data.source.TripRepository;
 import com.teamunemployment.breadcrumbs.database.DatabaseController;
-import com.teamunemployment.breadcrumbs.databinding.HomeMapBinding;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -54,7 +53,6 @@ public class MapActivity extends AppCompatActivity implements MapContract.View ,
     private static final String TAG = "MapView";
     private MapContract.Presenter presenter;
     private GoogleMap map;
-    private HomeMapBinding binding;
     private AppCompatActivity context;
     private MapDisplayManager mapDisplayManager;
 
@@ -74,7 +72,6 @@ public class MapActivity extends AppCompatActivity implements MapContract.View ,
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         context = this;
-        binding = DataBindingUtil.setContentView(this, R.layout.home_map);
         // Initialise our map.
         ((MapFragment) getFragmentManager().findFragmentById(R.id.map)).getMapAsync(this);
         String trailId = this.getIntent().getStringExtra("TrailId");
@@ -222,7 +219,7 @@ public class MapActivity extends AppCompatActivity implements MapContract.View ,
     @Override
     public void SetTripDetails(TripDetails tripDetails) {
         // Here , we want to just set the viewModel so that the databinding can do the rest.
-        binding.setTripDetails(tripDetails);
+       // binding.setTripDetails(tripDetails);
     }
 
     @Override

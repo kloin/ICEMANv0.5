@@ -6,10 +6,17 @@ import android.view.TextureView;
 
 import com.teamunemployment.breadcrumbs.PresenterForActivityContract;
 
+import javax.inject.Inject;
+
 /**
  * Created by jek40 on 30/07/2016.
  */
 public class CameraModel implements TextureView.SurfaceTextureListener {
+
+    @Inject
+    public CameraModel() {}
+
+
     TextureView cameraSurface;
     /**
      * Stop the camera display.
