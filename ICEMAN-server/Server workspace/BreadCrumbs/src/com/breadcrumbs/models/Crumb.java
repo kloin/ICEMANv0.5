@@ -63,7 +63,7 @@ public class Crumb {
 
             // Set the cover photo. This is being done automatically at the moment, but in the future we will
             // need to check if the user has set a personal cover photo first.
-            trailManager.SetCoverPhoto(trailId, Integer.toString(crumbId));
+           // trailManager.SetCoverPhoto(trailId, Integer.toString(crumbId));
             dbm.CreateRelationship(crumb, trail, myRelationships.Part_Of);	
             return String.valueOf(crumbId);
     }

@@ -54,4 +54,35 @@ public class TrailManagerTests {
         Assert.assertTrue(result.equals("500"));
     }
     
+    @Test
+    public void TestThatWeCanAddAViewToATripThatHasZeroViews() {
+        Trail trail = new Trail();
+        RetrieveData retrieveData = new RetrieveData();
+        String userId = retrieveData.CreateNewUser("john", "joe", "123", "M", "fdsfds", "fdsfsd", "fdsfsd");
+        String trailId1= trail.SaveTrail("TEST", userId, "TEST");
+        trail.AddViewForATrail(trailId1);
+        String jsonResultString = trail.GetTrip(trailId1);
+        JSONObject result = new JSONObject(jsonResultString);
+        int views = Integer.parseInt(result.getString("Views"));
+        Assert.assertTrue(views == 1);
+    }
+    
+    @Test
+    public void TestThatWeCanAddAViewToATripThatHasMoreThanZeroViews() {
+        Trail trail = new Trail();
+        RetrieveData retrieveData = new RetrieveData();
+        String userId = retrieveData.CreateNewUser("john", "joe", "123", "M", "fdsfds", "fdsfsd", "fdsfsd");
+        String trailId1= trail.SaveTrail("TEST", userId, "TEST");
+        trail.AddViewForATrail(trailId1);
+        String jsonResultString = trail.GetTrip(trailId1);
+        JSONObject result = new JSONObject(jsonResultString);
+        int views = Integer.parseInt(result.getString("Views"));
+        Assert.assertTrue(views == 1);
+        trail.AddViewForATrail(trailId1);
+        jsonResultString = trail.GetTrip(trailId1);
+        result = new JSONObject(jsonResultString);
+        views = Integer.parseInt(result.getString("Views"));
+        Assert.assertTrue(views == 2);
+    }
+    
 }

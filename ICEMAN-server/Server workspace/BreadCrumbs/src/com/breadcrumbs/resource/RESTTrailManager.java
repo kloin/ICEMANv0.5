@@ -69,21 +69,6 @@ public class RESTTrailManager {
                     "/GetFavouritedTripsForAUser/{UserId}/{MaxCount}" +
                     "/GetIdsOfMostPopularTrips/{MaxCount}";
         }
-	/* The problem heere is that 
-	 * I need to know the last trailSaved. How does the client know this?
-	 * I need to be able to save the last
-    
-           @Depreciated been some massive changes client side. This is no longer required.
-	 * */
-	@POST
-	@Consumes(MediaType.APPLICATION_JSON)
-	@Path("/SaveTrailPoints")
-	public String SaveTrailPoints(String TrailPoints) {
-		JSONObject TrailPointsJSON = new JSONObject(TrailPoints);
-		Trail trail = new Trail();
-		System.out.println("Saved these trails: " + TrailPoints);
-		return trail.SaveJSONOfTrailPoints(TrailPointsJSON);
-	}
         
         @GET
         @Path("/GetTwentyTripIds") 

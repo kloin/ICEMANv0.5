@@ -61,7 +61,6 @@ import java.util.concurrent.BlockingQueue;
  */
 @Path("/login")
 public class RetrieveData {
-	
     private DBMaster dbMaster;
 
     @GET
@@ -74,6 +73,7 @@ public class RetrieveData {
                 "/User\n" +
                 "UserDetail\n";
     }
+    
     // Basic "is the service running" test
     @GET
     @Produces(MediaType.TEXT_PLAIN)
