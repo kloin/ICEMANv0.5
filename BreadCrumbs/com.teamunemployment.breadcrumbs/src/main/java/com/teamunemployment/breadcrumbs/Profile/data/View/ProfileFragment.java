@@ -117,36 +117,53 @@ public class ProfileFragment extends Fragment implements ProfileContract.ViewCon
     }
 
     @OnClick(R.id.new_album) void newAlbum() {
-        // If permissions are all good, go ahead and create the trail. If permissions are not all good,
-        int coarseLocation = ContextCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_COARSE_LOCATION);
-        int fineLocation = ContextCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_FINE_LOCATION);
+        SimpleMaterialDesignDialog dialog = SimpleMaterialDesignDialog.Build(appCompatActivity)
+                .SetTextBody("Creating a new trip will clear any unpublished album you may have active. This is not reversible")
+                .SetTitle("Confirm")
+                .SetActionWording("Create")
+                .SetCallBack(createTripCallback())
+                .UseCancelButton(true);
+        dialog.Show();
 
-        if (coarseLocation == PackageManager.PERMISSION_GRANTED && fineLocation == PackageManager.PERMISSION_GRANTED) {
-            TrailManagerWorker trailManagerWorker = new TrailManagerWorker(getContext());
-            trailManagerWorker.StartLocalTrail();
-            Intent newIntent = new Intent();
-            int localTrail = preferencesAPI.GetLocalTrailId();
-            String localTrailString = Integer.toString(localTrail) + "L";
-            newIntent.putExtra("TrailId", localTrailString);
-            newIntent.setClassName("com.teamunemployment.breadcrumbs", "com.teamunemployment.breadcrumbs.client.Maps.LocalMap");
-            startActivity(newIntent);
-        } else {
-            if (coarseLocation == PackageManager.PERMISSION_DENIED && fineLocation == PackageManager.PERMISSION_DENIED) {
-                String[] permissions = {Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION};
-                AppCompatActivity appCompatActivity = (AppCompatActivity) getContext();
-                ActivityCompat.requestPermissions(appCompatActivity, permissions, HomeActivity.REQUESTED_LOCATION_WITHOUT_START_TRAIL_QUEUED);
-            } else if(coarseLocation == PackageManager.PERMISSION_DENIED) {
-                String[] permissions = {Manifest.permission.ACCESS_COARSE_LOCATION};
-                AppCompatActivity appCompatActivity = (AppCompatActivity) getContext();
-                ActivityCompat.requestPermissions(appCompatActivity, permissions,  HomeActivity.REQUESTED_LOCATION_WITHOUT_START_TRAIL_QUEUED);
-            } else if (fineLocation == PackageManager.PERMISSION_DENIED) {
-                String[] permissions = {Manifest.permission.ACCESS_FINE_LOCATION};
-                AppCompatActivity appCompatActivity = (AppCompatActivity) getContext();
-                ActivityCompat.requestPermissions(appCompatActivity, permissions,  HomeActivity.REQUESTED_LOCATION_WITHOUT_START_TRAIL_QUEUED);
-            }
-        }
+
     }
 
+    private IDialogCallback createTripCallback() {
+        return new IDialogCallback() {
+            @Override
+            public void DoCallback() {
+                // If permissions are all good, go ahead and create the trail. If permissions are not all good,
+                int coarseLocation = ContextCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_COARSE_LOCATION);
+                int fineLocation = ContextCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_FINE_LOCATION);
+
+                if (coarseLocation == PackageManager.PERMISSION_GRANTED && fineLocation == PackageManager.PERMISSION_GRANTED) {
+                    TrailManagerWorker trailManagerWorker = new TrailManagerWorker(getContext());
+                    trailManagerWorker.StartLocalTrail();
+                    Intent newIntent = new Intent();
+                    int localTrail = preferencesAPI.GetLocalTrailId();
+                    String localTrailString = Integer.toString(localTrail) + "L";
+                    newIntent.putExtra("TrailId", localTrailString);
+                    newIntent.setClassName("com.teamunemployment.breadcrumbs", "com.teamunemployment.breadcrumbs.client.Maps.LocalMap");
+                    startActivity(newIntent);
+                } else {
+                    if (coarseLocation == PackageManager.PERMISSION_DENIED && fineLocation == PackageManager.PERMISSION_DENIED) {
+                        String[] permissions = {Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION};
+                        AppCompatActivity appCompatActivity = (AppCompatActivity) getContext();
+                        ActivityCompat.requestPermissions(appCompatActivity, permissions, HomeActivity.REQUESTED_LOCATION_WITHOUT_START_TRAIL_QUEUED);
+                    } else if(coarseLocation == PackageManager.PERMISSION_DENIED) {
+                        String[] permissions = {Manifest.permission.ACCESS_COARSE_LOCATION};
+                        AppCompatActivity appCompatActivity = (AppCompatActivity) getContext();
+                        ActivityCompat.requestPermissions(appCompatActivity, permissions,  HomeActivity.REQUESTED_LOCATION_WITHOUT_START_TRAIL_QUEUED);
+                    } else if (fineLocation == PackageManager.PERMISSION_DENIED) {
+                        String[] permissions = {Manifest.permission.ACCESS_FINE_LOCATION};
+                        AppCompatActivity appCompatActivity = (AppCompatActivity) getContext();
+                        ActivityCompat.requestPermissions(appCompatActivity, permissions,  HomeActivity.REQUESTED_LOCATION_WITHOUT_START_TRAIL_QUEUED);
+                    }
+                }
+            }
+        };
+
+    }
     // Attempt to set the user id from the bundle. If we have no bundle, load our own user profile.
     private void setUserId(Bundle arguments) {
         if (arguments != null) {

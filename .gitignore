@@ -14,6 +14,7 @@ dir_to_ignore/.gimp-2.8
 dir_to_ignore/.thumbnails
 dir_to_ignore/.idea/ -r
 file_to_ignore/.gitignore
+.viminfo
 .android/
 .ssh/
 .zenmap/
