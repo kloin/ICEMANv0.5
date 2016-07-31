@@ -1,48 +1,51 @@
 package com.teamunemployment.breadcrumbs.Camera;
 
-import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
+import android.view.TextureView;
 
 import com.teamunemployment.breadcrumbs.R;
 
-import java.io.File;
-
+import butterknife.Bind;
 import butterknife.OnClick;
 import butterknife.OnItemLongClick;
 
 /**
  * @author Josiah Kendall.
  */
-public class CameraView extends AppCompatActivity implements CameraViewContract{
+public class CameraView extends AppCompatActivity implements CameraViewObjectContract {
 
     CameraPresenter presenter;
+    @Bind(R.id.root) CoordinatorLayout root;
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         CameraModel model = new CameraModel();
+
         presenter = new CameraPresenter(this, model);
         presenter.start();
     }
 
     @Override
     protected void onDestroy() {
-        presenter.onDestroy();
+        presenter.stop();
         super.onDestroy();
     }
 
     @Override
     protected void onRestart() {
-        presenter.onRestart();
+        presenter.stop();
+        presenter.start();
         super.onRestart();
     }
 
     @Override
     protected void onResume() {
-        presenter.onResume();
+        presenter.start();
         super.onResume();
     }
 
@@ -53,25 +56,7 @@ public class CameraView extends AppCompatActivity implements CameraViewContract{
      */
     @Override
     public void showMessage(String message) {
-
-    }
-
-    /**
-     * Set the bitmap we have to our image view and make it visible.
-     * @param image
-     */
-    @Override
-    public void setImage(Bitmap image) {
-
-    }
-
-    /**
-     * Set the mp4 file we have to our videoview.
-     * @param file
-     */
-    @Override
-    public void setVideo(File file) {
-
+        Snackbar.make(root, message, Snackbar.LENGTH_LONG).show();
     }
 
     /**
@@ -80,6 +65,11 @@ public class CameraView extends AppCompatActivity implements CameraViewContract{
      */
     @Override
     public void requestPermissions(String[] permissionsArray) {
+
+    }
+
+    @Override
+    public void attachCameraSurface(TextureView cameraSurface) {
 
     }
 
@@ -116,14 +106,14 @@ public class CameraView extends AppCompatActivity implements CameraViewContract{
      * Toggle the state of the camera - either photos or videos.
      */
     @OnClick(R.id.video_photo_toggle_button) void toggleVideoOrPhotoClickHandler() {
-
+        showMessage("toggle video button");
     }
 
     /**
      * If we hold down the camera button we should start taking a video, like occurs in
      */
     @OnItemLongClick(R.id.camera_action_button) boolean cameraLongPressHandler() {
-
+        showMessage("recording video");
         return true;
     }
 }

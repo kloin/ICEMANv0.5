@@ -1,18 +1,16 @@
 package com.teamunemployment.breadcrumbs.Camera;
 
 import android.graphics.Bitmap;
+import android.view.TextureView;
 
 import java.io.File;
 
 /**
- * @author  JOsiah Kendall
+ * @author  Josiah Kendall
  */
-public interface CameraViewContract {
+public interface CameraViewObjectContract {
 
     void showMessage(String message);
-    void setImage(Bitmap image);
-    void setVideo(File file);
     void requestPermissions(String[] permissionsArray);
-
-
+    void attachCameraSurface(TextureView cameraSurface);
 }

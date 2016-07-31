@@ -16,6 +16,7 @@ import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 
 import com.google.android.exoplayer.C;
 import com.teamunemployment.breadcrumbs.R;
@@ -132,7 +133,7 @@ public class MapPresenter extends BaseObservable implements MapContract.Presente
      * @param slideOffset How far we have slid.
      */
     private void onBottomSheetSlide(float slideOffset, View bottomSheet) {
-        CardView bottomSheetToolbar = (CardView) bottomSheet.findViewById(R.id.bottom_sheet_header);
+        RelativeLayout bottomSheetToolbar = (RelativeLayout) bottomSheet.findViewById(R.id.bottom_sheet_header);
         ImageView imageCover = (ImageView) bottomSheet.findViewById(R.id.trail_cover_photo);
         // Simple formula to calculate our toolbar visibility. The purpose of this is to make
         // the image start fading into a blue toolbar when it is below half way scrolled.
