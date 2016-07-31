@@ -1,15 +1,19 @@
 dir_to_ignore/ICEMAN-client/com.breadcrumbs/build/*
 dir_to_ignore/ICEMAN-client/com.breadcrumbs/gen
 dir_to_ignore/ICEMAN-client/com.breadcrumbs/gradle
-dir_to_igonre/ICEMAN-server/Server workspace/.metadata/*
-dir_to_igonre/ICEMAN-server/Server workspace/RemoteSystemsTempFiles
-dir_to_igonre/ICEMAN-server/Server workspace/Servers
-dir_to_igonre/ICEMAN-server/Server workspace/BreadCrumbs/build
-dir_to_igonre/ICEMAN-server/Server workspace/BreadCrumbs/ext
-dir_to_igonre/ICEMAN-server/Server workspace/BreadCrumbs/target
-dir_to_igonre/ICEMAN-server/Server workspace/BreadCrumbs/.classpath
-dir_to_igonre/ICEMAN-server/Server workspace/BreadCrumbs/.pom
-dir_to_igonre/ICEMAN-server/Server workspace/BreadCrumbs/.project
+dir_to_igonre/ICEMAN-server/Server\ workspace/.metadata/ -r
+dir_to_igonre/ICEMAN-server/Server\ workspace/RemoteSystemsTempFiles
+dir_to_igonre/ICEMAN-server/Server\ workspace/Servers
+dir_to_igonre/ICEMAN-server/Server\ workspace/BreadCrumbs/build
+dir_to_igonre/ICEMAN-server/Server\ workspace/BreadCrumbs/ext
+dir_to_igonre/ICEMAN-server/Server\ workspace/BreadCrumbs/target
+dir_to_igonre/ICEMAN-server/Server\ workspace/BreadCrumbs/.classpath
+dir_to_igonre/ICEMAN-server/Server\ workspace/BreadCrumbs/.pom
+dir_to_igonre/ICEMAN-server/Server\ workspace/BreadCrumbs/.project
+dir_to_ignore/.gimp-2.8
+dir_to_ignore/.thumbnails
+dir_to_ignore/.idea/ -r
+file_to_ignore/.gitignore
 .android/
 .ssh/
 .zenmap/
