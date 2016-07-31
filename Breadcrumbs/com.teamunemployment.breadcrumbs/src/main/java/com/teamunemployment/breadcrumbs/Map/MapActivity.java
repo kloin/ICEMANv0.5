@@ -169,7 +169,7 @@ public class MapActivity extends AppCompatActivity implements MapContract.View ,
         if (polyline.isEncoded) {
             drawEncodedPolyline(polyline.points, "#03A9F4");
         } else {
-            drawDashedPolyline(polyline.points.get(0), polyline.points.get(polyline.points.size() - 1), getColor(R.color.black));
+            drawDashedPolyline(polyline.points.get(0), polyline.points.get(polyline.points.size() - 1), getResources().getColor(R.color.bb_darkBackgroundColor));
         }
     }
 

@@ -78,6 +78,9 @@ public class CameraCapture extends AppCompatActivity {
 		int permissionCheckWriteToExternalStorage = ContextCompat.checkSelfPermission(context,
 				Manifest.permission.WRITE_EXTERNAL_STORAGE);
 
+		int permissionCheckLocation = ContextCompat.checkSelfPermission(context, Manifest.permission.ACCESS_COARSE_LOCATION);
+		int permissionCheckLocationFine = ContextCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION);
+
 		ArrayList<String> permissionsArrayList = new ArrayList<String>();
 		if (permissionCheckCam == PackageManager.PERMISSION_DENIED) {
 			permissionsArrayList.add(Manifest.permission.CAMERA);
@@ -87,6 +90,11 @@ public class CameraCapture extends AppCompatActivity {
 		}
 		if (permissionCheckWriteToExternalStorage == PackageManager.PERMISSION_DENIED) {
 			permissionsArrayList.add(Manifest.permission.WRITE_EXTERNAL_STORAGE);
+		}
+
+		if (permissionCheckLocation == PackageManager.PERMISSION_DENIED || permissionCheckLocationFine == PackageManager.PERMISSION_DENIED) {
+			permissionsArrayList.add(Manifest.permission.ACCESS_COARSE_LOCATION);
+			permissionsArrayList.add(Manifest.permission.ACCESS_FINE_LOCATION);
 		}
 
 		return permissionsArrayList.toArray(new String[0]);

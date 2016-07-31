@@ -447,7 +447,7 @@ public class CameraController extends SurfaceView implements SurfaceHolder.Callb
         Listener for when the user takes a photo.
      */
     public void SetupCameraButtonListener() {
-        cameraButton = (FloatingActionButton) context.findViewById(R.id.camera_action_button);
+        cameraButton = (FloatingActionButton) context.findViewById(R.id.capture_button);
         final FloatingActionButton videoButton = (FloatingActionButton) context.findViewById(R.id.videoButton);
 
         videoButton.setOnClickListener(new FloatingActionButton.OnClickListener() {

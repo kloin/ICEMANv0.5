@@ -34,5 +34,6 @@ public class CameraPresenter {
     }
 
     public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+
     }
 }
