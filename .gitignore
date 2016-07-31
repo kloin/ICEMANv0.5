@@ -18,3 +18,4 @@ file_to_ignore/.gitignore
 .android/
 .ssh/
 .zenmap/
+/BreadCrumbs/com.teamunemployment.breadcrumbs/com.teamunemployment.breadcumbs-release.apk

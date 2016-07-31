@@ -98,7 +98,7 @@ public class SaveCrumbService extends Service {
 
         boolean isPhoto = intent.getBooleanExtra("IsPhoto", false);
         int eventId = intent.getIntExtra("EventId", -1);
-        String description = intent.getStringExtra("Descripttion");
+        String description = intent.getStringExtra("Description");
         if (eventId == -1) {
             throw new IllegalArgumentException("Event Id cannot be -1");
         }
@@ -290,7 +290,7 @@ public class SaveCrumbService extends Service {
             mime = ".mp4";
         }
 
-        dbc.SaveCrumb(localTrailId, " ", userId, event.eventId, location.getLatitude(), location.getLongitude(), mime, " ", " ", placeId, suburb, city, country, event.descPosX, event.descPosY);
+        dbc.SaveCrumb(localTrailId, event.description, userId, event.eventId, location.getLatitude(), location.getLongitude(), mime, " ", " ", placeId, suburb, city, country, event.descPosX, event.descPosY);
         TrailManagerWorker trailManagerWorker = new TrailManagerWorker(context);
         trailManagerWorker.CreateEventMetadata(TrailManagerWorker.CRUMB, location);
         int lastActivity = DetectedActivity.WALKING;
