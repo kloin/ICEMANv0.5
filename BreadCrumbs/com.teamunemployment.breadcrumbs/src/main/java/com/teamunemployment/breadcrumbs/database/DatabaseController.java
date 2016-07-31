@@ -95,19 +95,19 @@ public class DatabaseController extends SQLiteOpenHelper {
         }
 
         if (oldVersion == 4) {
-            String upgradeQuery = "ALTER TABLE " + CRUMBS +" ADD COLUMN descPosX REAL";
-            db.execSQL(upgradeQuery);
-            upgradeQuery = "ALTER TABLE " + CRUMBS +" ADD COLUMN descPosY REAL";
-            db.execSQL(upgradeQuery);
+           // String upgradeQuery = "ALTER TABLE " + CRUMBS +" ADD COLUMN descPosX REAL";
+           // db.execSQL(upgradeQuery);
+           // upgradeQuery = "ALTER TABLE " + CRUMBS +" ADD COLUMN descPosY REAL";
+           // db.execSQL(upgradeQuery);
             oldVersion = 5;
         }
 
-//        if ( oldVersion ==5) {
-//            db.execSQL("CREATE TABLE " + FOLLOWING_TABLE + " (_id INTEGER PRIMARY KEY AUTOINCREMENT, " +
-//                    "UserId INTEGER," +
-//                    "FollowedUserId INTEGER);");
-//            oldVersion = 6;
-//        }
+        if ( oldVersion ==5) {
+            db.execSQL("CREATE TABLE " + FOLLOWING_TABLE + " (_id INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                    "UserId INTEGER," +
+                    "FollowedUserId INTEGER);");
+            oldVersion = 6;
+        }
     }
 
 	public void SaveUser(String userId, String userName, int age, String pin) {

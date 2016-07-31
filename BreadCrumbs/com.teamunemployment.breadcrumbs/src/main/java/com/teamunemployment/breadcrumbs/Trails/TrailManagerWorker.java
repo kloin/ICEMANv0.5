@@ -127,6 +127,7 @@ public class TrailManagerWorker {
         }
     }
 
+
     private void savePath(JSONObject metadata, String serverTrailId) {
         String url = MessageFormat.format("{0}/rest/TrailManager/SavePath/{1}",
                 LoadBalancer.RequestServerAddress(),

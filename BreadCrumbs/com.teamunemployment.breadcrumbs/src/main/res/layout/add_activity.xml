@@ -14,7 +14,6 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:gravity="center"
-            style="@style/CodeFont"
             android:text="Loading Camera"/>
     </RelativeLayout>
     <View
@@ -37,7 +36,7 @@
         app:fabSize="mini" />
 
     <android.support.design.widget.FloatingActionButton
-        android:id="@+id/captureButton"
+        android:id="@+id/capture_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
@@ -53,10 +52,10 @@
         android:id="@+id/videoButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_above="@id/captureButton"
+        android:layout_above="@id/capture_button"
         android:layout_alignParentRight="true"
-        android:layout_marginBottom="40px"
-        android:layout_marginRight="20px"
+
+        android:layout_marginRight="10dp"
         android:src="@drawable/ic_camera_alt_black_24dp"
         app:backgroundTint="#ffffff"
         app:fabSize="mini" />
@@ -67,8 +66,8 @@
         android:layout_height="wrap_content"
         android:layout_above="@id/videoButton"
         android:layout_alignParentRight="true"
-        android:layout_marginBottom="40px"
-        android:layout_marginRight="20px"
+        android:layout_marginBottom="10dp"
+        android:layout_marginRight="10dp"
         android:src="@drawable/ic_rotate_right_black_24dp"
         app:backgroundTint="#ffffff"
         app:fabSize="mini" />

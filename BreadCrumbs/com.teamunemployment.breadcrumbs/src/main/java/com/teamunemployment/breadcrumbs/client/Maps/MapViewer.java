@@ -730,14 +730,14 @@ public class MapViewer extends Activity implements OnMapClickListener, OnMapLong
 			if (isEncoded) {
 				listOfPoints = PolyUtil.decode(polyline);
 				listOfPoints = addLastPointToList(listOfPoints);
-				DrawPolyline(listOfPoints, "#03A9F4", MEDIUM_WIDTH);
+				DrawPolyline(listOfPoints, "#03A9F4", SKINNY_WIDTH);
 				// Draw from start
 				linkHangingLines(listOfPoints, tempObject);
 			} else {
 				listOfPoints = parseNonEncodedPolyline(polyline);
 				listOfPoints = addLastPointToList(listOfPoints);
 				Log.d("UIINDICATOR", " WE are on the UI Thread: " +Utils.WeAreRunningOnTheUIThread());
-				DrawPolyline(listOfPoints, "#03A9F4", MEDIUM_WIDTH);
+				DrawPolyline(listOfPoints, "#03A9F4", SKINNY_WIDTH);
 			}
 			count += 1;
 		}
@@ -756,7 +756,7 @@ public class MapViewer extends Activity implements OnMapClickListener, OnMapLong
 		List<LatLng> latLngs = new ArrayList<>();
 		latLngs.add(originBase);
 		latLngs.add(originHead);
-		DrawPolyline(latLngs, "#03A9F4", MEDIUM_WIDTH);
+		DrawPolyline(latLngs, "#03A9F4", SKINNY_WIDTH);
 
 		LatLng destBase = listOfPoints.get(listOfPoints.size()-1);
 		LatLng destHead = new LatLng(Double.parseDouble(headLat), Double.parseDouble(headLon));
@@ -764,7 +764,7 @@ public class MapViewer extends Activity implements OnMapClickListener, OnMapLong
 		endPoints.add(destBase);
 		endPoints.add(destHead);
 
-		DrawPolyline(endPoints, "#03A9F4", MEDIUM_WIDTH);
+		DrawPolyline(endPoints, "#03A9F4", SKINNY_WIDTH);
 	}
 
 	// Link encoded polylines with their base/head locations.
@@ -779,7 +779,7 @@ public class MapViewer extends Activity implements OnMapClickListener, OnMapLong
 		List<LatLng> latLngs = new ArrayList<>();
 		latLngs.add(originBase);
 		latLngs.add(originHead);
-		DrawPolyline(latLngs, "#03A9F4", MEDIUM_WIDTH);
+		DrawPolyline(latLngs, "#03A9F4", SKINNY_WIDTH);
 
 		LatLng destBase = listOfPoints.get(listOfPoints.size()-1);
 		LatLng destHead = new LatLng(headLat, headLon);
@@ -1002,6 +1002,8 @@ public class MapViewer extends Activity implements OnMapClickListener, OnMapLong
 	 * @param width
      */
 	public void DrawPolyline(List<LatLng> listOfPoints, String color, int width) {
+		Utils utils = new Utils();
+		width = utils.convertPixelToDp(width, context);
 		final PolylineOptions options = new PolylineOptions().width(width).color(Color.parseColor(color)).geodesic(true);
 		for (int z = 0; z < listOfPoints.size(); z++) {
 			LatLng point = listOfPoints.get(z);
@@ -1581,13 +1583,13 @@ public class MapViewer extends Activity implements OnMapClickListener, OnMapLong
 		for (BreadcrumbsEncodedPolyline polyline : encodedPolylines) {
 			if (polyline.isEncoded) {
 				listOfPoints = PolyUtil.decode(polyline.polyline);
-				DrawPolyline(listOfPoints, "#03A9F4", MEDIUM_WIDTH);
+				DrawPolyline(listOfPoints, "#03A9F4", SKINNY_WIDTH);
 				// Draw from start
 				linkHangingLines(listOfPoints, polyline);
 			} else {
 				listOfPoints = parseNonEncodedPolyline(polyline.polyline);
 				Log.d("UIINDICATOR", " WE are on the UI Thread: " +Utils.WeAreRunningOnTheUIThread());
-				DrawPolyline(listOfPoints, "#03A9F4", MEDIUM_WIDTH);
+				DrawPolyline(listOfPoints, "#03A9F4", SKINNY_WIDTH);
 			}
 		}
 	}

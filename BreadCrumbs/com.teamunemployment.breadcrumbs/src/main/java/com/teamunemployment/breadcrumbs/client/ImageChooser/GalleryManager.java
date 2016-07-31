@@ -1,9 +1,12 @@
 package com.teamunemployment.breadcrumbs.client.ImageChooser;
 
+import android.Manifest;
 import android.content.Context;
+import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.net.Uri;
 import android.provider.MediaStore;
+import android.support.v4.content.ContextCompat;
 import android.util.Log;
 
 import java.util.ArrayList;
@@ -29,6 +32,11 @@ public class GalleryManager {
 
         // content:// style URI for the "primary" external storage volume
         Uri images = MediaStore.Images.Media.EXTERNAL_CONTENT_URI;
+
+        int permission = ContextCompat.checkSelfPermission(mContext, Manifest.permission.READ_EXTERNAL_STORAGE);
+        if (permission != PackageManager.PERMISSION_GRANTED) {
+            return galleryFolders;
+        }
 
         // Make the query.
         Cursor cur = mContext.getContentResolver().query(images,

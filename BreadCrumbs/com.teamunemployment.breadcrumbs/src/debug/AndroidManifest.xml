@@ -3,9 +3,8 @@
           xmlns:tools="http://schemas.android.com/tools"
 
           package="com.teamunemployment.breadcrumbs"
-          android:versionCode="13"
           tools:replace="android:versionName"
-          android:versionName="0.05">
+          android:versionName="0.06">
 
     <permission android:name="com.teamunemployment.breadcrumbs.permission.C2D_MESSAGE"
         android:protectionLevel="signature" />

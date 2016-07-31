@@ -54,8 +54,7 @@ public class CameraCapture extends AppCompatActivity {
 	private LocationManager locationManager;
 	private ArrayList<Location> locations = new ArrayList<>();
 
-	@Bind(R.id.camera_holder)
-	RelativeLayout cameraHolder;
+	@Bind(R.id.camera_holder) RelativeLayout cameraHolder;
 
 	private Context context;
 
@@ -90,9 +89,7 @@ public class CameraCapture extends AppCompatActivity {
 			permissionsArrayList.add(Manifest.permission.WRITE_EXTERNAL_STORAGE);
 		}
 
-
 		return permissionsArrayList.toArray(new String[0]);
-
 	}
 
 	private void requestPermissionForCamera(String[] requiredPermissions) {

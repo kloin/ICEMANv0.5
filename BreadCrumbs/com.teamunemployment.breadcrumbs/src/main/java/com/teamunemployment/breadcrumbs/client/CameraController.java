@@ -85,6 +85,7 @@ public class CameraController extends SurfaceView implements SurfaceHolder.Callb
 
     private FloatingActionButton cameraButton;
     private float aspectRatio = 0.000000f;
+
     /*
         Default constructors for a custom surfaceView.
      */
@@ -251,13 +252,29 @@ public class CameraController extends SurfaceView implements SurfaceHolder.Callb
             }
         }
 
-        // If we cannot find the one that matches the aspect ratio, ignore the requirement.
+        // If we cannot find the one that matches the aspect ratio, ignore the requirement, and just search for the biggest aspect ratio
         if (optimalSize == null) {
             // grab the biggest size that we have then
-            return sizes.get(0);
+            optimalSize = getLargestPreviewSizeThatFitsAspectRatio(sizes);
+            if (optimalSize == null) {
+                optimalSize = sizes.get(0);
+            }
         }
 
         return optimalSize;
+    }
+
+    private Camera.Size getLargestPreviewSizeThatFitsAspectRatio(List<Camera.Size> sizes) {
+        for (Camera.Size size : sizes) {
+            float height = size.height;
+            float width = size.width;
+            float sizeAR = height / width;
+            if (sizeAR == aspectRatio) {
+                return size;
+            }
+        }
+
+        return  null;
     }
 
     private Camera.Size getOptimalVideoSize(List<Camera.Size> sizes) {
@@ -430,7 +447,7 @@ public class CameraController extends SurfaceView implements SurfaceHolder.Callb
         Listener for when the user takes a photo.
      */
     public void SetupCameraButtonListener() {
-        cameraButton = (FloatingActionButton) context.findViewById(R.id.captureButton);
+        cameraButton = (FloatingActionButton) context.findViewById(R.id.camera_action_button);
         final FloatingActionButton videoButton = (FloatingActionButton) context.findViewById(R.id.videoButton);
 
         videoButton.setOnClickListener(new FloatingActionButton.OnClickListener() {

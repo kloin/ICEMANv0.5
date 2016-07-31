@@ -104,7 +104,6 @@ public class LocalMap extends MapViewer {
         if (coverId != null) {
             setCoverPhoto(coverId);
         }
-
     }
 
     private void setListenerForTrackingToggle() {
@@ -255,6 +254,8 @@ public class LocalMap extends MapViewer {
                 trailName,
                 " ",
                 userId);
+
+        // Save
         Log.d("UPLOAD", "Attempting to create a new Trail with url: " + url);
         url = url.replaceAll(" ", "%20");
 

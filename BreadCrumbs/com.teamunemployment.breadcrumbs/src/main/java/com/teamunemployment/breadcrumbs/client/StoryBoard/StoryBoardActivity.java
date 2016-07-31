@@ -308,11 +308,7 @@ public class StoryBoardActivity extends Activity {
         pauseButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                    backPressedHandler();
-                    return;
-                }
-                backPressed();
+                backPressedHandler();
             }
         });
     }
@@ -320,35 +316,34 @@ public class StoryBoardActivity extends Activity {
     // We have a back pressed handler as we have two entry points to this bit of code.
     private void backPressedHandler() {
         storyBoardController.Stop();
-
-        GUIUtils.animateRevealHide(context, mRlContainer, R.color.white, mFab.getWidth() / 2,
-                new OnRevealAnimationListener() {
-                    @Override
-                    public void onRevealHide() {
-                        mLlContainer.setVisibility(View.GONE);
-                        Intent intent = new Intent();
-                        intent.putExtra("LastObject", storyBoardController.GetCurrentObject());
-                        intent.putExtra("Index", storyBoardController.GetCurrentIndex());
-                        intent.putExtra("TimerPosition", storyBoardController.GetTimerPosition());
-                        setResult(RESULT_OK, intent);
-                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+        Intent intent = new Intent();
+        intent.putExtra("LastObject", storyBoardController.GetCurrentObject());
+        intent.putExtra("Index", storyBoardController.GetCurrentIndex());
+        intent.putExtra("TimerPosition", storyBoardController.GetTimerPosition());
+        setResult(RESULT_OK, intent);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            GUIUtils.animateRevealHide(context, mRlContainer, R.color.white, mFab.getWidth() / 2,
+                    new OnRevealAnimationListener() {
+                        @Override
+                        public void onRevealHide() {
+                            mLlContainer.setVisibility(View.GONE);
                             backPressedLolipopAndAbove();
-                        } else {
-                            finish();
-                        }
-                        //backPressed();
-                    }
 
-                    @Override
-                    public void onRevealShow() {
-                        Toast.makeText(context, "Showing", Toast.LENGTH_LONG).show();
-                    }
-                });
+                        }
+
+                        @Override
+                        public void onRevealShow() {
+                        }
+                    });
+        } else {
+            finish();
+        }
     }
 
     private void backPressedLolipopAndAbove() {
         super.onBackPressed();
     }
+
     private void backPressed() {
         storyBoardController.Stop();
         finish();

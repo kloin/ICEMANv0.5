@@ -49,10 +49,12 @@ import com.teamunemployment.breadcrumbs.PreferencesAPI;
 import com.teamunemployment.breadcrumbs.Profile.data.Presenter.Presenter;
 import com.teamunemployment.breadcrumbs.Profile.data.Presenter.ProfileContract;
 import com.teamunemployment.breadcrumbs.R;
+import com.teamunemployment.breadcrumbs.Trails.TrailManagerWorker;
 import com.teamunemployment.breadcrumbs.Trails.Trip;
 import com.teamunemployment.breadcrumbs.Trips.TripRepo;
 import com.teamunemployment.breadcrumbs.caching.TextCaching;
 import com.teamunemployment.breadcrumbs.client.Animations.SimpleAnimations;
+import com.teamunemployment.breadcrumbs.client.Home.HomeActivity;
 import com.teamunemployment.breadcrumbs.client.Image.ImageLoadingManager;
 import com.teamunemployment.breadcrumbs.database.DatabaseController;
 
@@ -112,6 +114,37 @@ public class ProfileFragment extends Fragment implements ProfileContract.ViewCon
         initialiseCollapsableToolbar();
         initialiseTextWatchers();
         return rootView;
+    }
+
+    @OnClick(R.id.new_album) void newAlbum() {
+        // If permissions are all good, go ahead and create the trail. If permissions are not all good,
+        int coarseLocation = ContextCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_COARSE_LOCATION);
+        int fineLocation = ContextCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_FINE_LOCATION);
+
+        if (coarseLocation == PackageManager.PERMISSION_GRANTED && fineLocation == PackageManager.PERMISSION_GRANTED) {
+            TrailManagerWorker trailManagerWorker = new TrailManagerWorker(getContext());
+            trailManagerWorker.StartLocalTrail();
+            Intent newIntent = new Intent();
+            int localTrail = preferencesAPI.GetLocalTrailId();
+            String localTrailString = Integer.toString(localTrail) + "L";
+            newIntent.putExtra("TrailId", localTrailString);
+            newIntent.setClassName("com.teamunemployment.breadcrumbs", "com.teamunemployment.breadcrumbs.client.Maps.LocalMap");
+            startActivity(newIntent);
+        } else {
+            if (coarseLocation == PackageManager.PERMISSION_DENIED && fineLocation == PackageManager.PERMISSION_DENIED) {
+                String[] permissions = {Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION};
+                AppCompatActivity appCompatActivity = (AppCompatActivity) getContext();
+                ActivityCompat.requestPermissions(appCompatActivity, permissions, HomeActivity.REQUESTED_LOCATION_WITHOUT_START_TRAIL_QUEUED);
+            } else if(coarseLocation == PackageManager.PERMISSION_DENIED) {
+                String[] permissions = {Manifest.permission.ACCESS_COARSE_LOCATION};
+                AppCompatActivity appCompatActivity = (AppCompatActivity) getContext();
+                ActivityCompat.requestPermissions(appCompatActivity, permissions,  HomeActivity.REQUESTED_LOCATION_WITHOUT_START_TRAIL_QUEUED);
+            } else if (fineLocation == PackageManager.PERMISSION_DENIED) {
+                String[] permissions = {Manifest.permission.ACCESS_FINE_LOCATION};
+                AppCompatActivity appCompatActivity = (AppCompatActivity) getContext();
+                ActivityCompat.requestPermissions(appCompatActivity, permissions,  HomeActivity.REQUESTED_LOCATION_WITHOUT_START_TRAIL_QUEUED);
+            }
+        }
     }
 
     // Attempt to set the user id from the bundle. If we have no bundle, load our own user profile.

@@ -353,6 +353,7 @@ public class StoryBoardController {
                 // Show loading symbol now that we
                 if (state == ExoPlayer.STATE_BUFFERING) {
                     Log.d("BCExoplayer", "Buffering");
+                    reduceResolution();
                     if (displayModel != null) {
                         act.runOnUiThread(new Runnable() {
                             @Override
@@ -404,6 +405,20 @@ public class StoryBoardController {
                 }
             }
         };
+    }
+
+    private void reduceResolution() {
+        switch (targetResolution) {
+            case 720 :
+                targetResolution = 640;
+                break;
+            case 640:
+                targetResolution = 360;
+                break;
+            case 360:
+                targetResolution = 280;
+                break;
+        }
     }
 
     private void doLoadCompletedCallback() {

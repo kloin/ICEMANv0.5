@@ -517,7 +517,7 @@ public class Main extends AppCompatActivity {
 					Intent myIntent = new Intent();
 					myIntent.putExtra("UserName", userName);
 					PreferenceManager.getDefaultSharedPreferences(context).edit().putString("USERNAME", userName).commit();
-					myIntent.setClassName("com.teamunemployment.breadcrumbs", "com.teamunemployment.breadcrumbs.client.BaseViewModel");
+					myIntent.setClassName("com.teamunemployment.breadcrumbs", "com.teamunemployment.breadcrumbs.client.Home.HomeActivity");
 					startActivity(myIntent);
 				}
 			}
@@ -638,7 +638,6 @@ public class Main extends AppCompatActivity {
 		return pin;
 	}
 
-	
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.

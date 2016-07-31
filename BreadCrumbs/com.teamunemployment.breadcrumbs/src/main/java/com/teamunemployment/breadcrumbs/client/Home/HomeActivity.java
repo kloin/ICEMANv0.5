@@ -33,7 +33,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Created by jek40 on 20/05/2016.
+ * @author Josiah Kendall
  */
 public class HomeActivity extends AppCompatActivity {
     private final String TAG = "HomeActivity";
@@ -41,9 +41,9 @@ public class HomeActivity extends AppCompatActivity {
     private FragNavController fragNavController;
     private PreferencesAPI preferencesAPI;
     private boolean RESTORED = false;
-    private static final int CAMERA_REQUESTED_PERMISSION = 9;
-    private static final int REQUESTED_LOCATION_WITH_START_TRAIL_QUEUED = 8;
-    private static final int REQUESTED_LOCATION_WITHOUT_START_TRAIL_QUEUED = 7;
+    public static final int CAMERA_REQUESTED_PERMISSION = 9;
+    public static final int REQUESTED_LOCATION_WITH_START_TRAIL_QUEUED = 8;
+    public static final int REQUESTED_LOCATION_WITHOUT_START_TRAIL_QUEUED = 7;
 
     private GoogleApiClient googleApiClient;
     private AppCompatActivity context;
@@ -286,6 +286,7 @@ public class HomeActivity extends AppCompatActivity {
                     newIntent.setClassName("com.teamunemployment.breadcrumbs", "com.teamunemployment.breadcrumbs.client.Maps.LocalMap");
                     startActivity(newIntent);
                 }
+                return;
             }
 
             case WRITE_EXTERNAL_STORAGE_REQUEST : {
@@ -295,6 +296,7 @@ public class HomeActivity extends AppCompatActivity {
                     startActivityForResult(intent, PICK_PROFILE_REQUEST);
                 }
             }
+            return;
         }
     }
 
