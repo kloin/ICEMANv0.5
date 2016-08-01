@@ -135,6 +135,7 @@ public class SaveCrumbService extends Service {
                     SimpleGps gps = new SimpleGps(context);
                     Location location = gps.GetInstantLocation();
                     if (HAVE_SAVED) {
+                        locationManager.removeUpdates(locationListener);
                         return; // Dont want to save anything here because I have already saved.
                     }   else {
                         HAVE_SAVED = true;
