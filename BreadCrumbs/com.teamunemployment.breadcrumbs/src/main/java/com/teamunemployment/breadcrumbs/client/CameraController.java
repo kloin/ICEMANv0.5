@@ -345,6 +345,8 @@ public class CameraController extends SurfaceView implements SurfaceHolder.Callb
         Camera.Size previewSize = getOptimalPreviewSize(previewSizes);
         parameters.setPreviewSize(previewSize.width,previewSize.height);
         parameters.setPictureSize(size.width, size.height);
+        parameters.setPreviewFpsRange(30000, 30000);
+
         mCamera.setParameters(parameters);
         isPreviewRunning = true;
 
