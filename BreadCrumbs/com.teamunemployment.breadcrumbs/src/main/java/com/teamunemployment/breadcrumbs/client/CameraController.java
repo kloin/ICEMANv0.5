@@ -141,6 +141,7 @@ public class CameraController extends SurfaceView implements SurfaceHolder.Callb
         else {
             mCamera = Camera.open(1);
         }
+
         Display display = ((WindowManager)context.getSystemService(context.WINDOW_SERVICE)).getDefaultDisplay();
         int raot = display.getRotation();
         mCamera.setDisplayOrientation(90);
@@ -168,13 +169,6 @@ public class CameraController extends SurfaceView implements SurfaceHolder.Callb
         }
     }
 
-    /*
-    For some reason every phone i have tested this on, android sets the default preview to be sideways.
-    Even when activity is limited to portrait.
-    Why the fuck this is ever a thing i will never know.
-
-    This method seems really dodgey, but its been tested on a lot of phones and it seems pretty sweet.
-     */
     private void CheckOrientationIsNotAllFuckingRetarded(Camera.Parameters parameters, Display display) {
         if (display.getRotation() == Surface.ROTATION_0) {
             mCamera.setDisplayOrientation(90);
@@ -234,12 +228,10 @@ public class CameraController extends SurfaceView implements SurfaceHolder.Callb
     }
 
     private Camera.Size getOptimalPreviewSize(List<Camera.Size> sizes) {
-        // Source: http://stackoverflow.com/questions/7942378/android-camera-will-not-work-startpreview-fails
         Camera.Size optimalSize = null;
 
         // Try to find a size match which suits the whole screen minus the menu on the left.
         for (Camera.Size size : sizes) {
-            // TODO : Make camera work for phones that have different orientations.
             float height = size.height;
             float width = size.width;
             float sizeAR = height / width;

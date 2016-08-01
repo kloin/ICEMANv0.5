@@ -12,23 +12,26 @@ import com.teamunemployment.breadcrumbs.App;
 import com.teamunemployment.breadcrumbs.AppComponent;
 import com.teamunemployment.breadcrumbs.R;
 
+import javax.inject.Inject;
+
 import butterknife.Bind;
 import butterknife.OnClick;
 import butterknife.OnItemLongClick;
+import dagger.internal.DaggerCollections;
 
 /**
  * @author Josiah Kendall.
  */
 public class CameraView extends AppCompatActivity implements CameraViewObjectContract {
 
+    @Inject
     CameraPresenter presenter;
     @Bind(R.id.root) CoordinatorLayout root;
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        //AppComponent component =
-       // presenter =
-        //presenter.start();
+        presenter.SetView(this);
+        presenter.start(this);
     }
 
     @Override

@@ -125,8 +125,6 @@ public class CameraCapture extends AppCompatActivity {
 		}, 500);
 	}
 
-
-
 	@Override
 	protected void onResume() {
 		super.onResume();

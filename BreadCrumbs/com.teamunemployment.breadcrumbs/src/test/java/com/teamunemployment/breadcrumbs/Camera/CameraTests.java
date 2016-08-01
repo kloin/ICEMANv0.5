@@ -1,20 +1,47 @@
 package com.teamunemployment.breadcrumbs.Camera;
 
+import android.app.Activity;
+import android.content.Context;
+import android.view.TextureView;
+
+import com.teamunemployment.breadcrumbs.AppComponent;
+import com.teamunemployment.breadcrumbs.Explore.Presenter;
+
+import junit.framework.Assert;
+
 import org.junit.Test;
+import org.mockito.Mockito;
+
+import static org.mockito.Matchers.any;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 
 /**
- * @author Josiah Kendall
+ * @author Josiah Kendall.
  */
 public class CameraTests {
 
     @Test
     public void TestThatWeCreateCameraOnPresenterStart() {
 
+        CameraModel model = Mockito.mock(CameraModel.class);
+        CameraViewObjectContract cameraViewObjectContract = Mockito.mock(CameraViewObjectContract.class);
+        CameraPresenter presenter = new CameraPresenter(model);
+        Mockito.when(model.CreateCameraSurface(any(Context.class))).thenReturn(Mockito.mock(TextureView.class));
+        presenter.SetView(cameraViewObjectContract);
+        presenter.start(Mockito.mock(Context.class));
+        verify(model, times(1)).CreateCameraSurface(any(Context.class));
+        verify(cameraViewObjectContract, times(1)).attachCameraSurface(any(TextureView.class));
     }
 
     @Test
     public void TestThatWeDestroyAndReleaseCameraOnActivityDestroy() {
+        CameraView cameraView = Mockito.mock(CameraView.class);
+        CameraModel model = Mockito.mock(CameraModel.class);
+        CameraPresenter presenter = new CameraPresenter(model);
+        presenter.SetView(cameraView);
 
+        presenter.stop();
     }
 
     @Test

@@ -20,11 +20,17 @@ public class CameraPresenter implements PresenterForActivityContract {
 
     @Inject
     public CameraPresenter(CameraModel model) {
-        this.viewContract = viewContract;
         this.model = model;
     }
 
+    public void SetView(CameraViewObjectContract viewContract) {
+        this.viewContract = viewContract;
+    }
+
     public void start(Context context) {
+        if (viewContract == null) {
+            throw new IllegalStateException("Must call SetView before calling start()");
+        }
         TextureView cameraSurface = model.CreateCameraSurface(context);
         viewContract.attachCameraSurface(cameraSurface);
     }
