@@ -100,7 +100,6 @@ public class ProfileFragment extends Fragment implements ProfileContract.ViewCon
                              Bundle savedInstanceState) {
         this.inflater = inflater;
         View rootView = inflater.inflate(R.layout.profile_page_fragment, container, false);
-        ButterKnife.setDebug(true);
         ButterKnife.bind(this, rootView);
         appCompatActivity = (AppCompatActivity) getActivity();
         preferencesAPI = new PreferencesAPI(getContext());
@@ -124,8 +123,6 @@ public class ProfileFragment extends Fragment implements ProfileContract.ViewCon
                 .SetCallBack(createTripCallback())
                 .UseCancelButton(true);
         dialog.Show();
-
-
     }
 
     private IDialogCallback createTripCallback() {

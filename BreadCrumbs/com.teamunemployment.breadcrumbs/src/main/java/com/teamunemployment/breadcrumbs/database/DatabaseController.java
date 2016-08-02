@@ -45,7 +45,7 @@ import java.util.Iterator;
  */
 public class DatabaseController extends SQLiteOpenHelper {
 
-    private static final int DATABASE_VERSION = 6;
+    private static final int DATABASE_VERSION = 7;
     private static final String POLYLINES = "polylines";
 	private static final String DATABASE_NAME="users";
     private static final String TRAIL_POINTS_INDEX = "trailIndexDb";
@@ -103,10 +103,17 @@ public class DatabaseController extends SQLiteOpenHelper {
         }
 
         if ( oldVersion ==5) {
-            db.execSQL("CREATE TABLE " + FOLLOWING_TABLE + " (_id INTEGER PRIMARY KEY AUTOINCREMENT, " +
+            db.execSQL("CREATE TABLE IF NOT EXISTS " + FOLLOWING_TABLE + " (_id INTEGER PRIMARY KEY AUTOINCREMENT, " +
                     "UserId INTEGER," +
                     "FollowedUserId INTEGER);");
             oldVersion = 6;
+        }
+
+        // I really struggled here
+        if (oldVersion == 6) {
+            db.execSQL("CREATE TABLE IF NOT EXISTS " + FOLLOWING_TABLE + " (_id INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                    "UserId INTEGER," +
+                    "FollowedUserId INTEGER);");
         }
     }
 

@@ -33,7 +33,7 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 
 /**
- * Created by jek40 on 29/06/2016.
+ * @author Josiah Kendall.
  */
 public class SaveVideoActivity extends SaveCrumbActivity implements SaveCrumbActivityContract.ICrumbDisplay,
         TextWatcher, TextureView.SurfaceTextureListener {

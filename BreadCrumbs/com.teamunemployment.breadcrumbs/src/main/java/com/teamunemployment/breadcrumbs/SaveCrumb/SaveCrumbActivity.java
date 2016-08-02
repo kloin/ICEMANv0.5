@@ -157,6 +157,7 @@ public class SaveCrumbActivity extends AppCompatActivity implements SaveCrumbAct
     @OnClick(R.id.done_button) void SaveCrumb() {
         PreferencesAPI preferencesAPI = new PreferencesAPI(this);
         model.SaveCrumb(this, preferencesAPI);
+
         finish();
     }
 
