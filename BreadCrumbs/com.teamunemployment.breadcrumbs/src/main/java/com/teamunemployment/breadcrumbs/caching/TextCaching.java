@@ -40,6 +40,22 @@ public class TextCaching {
         }
     }
 
+    // Write text to cache file with a file name as the Key.
+    public void CreateNoMediaFile() {
+        String path = Utils.getExternalCacheDir(context) + "/.noMedia";
+        String textToCache = " ";
+        try {
+            if (textToCache != null && textToCache.length() > 0) {
+                final BufferedWriter cacheWriter = new BufferedWriter(new FileWriter(path), textToCache.length());
+                cacheWriter.write(textToCache);
+                cacheWriter.close();
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+            Log.e("CACHE", "Failed to cache text : " + textToCache + ". Refer to CacheText(key, text) method in TextCaching");
+        }
+    }
+
     /**
      * Fetch an object that contains the string result of the cache key, and a flag for whether we
      * should update our cache (based on the cache age).

@@ -14,6 +14,11 @@ import android.util.Base64;
 import android.util.Log;
 
 import com.google.android.gms.maps.model.LatLng;
+import com.google.gson.annotations.Expose;
+import com.google.gson.annotations.SerializedName;
+import com.teamunemployment.breadcrumbs.Album.data.FrameDetails;
+import com.teamunemployment.breadcrumbs.Album.data.MimeDetails;
+import com.teamunemployment.breadcrumbs.FileManager.MediaRecordModel;
 import com.teamunemployment.breadcrumbs.Location.SimpleGps;
 import com.teamunemployment.breadcrumbs.Models;
 import com.teamunemployment.breadcrumbs.Network.LoadBalancer;
@@ -63,6 +68,8 @@ public class DatabaseController extends SQLiteOpenHelper {
 	public static final String PIN="pin";
     public static final String TRAILID="trailid";
     private static final String FOLLOWING_TABLE = "following_table";
+    private static final String FRAME_DETAILS = "frame_details";
+    private static final String STORED_MEDIA_FILES = "stored_files";
     //public static final String
     private static final String TAG = "DBC";
     private Context mContext;
@@ -585,6 +592,10 @@ public class DatabaseController extends SQLiteOpenHelper {
         db.execSQL("CREATE TABLE " + FOLLOWING_TABLE + " (_id INTEGER PRIMARY KEY AUTOINCREMENT, " +
                 "UserId INTEGER," +
                 "FollowedUserId INTEGER);");
+
+        db.execSQL("CREATE TABLE " + STORED_MEDIA_FILES + " (_id INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                "FrameId INTEGER," +
+                "Size REAL);");
     }
 
     public void SaveActivityPoint(int currentActivity, int pastActivity, Double latitude, Double longitude, int granularity) {
@@ -1570,7 +1581,6 @@ public class DatabaseController extends SQLiteOpenHelper {
     public User GetUser(String userId) {
         Cursor constantsCursor=getReadableDatabase().rawQuery("SELECT * FROM " + USERS + " WHERE  UserId = ?", new String[] {userId});
         if(constantsCursor.moveToFirst()) {
-
             int profilePicId = constantsCursor.getInt(constantsCursor.getColumnIndex("ProfilePicId"));
             String about = constantsCursor.getString(constantsCursor.getColumnIndex("About"));
             String username = constantsCursor.getString(constantsCursor.getColumnIndex("Username"));
@@ -1582,6 +1592,179 @@ public class DatabaseController extends SQLiteOpenHelper {
             user.setUsername(username);
             user.setWeb(web);
             return user;
+        }
+
+        return null;
+    }
+
+    /**
+     * Load the crumb details for a frame.
+     * @param frameId
+     * @return
+     */
+    public FrameDetails GetFrameDetails(String frameId) {
+        Cursor constantsCursor=getReadableDatabase().rawQuery("SELECT * FROM "+CRUMBS+" WHERE EventId ="+frameId+" ORDER BY _id", null);
+        FrameDetails frameDetails = new FrameDetails();
+
+        if (constantsCursor.moveToFirst()) {
+            //Get all columns
+            String id = constantsCursor.getString(constantsCursor.getColumnIndex("_id"));
+            String eventId = constantsCursor.getString(constantsCursor.getColumnIndex("eventId"));
+            String description = constantsCursor.getString(constantsCursor.getColumnIndex("description"));
+            Double latitude = constantsCursor.getDouble(constantsCursor.getColumnIndex("latitude"));
+            Double longitude = constantsCursor.getDouble(constantsCursor.getColumnIndex("longitude"));
+            String timeStamp = constantsCursor.getString(constantsCursor.getColumnIndex("timeStamp"));
+            String userId = constantsCursor.getString(constantsCursor.getColumnIndex("userId"));
+            String placeId = constantsCursor.getString(constantsCursor.getColumnIndex("placeId"));
+            String suburb = constantsCursor.getString(constantsCursor.getColumnIndex("suburb"));
+            String city = constantsCursor.getString(constantsCursor.getColumnIndex("city"));
+            String mime = constantsCursor.getString(constantsCursor.getColumnIndex("mime"));
+            String decXPos = constantsCursor.getString(constantsCursor.getColumnIndex("descPosX"));
+            String decYPos = constantsCursor.getString(constantsCursor.getColumnIndex("descPosY"));
+
+            frameDetails.setChat(description);
+            frameDetails.setCity(city);
+            frameDetails.setId(eventId);
+            frameDetails.setCountry(" ");
+            frameDetails.setDescPosX(decXPos);
+            frameDetails.setDescPosY(decYPos);
+            frameDetails.setExtension(mime);
+            frameDetails.setTimeStamp(timeStamp);
+            frameDetails.setIcon("icon");
+            frameDetails.setLatitude(Double.toString(latitude));
+            frameDetails.setLongitude(Double.toString(longitude));
+            frameDetails.setUserId(userId);
+            frameDetails.setSuburb(suburb);
+            frameDetails.setPlaceId(placeId);
+            return frameDetails;
+        }
+
+        return null;
+    }
+
+    /**
+     * Update the frame details of a crumb
+     * @param frameDetails
+     */
+    public long UpdateFrameDetails(FrameDetails frameDetails) {
+        if (frameDetails.getId() == null) {
+            throw new NullPointerException("Frame Id cannot be null.");
+        }
+        SQLiteDatabase localDb = getWritableDatabase();
+
+        ContentValues cv = new ContentValues();
+        cv.put("trailId", frameDetails.getTrailId());
+        cv.put("eventId", frameDetails.getId());
+        cv.put("description", frameDetails.getChat());
+        cv.put("userId", frameDetails.getUserId());
+        cv.put("icon", frameDetails.getIcon());
+        cv.put("placeId", frameDetails.getPlaceId());
+        cv.put("suburb", frameDetails.getSuburb());
+        cv.put("city", frameDetails.getCity());
+        cv.put("country", frameDetails.getCountry());
+        cv.put("timeStamp", frameDetails.getTimeStamp());
+        cv.put("mime", frameDetails.getExtension());
+        cv.put("longitude", frameDetails.getLatitude());
+        cv.put("latitude", frameDetails.getLongitude());
+        cv.put("descPosX", frameDetails.getDescPosX());
+        cv.put("descPosY", frameDetails.getDescPosY());
+        return localDb.update(CRUMBS,cv, "eventId=?", new String[]{frameDetails.getId()});
+    }
+
+    /**
+     * Save Frame Details.
+     */
+    public long SaveFrameDetails(FrameDetails frameDetails) {
+
+        if (frameDetails.getId() == null) {
+            throw new NullPointerException("Frame Id cannot be null.");
+        }
+
+        ContentValues cv = new ContentValues();
+        cv.put("trailId", frameDetails.getTrailId());
+        cv.put("eventId", frameDetails.getId());
+        cv.put("description", frameDetails.getChat());
+        cv.put("userId", frameDetails.getUserId());
+        cv.put("icon", frameDetails.getIcon());
+        cv.put("placeId", frameDetails.getPlaceId());
+        cv.put("suburb", frameDetails.getSuburb());
+        cv.put("city", frameDetails.getCity());
+        cv.put("country", frameDetails.getCountry());
+        cv.put("timeStamp", frameDetails.getTimeStamp());
+        cv.put("mime", frameDetails.getExtension());
+        cv.put("longitude", frameDetails.getLatitude());
+        cv.put("latitude", frameDetails.getLongitude());
+        cv.put("descPosX", frameDetails.getDescPosX());
+        cv.put("descPosY", frameDetails.getDescPosY());
+
+        SQLiteDatabase localDb = getWritableDatabase();
+        return localDb.insert(CRUMBS, null, cv);
+
+    }
+
+
+
+    /**
+     * Load an arraylist of previously saved mime details for this
+     * @param albumId
+     * @return
+     */
+    public ArrayList<MimeDetails> LoadMimeDetails(String albumId) {
+        Cursor constantsCursor=getReadableDatabase().rawQuery("SELECT * FROM "+CRUMBS+" WHERE TrailId ="+albumId+" ORDER BY _id", null);
+        ArrayList<MimeDetails> mimes = new ArrayList<>();
+        while (constantsCursor.moveToNext()) {
+            //Get all columns
+            String id = constantsCursor.getString(constantsCursor.getColumnIndex("_id"));
+            String eventId = constantsCursor.getString(constantsCursor.getColumnIndex("eventId"));
+            String mime = constantsCursor.getString(constantsCursor.getColumnIndex("mime"));
+
+            MimeDetails mimeDetails = new MimeDetails();
+            mimeDetails.setExtension(mime);
+            mimeDetails.setId(eventId);
+            mimes.add(mimeDetails);
+        }
+
+        return mimes;
+    }
+
+    /**
+     * Save a record of what we files we have stored locally.
+     * @param record The record of the file to save.
+     */
+    public void SaveMediaFileRecord(MediaRecordModel record) {
+        ContentValues cv = new ContentValues();
+        cv.put("FrameId", record.getId());
+        cv.put("Size", record.getSize());
+
+        SQLiteDatabase localDb = getWritableDatabase();
+        localDb.insert(STORED_MEDIA_FILES, null, cv);
+    }
+
+    /**
+     * Delete a media record
+     * @param id The id of the media record to delete. This is not the database id, but the frame id.
+     * @return -1 if not successful.
+     */
+    public int DeleteMediaFileRecord(String id) {
+        return getWritableDatabase().delete(STORED_MEDIA_FILES, "FrameId=" + id, null);
+    }
+
+    /**
+     * Get a media Record object from the database.
+     * @param id The id of the record. THis is the frame id from the server, not the database id.
+     * @return The found object, or null if no object was found.
+     */
+    @Nullable
+    public MediaRecordModel GetMediaFileRecord(String id) {
+        Cursor constantsCursor=getReadableDatabase().rawQuery("SELECT * FROM "+STORED_MEDIA_FILES+" WHERE FrameId ="+id+" ORDER BY _id", null);
+
+        if (constantsCursor.moveToFirst()) {
+            //Get all columns
+            String databaseId = constantsCursor.getString(constantsCursor.getColumnIndex("_id"));
+            String frameId = constantsCursor.getString(constantsCursor.getColumnIndex("FrameId"));
+            float size = constantsCursor.getFloat(constantsCursor.getColumnIndex("Size"));
+            MediaRecordModel m = new MediaRecordModel(frameId, size, Integer.parseInt(databaseId));
+            return m;
         }
 
         return null;

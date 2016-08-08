@@ -39,8 +39,7 @@ public class SaveVideoActivity extends SaveCrumbActivity implements SaveCrumbAct
         TextWatcher, TextureView.SurfaceTextureListener {
 
 
-    @Bind(R.id.media_container)
-    RelativeLayout mediaContainer;
+    @Bind(R.id.media_container) RelativeLayout mediaContainer;
     private String filePath;
     private TextureView videoContainer;
 

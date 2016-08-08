@@ -42,7 +42,7 @@ public class MockClient implements Interceptor {
         return new Response.Builder()
                 .request(request)
                 .protocol(Protocol.HTTP_1_1)
-                .code(200)
+                .code(code)
                 .body(ResponseBody.create(MediaType.parse(mimeType), content))
                 .build();
     }

@@ -49,6 +49,7 @@ public class ExampleUnitTest {
     private String generateMockJSON() throws JSONException {
         return "{\"StartDate\":\"2016-06-01\",\"CoverPhotoId\":\"17826\",\"Views\":\"0\",\"Description\":\" \",\"UserId\":\"11136\",\"TrailName\":\"Raglan trip\",\"Id\":\"17734\",\"Distance\":\"0\"}";
     }
+
     @Test
     public void TestThatWeCanLoadTrip() throws JSONException {
 
@@ -57,7 +58,6 @@ public class ExampleUnitTest {
                 .addInterceptor(
                         new MockClient(context, result, 200)
                 ).build();
-
 
         Retrofit retrofit = new Retrofit.Builder()
                 // .addCallAdapterFactory(RxJavaCallAdapterFactory.create())

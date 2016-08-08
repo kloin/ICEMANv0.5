@@ -22,7 +22,6 @@ public class Model {
     private ArrayList<ExploreCardModel> cardModels = new ArrayList<>();
 
     public Model(ExploreLocalRepository localRepo, ExploreRemoteRepository remoteRepo) {
-
         // Dependencies.
         this.remoteRepository = remoteRepo;
         this.localRepository = localRepo;
