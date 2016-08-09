@@ -20,6 +20,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.google.firebase.analytics.FirebaseAnalytics;
+import com.squareup.picasso.Picasso;
 import com.teamunemployment.breadcrumbs.CustomElements.FancyFollow;
 import com.teamunemployment.breadcrumbs.Network.ServiceProxy.AsyncFetchThumbnail;
 import com.teamunemployment.breadcrumbs.Network.ServiceProxy.HTTPRequestHandler;
@@ -32,7 +33,6 @@ import com.teamunemployment.breadcrumbs.Network.LoadBalancer;
 import com.teamunemployment.breadcrumbs.Network.ServiceProxy.AsyncDataRetrieval;
 import com.teamunemployment.breadcrumbs.R;
 import com.teamunemployment.breadcrumbs.caching.TextCaching;
-import com.bumptech.glide.Glide;
 import com.teamunemployment.breadcrumbs.client.ElementLoadingManager.TextViewLoadingManager;
 
 import org.json.JSONException;
@@ -288,7 +288,7 @@ public class HomeCardAdapter extends RecyclerView.Adapter<HomeCardAdapter.ViewHo
             if (resultJSON.has("coverPhotoId")) {
                 String coverId = resultJSON.getString("coverPhotoId");
                 Log.d(TAG, "Found coverPhotoId: " +coverId );
-                Glide.with(mContext).load(LoadBalancer.RequestCurrentDataAddress() + "/images/"+coverId+".jpg").centerCrop().crossFade().into(trailCoverPhoto);
+                Picasso.with(mContext).load(LoadBalancer.RequestCurrentDataAddress() + "/images/"+coverId+".jpg").centerCrop().into(trailCoverPhoto);
             }
 
             titleTextView.setText(title);

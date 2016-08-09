@@ -39,7 +39,7 @@
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
-
+        android:name=".App"
         android:label="@string/app_name"
         android:theme="@style/AppTheme">
         <activity
@@ -92,8 +92,7 @@
         </service>
         <!-- [END instanceId_listener] -->
         <service
-            android:name="com.teamunemployment.breadcrumbs.GCM.RegistrationIntentService"
-            android:exported="false">
+            android:name="com.teamunemployment.breadcrumbs.GCM.RegistrationIntentService" android:exported="false">
         </service>
         <service android:name=".BootReciever.BootloaderService" android:exported="false"></service>
 
@@ -102,6 +101,7 @@
         <service android:name=".BackgroundServices.SaveCrumbService" android:exported="false"/>
         <service android:name=".client.ImageChooser.SaveLocalImageAsProfilePic" android:exported="false"/>
 
+        <activity android:name=".Album.AlbumView" android:screenOrientation="portrait"/>
         <activity android:name=".client.TrailManager" android:screenOrientation="portrait">
         </activity>
         <activity android:name=".client.ImageChooser.LocalPhotoImageSelector" android:screenOrientation="portrait"></activity>

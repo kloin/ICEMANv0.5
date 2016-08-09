@@ -8,9 +8,9 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
 
+import com.squareup.picasso.Picasso;
 import com.teamunemployment.breadcrumbs.Network.LoadBalancer;
 import com.teamunemployment.breadcrumbs.R;
-import com.bumptech.glide.Glide;
 import com.teamunemployment.breadcrumbs.RandomUsefulShit.Utils;
 
 import java.util.ArrayList;
@@ -62,9 +62,9 @@ public class ImageChooserGridViewAdapter extends BaseAdapter {
 
             if (id.endsWith("L")) {
                 id =  id.substring(0, id.length()-1);
-                Glide.with(context).load(Utils.FetchLocalPathToImageFile(id)).centerCrop().placeholder(Color.GRAY).crossFade().into(imageView);
+                Picasso.with(context).load(Utils.FetchLocalPathToImageFile(id)).centerCrop().placeholder(Color.GRAY).into(imageView);
             } else {
-                Glide.with(context).load(LoadBalancer.RequestCurrentDataAddress() + "/images/"+id+".jpg").centerCrop().placeholder(Color.GRAY).crossFade().into(imageView);
+                Picasso.with(context).load(LoadBalancer.RequestCurrentDataAddress() + "/images/"+id+".jpg").into(imageView);
             }
 
             // Glide.with(context).load("http://placehold.it/350x150").centerCrop().placeholder(Color.GRAY).crossFade().into(imageView);
@@ -74,10 +74,10 @@ public class ImageChooserGridViewAdapter extends BaseAdapter {
                     .findViewById(R.id.grid_image);
             if (id.endsWith("L")) {
                 id =  id.substring(0, id.length()-1);
-                Glide.with(context).load(Utils.FetchLocalPathToImageFile(id)).centerCrop().placeholder(Color.GRAY).crossFade().into(imageView);
+                Picasso.with(context).load(Utils.FetchLocalPathToImageFile(id)).centerCrop().placeholder(Color.GRAY).into(imageView);
 
             } else {
-                Glide.with(context).load(LoadBalancer.RequestCurrentDataAddress() + "/images/"+id+".jpg").centerCrop().placeholder(Color.GRAY).crossFade().into(imageView);
+                Picasso.with(context).load(LoadBalancer.RequestCurrentDataAddress() + "/images/"+id+".jpg").into(imageView);
             }
         }
 

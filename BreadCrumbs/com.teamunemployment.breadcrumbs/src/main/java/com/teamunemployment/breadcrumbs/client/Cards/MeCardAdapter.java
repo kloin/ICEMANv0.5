@@ -17,8 +17,6 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
-
-import com.bumptech.glide.Glide;
 import com.squareup.picasso.Picasso;
 import com.teamunemployment.breadcrumbs.Crumb;
 import com.teamunemployment.breadcrumbs.CustomElements.FancyFollow;
@@ -367,7 +365,7 @@ public class MeCardAdapter extends RecyclerView.Adapter<MeCardAdapter.ViewHolder
 
        // Load local cover photo.
         String localUrl = Utils.FetchLocalPathToImageFile(coverPhotoId);
-        Glide.with(context).load(localUrl).centerCrop().crossFade().into(trailCoverPhoto);
+        Picasso.with(context).load(localUrl).centerCrop().into(trailCoverPhoto);
     }
 
     @Override

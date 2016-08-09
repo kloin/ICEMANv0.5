@@ -12,12 +12,16 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.LinkedList;
 
+import javax.inject.Inject;
+
 /**
  * @author Josiah Kendall
  */
 public class LocalAlbumRepo {
 
     private DatabaseController databaseController;
+
+    @Inject
     public LocalAlbumRepo(DatabaseController databaseController) {
         this.databaseController = databaseController;
     }
@@ -100,5 +104,9 @@ public class LocalAlbumRepo {
         if (recordModel != null) {
             databaseController.SaveMediaFileRecord(recordModel);
         }
+    }
+
+    public MediaRecordModel FindMediaFileRecord(String frameId) {
+        return databaseController.GetMediaFileRecord(frameId);
     }
 }

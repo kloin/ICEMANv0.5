@@ -19,13 +19,13 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.squareup.picasso.Picasso;
 import com.teamunemployment.breadcrumbs.Network.LoadBalancer;
 import com.teamunemployment.breadcrumbs.Network.ServiceProxy.AsyncDataRetrieval;
 import com.teamunemployment.breadcrumbs.Network.ServiceProxy.AsyncFetchThumbnail;
 import com.teamunemployment.breadcrumbs.R;
 import com.teamunemployment.breadcrumbs.Network.ServiceProxy.UpdateViewElementWithProperty;
 import com.teamunemployment.breadcrumbs.caching.TextCaching;
-import com.bumptech.glide.Glide;
 import com.teamunemployment.breadcrumbs.client.ElementLoadingManager.TextViewLoadingManager;
 
 import org.json.JSONException;
@@ -172,7 +172,7 @@ public class EditTrailCardAdapter extends RecyclerView.Adapter<EditTrailCardAdap
             final ImageView trailCoverPhoto = (ImageView) card.findViewById(R.id.main_photo);
             // Load cover photo here and set it
             if (resultJSON.has("coverPhotoId")) {
-                Glide.with(mContext).load(LoadBalancer.RequestCurrentDataAddress() + "/images/"+coverId+".jpg").centerCrop().crossFade().into(trailCoverPhoto);
+                Picasso.with(mContext).load(LoadBalancer.RequestCurrentDataAddress() + "/images/"+coverId+".jpg").centerCrop().into(trailCoverPhoto);
             } else {
                 trailCoverPhoto.setBackgroundColor(Color.BLUE);
             }

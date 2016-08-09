@@ -1,4 +1,6 @@
 package com.teamunemployment.breadcrumbs.album;
+import android.content.Context;
+
 import com.teamunemployment.breadcrumbs.Album.AlbumModel;
 import com.teamunemployment.breadcrumbs.Album.AlbumPresenter;
 import com.teamunemployment.breadcrumbs.Album.AlbumPresenterViewContract;
@@ -38,7 +40,8 @@ public class AlbumPresenterTests {
     @Test
     public void TestThatLoadingStarts() {
         AlbumModel albumModel = Mockito.mock(AlbumModel.class);
-        AlbumPresenter presenter = new AlbumPresenter(albumModel);
+        Context context = Mockito.mock(Context.class);
+        AlbumPresenter presenter = new AlbumPresenter(albumModel, context);
         presenter.SetView(Mockito.mock(AlbumPresenterViewContract.class));
         presenter.Start("1234");
         verify(albumModel, times(1)).LoadFrameMedia(any(String.class), any(String.class));
@@ -58,7 +61,8 @@ public class AlbumPresenterTests {
     @Test
     public void TestThatWeCanGoNextIfWeFailToLoadFrameMedia() {
         AlbumModel model = Mockito.mock(AlbumModel.class);
-        AlbumPresenter presenter = new AlbumPresenter(model);
+        Context context = Mockito.mock(Context.class);
+        AlbumPresenter presenter = new AlbumPresenter(model, context);
         presenter.SetView(Mockito.mock(AlbumPresenterViewContract.class));
         Assert.fail();
     }
@@ -66,7 +70,8 @@ public class AlbumPresenterTests {
     @Test
     public void TestDetailsFailButFrameMediaDoesnt() {
         AlbumModel model = Mockito.mock(AlbumModel.class);
-        AlbumPresenter presenter = new AlbumPresenter(model);
+        Context context = Mockito.mock(Context.class);
+        AlbumPresenter presenter = new AlbumPresenter(model, context);
         presenter.SetView(Mockito.mock(AlbumPresenterViewContract.class));
 
 

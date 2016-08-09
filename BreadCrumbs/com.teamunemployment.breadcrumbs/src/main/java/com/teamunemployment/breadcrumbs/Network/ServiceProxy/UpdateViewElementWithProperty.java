@@ -9,8 +9,8 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.squareup.picasso.Picasso;
 import com.teamunemployment.breadcrumbs.Network.LoadBalancer;
-import com.bumptech.glide.Glide;
 
 import java.util.ArrayList;
 
@@ -69,7 +69,7 @@ public class UpdateViewElementWithProperty {
             public void onFinished(String result) {
                 if (result != null && !result.isEmpty()) {
                     try {
-                        Glide.with(context).load(LoadBalancer.RequestCurrentDataAddress() + "/images/"+result+".jpg").centerCrop().crossFade().into(imageToUpdate);
+                        Picasso.with(context).load(LoadBalancer.RequestCurrentDataAddress() + "/images/"+result+".jpg").centerCrop().into(imageToUpdate);
                     } catch (IllegalArgumentException ex) {
                         // standard "loading" once destroyed issue
                         Log.e("UPDATER", "Tried to update a view on a destroyed activity");
@@ -89,7 +89,7 @@ public class UpdateViewElementWithProperty {
                 if (result != null && !result.isEmpty()) {
                     try {
                         placeholder.setVisibility(View.GONE);
-                        Glide.with(context).load(LoadBalancer.RequestCurrentDataAddress() + "/images/"+result+".jpg").centerCrop().crossFade().into(imageToUpdate);
+                        Picasso.with(context).load(LoadBalancer.RequestCurrentDataAddress() + "/images/"+result+".jpg").centerCrop().into(imageToUpdate);
                     } catch (IllegalArgumentException ex) {
                         // standard "loading" once destroyed issue
                         Log.e("UPDATER", "Tried to update a view on a destroyed activity");

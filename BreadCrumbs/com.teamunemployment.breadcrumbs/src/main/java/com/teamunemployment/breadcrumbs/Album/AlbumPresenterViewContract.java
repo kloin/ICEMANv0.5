@@ -11,4 +11,6 @@ public interface AlbumPresenterViewContract {
     void setVideoVisibility(int invisible);
 
     void setImageUrl(String id);
+
+    void showMessage(String message);
 }

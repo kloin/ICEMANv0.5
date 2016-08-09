@@ -7,7 +7,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
-import com.bumptech.glide.Glide;
 import com.teamunemployment.breadcrumbs.Network.LoadBalancer;
 import com.teamunemployment.breadcrumbs.R;
 import com.teamunemployment.breadcrumbs.client.Cards.ImageChooserGridViewAdapter;
@@ -37,7 +36,6 @@ public class FacebookImageGridViewAdapter extends ImageChooserGridViewAdapter {
             ImageView imageView = (ImageView) gridView
                     .findViewById(R.id.grid_image);
 
-            Glide.with(context).load(url).centerCrop().placeholder(Color.GRAY).crossFade().into(imageView);
             // Glide.with(context).load("http://placehold.it/350x150").centerCrop().placeholder(Color.GRAY).crossFade().into(imageView);
         } else {
             gridView = (View) convertView;

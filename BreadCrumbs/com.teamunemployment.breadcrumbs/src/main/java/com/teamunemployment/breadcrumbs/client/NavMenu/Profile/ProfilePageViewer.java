@@ -26,6 +26,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.exoplayer.C;
+import com.squareup.picasso.Picasso;
 import com.teamunemployment.breadcrumbs.CustomElements.FancyFollow;
 import com.teamunemployment.breadcrumbs.Network.LoadBalancer;
 import com.teamunemployment.breadcrumbs.R;
@@ -35,7 +36,6 @@ import com.teamunemployment.breadcrumbs.Network.ServiceProxy.UpdateViewElementWi
 import com.teamunemployment.breadcrumbs.caching.GlobalContainer;
 import com.teamunemployment.breadcrumbs.caching.TextCaching;
 import com.teamunemployment.breadcrumbs.client.DialogWindows.DatePickerDialog;
-import com.bumptech.glide.Glide;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -303,7 +303,7 @@ public class ProfilePageViewer extends AppCompatActivity implements DatePickerDi
                     header.setImageBitmap(bitmap);
                 } else {
                     String id = PreferenceManager.getDefaultSharedPreferences(myContext).getString("COVERPHOTOID", "-1");
-                    Glide.with(myContext).load(LoadBalancer.RequestCurrentDataAddress() + "/images/" + id + ".jpg").centerCrop().crossFade().into(header);
+                    Picasso.with(myContext).load(LoadBalancer.RequestCurrentDataAddress() + "/images/" + id + ".jpg").centerCrop().into(header);
                 }
             }
             if (resultCode == Activity.RESULT_CANCELED) {
@@ -333,7 +333,7 @@ public class ProfilePageViewer extends AppCompatActivity implements DatePickerDi
                 public void onFinished(String result) {
                     if (result != null || !result.isEmpty()) {
                         try {
-                            Glide.with(myContext).load(LoadBalancer.RequestCurrentDataAddress() + "/images/" + result + ".jpg").centerCrop().crossFade().into(header);
+                            Picasso.with(myContext).load(LoadBalancer.RequestCurrentDataAddress() + "/images/" + result + ".jpg").centerCrop().into(header);
                         } catch (IllegalArgumentException ex) {
                             Log.d("PROF", "caught glide exception in profile page. Probably due to activity being destroyed before load was finished");
                         }
@@ -346,7 +346,7 @@ public class ProfilePageViewer extends AppCompatActivity implements DatePickerDi
             if (!coverPhotoId.equals("-1")) {
                 textView.setVisibility(View.GONE);
             }
-            Glide.with(myContext).load(LoadBalancer.RequestCurrentDataAddress() + "/images/" + coverPhotoId + ".jpg").centerCrop().crossFade().into(header);
+            Picasso.with(myContext).load(LoadBalancer.RequestCurrentDataAddress() + "/images/" + coverPhotoId + ".jpg").centerCrop().into(header);
             header.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -500,7 +500,7 @@ public class ProfilePageViewer extends AppCompatActivity implements DatePickerDi
                 View view = findViewById(R.id.devider1);
                 view.setVisibility(View.VISIBLE);
                 ImageView imageView = (ImageView) parent.findViewById(R.id.trail_image1);
-                Glide.with(myContext).load(LoadBalancer.RequestCurrentDataAddress() + "/images/" + coverId + ".jpg").centerCrop().placeholder(R.drawable.ic_landscape_black_24dp).crossFade().into(imageView);
+                Picasso.with(myContext).load(LoadBalancer.RequestCurrentDataAddress() + "/images/" + coverId + ".jpg").centerCrop().placeholder(R.drawable.ic_landscape_black_24dp).into(imageView);
                 parent.setOnTouchListener(fetchOpenTrailClickListener(id));
             } else if (count == 2) {
                 parent = (RelativeLayout) findViewById(R.id.chip_sub_wrapper);
@@ -514,7 +514,7 @@ public class ProfilePageViewer extends AppCompatActivity implements DatePickerDi
                 TextView description = (TextView) parent.findViewById(R.id.trail_chip_secondary_title);
                 description.setText(desc);
                 ImageView imageView = (ImageView) parent.findViewById(R.id.trail_image);
-                Glide.with(myContext).load(LoadBalancer.RequestCurrentDataAddress() + "/images/" + coverId + ".jpg").centerCrop().placeholder(R.drawable.ic_landscape_black_24dp).crossFade().into(imageView);
+                Picasso.with(myContext).load(LoadBalancer.RequestCurrentDataAddress() + "/images/" + coverId + ".jpg").centerCrop().placeholder(R.drawable.ic_landscape_black_24dp).into(imageView);
                 parent.setOnTouchListener(fetchOpenTrailClickListener(id));
             } else {
                 parent = (RelativeLayout) findViewById(R.id.chip_sub_wrapper2);
@@ -527,7 +527,7 @@ public class ProfilePageViewer extends AppCompatActivity implements DatePickerDi
                 TextView description = (TextView) parent.findViewById(R.id.trail_chip_secondary_title2);
                 description.setText(desc);
                 ImageView imageView = (ImageView) parent.findViewById(R.id.trail_image2);
-                Glide.with(myContext).load(LoadBalancer.RequestCurrentDataAddress() + "/images/" + coverId + ".jpg").centerCrop().placeholder(R.drawable.ic_landscape_black_24dp).crossFade().into(imageView);
+                Picasso.with(myContext).load(LoadBalancer.RequestCurrentDataAddress() + "/images/" + coverId + ".jpg").centerCrop().placeholder(R.drawable.ic_landscape_black_24dp).into(imageView);
                 parent.setOnTouchListener(new View.OnTouchListener() {
                                               private float startX;
                                               private float startY;

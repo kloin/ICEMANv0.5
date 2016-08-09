@@ -17,7 +17,6 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.bumptech.glide.Glide;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.CircleOptions;
@@ -26,6 +25,7 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.maps.android.PolyUtil;
 import com.google.maps.android.ui.IconGenerator;
 import com.google.repacked.kotlin.jvm.internal.DoubleCompanionObject;
+import com.squareup.picasso.Picasso;
 import com.teamunemployment.breadcrumbs.ActivityRecognition.ActivityController;
 import com.teamunemployment.breadcrumbs.AsyncWorkers.GenericAsyncWorker;
 import com.teamunemployment.breadcrumbs.BackgroundServices.UploadTrailService;
@@ -626,9 +626,9 @@ public class LocalMap extends MapViewer {
         ImageView coverPhoto = (ImageView) findViewById(R.id.trail_cover_photo);
         if (id.endsWith("L")) {
             id =  id.substring(0, id.length()-1);
-            Glide.with(context).load(Utils.FetchLocalPathToImageFile(id)).centerCrop().placeholder(Color.GRAY).crossFade().into(coverPhoto);
+            Picasso.with(context).load(Utils.FetchLocalPathToImageFile(id)).centerCrop().placeholder(Color.GRAY).into(coverPhoto);
         } else {
-            Glide.with(context).load(LoadBalancer.RequestCurrentDataAddress() + "/images/"+id+".jpg").centerCrop().placeholder(Color.GRAY).crossFade().into(coverPhoto);
+            Picasso.with(context).load(LoadBalancer.RequestCurrentDataAddress() + "/images/"+id+".jpg").centerCrop().placeholder(Color.GRAY).into(coverPhoto);
         }
     }
 

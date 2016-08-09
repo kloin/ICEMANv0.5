@@ -10,6 +10,7 @@ import com.teamunemployment.breadcrumbs.Album.repo.LocalAlbumRepo;
 import com.teamunemployment.breadcrumbs.Album.repo.RemoteAlbumRepo;
 import com.teamunemployment.breadcrumbs.Explore.Data.ExploreRemoteRepository;
 import com.teamunemployment.breadcrumbs.Explore.Model;
+import com.teamunemployment.breadcrumbs.FileManager.MediaRecordModel;
 import com.teamunemployment.breadcrumbs.MockClient;
 import com.teamunemployment.breadcrumbs.Network.LoadBalancer;
 import com.teamunemployment.breadcrumbs.RESTApi.AlbumService;
@@ -34,6 +35,7 @@ import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
 import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -64,8 +66,9 @@ public class AlbumModelTests {
         RemoteAlbumRepo remoteAlbumRepo = new RemoteAlbumRepo(retrofit.create(AlbumService.class));
         LocalAlbumRepo localAlbumRepo = Mockito.mock(LocalAlbumRepo.class);
         AlbumModelPresenterContract contract = Mockito.mock(AlbumModelPresenterContract.class);
-        FileManager fileManager = new FileManager(context, databaseController);
-        AlbumModel albumModel = new AlbumModel(remoteAlbumRepo, localAlbumRepo,context,contract, fileManager );
+        FileManager fileManager = new FileManager(context);
+        AlbumModel albumModel = new AlbumModel(remoteAlbumRepo, localAlbumRepo,context, fileManager );
+        albumModel.setContract(contract);
 
         ArrayList<MimeDetails> list = albumModel.LoadMimeDetails("Doesnt Matter");
         Assert.assertTrue(list != null);
@@ -108,7 +111,8 @@ public class AlbumModelTests {
         AlbumModelPresenterContract contract = Mockito.mock(AlbumModelPresenterContract.class);
         Context context = Mockito.mock(Context.class);
         FileManager fileManager = Mockito.mock(FileManager.class);
-        AlbumModel albumModel = new AlbumModel(remoteAlbumRepo, localAlbumRepo,context,contract, fileManager);
+        AlbumModel albumModel = new AlbumModel(remoteAlbumRepo, localAlbumRepo,context, fileManager );
+        albumModel.setContract(contract);
         ArrayList<MimeDetails> mimes = albumModel.LoadMimeDetails("dont care");
         Assert.assertTrue(mimes.get(0).equals(mime1));
     }
@@ -117,7 +121,6 @@ public class AlbumModelTests {
     public void TestThatWeCanRetrieveDataWhenWeHaveNothingLocally() {
         RemoteAlbumRepo remoteAlbumRepo = Mockito.mock(RemoteAlbumRepo.class);
         LocalAlbumRepo localAlbumRepo = Mockito.mock(LocalAlbumRepo.class);
-
 
         ArrayList<MimeDetails> results = new ArrayList<>();
 
@@ -143,7 +146,8 @@ public class AlbumModelTests {
         Context context = Mockito.mock(Context.class);
 
         FileManager fileManager = Mockito.mock(FileManager.class);
-        AlbumModel albumModel = new AlbumModel(remoteAlbumRepo, localAlbumRepo,context,contract, fileManager);
+        AlbumModel albumModel = new AlbumModel(remoteAlbumRepo, localAlbumRepo,context, fileManager );
+        albumModel.setContract(contract);
         ArrayList<MimeDetails> mimes = albumModel.LoadMimeDetails("dont care");
         Assert.assertTrue(mimes.get(0).equals(mime1));
     }
@@ -176,7 +180,8 @@ public class AlbumModelTests {
         AlbumModelPresenterContract contract = Mockito.mock(AlbumModelPresenterContract.class);
         Context context = Mockito.mock(Context.class);
         FileManager fileManager = Mockito.mock(FileManager.class);
-        AlbumModel albumModel = new AlbumModel(remoteAlbumRepo, localAlbumRepo,context,contract, fileManager );
+        AlbumModel albumModel = new AlbumModel(remoteAlbumRepo, localAlbumRepo,context, fileManager );
+        albumModel.setContract(contract);
         ArrayList<MimeDetails> mimes = albumModel.LoadMimeDetails("dont care");
 
         verify(localAlbumRepo, times(1)).SaveFrameMimeData(any(ArrayList.class));
@@ -191,7 +196,8 @@ public class AlbumModelTests {
         LocalAlbumRepo localAlbumRepo = Mockito.mock(LocalAlbumRepo.class);
         AlbumModelPresenterContract contract = Mockito.mock(AlbumModelPresenterContract.class);
         FileManager fileManager = Mockito.mock(FileManager.class);
-        AlbumModel albumModel = new AlbumModel(remoteAlbumRepo, localAlbumRepo,context,contract,fileManager );
+        AlbumModel albumModel = new AlbumModel(remoteAlbumRepo, localAlbumRepo,context, fileManager );
+        albumModel.setContract(contract);
         ArrayList<MimeDetails> list = albumModel.LoadMimeDetails("Doesnt Matter");
         Assert.assertTrue(list.size() == 0);
     }
@@ -216,7 +222,8 @@ public class AlbumModelTests {
         LocalAlbumRepo localAlbumRepo = Mockito.mock(LocalAlbumRepo.class);
         AlbumModelPresenterContract contract = Mockito.mock(AlbumModelPresenterContract.class);
         FileManager fileManager = Mockito.mock(FileManager.class);
-        AlbumModel albumModel = new AlbumModel(remoteAlbumRepo, localAlbumRepo,context,contract, fileManager);
+        AlbumModel albumModel = new AlbumModel(remoteAlbumRepo, localAlbumRepo,context, fileManager );
+        albumModel.setContract(contract);
         ArrayList<MimeDetails> list = albumModel.LoadMimeDetails("Doesnt Matter");
 
         Assert.assertTrue(list.size() == 0);
@@ -250,15 +257,87 @@ public class AlbumModelTests {
         AlbumModelPresenterContract contract = Mockito.mock(AlbumModelPresenterContract.class);
         Context context = Mockito.mock(Context.class);
         FileManager fileManager = Mockito.mock(FileManager.class);
-        AlbumModel albumModel = new AlbumModel(remoteAlbumRepo, localAlbumRepo,context,contract, fileManager );
+        AlbumModel albumModel = new AlbumModel(remoteAlbumRepo, localAlbumRepo,context, fileManager );
+        albumModel.setContract(contract);
         ArrayList<MimeDetails> mimes = albumModel.LoadMimeDetails("dont care");
         albumModel.StartDownloadingFrames();
-        verify(fileManager, times(3)).DownloadAndSaveLocalFile(any(String.class));
-
+        verify(fileManager, times(3)).DownloadAndSaveLocalFile(any(String.class), any(String.class));
     }
 
     @Test
-    public void TEstThatWeCanStopFilesDownloading() {
+    public void TestThatWeDoDownloadFilesIfTheyDontAlreadyExist() {
+        RemoteAlbumRepo remoteAlbumRepo = Mockito.mock(RemoteAlbumRepo.class);
+        LocalAlbumRepo localAlbumRepo = Mockito.mock(LocalAlbumRepo.class);
+
+        ArrayList<MimeDetails> results = new ArrayList<>();
+
+        MimeDetails mime1 = new MimeDetails();
+        mime1.setId("1");
+        mime1.setExtension(".mp4");
+
+        MimeDetails mime2 = new MimeDetails();
+        mime2.setId("2");
+        mime2.setExtension(".mp4");
+
+        MimeDetails mime3 = new MimeDetails();
+        mime3.setId("3");
+        mime3.setExtension(".mp4");
+
+        results.add(mime1);
+        results.add(mime2);
+        results.add(mime3);
+
+        when(localAlbumRepo.LoadMimeDetailsForAnAlbum(any(String.class))).thenReturn(new ArrayList<MimeDetails>());
+        when(remoteAlbumRepo.LoadMimeDetailsForAnAlbum(any(String.class))).thenReturn(results);
+
+        AlbumModelPresenterContract contract = Mockito.mock(AlbumModelPresenterContract.class);
+        Context context = Mockito.mock(Context.class);
+        FileManager fileManager = Mockito.mock(FileManager.class);
+        when(localAlbumRepo.FindMediaFileRecord(any(String.class))).thenReturn(null);
+        AlbumModel albumModel = new AlbumModel(remoteAlbumRepo, localAlbumRepo,context, fileManager);
+        // Be sure that we recieve a call to download a new file, as this one is not locally stored.
+        albumModel.DownloadFrame("1", ".mp4", "640");
+        verify(fileManager, times(1)).DownloadAndSaveLocalFile(any(String.class), anyString());
+    }
+
+    @Test
+    public void TestThatWeDontDownloadFilesWhenTheyAlreadyExist() {
+        RemoteAlbumRepo remoteAlbumRepo = Mockito.mock(RemoteAlbumRepo.class);
+        LocalAlbumRepo localAlbumRepo = Mockito.mock(LocalAlbumRepo.class);
+
+        ArrayList<MimeDetails> results = new ArrayList<>();
+
+        MimeDetails mime1 = new MimeDetails();
+        mime1.setId("1");
+        mime1.setExtension(".mp4");
+
+        MimeDetails mime2 = new MimeDetails();
+        mime2.setId("2");
+        mime2.setExtension(".mp4");
+
+        MimeDetails mime3 = new MimeDetails();
+        mime3.setId("3");
+        mime3.setExtension(".mp4");
+
+        results.add(mime1);
+        results.add(mime2);
+        results.add(mime3);
+
+        when(localAlbumRepo.LoadMimeDetailsForAnAlbum(any(String.class))).thenReturn(new ArrayList<MimeDetails>());
+        when(remoteAlbumRepo.LoadMimeDetailsForAnAlbum(any(String.class))).thenReturn(results);
+
+        AlbumModelPresenterContract contract = Mockito.mock(AlbumModelPresenterContract.class);
+        Context context = Mockito.mock(Context.class);
+        FileManager fileManager = Mockito.mock(FileManager.class);
+        when(localAlbumRepo.FindMediaFileRecord(any(String.class))).thenReturn(Mockito.mock(MediaRecordModel.class));
+        AlbumModel albumModel = new AlbumModel(remoteAlbumRepo, localAlbumRepo,context, fileManager);
+        // Be sure that we recieve a call to download a new file, as this one is not locally stored.
+        albumModel.DownloadFrame("1", ".mp4", "640");
+        verify(fileManager, times(0)).DownloadAndSaveLocalFile(any(String.class), anyString());
+    }
+
+    @Test
+    public void TestThatWeCanStopFilesDownloading() {
         // Not sure how to test this.
     }
 

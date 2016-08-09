@@ -15,6 +15,7 @@ import com.teamunemployment.breadcrumbs.Album.repo.LocalAlbumRepo;
 import com.teamunemployment.breadcrumbs.Album.repo.RemoteAlbumRepo;
 import com.teamunemployment.breadcrumbs.FileManager.MediaRecordModel;
 import com.teamunemployment.breadcrumbs.Network.LoadBalancer;
+import com.teamunemployment.breadcrumbs.Network.NetworkConnectivityManager;
 import com.teamunemployment.breadcrumbs.RESTApi.FileManager;
 import com.teamunemployment.breadcrumbs.database.DatabaseController;
 
@@ -24,6 +25,10 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.concurrent.atomic.AtomicBoolean;
+
+import javax.inject.Inject;
+
+import retrofit2.http.Path;
 
 /**
  * @author Josiah Kendall.
@@ -36,7 +41,7 @@ public class AlbumModel{
 
     private Context context;
     private String targetId = "0";
-    private boolean awaitingFrame = false;
+    private boolean awaitingFrame = true;
     private AtomicBoolean amDownloading = new AtomicBoolean(false);
     private LinkedList<String> frameIds;
     private ArrayList<MimeDetails> mimes;
@@ -44,14 +49,17 @@ public class AlbumModel{
     private FileManager fileManager;
     private Surface surface;
 
+    @Inject
     public AlbumModel(RemoteAlbumRepo remoteAlbumRepo, LocalAlbumRepo localAlbumRepo,
-                      Context context, AlbumModelPresenterContract contract,
-                      FileManager fileManager) {
+                      Context context, FileManager fileManager) {
         this.remoteAlbumRepo = remoteAlbumRepo;
         this.localAlbumRepo = localAlbumRepo;
         this.context = context;
-        this.contract = contract;
         this.fileManager = fileManager;
+    }
+
+    public void setContract(AlbumModelPresenterContract albumModelPresenterContract) {
+        this.contract = albumModelPresenterContract;
     }
 
     /**
@@ -104,7 +112,7 @@ public class AlbumModel{
         // the id we are currently downloading with the id we want to display. If these do not match,
         // it means that the media with that id has already downloaded.
         String downloadId = getTargetId();
-        if (downloadId.equals(frameId)) {
+        if (downloadId.equals(frameId) || isAwaitingFrame()) {
             setWaitingFlag(true);
             return;
         }
@@ -115,7 +123,11 @@ public class AlbumModel{
             // We are either still loading this one, or we failed.
             frameDetails = remoteAlbumRepo.LoadFrameDetails(frameId);
         }
-        
+
+        if (contract == null) {
+            throw new NullPointerException("Model-Presenter contract was null. setContract mus be called before" +
+                    "requesting a frame.");
+        }
         // Set our frame now it is loaded. This contains the reference to the locally downloaded media.
         contract.setFrame(frameDetails);
     }
@@ -129,30 +141,51 @@ public class AlbumModel{
         while (mimeDetailsIterator.hasNext() && amDownloading.get()) {
             MimeDetails mimeDetails = mimeDetailsIterator.next();
             setTargetFrameId(mimeDetails.getId());
-            DownloadFrame(mimeDetails.getId(), mimeDetails.getExtension());
+            String res = calculateResolution();
+            DownloadFrame(mimeDetails.getId(), mimeDetails.getExtension(), res);
         }
     }
 
+    private String calculateResolution() {
+        if (NetworkConnectivityManager.IsOnData(context)) {
+            return "280";
+        }
+        if (isAwaitingFrame()) {
+            return "360";
+        }
+        return "640";
+    }
     public void StartPlayingMedia() {
 
     }
 
-    /**
+     /**
      * Simple method to trigger the download of a frame.
-     * @param frameId The id of a frame
+     * @param frameId The id of a frame.
      * @param extension The extension of said frame - either mp4 or jpeg.
      */
-    public void DownloadFrame(String frameId, String extension) {
-
+    public void DownloadFrame(String frameId, String extension, String targetRes) {
         FrameDetails frameDetails = localAlbumRepo.LoadFrameDetails(frameId);
+        // If we have no frame details, fetch the frame details
         if (frameDetails == null) {
-            frameDetails = remoteAlbumRepo.LoadFrameDetails(frameId);
-            localAlbumRepo.SaveFrameDetails(frameDetails);
+            frameDetails = fetchRemoteFrameDetails(frameId);
         }
+
+        // If we have an mp4 file, we need to do a manual fetch.
         if (extension.equals(".mp4")) {
-            MediaRecordModel recordModel = fileManager.DownloadAndSaveLocalFile(frameId);
-            // Save this record to the database.
-            localAlbumRepo.SaveMediaFileRecord(recordModel);
+            if (isAwaitingFrame()) {
+                targetRes = "280";
+            }
+            MediaRecordModel record = localAlbumRepo.FindMediaFileRecord(frameId);
+            if (record == null) {
+                MediaRecordModel recordModel = fileManager.DownloadAndSaveLocalFile(frameId, targetRes);
+                // Save this record to the database.
+                if (recordModel == null) {
+                    // This means that we did not find the media on the server. This is really bad.
+                    return;
+                }
+                localAlbumRepo.SaveMediaFileRecord(recordModel);
+            }
         } else {
             // TODO mock this and make it testable.
             Picasso.with(context).load(LoadBalancer.RequestCurrentDataAddress() + "/images/"+frameId + ".jpg");
@@ -164,6 +197,12 @@ public class AlbumModel{
                 contract.setFrame(frameDetails);
             }
         }
+    }
+
+    private FrameDetails fetchRemoteFrameDetails(String frameId) {
+        FrameDetails frameDetails = remoteAlbumRepo.LoadFrameDetails(frameId);
+        localAlbumRepo.SaveFrameDetails(frameDetails);
+        return frameDetails;
     }
 
 //    /**

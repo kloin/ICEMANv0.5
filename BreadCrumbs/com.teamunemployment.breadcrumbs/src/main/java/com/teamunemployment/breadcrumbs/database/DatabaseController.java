@@ -50,7 +50,7 @@ import java.util.Iterator;
  */
 public class DatabaseController extends SQLiteOpenHelper {
 
-    private static final int DATABASE_VERSION = 7;
+    private static final int DATABASE_VERSION = 8;
     private static final String POLYLINES = "polylines";
 	private static final String DATABASE_NAME="users";
     private static final String TRAIL_POINTS_INDEX = "trailIndexDb";
@@ -121,6 +121,12 @@ public class DatabaseController extends SQLiteOpenHelper {
             db.execSQL("CREATE TABLE IF NOT EXISTS " + FOLLOWING_TABLE + " (_id INTEGER PRIMARY KEY AUTOINCREMENT, " +
                     "UserId INTEGER," +
                     "FollowedUserId INTEGER);");
+        }
+
+        if (oldVersion == 7) {
+            db.execSQL("CREATE TABLE IF NOT EXISTS " + STORED_MEDIA_FILES + " (_id INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                    "FrameId INTEGER," +
+                    "Size REAL);");
         }
     }
 

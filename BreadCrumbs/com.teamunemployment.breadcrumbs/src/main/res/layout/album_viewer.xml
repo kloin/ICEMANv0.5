@@ -14,16 +14,31 @@
         android:layout_height="match_parent">
 
         <TextureView
-            android:id="@+id/match_parent"
+            android:id="@+id/video_view"
             android:layout_width="match_parent"
             android:layout_height="match_parent"/>
 
         <ImageView
-            android:id="@+id/image_viewer"
+            android:id="@+id/image_view"
             android:layout_width="match_parent"
             android:layout_height="match_parent"/>
 
+        <android.support.design.widget.FloatingActionButton
+            android:id="@+id/reverse_one"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
 
+        <android.support.design.widget.FloatingActionButton
+            android:id="@+id/foreward_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+
+        <android.support.design.widget.FloatingActionButton
+            android:id="@+id/map_button"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentRight="true"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
 
     </RelativeLayout>
 </android.support.design.widget.CoordinatorLayout>

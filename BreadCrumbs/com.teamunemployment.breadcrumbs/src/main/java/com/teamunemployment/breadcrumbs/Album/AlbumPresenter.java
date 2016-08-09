@@ -1,24 +1,27 @@
 package com.teamunemployment.breadcrumbs.Album;
 
+import android.content.Context;
 import android.graphics.SurfaceTexture;
 import android.media.MediaPlayer;
-import android.os.Environment;
 import android.view.Surface;
 import android.view.TextureView;
 import android.view.View;
 
 import com.teamunemployment.breadcrumbs.Album.data.FrameDetails;
 import com.teamunemployment.breadcrumbs.Album.data.MimeDetails;
+import com.teamunemployment.breadcrumbs.BreadcrumbsTimer;
 
-import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.ListIterator;
 
+import javax.inject.Inject;
+
 /**
  * @author Josiah Kendall
  */
-public class AlbumPresenter implements AlbumModelPresenterContract, MediaPlayer.OnPreparedListener, TextureView.SurfaceTextureListener {
+public class AlbumPresenter implements AlbumModelPresenterContract, MediaPlayer.OnPreparedListener,
+        TextureView.SurfaceTextureListener, BreadcrumbsTimer.TimerCompleteListener {
     private static final String MP4 = ".mp4";
     private static final String JPG = ".jpg";
     private AlbumPresenterViewContract view;
@@ -27,18 +30,26 @@ public class AlbumPresenter implements AlbumModelPresenterContract, MediaPlayer.
     private MediaPlayer mediaPlayer;
     private ArrayList<MimeDetails> mimeDetailsArrayList;
     private ListIterator<MimeDetails> mimeDetailsIterator;
+    private TextureView videoTextureView;
+    private Context context;
 
-    public AlbumPresenter(AlbumModel model) {
+    @Inject
+    public AlbumPresenter(AlbumModel model, Context context) {
+        this.context = context;
         this.model = model;
         this.mediaPlayer  = new MediaPlayer();
     }
 
-
+    public void setVideoSurface(TextureView surface) {
+        videoTextureView = surface;
+        videoTextureView.setSurfaceTextureListener(this);
+    }
     /**
      * Start loading an album
      * @param albumId
      */
     public void Start(final String albumId) {
+        model.setContract(this);
         if (view == null) {
             throw new NullPointerException("Cannot start presenter before view has been set. Use SetView() to set");
         }
@@ -50,7 +61,25 @@ public class AlbumPresenter implements AlbumModelPresenterContract, MediaPlayer.
             @Override
             public void run() {
                 mimeDetailsArrayList = model.LoadMimeDetails(albumId);
+                if (mimeDetailsIterator == null) {
+                    if (mimeDetailsArrayList == null || mimeDetailsArrayList.size() == 0) {
+                        view.showMessage("Unable to play.");
+                        return;
+                    }
+                    mimeDetailsIterator = mimeDetailsArrayList.listIterator();
+
+
+                }
+                // If i play without calling next
+                if (!mimeDetailsIterator.hasNext()) {
+                    // mimeDetailsIterator.next();
+                    return;
+                }
+
+                Play(mimeDetailsIterator.next());
+
                 model.StartDownloadingFrames();
+                //Play();
             }
         }).start();
     }
@@ -64,21 +93,29 @@ public class AlbumPresenter implements AlbumModelPresenterContract, MediaPlayer.
 
     /**
      * Start the play of the album.
+     * @param next
      */
-    public void Play() {
-        if (mimeDetailsIterator == null) {
-            mimeDetailsIterator = mimeDetailsArrayList.listIterator();
-        }
+    public void Play(MimeDetails next) {
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
 
-        MimeDetails nextObject = mimeDetailsIterator.next();
+                // We play the first one by default, without calling next, so this just gets us past that first one.
+                if (mimeDetailsIterator.hasNext()) {
 
-        // Request frame. Callback has already been
-        model.RequestFrame(nextObject.getId(), nextObject.getExtension());
+                    MimeDetails nextObject = mimeDetailsIterator.next();
+
+                    // Request frame. Callback has already been
+                    model.RequestFrame(nextObject.getId(), nextObject.getExtension());
+                } else {
+                    view.showMessage("Finished");
+                }
+            }
+        }).start();
     }
 
     public void Pause() {
         mediaPlayer.pause();
-
     }
 
     public void Stop() {
@@ -100,31 +137,19 @@ public class AlbumPresenter implements AlbumModelPresenterContract, MediaPlayer.
         view.setVideoVisibility(View.INVISIBLE);
         view.setImageUrl(frame.getId());
 
+        // Set timer
+        BreadcrumbsTimer timer = new BreadcrumbsTimer(5000, this);
+        timer.Start();
     }
 
     private void setVideoFrame(FrameDetails frame) {
         view.setVideoVisibility(View.VISIBLE);
         view.setImageVisibility(View.INVISIBLE);
-        String url = "";
+        String url = context.getExternalCacheDir().getAbsolutePath() + "/"+frame.getId() + frame.getExtension();
         mediaPlayer = buildMediaPlayer(videoSurface, url);
-    }
-
-
-
-    private MediaPlayer playVideo(Surface surface, String filePath) {
-
-        try {
-            mediaPlayer.setDataSource(filePath);
-            mediaPlayer.setSurface(surface);
-            mediaPlayer.setVideoScalingMode(MediaPlayer.VIDEO_SCALING_MODE_SCALE_TO_FIT);
-            mediaPlayer.prepare();
-            mediaPlayer.setOnPreparedListener(this);
-
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        return mediaPlayer;
+        int duration = mediaPlayer.getDuration();
+        BreadcrumbsTimer timer = new BreadcrumbsTimer(duration, this);
+        timer.Start();
     }
 
     @Override
@@ -134,15 +159,13 @@ public class AlbumPresenter implements AlbumModelPresenterContract, MediaPlayer.
     }
 
     private MediaPlayer buildMediaPlayer(Surface surface, String path) {
-        final MediaPlayer mediaPlayer = new MediaPlayer();
-        String filePath = Environment.getExternalStorageDirectory()
-                + File.separator + "Video/Sample.mp4";
         try {
-            mediaPlayer.setDataSource(filePath);
+            mediaPlayer.stop();
+            mediaPlayer.reset();
+            mediaPlayer.setDataSource(path);
             mediaPlayer.setSurface(surface);
             mediaPlayer.setVideoScalingMode(MediaPlayer.VIDEO_SCALING_MODE_SCALE_TO_FIT);
             mediaPlayer.prepare();
-
             mediaPlayer.setOnPreparedListener(this);
         } catch (IOException e) {
             e.printStackTrace();
@@ -166,11 +189,21 @@ public class AlbumPresenter implements AlbumModelPresenterContract, MediaPlayer.
     @Override
     public boolean onSurfaceTextureDestroyed(SurfaceTexture surfaceTexture) {
         // We are not playing shit anymore, so stop downloading.
+        if (mediaPlayer != null && mediaPlayer.isPlaying()) {
+            mediaPlayer.stop();
+            mediaPlayer.release();
+        }
         return false;
     }
 
     @Override
     public void onSurfaceTextureUpdated(SurfaceTexture surfaceTexture) {
         // Not sure we need this.
+    }
+
+    @Override
+    public void onCompleted() {
+        // request the next frame.
+        Play(null);
     }
 }
