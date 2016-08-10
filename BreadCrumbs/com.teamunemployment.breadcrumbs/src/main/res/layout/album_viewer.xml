@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.design.widget.CoordinatorLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
     android:background="@null"
     android:id="@+id/root"
@@ -23,22 +24,87 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"/>
 
+        <View
+            android:id="@+id/buffering_overlay"
+            android:layout_width="match_parent"
+            android:background="@color/black_semi_transparent"
+            android:layout_height="match_parent"/>
+
+        <ProgressBar
+            android:id="@+id/buffering_symbol"
+            android:layout_centerInParent="true"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+
+        <ProgressBar
+            android:id="@+id/horizontal_progress"
+            style="@style/CustomProgressBarHorizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="-10dp"
+            android:max="15000"
+            android:progressBackgroundTint="#00000000" />
+
+        <de.hdodenhof.circleimageview.CircleImageView
+            android:id="@+id/album_owner_image"
+            android:layout_marginLeft="16dp"
+            android:layout_marginTop="28dp"
+            android:layout_width="40dp"
+            android:src="@drawable/profileblank"
+            android:layout_height="40dp"/>
+        <TextView
+            android:id="@+id/album_owner_text"
+            android:layout_marginLeft="72dp"
+            android:text="Josiah"
+            android:gravity="center"
+            android:textColor="@color/white"
+            android:layout_alignTop="@+id/album_owner_image"
+            android:layout_alignBottom="@+id/album_owner_image"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+
+        <android.support.design.widget.FloatingActionButton
+            android:id="@+id/next_storyboard_item"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/exomedia_ic_skip_next_black"
+            app:fabSize="mini"
+            android:layout_marginBottom="10dp"
+            android:layout_marginRight="10dp"
+            app:backgroundTint="@color/white"
+            android:layout_alignParentRight="true"
+            android:layout_above="@+id/reverse_one"/>
+
         <android.support.design.widget.FloatingActionButton
             android:id="@+id/reverse_one"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"/>
-
-        <android.support.design.widget.FloatingActionButton
-            android:id="@+id/foreward_button"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"/>
-
-        <android.support.design.widget.FloatingActionButton
-            android:id="@+id/map_button"
-            android:layout_alignParentBottom="true"
+            android:layout_height="wrap_content"
+            android:layout_above="@+id/back_to_map"
             android:layout_alignParentRight="true"
+            android:layout_gravity="right"
+            android:layout_marginBottom="10dp"
+            android:layout_marginRight="10dp"
+            android:src="@drawable/exomedia_ic_skip_previous_black"
+            app:backgroundTint="@color/white"
+            app:fabSize="mini" />
+
+        <android.support.design.widget.FloatingActionButton
+            android:id="@+id/back_to_map"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_above="@+id/horizontal_progress"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentBottom="true"
+            app:fabSize="mini"
+            android:layout_marginBottom="10dp"
+            android:layout_marginRight="10dp"
+            android:src="@drawable/ic_map_black_24dp"
+            app:backgroundTint="@color/white" />
+        <TextView
+            android:id="@+id/floating_description"
+            android:padding="20dp"
+            style="@style/CodeFontWhite"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"/>
-
     </RelativeLayout>
 </android.support.design.widget.CoordinatorLayout>

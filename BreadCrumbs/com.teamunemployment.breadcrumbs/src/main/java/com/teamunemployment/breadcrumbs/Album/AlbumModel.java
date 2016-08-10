@@ -6,6 +6,7 @@ import android.media.MediaPlayer;
 import android.os.Environment;
 import android.view.Surface;
 import android.view.TextureView;
+import android.view.View;
 
 import com.squareup.picasso.Picasso;
 import com.teamunemployment.breadcrumbs.Album.data.FrameDetails;
@@ -16,6 +17,7 @@ import com.teamunemployment.breadcrumbs.Album.repo.RemoteAlbumRepo;
 import com.teamunemployment.breadcrumbs.FileManager.MediaRecordModel;
 import com.teamunemployment.breadcrumbs.Network.LoadBalancer;
 import com.teamunemployment.breadcrumbs.Network.NetworkConnectivityManager;
+import com.teamunemployment.breadcrumbs.PreferencesAPI;
 import com.teamunemployment.breadcrumbs.RESTApi.FileManager;
 import com.teamunemployment.breadcrumbs.database.DatabaseController;
 
@@ -114,12 +116,13 @@ public class AlbumModel{
         String downloadId = getTargetId();
         if (downloadId.equals(frameId) || isAwaitingFrame()) {
             setWaitingFlag(true);
+            contract.setBuffering(View.VISIBLE);
             return;
         }
 
         // If we cannot find the frame details locally, we should return it.
         FrameDetails frameDetails = localAlbumRepo.LoadFrameDetails(frameId);
-        if (frameDetails == null) {
+        if (frameDetails == null ) {
             // We are either still loading this one, or we failed.
             frameDetails = remoteAlbumRepo.LoadFrameDetails(frameId);
         }
@@ -129,7 +132,9 @@ public class AlbumModel{
                     "requesting a frame.");
         }
         // Set our frame now it is loaded. This contains the reference to the locally downloaded media.
+        contract.setBuffering(View.INVISIBLE);
         contract.setFrame(frameDetails);
+
     }
 
     /**
@@ -165,12 +170,7 @@ public class AlbumModel{
      * @param extension The extension of said frame - either mp4 or jpeg.
      */
     public void DownloadFrame(String frameId, String extension, String targetRes) {
-        FrameDetails frameDetails = localAlbumRepo.LoadFrameDetails(frameId);
-        // If we have no frame details, fetch the frame details
-        if (frameDetails == null) {
-            frameDetails = fetchRemoteFrameDetails(frameId);
-        }
-
+        FrameDetails frameDetails = fetchRemoteFrameDetails(frameId);
         // If we have an mp4 file, we need to do a manual fetch.
         if (extension.equals(".mp4")) {
             if (isAwaitingFrame()) {
@@ -194,6 +194,7 @@ public class AlbumModel{
         if (isAwaitingFrame()) {
             if (contract != null) {
                 setWaitingFlag(false);
+                contract.setBuffering(View.INVISIBLE);
                 contract.setFrame(frameDetails);
             }
         }
@@ -258,4 +259,8 @@ public class AlbumModel{
         return awaitingFrame;
     }
 
+    public void FetchProfilePicture(String userId) {
+        //
+
+    }
 }

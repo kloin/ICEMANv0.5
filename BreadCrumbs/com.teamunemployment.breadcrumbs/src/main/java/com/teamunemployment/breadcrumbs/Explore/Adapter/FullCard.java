@@ -84,7 +84,6 @@ public class FullCard extends RecyclerView.ViewHolder implements ExploreCardCont
         });
 
         model.LoadUserDetailsForCard(trip.getUserId(), this);
-
     }
 
     @Override
@@ -109,10 +108,6 @@ public class FullCard extends RecyclerView.ViewHolder implements ExploreCardCont
     @OnClick(R.id.main_photo) void openTrip() {
         addClickToAnalytics();
         Intent TrailViewer = new Intent();
-//        TrailViewer.setClassName("com.teamunemployment.breadcrumbs", "com.teamunemployment.breadcrumbs.client.Maps.MapViewer");
-//        Bundle extras = new Bundle();
-//        extras.putString("TrailId", trip.getId());
-//        TrailViewer.putExtras(extras);
         TrailViewer.setClassName("com.teamunemployment.breadcrumbs", "com.teamunemployment.breadcrumbs.Album.AlbumView");
         Bundle extras = new Bundle();
         extras.putString("AlbumId", trip.getId());

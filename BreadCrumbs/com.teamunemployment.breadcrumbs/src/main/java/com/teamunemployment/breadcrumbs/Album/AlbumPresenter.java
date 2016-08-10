@@ -33,6 +33,8 @@ public class AlbumPresenter implements AlbumModelPresenterContract, MediaPlayer.
     private TextureView videoTextureView;
     private Context context;
 
+    private BreadcrumbsTimer timer;
+
     @Inject
     public AlbumPresenter(AlbumModel model, Context context) {
         this.context = context;
@@ -96,6 +98,9 @@ public class AlbumPresenter implements AlbumModelPresenterContract, MediaPlayer.
      * @param next
      */
     public void Play(MimeDetails next) {
+        if (timer != null) {
+            timer.Stop();
+        }
         new Thread(new Runnable() {
             @Override
             public void run() {
@@ -107,8 +112,6 @@ public class AlbumPresenter implements AlbumModelPresenterContract, MediaPlayer.
 
                     // Request frame. Callback has already been
                     model.RequestFrame(nextObject.getId(), nextObject.getExtension());
-                } else {
-                    view.showMessage("Finished");
                 }
             }
         }).start();
@@ -129,6 +132,27 @@ public class AlbumPresenter implements AlbumModelPresenterContract, MediaPlayer.
         } else {
             setImageFrame(frame);
         }
+
+        String xPosString = frame.getDescPosX();
+        String yPosString = frame.getDescPosY();
+        String description = frame.getChat();
+        if (xPosString != null && yPosString != null && description!= null && !description.equals("null")) {
+            float x = Float.parseFloat(xPosString);
+            float y = Float.parseFloat(yPosString);
+            view.setScreenMessage(frame.getChat(),x, y);
+        } else {
+            view.setScreenMessage("", 0, 0);
+        }
+    }
+
+    // set a users profile pic to the
+    public void setProfilePicture(String userId) {
+        model.FetchProfilePicture(userId);
+    }
+
+    @Override
+    public void setBuffering(int visibility) {
+        view.setBuffering(visibility);
     }
 
     private void setImageFrame(FrameDetails frame) {
@@ -138,7 +162,7 @@ public class AlbumPresenter implements AlbumModelPresenterContract, MediaPlayer.
         view.setImageUrl(frame.getId());
 
         // Set timer
-        BreadcrumbsTimer timer = new BreadcrumbsTimer(5000, this);
+        timer = new BreadcrumbsTimer(5000, this);
         timer.Start();
     }
 
@@ -148,7 +172,7 @@ public class AlbumPresenter implements AlbumModelPresenterContract, MediaPlayer.
         String url = context.getExternalCacheDir().getAbsolutePath() + "/"+frame.getId() + frame.getExtension();
         mediaPlayer = buildMediaPlayer(videoSurface, url);
         int duration = mediaPlayer.getDuration();
-        BreadcrumbsTimer timer = new BreadcrumbsTimer(duration, this);
+        timer = new BreadcrumbsTimer(duration, this);
         timer.Start();
     }
 
@@ -191,8 +215,8 @@ public class AlbumPresenter implements AlbumModelPresenterContract, MediaPlayer.
         // We are not playing shit anymore, so stop downloading.
         if (mediaPlayer != null && mediaPlayer.isPlaying()) {
             mediaPlayer.stop();
-            mediaPlayer.release();
         }
+        mediaPlayer.release();
         return false;
     }
 
@@ -206,4 +230,27 @@ public class AlbumPresenter implements AlbumModelPresenterContract, MediaPlayer.
         // request the next frame.
         Play(null);
     }
+
+    /**
+     * Go foreward to the next item in the list
+     */
+    public void foreward() {
+        if (mediaPlayer != null) {
+            mediaPlayer.stop();
+            mediaPlayer.reset();
+        }
+
+        Play(null);
+    }
+
+    public void reverse() {
+        mimeDetailsIterator.previous();
+        mimeDetailsIterator.previous();
+        if (mediaPlayer != null) {
+            mediaPlayer.stop();
+            mediaPlayer.reset();
+        }
+        Play(null);
+    }
+
 }

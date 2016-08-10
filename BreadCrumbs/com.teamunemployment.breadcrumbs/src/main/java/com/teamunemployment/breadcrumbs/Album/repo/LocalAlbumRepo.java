@@ -42,6 +42,7 @@ public class LocalAlbumRepo {
      */
     @Nullable
     public FrameDetails LoadFrameDetails(String frameId) {
+
         return databaseController.GetFrameDetails(frameId);
     }
 
@@ -89,14 +90,14 @@ public class LocalAlbumRepo {
 
     /**
      * Save a crumb
-     * @param frameDetail
+     * @param frameDetails
      */
-    public void SaveFrameDetails(FrameDetails frameDetail) {
-        FrameDetails frameDetails = databaseController.GetFrameDetails(frameDetail.getId());
-        if (frameDetail == null) {
-            databaseController.SaveFrameDetails(frameDetails);
+    public void SaveFrameDetails(FrameDetails newFrameDetail) {
+        final FrameDetails frameDetails = databaseController.GetFrameDetails(newFrameDetail.getId());
+        if (frameDetails == null) {
+            databaseController.SaveFrameDetails(newFrameDetail);
         } else {
-            databaseController.UpdateFrameDetails(frameDetails);
+            databaseController.UpdateFrameDetails(newFrameDetail);
         }
     }
 

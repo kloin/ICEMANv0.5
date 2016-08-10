@@ -8,4 +8,5 @@ import com.teamunemployment.breadcrumbs.Album.data.FrameDetails;
 public interface AlbumModelPresenterContract {
 
     void setFrame(FrameDetails frameDetails);
+    void setBuffering(int visibility);
 }
