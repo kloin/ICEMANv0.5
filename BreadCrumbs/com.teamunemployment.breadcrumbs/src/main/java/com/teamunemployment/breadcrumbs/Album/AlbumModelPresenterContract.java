@@ -9,4 +9,6 @@ public interface AlbumModelPresenterContract {
 
     void setFrame(FrameDetails frameDetails);
     void setBuffering(int visibility);
+    void setProfilePictureUrl(String url);
+    void setUserName(String userName);
 }

@@ -6,8 +6,6 @@ import android.os.StatFs;
 import android.util.Log;
 
 import com.teamunemployment.breadcrumbs.FileManager.MediaRecordModel;
-import com.teamunemployment.breadcrumbs.caching.Utils;
-import com.teamunemployment.breadcrumbs.database.DatabaseController;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -20,24 +18,29 @@ import java.net.URL;
  * @author Josiah Kendall
  */
 public class FileManager {
+    // Resolutions defined by this.
+    public static final int LOW_QUALITY = 0;
+    public static final int MEDIUM_QUALITY = 1;
+    public static final int HIGH_QUALITY = 2;
+
     public static final String hiddenFolder = "/Android/data/com.teamunemployment.breadcrumbs/cache/cantseeme";
     private static final String TAG = "FileManager";
     private Context context;
     public FileManager(Context context) {
         this.context = context;
     }
+
     /**
-     *
      * @param res The target resolution
      * @param id Server side frame id of this object/file.
      * @param extension The format. Will probably almost always be .mp4. JPG should use {@link com.squareup.picasso.Picasso}
      * @return A Media record object of the file that was downloaded.
      */
-    public MediaRecordModel DownloadFileFromServer(String id, String extension, String res) {
+    public MediaRecordModel DownloadMP4FileFromTheServer(String id, String extension, String res) {
         checkSufficientSpace();
         String fileURL = "http://104.199.132.109:8080/images/"+id + "." + res + extension;
         final String cacheDir = context.getExternalCacheDir().getAbsolutePath();
-
+        createNoMediaFile(cacheDir);
         String filename = cacheDir + "/" + id + extension;
         try {
             File rootFile = new File(cacheDir);
@@ -66,15 +69,61 @@ public class FileManager {
         return null;
     }
 
+    private void createNoMediaFile(String cacheDir) {
+        File dir = new File(cacheDir);
+        File output = new File(dir, ".nomedia");
+        try {
+            boolean fileCreated = output.createNewFile();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
     /**
      * Download and save a local file. Think this should be in the album model.
-     * @param id
+     * @param id The id of the target frame.
      * @return A record of the saved object
      */
-    public MediaRecordModel DownloadAndSaveLocalFile(String id, String targetResolution) {
+    public MediaRecordModel DownloadAndSaveLocalFile(String id, String targetResolution, String ext) {
         // First ensure we have space
         // then do the download.
-        return DownloadFileFromServer(id, ".mp4", targetResolution);
+        if (ext.equals(".mp4")) {
+            return DownloadMP4FileFromTheServer(id, ext, targetResolution);
+        }
+        return DownloadJPGFromServer(id, ext);
+    }
+
+    private MediaRecordModel DownloadJPGFromServer(String id, String ext) {
+        checkSufficientSpace();
+        String fileURL = "http://104.199.132.109:8080/images/"+id  + ext;
+        final String cacheDir = context.getExternalCacheDir().getAbsolutePath();
+
+        String filename = cacheDir + "/" + id + ext;
+        try {
+            File rootFile = new File(cacheDir);
+            if (!rootFile.exists()) {
+                rootFile.mkdir();
+            }
+            // File root = Environment.getExternalStorageDirectory();
+            URL u = new URL(fileURL);
+            HttpURLConnection c = (HttpURLConnection) u.openConnection();
+            c.setRequestMethod("GET");
+            c.setDoOutput(true);
+            c.connect();
+            FileOutputStream f = new FileOutputStream(new File(filename));
+            InputStream in = c.getInputStream();
+            byte[] buffer = new byte[1024];
+            int len1 = 0;
+            while ((len1 = in.read(buffer)) > 0) {
+                f.write(buffer, 0, len1);
+            }
+            f.close();
+            return new MediaRecordModel(id, len1);
+        } catch (Exception e) {
+            Log.e(TAG, "Error connecting to host.");
+            e.printStackTrace();
+        }
+        return null;
     }
 
     public void deleteFile(String fileId) {
@@ -143,12 +192,23 @@ public class FileManager {
     }
 
     /**
-     * Test if our nomedia file has already been created.
-     * @return
+     * Return the size of a directory in bytes
      */
-    public boolean DoesNoMediaFileExist() {
-        final String noMediaFileLocation = "/Android/data/com.teamunemployment.breadcrumbs/cache/cantseeme/.nomedia";
-        File noMediaFile = new File(noMediaFileLocation);
-        return noMediaFile.exists();
+    public long dirSize(File dir) {
+        if (dir.exists()) {
+            long result = 0;
+            File[] fileList = dir.listFiles();
+            for(int i = 0; i < fileList.length; i++) {
+                // Recursive call if it's a directory
+                if(fileList[i].isDirectory()) {
+                    result += dirSize(fileList [i]);
+                } else {
+                    // Sum the file size in bytes
+                    result += fileList[i].length();
+                }
+            }
+            return result; // return the file size
+        }
+        return 0;
     }
 }

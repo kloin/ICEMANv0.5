@@ -20,6 +20,8 @@ public class BreadcrumbsTimer {
         state = STATE_RUNNING;
     }
 
+
+
     public interface TimerCompleteListener {
         void onCompleted();
     }
@@ -50,10 +52,13 @@ public class BreadcrumbsTimer {
 
     /**
      * Set the duration of the timer.
-     * @param duration The time in milliseconds
+     * @param max The length of the progressbar in milliseconds
      */
-    public void setTimerDuration(int duration) {
-        this.duration = duration;
+    public void setTimerMax(int max) {
+        if (progressBar != null) {
+            progressBar.setMax(max);
+        }
+
     }
 
     /**
@@ -90,8 +95,7 @@ public class BreadcrumbsTimer {
      * Start the timer.
      */
     public void Start() {
-        if (state == STATE_PAUSED) {
-        } else {
+        if (state != STATE_PAUSED) {
             runTimer();
         }
 
@@ -130,6 +134,14 @@ public class BreadcrumbsTimer {
     }
 
     /**
+     * Get the current position of the timer
+     * @return
+     */
+    public int getTimerPosition() {
+        return currentTime;
+    }
+
+    /**
      * Public so that we can test it.
      */
     public void runTimerLoop() {
@@ -156,6 +168,5 @@ public class BreadcrumbsTimer {
             }
         }
     }
-
 
 }

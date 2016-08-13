@@ -121,6 +121,7 @@ public class DatabaseController extends SQLiteOpenHelper {
             db.execSQL("CREATE TABLE IF NOT EXISTS " + FOLLOWING_TABLE + " (_id INTEGER PRIMARY KEY AUTOINCREMENT, " +
                     "UserId INTEGER," +
                     "FollowedUserId INTEGER);");
+            oldVersion = 7;
         }
 
         if (oldVersion == 7) {

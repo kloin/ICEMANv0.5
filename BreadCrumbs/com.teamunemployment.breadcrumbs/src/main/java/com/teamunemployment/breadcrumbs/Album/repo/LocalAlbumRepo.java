@@ -69,6 +69,7 @@ public class LocalAlbumRepo {
         return false;
     }
 
+
     public void SaveMimeDetailsToFrame(MimeDetails mimeDetails) {
         // If A Frame exists
         FrameDetails frameDetails = databaseController.GetFrameDetails(mimeDetails.getId());
@@ -90,14 +91,16 @@ public class LocalAlbumRepo {
 
     /**
      * Save a crumb
-     * @param frameDetails
+     * @param newFrameDetail
      */
     public void SaveFrameDetails(FrameDetails newFrameDetail) {
-        final FrameDetails frameDetails = databaseController.GetFrameDetails(newFrameDetail.getId());
-        if (frameDetails == null) {
-            databaseController.SaveFrameDetails(newFrameDetail);
-        } else {
-            databaseController.UpdateFrameDetails(newFrameDetail);
+        if (newFrameDetail != null) {
+            final FrameDetails frameDetails = databaseController.GetFrameDetails(newFrameDetail.getId());
+            if (frameDetails == null) {
+                databaseController.SaveFrameDetails(newFrameDetail);
+            } else {
+                databaseController.UpdateFrameDetails(newFrameDetail);
+            }
         }
     }
 

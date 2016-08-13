@@ -69,7 +69,7 @@ public class UpdateViewElementWithProperty {
             public void onFinished(String result) {
                 if (result != null && !result.isEmpty()) {
                     try {
-                        Picasso.with(context).load(LoadBalancer.RequestCurrentDataAddress() + "/images/"+result+".jpg").centerCrop().into(imageToUpdate);
+                        Picasso.with(context).load(LoadBalancer.RequestCurrentDataAddress() + "/images/"+result+".jpg").fit().centerCrop().into(imageToUpdate);
                     } catch (IllegalArgumentException ex) {
                         // standard "loading" once destroyed issue
                         Log.e("UPDATER", "Tried to update a view on a destroyed activity");

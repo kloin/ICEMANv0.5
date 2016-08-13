@@ -55,7 +55,7 @@
         <TextView
             android:id="@+id/album_owner_text"
             android:layout_marginLeft="72dp"
-            android:text="Josiah"
+            android:text=""
             android:gravity="center"
             android:textColor="@color/white"
             android:layout_alignTop="@+id/album_owner_image"
@@ -79,7 +79,7 @@
             android:id="@+id/reverse_one"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_above="@+id/back_to_map"
+            android:layout_above="@+id/open_map"
             android:layout_alignParentRight="true"
             android:layout_gravity="right"
             android:layout_marginBottom="10dp"
@@ -89,10 +89,9 @@
             app:fabSize="mini" />
 
         <android.support.design.widget.FloatingActionButton
-            android:id="@+id/back_to_map"
+            android:id="@+id/open_map"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_above="@+id/horizontal_progress"
             android:layout_alignParentRight="true"
             android:layout_alignParentBottom="true"
             app:fabSize="mini"

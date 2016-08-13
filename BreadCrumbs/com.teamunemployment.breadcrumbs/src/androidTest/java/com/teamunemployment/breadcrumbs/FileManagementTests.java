@@ -5,6 +5,7 @@ import android.support.test.InstrumentationRegistry;
 import android.test.RenamingDelegatingContext;
 
 import com.teamunemployment.breadcrumbs.FileManager.MediaRecordModel;
+import com.teamunemployment.breadcrumbs.RESTApi.FileManager;
 import com.teamunemployment.breadcrumbs.database.DatabaseController;
 
 import junit.framework.Assert;

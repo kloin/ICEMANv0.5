@@ -1,5 +1,7 @@
 package com.teamunemployment.breadcrumbs.Album;
 
+import android.graphics.Bitmap;
+
 /**
  * @author Josiah Kendall.
  */
@@ -10,6 +12,7 @@ public interface AlbumPresenterViewContract {
     void setVideoVisibility(int invisible);
 
     void setImageUrl(String id);
+    void setImageBitmap(Bitmap bitmap);
 
     void setScreenMessage(String message, float posX, float posY);
 
@@ -17,5 +20,11 @@ public interface AlbumPresenterViewContract {
 
     void showMessage(String message);
 
-    void setBuffering(int visibility);
+    void setBufferingVisible();
+    void setBufferingInvisible();
+
+    void setUserName(String userName);
+    void setProgressBarState(int position);
+    void setProgressBarMax(int max);
+    void finishUp();
 }
