@@ -167,4 +167,5 @@ public class MediaPlayerInstTests {
         mediaPlayerWrapper.Stop();
         mediaPlayerWrapper.SetTrack(testPath);
     }
+
 }

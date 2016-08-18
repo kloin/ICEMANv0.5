@@ -445,7 +445,6 @@ public class LocalMap extends MapViewer {
         EditText trailName = (EditText) act.findViewById(R.id.trail_title_input);
         trailName.setEnabled(false);
 
-
         TextView tellThemToSelectACoverPhoto = (TextView) act.findViewById(R.id.cover_photo_prompt);
         SimpleAnimations.FadeOutView(tellThemToSelectACoverPhoto);
 
@@ -626,9 +625,9 @@ public class LocalMap extends MapViewer {
         ImageView coverPhoto = (ImageView) findViewById(R.id.trail_cover_photo);
         if (id.endsWith("L")) {
             id =  id.substring(0, id.length()-1);
-            Picasso.with(context).load(Utils.FetchLocalPathToImageFile(id)).centerCrop().placeholder(Color.GRAY).into(coverPhoto);
+            Picasso.with(context).load(Utils.FetchLocalPathToImageFile(id)).fit().centerCrop().placeholder(R.drawable.placeholder_landscape).into(coverPhoto);
         } else {
-            Picasso.with(context).load(LoadBalancer.RequestCurrentDataAddress() + "/images/"+id+".jpg").centerCrop().placeholder(Color.GRAY).into(coverPhoto);
+            Picasso.with(context).load(LoadBalancer.RequestCurrentDataAddress() + "/images/"+id+".jpg").fit().centerCrop().placeholder(R.drawable.placeholder_landscape).into(coverPhoto);
         }
     }
 

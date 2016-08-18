@@ -97,6 +97,7 @@
             app:fabSize="mini"
             android:layout_marginBottom="10dp"
             android:layout_marginRight="10dp"
+            android:transitionName="transition_reveal_contact"
             android:src="@drawable/ic_map_black_24dp"
             app:backgroundTint="@color/white" />
         <TextView

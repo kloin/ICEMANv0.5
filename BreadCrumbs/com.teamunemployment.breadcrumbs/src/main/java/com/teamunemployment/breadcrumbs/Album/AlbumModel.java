@@ -63,7 +63,7 @@ public class AlbumModel{
      * @return An array of mimeDetails objects for every frame.
      */
     public ArrayList<MimeDetails> LoadMimeDetails(String albumId) {
-        mimes = remoteAlbumRepo.LoadMimeDetailsForAnAlbum(albumId);
+        mimes = localAlbumRepo.LoadMimeDetailsForAnAlbum(albumId);
         // TODO - do remote check as well, and save it/ update it if neccessary. This is a bug. Not sure how/when this should be fixed. Probably go with callbacks
         if (mimes.size() == 0) {
             mimes = remoteAlbumRepo.LoadMimeDetailsForAnAlbum(albumId);
@@ -89,9 +89,10 @@ public class AlbumModel{
 
         // If we cannot find the frame details locally, we should return it.
         FrameDetails frameDetails = localAlbumRepo.LoadFrameDetails(frameId);
-        if (frameDetails == null ) {
+        if (frameDetails == null || frameDetails.getLongitude().equals("0.0") ) {
             // We are either still loading this one, or we failed.
             frameDetails = remoteAlbumRepo.LoadFrameDetails(frameId);
+            localAlbumRepo.SaveFrameDetails(frameDetails);
         }
 
         if (contract == null) {
@@ -134,7 +135,13 @@ public class AlbumModel{
      * @param extension The extension of said frame - either mp4 or jpeg.
      */
     public void DownloadFrame(String frameId, String extension, String targetRes) {
-        FrameDetails frameDetails = fetchRemoteFrameDetails(frameId);
+        // First, get frame details locally if we can. If not, load from remote and save them.
+        FrameDetails frameDetails = localAlbumRepo.LoadFrameDetails(frameId);
+        if (frameDetails == null) {
+            frameDetails = remoteAlbumRepo.LoadFrameDetails(frameId);
+            localAlbumRepo.SaveFrameDetails(frameDetails);
+        }
+
         // If we have an mp4 file, we need to do a manual fetch.
         if (extension.equals(".mp4")) {
             if (isAwaitingFrame()) {
@@ -146,7 +153,7 @@ public class AlbumModel{
                 // Save this record to the database.
                 if (recordModel == null) {
                     // This means that we did not find the media on the server. This is really bad.
-                    Log.d(TAG, "Failed to download media. Will now exit.");
+
                     return;
                 }
                 localAlbumRepo.SaveMediaFileRecord(recordModel);
@@ -173,12 +180,6 @@ public class AlbumModel{
                 contract.setFrame(frameDetails);
             }
         }
-    }
-
-    private FrameDetails fetchRemoteFrameDetails(String frameId) {
-        FrameDetails frameDetails = remoteAlbumRepo.LoadFrameDetails(frameId);
-        localAlbumRepo.SaveFrameDetails(frameDetails);
-        return frameDetails;
     }
 
     /**
@@ -219,6 +220,9 @@ public class AlbumModel{
         new Thread(new Runnable() {
             @Override
             public void run() {
+                if (userId == null) {
+                    return;
+                }
                 long userIdLong = Long.parseLong(userId);
                 String userProfilePicId = localProfileRepo.getProfilePictureId(userIdLong);
                 if (userProfilePicId == null) {
@@ -242,6 +246,9 @@ public class AlbumModel{
         new Thread(new Runnable() {
             @Override
             public void run() {
+                if (userId == null || userId.equals("null") || userId.isEmpty()) {
+                    return;
+                }
                 Long userIdLong = Long.parseLong(userId);
                 String userName = localProfileRepo.getUserName(userIdLong);
                 if (userName == null) {
@@ -252,5 +259,16 @@ public class AlbumModel{
                 contract.setUserName(userName);
             }
         }).start();
+    }
+
+    public void RequestLocalFrame(String frameId) {
+        FrameDetails frameDetails = localAlbumRepo.LoadFrameDetails(frameId);
+        if (contract == null) {
+            throw new NullPointerException("Model-Presenter contract was null. setContract mus be called before" +
+                    "requesting a frame.");
+        }
+        // Set our frame now it is loaded. This contains the reference to the locally downloaded media.
+        contract.setBuffering(View.INVISIBLE);
+        contract.setFrame(frameDetails);
     }
 }

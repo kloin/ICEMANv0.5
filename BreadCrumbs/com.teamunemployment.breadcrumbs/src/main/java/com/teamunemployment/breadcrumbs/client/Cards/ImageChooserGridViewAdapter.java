@@ -62,9 +62,9 @@ public class ImageChooserGridViewAdapter extends BaseAdapter {
 
             if (id.endsWith("L")) {
                 id =  id.substring(0, id.length()-1);
-                Picasso.with(context).load(Utils.FetchLocalPathToImageFile(id)).centerCrop().placeholder(Color.GRAY).into(imageView);
+                Picasso.with(context).load(Utils.FetchLocalPathToImageFile(id)).fit().centerCrop().into(imageView);
             } else {
-                Picasso.with(context).load(LoadBalancer.RequestCurrentDataAddress() + "/images/"+id+".jpg").into(imageView);
+                Picasso.with(context).load(LoadBalancer.RequestCurrentDataAddress() + "/images/"+id+".jpg").fit().centerCrop().into(imageView);
             }
 
             // Glide.with(context).load("http://placehold.it/350x150").centerCrop().placeholder(Color.GRAY).crossFade().into(imageView);
@@ -74,10 +74,10 @@ public class ImageChooserGridViewAdapter extends BaseAdapter {
                     .findViewById(R.id.grid_image);
             if (id.endsWith("L")) {
                 id =  id.substring(0, id.length()-1);
-                Picasso.with(context).load(Utils.FetchLocalPathToImageFile(id)).centerCrop().placeholder(Color.GRAY).into(imageView);
+                Picasso.with(context).load(Utils.FetchLocalPathToImageFile(id)).fit().centerCrop().into(imageView);
 
             } else {
-                Picasso.with(context).load(LoadBalancer.RequestCurrentDataAddress() + "/images/"+id+".jpg").into(imageView);
+                Picasso.with(context).load(LoadBalancer.RequestCurrentDataAddress() + "/images/"+id+".jpg").fit().centerCrop().into(imageView);
             }
         }
 

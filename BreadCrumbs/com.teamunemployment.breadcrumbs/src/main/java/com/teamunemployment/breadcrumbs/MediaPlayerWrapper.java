@@ -1,7 +1,12 @@
 package com.teamunemployment.breadcrumbs;
 
+import android.graphics.SurfaceTexture;
 import android.media.MediaPlayer;
 import android.util.Log;
+import android.view.Surface;
+import android.view.TextureView;
+
+import com.teamunemployment.breadcrumbs.RandomUsefulShit.Utils;
 
 import java.io.IOException;
 
@@ -26,16 +31,37 @@ public class MediaPlayerWrapper implements MediaPlayer.OnPreparedListener{
     private MediaPlayer mediaPlayer;
     private int mediaPlayerState = -1;
 
+    private int stoppageSeekPoint = 0;
+
     // A String path to our datasource.
     private String datasource;
 
+    private Surface videoSurface;
     // It is possible (?) that we may call play when the media player is not ready, so we need this
     // flag to indicate that we wish to play when it is ready.
     private boolean setPlayWhenPrepared = false;
+    private boolean setPrepareAndPlayWhenSurfaceSet = false;
 
     public MediaPlayerWrapper(MediaPlayer mediaPlayer) {
         this.mediaPlayer = mediaPlayer;
         mediaPlayerState = 0;
+    }
+
+    public void setSurfaceView(Surface videoSurface) {
+        this.videoSurface = videoSurface;
+        mediaPlayer.setSurface(videoSurface);
+        if (setPrepareAndPlayWhenSurfaceSet) {
+            Prepare();
+            Play();
+            setPrepareAndPlayWhenSurfaceSet = false;
+        }
+    }
+
+    /**
+     * @return The media player duration.
+     */
+    public int getDuration() {
+        return mediaPlayer.getDuration();
     }
 
     /**
@@ -92,18 +118,16 @@ public class MediaPlayerWrapper implements MediaPlayer.OnPreparedListener{
      */
     public int Play() {
        // Log.d(TAG, "About to start mediaplayer");
-        if (mediaPlayerState != PREPARED) {
+        if (mediaPlayerState == PREPARING) {
            // Log.d(TAG, "Media player not prepared. Will prepare now");
+            //This means that we are still preparing.
             setPlayWhenPrepared = true;
-
-
         }
         mediaPlayer.start();
       //  Log.d(TAG, "Successfully started mediaplayer");
         mediaPlayerState = STARTED;
         return mediaPlayerState;
     }
-
 
     /**
      * Pause the media player. Media player must be PLAYING before this can be called.
@@ -117,7 +141,10 @@ public class MediaPlayerWrapper implements MediaPlayer.OnPreparedListener{
     }
 
     public int Stop() {
-        mediaPlayer.stop();
+        stoppageSeekPoint = mediaPlayer.getCurrentPosition();
+        if (mediaPlayerState == STARTED) {
+            mediaPlayer.stop();
+        }
       //  Log.d(TAG, "Media player stopped");
         mediaPlayerState = STOPPED;
         return mediaPlayerState;
@@ -127,14 +154,26 @@ public class MediaPlayerWrapper implements MediaPlayer.OnPreparedListener{
      * Prepare our mediaplayer for playback.
      * @return the current state of the mediaplayer.
      */
-    public int Prepare() {
+    public synchronized int Prepare() {
+        if (videoSurface == null) {
+            setPrepareAndPlayWhenSurfaceSet = true;
+            return mediaPlayerState;
+        }
+
+        if (datasource == null) {
+            mediaPlayer.reset();
+            mediaPlayerState = IDLE;
+            return mediaPlayerState;
+        }
+
         try {
        //     Log.d(TAG, "Preparing media player");
+            Log.d(TAG, "Preparing video - are we on the main thread? - " + Utils.WeAreRunningOnTheUIThread());
+            mediaPlayer.reset();
+            mediaPlayer.setDataSource(datasource);
+
             mediaPlayer.prepare();
-            // in case the callback happens really fast, we need this check here so we dont set ourselves in an incorrect state.
-            if (mediaPlayerState != PREPARED) {
-                mediaPlayerState = PREPARING;
-            }
+            mediaPlayerState = PREPARED;
         } catch (IOException e) {
         //    Log.e(TAG, "Failed to prepare media player.");
             e.printStackTrace();
@@ -147,7 +186,8 @@ public class MediaPlayerWrapper implements MediaPlayer.OnPreparedListener{
 
     @Override
     public void onPrepared(MediaPlayer mediaPlayer) {
-        this.mediaPlayer = mediaPlayer;
+      //  this.mediaPlayer = mediaPlayer;
+        Log.d(TAG, "PREPARED MEDIA PLAYER");
         mediaPlayerState = PREPARED;
         if (setPlayWhenPrepared) {
             Play();

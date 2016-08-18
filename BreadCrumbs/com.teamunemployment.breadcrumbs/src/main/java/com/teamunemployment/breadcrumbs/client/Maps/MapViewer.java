@@ -20,6 +20,7 @@ import android.location.LocationListener;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.Looper;
 import android.os.Trace;
 import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
@@ -32,10 +33,15 @@ import android.support.v7.widget.CardView;
 import android.text.SpannableStringBuilder;
 import android.text.style.StyleSpan;
 
+import android.transition.Fade;
+import android.transition.Transition;
+import android.transition.TransitionInflater;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
@@ -77,6 +83,8 @@ import com.teamunemployment.breadcrumbs.RESTApi.UserService;
 import com.teamunemployment.breadcrumbs.RandomUsefulShit.Utils;
 import com.teamunemployment.breadcrumbs.Trails.TrailManagerWorker;
 import com.teamunemployment.breadcrumbs.caching.TextCaching;
+import com.teamunemployment.breadcrumbs.client.Animations.GUIUtils;
+import com.teamunemployment.breadcrumbs.client.Animations.OnRevealAnimationListener;
 import com.teamunemployment.breadcrumbs.client.Animations.SimpleAnimations;
 import com.teamunemployment.breadcrumbs.client.Cards.CrumbCardDataObject;
 import com.teamunemployment.breadcrumbs.client.StoryBoard.StoryBoardActivity;
@@ -100,6 +108,8 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 
+import butterknife.Bind;
+import butterknife.ButterKnife;
 import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Response;
@@ -168,15 +178,103 @@ public class MapViewer extends Activity implements OnMapClickListener, OnMapLong
 
 	private FloatingActionButton locateMe;
 
+	@Bind(R.id.root) RelativeLayout mRlContainer;
+	@Bind(R.id.map_root_view) CoordinatorLayout mLlContainer;
+	@Bind(R.id.transitionfab) FloatingActionButton mFab;
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.home_map);
+		ButterKnife.bind(this);
 		context = this;
         ((MapFragment) getFragmentManager().findFragmentById(R.id.map)).getMapAsync(this);
 		mContext = this;
 		trailId = this.getIntent().getStringExtra("TrailId");
-		addViewToTrail(trailId);
+		//addViewToTrail(trailId);
+
+		if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+			setupEnterAnimation();
+			setupExitAnimation();
+		} else {
+			initViews();
+		}
+	}
+
+	private void initViews() {
+		new Handler(Looper.getMainLooper()).post(task);
+	}
+
+	private Runnable task = new Runnable() {
+		@Override
+		public void run() {
+			Animation animation = AnimationUtils.loadAnimation(context, android.R.anim.fade_in);
+			animation.setDuration(150);
+			mLlContainer.startAnimation(animation);
+			mLlContainer.setVisibility(View.VISIBLE);
+		}
+	};
+
+	@TargetApi(Build.VERSION_CODES.LOLLIPOP)
+	private void setupExitAnimation() {
+		Fade fade = new Fade(1);
+		getWindow().setExitTransition(fade);
+		getWindow().setReturnTransition(fade);
+		fade.setDuration(300);
+	}
+
+	/**
+	 * Animation setup.
+	 */
+	@TargetApi(Build.VERSION_CODES.LOLLIPOP)
+	private void setupEnterAnimation() {
+		Transition transition = TransitionInflater.from(this)
+				.inflateTransition(R.transition.changebounds_with_arcmotion);
+		getWindow().setSharedElementEnterTransition(transition);
+		transition.addListener(new Transition.TransitionListener() {
+			@Override
+			public void onTransitionStart(Transition transition) {
+
+			}
+
+			@Override
+			public void onTransitionEnd(Transition transition) {
+				transition.removeListener(this);
+				animateRevealShow(mRlContainer);
+			}
+
+			@Override
+			public void onTransitionCancel(Transition transition) {
+
+			}
+
+			@Override
+			public void onTransitionPause(Transition transition) {
+
+			}
+
+			@Override
+			public void onTransitionResume(Transition transition) {
+
+			}
+		});
+	}
+
+	private void animateRevealShow(final View viewRoot) {
+		int cx = (viewRoot.getLeft() + viewRoot.getRight()) / 2;
+		int cy = (viewRoot.getTop() + viewRoot.getBottom()) / 2;
+		GUIUtils.animateRevealShow(this, mRlContainer, mFab.getWidth() / 2, R.color.accent,
+				cx, cy, new OnRevealAnimationListener() {
+					@Override
+					public void onRevealHide() {
+
+					}
+
+					@Override
+					public void onRevealShow() {
+						mFab.setVisibility(View.INVISIBLE);
+						initViews();
+					}
+				});
 	}
 
 	private void doSetupShit() {
@@ -286,7 +384,6 @@ public class MapViewer extends Activity implements OnMapClickListener, OnMapLong
 		if (bottomSheetFab == null) {
 			bottomSheetFab = (FloatingActionButton) bottomSheet.findViewById(R.id.edit_toggle_fab);
 			SetUpBottomSheetFab();
-
 		}
 
 		// shrink our fab.
@@ -385,7 +482,7 @@ public class MapViewer extends Activity implements OnMapClickListener, OnMapLong
 			bottomSheetFab.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor("#FF4081")));
 			bottomSheetFab.setImageDrawable(context.getResources().getDrawable(R.drawable.ic_favorite_border_white_24dp));
 
-			// Actually add this to our favourites
+			// what is thius doing here
 			Retrofit retrofit = new Retrofit.Builder()
 					// .addCallAdapterFactory(RxJavaCallAdapterFactory.create())
 					.addConverterFactory(GsonConverterFactory.create())
@@ -414,7 +511,6 @@ public class MapViewer extends Activity implements OnMapClickListener, OnMapLong
 			bottomSheetFab.setImageDrawable(context.getResources().getDrawable(R.drawable.ic_favorite_border_black_24dp));
 			WE_LIKE = false;
 		}
-
 	}
 
 	/**
@@ -1285,9 +1381,36 @@ public class MapViewer extends Activity implements OnMapClickListener, OnMapLong
 
     @Override
     public void onBackPressed() {
-		super.onBackPressed();
         //overridePendingTransition(R.animator.slide_in_right, R.anim.abc_slide_out_bottom);
+		super.onBackPressed();
     }
+
+	// We have a back pressed handler as we have two entry points to this bit of code.
+	private void backPressedHandler() {
+		Intent intent = new Intent();
+		setResult(RESULT_OK, intent);
+		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+			GUIUtils.animateRevealHide(context, mRlContainer, R.color.white, mFab.getWidth() / 2,
+					new OnRevealAnimationListener() {
+						@Override
+						public void onRevealHide() {
+							mLlContainer.setVisibility(View.GONE);
+							doBack();
+
+						}
+
+						@Override
+						public void onRevealShow() {
+						}
+					});
+		} else {
+			finish();
+		}
+	}
+
+	private void doBack() {
+		super.onBackPressed();
+	}
 
 	@Override
 	public boolean onMarkerClick(Marker marker) {
@@ -1482,6 +1605,7 @@ public class MapViewer extends Activity implements OnMapClickListener, OnMapLong
 
 			return true;
 		}
+
 		/*
         Needs to be moved out at sometime
          */

@@ -7,10 +7,15 @@
             name="tripDetails"
             type="com.teamunemployment.breadcrumbs.data.TripDetails" />
     </data>
+    <RelativeLayout
+        android:id="@+id/root"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
 
     <android.support.design.widget.CoordinatorLayout
         android:id="@+id/map_root_view"
         android:layout_width="match_parent"
+        android:visibility="visible"
         android:layout_height="match_parent">
 
         <!--    tools:context="client.Main" -->
@@ -66,8 +71,9 @@
 
         <android.support.design.widget.FloatingActionButton
             android:id="@+id/play_button"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:visibility="gone"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
             android:layout_gravity="bottom|right"
             android:layout_marginBottom="32dp"
             android:layout_marginRight="30sp"
@@ -83,4 +89,16 @@
             app:backgroundTint="@color/white"
             app:fabSize="mini" />
     </android.support.design.widget.CoordinatorLayout>
+        <android.support.design.widget.FloatingActionButton
+            android:id="@+id/transitionfab"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:transitionName="transition_reveal_contact"
+            app:backgroundTint="@color/white"
+            app:elevation="0dp"
+            app:fabSize="mini"
+            android:visibility="gone"
+            app:pressedTranslationZ="8dp" />
+    </RelativeLayout>
 </layout>

@@ -5,6 +5,7 @@ import android.net.ConnectivityManager;
 
 import com.teamunemployment.breadcrumbs.Album.AlbumModel;
 import com.teamunemployment.breadcrumbs.Album.AlbumModelPresenterContract;
+import com.teamunemployment.breadcrumbs.Album.Frame;
 import com.teamunemployment.breadcrumbs.Album.data.FrameDetails;
 import com.teamunemployment.breadcrumbs.Album.data.MimeDetails;
 import com.teamunemployment.breadcrumbs.Album.repo.LocalAlbumRepo;
@@ -363,6 +364,121 @@ public class AlbumModelTests {
     @Test
     public void TestThatWeCanStopFilesDownloading() {
         // Not sure how to test this.
+    }
+
+    @Test
+    public void TestThatWeAttemptToLoadFromLocalFrameDetails() {
+        RemoteAlbumRepo remoteAlbumRepo = Mockito.mock(RemoteAlbumRepo.class);
+        LocalAlbumRepo localAlbumRepo = Mockito.mock(LocalAlbumRepo.class);
+
+        ArrayList<MimeDetails> results = new ArrayList<>();
+
+        MimeDetails mime1 = new MimeDetails();
+        mime1.setId("1");
+        mime1.setExtension(".mp4");
+
+        MimeDetails mime2 = new MimeDetails();
+        mime2.setId("2");
+        mime2.setExtension(".mp4");
+
+        MimeDetails mime3 = new MimeDetails();
+        mime3.setId("3");
+        mime3.setExtension(".mp4");
+
+        results.add(mime1);
+        results.add(mime2);
+        results.add(mime3);
+
+        when(localAlbumRepo.LoadMimeDetailsForAnAlbum(any(String.class))).thenReturn(new ArrayList<MimeDetails>());
+        when(remoteAlbumRepo.LoadMimeDetailsForAnAlbum(any(String.class))).thenReturn(results);
+
+        AlbumModelPresenterContract contract = Mockito.mock(AlbumModelPresenterContract.class);
+        Context context = Mockito.mock(Context.class);
+        FileManager fileManager = Mockito.mock(FileManager.class);
+        when(localAlbumRepo.FindMediaFileRecord(any(String.class))).thenReturn(Mockito.mock(MediaRecordModel.class));
+        LocalProfileRepository localProfileRepository = Mockito.mock(LocalProfileRepository.class);
+        RemoteProfileRepository remoteProfileRepository = Mockito.mock(RemoteProfileRepository.class);
+        AlbumModel albumModel = new AlbumModel(remoteAlbumRepo, localAlbumRepo,context, fileManager, localProfileRepository, remoteProfileRepository );
+        albumModel.DownloadFrame(mime1.getId(), mime1.getExtension(), "280");
+        verify(localAlbumRepo, times(1)).LoadFrameDetails(mime1.getId());
+    }
+
+    @Test
+    public void TestThatWeDontFetchRemoteDataIfWeHaveLocal() {
+        RemoteAlbumRepo remoteAlbumRepo = Mockito.mock(RemoteAlbumRepo.class);
+        LocalAlbumRepo localAlbumRepo = Mockito.mock(LocalAlbumRepo.class);
+
+        ArrayList<MimeDetails> results = new ArrayList<>();
+
+        MimeDetails mime1 = new MimeDetails();
+        mime1.setId("1");
+        mime1.setExtension(".mp4");
+
+        MimeDetails mime2 = new MimeDetails();
+        mime2.setId("2");
+        mime2.setExtension(".mp4");
+
+        MimeDetails mime3 = new MimeDetails();
+        mime3.setId("3");
+        mime3.setExtension(".mp4");
+
+        results.add(mime1);
+        results.add(mime2);
+        results.add(mime3);
+
+        when(localAlbumRepo.LoadMimeDetailsForAnAlbum(any(String.class))).thenReturn(new ArrayList<MimeDetails>());
+        when(remoteAlbumRepo.LoadMimeDetailsForAnAlbum(any(String.class))).thenReturn(results);
+        when(localAlbumRepo.LoadFrameDetails(anyString())).thenReturn(new FrameDetails());
+
+        AlbumModelPresenterContract contract = Mockito.mock(AlbumModelPresenterContract.class);
+        Context context = Mockito.mock(Context.class);
+        FileManager fileManager = Mockito.mock(FileManager.class);
+        when(localAlbumRepo.FindMediaFileRecord(any(String.class))).thenReturn(Mockito.mock(MediaRecordModel.class));
+        LocalProfileRepository localProfileRepository = Mockito.mock(LocalProfileRepository.class);
+        RemoteProfileRepository remoteProfileRepository = Mockito.mock(RemoteProfileRepository.class);
+        AlbumModel albumModel = new AlbumModel(remoteAlbumRepo, localAlbumRepo,context, fileManager, localProfileRepository, remoteProfileRepository );
+        albumModel.DownloadFrame(mime1.getId(), mime1.getExtension(), "280");
+        verify(remoteAlbumRepo, times(0)).LoadFrameDetails(mime1.getId());
+    }
+
+    @Test
+    public void TestThatWeSaveFrameDetailsLocallyAfterFetching() {
+        RemoteAlbumRepo remoteAlbumRepo = Mockito.mock(RemoteAlbumRepo.class);
+        LocalAlbumRepo localAlbumRepo = Mockito.mock(LocalAlbumRepo.class);
+
+        ArrayList<MimeDetails> results = new ArrayList<>();
+
+        MimeDetails mime1 = new MimeDetails();
+        mime1.setId("1");
+        mime1.setExtension(".mp4");
+
+        MimeDetails mime2 = new MimeDetails();
+        mime2.setId("2");
+        mime2.setExtension(".mp4");
+
+        MimeDetails mime3 = new MimeDetails();
+        mime3.setId("3");
+        mime3.setExtension(".mp4");
+
+        results.add(mime1);
+        results.add(mime2);
+        results.add(mime3);
+
+        when(localAlbumRepo.LoadMimeDetailsForAnAlbum(any(String.class))).thenReturn(new ArrayList<MimeDetails>());
+        when(remoteAlbumRepo.LoadMimeDetailsForAnAlbum(any(String.class))).thenReturn(results);
+        when(localAlbumRepo.LoadFrameDetails(anyString())).thenReturn(null);
+
+        AlbumModelPresenterContract contract = Mockito.mock(AlbumModelPresenterContract.class);
+        Context context = Mockito.mock(Context.class);
+        FileManager fileManager = Mockito.mock(FileManager.class);
+        when(localAlbumRepo.FindMediaFileRecord(any(String.class))).thenReturn(Mockito.mock(MediaRecordModel.class));
+        LocalProfileRepository localProfileRepository = Mockito.mock(LocalProfileRepository.class);
+        RemoteProfileRepository remoteProfileRepository = Mockito.mock(RemoteProfileRepository.class);
+        AlbumModel albumModel = new AlbumModel(remoteAlbumRepo, localAlbumRepo,context, fileManager, localProfileRepository, remoteProfileRepository );
+        albumModel.DownloadFrame(mime1.getId(), mime1.getExtension(), "280");
+        verify(localAlbumRepo, times(1)).SaveFrameDetails(any(FrameDetails.class));
+        verify(localAlbumRepo, times(1)).LoadFrameDetails(anyString());
+        verify(remoteAlbumRepo, times(1)).LoadFrameDetails(anyString());
     }
 
     /**

@@ -174,8 +174,8 @@ public class HomeActivity extends AppCompatActivity {
                 public void run() {
                     Intent newIntent = new Intent();
                     String localTrailString = Integer.toString(localTrail) + "L";
-                    newIntent.putExtra("TrailId", localTrailString);
-                    newIntent.setClassName("com.teamunemployment.breadcrumbs", "com.teamunemployment.breadcrumbs.client.Maps.LocalMap");
+                    newIntent.putExtra("AlbumId", localTrailString);
+                    newIntent.setClassName("com.teamunemployment.breadcrumbs", "com.teamunemployment.breadcrumbs.Album.AlbumView");
                     startActivity(newIntent);
                 }
             }, 120);
@@ -206,8 +206,8 @@ public class HomeActivity extends AppCompatActivity {
                     Intent newIntent = new Intent();
                     int localTrail = preferencesAPI.GetLocalTrailId();
                     String localTrailString = Integer.toString(localTrail) + "L";
-                    newIntent.putExtra("TrailId", localTrailString);
-                    newIntent.setClassName("com.teamunemployment.breadcrumbs", "com.teamunemployment.breadcrumbs.client.Maps.LocalMap");
+                    newIntent.putExtra("AlbumId", localTrailString);
+                    newIntent.setClassName("com.teamunemployment.breadcrumbs", "com.teamunemployment.breadcrumbs.Album.AlbumView");
                     startActivity(newIntent);
                 } else {
                     if (coarseLocation == PackageManager.PERMISSION_DENIED && fineLocation == PackageManager.PERMISSION_DENIED) {
@@ -237,7 +237,6 @@ public class HomeActivity extends AppCompatActivity {
     }
 
     private void openCamera(int currentTabPosition) {
-
         int localTrailId = preferencesAPI.GetLocalTrailId();
         if (localTrailId == -1) {
             // We have no trail. We need to notify the user of this and give them the option of creating a trail.
@@ -282,8 +281,8 @@ public class HomeActivity extends AppCompatActivity {
                     trailManagerWorker.StartLocalTrail();
                     int localTrail = preferencesAPI.GetLocalTrailId();
                     String localTrailString = Integer.toString(localTrail) + "L";
-                    newIntent.putExtra("TrailId", localTrailString);
-                    newIntent.setClassName("com.teamunemployment.breadcrumbs", "com.teamunemployment.breadcrumbs.client.Maps.LocalMap");
+                    newIntent.putExtra("AlbumId", localTrailString);
+                    newIntent.setClassName("com.teamunemployment.breadcrumbs", "com.teamunemployment.breadcrumbs.Album.AlbumView");
                     startActivity(newIntent);
                 }
                 return;

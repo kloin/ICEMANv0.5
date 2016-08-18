@@ -10,6 +10,7 @@ import com.teamunemployment.breadcrumbs.Album.AlbumPresenter;
 import com.teamunemployment.breadcrumbs.Album.AlbumPresenterViewContract;
 import com.teamunemployment.breadcrumbs.Album.repo.LocalAlbumRepo;
 import com.teamunemployment.breadcrumbs.Album.repo.RemoteAlbumRepo;
+import com.teamunemployment.breadcrumbs.AlbumDataSource;
 import com.teamunemployment.breadcrumbs.MediaPlayerWrapper;
 import com.teamunemployment.breadcrumbs.Network.LoadBalancer;
 import com.teamunemployment.breadcrumbs.Profile.data.LocalProfileRepository;
@@ -104,7 +105,13 @@ public class ComponentModule {
     }
 
     @Provides
-    AlbumPresenter provideAlbumPresenter(AlbumModel model, Application application, MediaPlayerWrapper mediaPlayerWrapper) {
-        return new AlbumPresenter(model, application.getApplicationContext(), mediaPlayerWrapper);
+    AlbumDataSource provideAlbumDatasource(Context context) {
+        return new AlbumDataSource(context);
+    }
+
+    @Provides
+    AlbumPresenter provideAlbumPresenter(AlbumModel model, Application application, MediaPlayerWrapper mediaPlayerWrapper,
+                                         AlbumDataSource albumDataSource) {
+        return new AlbumPresenter(model, application.getApplicationContext(), mediaPlayerWrapper, albumDataSource);
     }
 }

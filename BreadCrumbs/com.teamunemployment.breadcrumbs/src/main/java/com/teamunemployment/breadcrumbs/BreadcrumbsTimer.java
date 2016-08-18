@@ -40,7 +40,7 @@ public class BreadcrumbsTimer {
 
     /**
      * Constructor. Enables setting a progress bar which is updated by the timer.
-     * @param duration Our timeing duration.
+     * @param duration Our timeng duration.
      * @param timerCompleteListener The completion callback.
      * @param progressBar The progressbar to update.
      */
@@ -121,9 +121,6 @@ public class BreadcrumbsTimer {
      * Run the timer.
      */
     private void runTimer() {
-        if (t != null) {
-            throw new IllegalStateException("Timer dirty. Must call restart() to reuse a timer.");
-        }
         t = new Timer();
         t.scheduleAtFixedRate(new TimerTask() {
             @Override

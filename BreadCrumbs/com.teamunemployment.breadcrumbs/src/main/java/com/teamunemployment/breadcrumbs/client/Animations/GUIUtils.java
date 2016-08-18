@@ -37,8 +37,6 @@ public class GUIUtils {
             @Override
             public void onAnimationEnd(Animator animation) {
                 super.onAnimationEnd(animation);
-                // MIGHT BE THE BUG HERE
-               // view.setVisibility(View.GONE);
                 if (listener != null) {
                     listener.onRevealHide();
                 }

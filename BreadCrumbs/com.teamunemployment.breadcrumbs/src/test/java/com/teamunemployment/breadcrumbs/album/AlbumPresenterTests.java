@@ -5,6 +5,7 @@ import com.teamunemployment.breadcrumbs.Album.AlbumModel;
 import com.teamunemployment.breadcrumbs.Album.AlbumPresenter;
 import com.teamunemployment.breadcrumbs.Album.AlbumPresenterViewContract;
 import com.teamunemployment.breadcrumbs.Album.data.MimeDetails;
+import com.teamunemployment.breadcrumbs.AlbumDataSource;
 import com.teamunemployment.breadcrumbs.FileManager.MediaRecordModel;
 import com.teamunemployment.breadcrumbs.MediaPlayerWrapper;
 import com.teamunemployment.breadcrumbs.RESTApi.AlbumService;
@@ -55,8 +56,8 @@ public class AlbumPresenterTests {
         when(model.LoadMimeDetails(anyString())).thenReturn(mimeDetails);
 
         MediaPlayerWrapper mediaPlayerWrapper = Mockito.mock(MediaPlayerWrapper.class);
-
-        AlbumPresenter presenter = new AlbumPresenter(model, Mockito.mock(Context.class), mediaPlayerWrapper);
+        AlbumDataSource dataSource = Mockito.mock(AlbumDataSource.class);
+        AlbumPresenter presenter = new AlbumPresenter(model, Mockito.mock(Context.class), mediaPlayerWrapper,dataSource);
         presenter.SetView(Mockito.mock(AlbumPresenterViewContract.class));
         presenter.Start("1");
 
@@ -89,8 +90,8 @@ public class AlbumPresenterTests {
         when(model.LoadMimeDetails(anyString())).thenReturn(mimeDetails);
 
         MediaPlayerWrapper mediaPlayerWrapper = Mockito.mock(MediaPlayerWrapper.class);
-
-        AlbumPresenter presenter = new AlbumPresenter(model, Mockito.mock(Context.class), mediaPlayerWrapper);
+        AlbumDataSource dataSource = Mockito.mock(AlbumDataSource.class);
+        AlbumPresenter presenter = new AlbumPresenter(model, Mockito.mock(Context.class), mediaPlayerWrapper,dataSource);
         presenter.SetView(Mockito.mock(AlbumPresenterViewContract.class));
         presenter.Start("1");
 
@@ -128,7 +129,8 @@ public class AlbumPresenterTests {
 
         MediaPlayerWrapper mediaPlayerWrapper = Mockito.mock(MediaPlayerWrapper.class);
 
-        AlbumPresenter presenter = new AlbumPresenter(model, Mockito.mock(Context.class), mediaPlayerWrapper);
+        AlbumDataSource dataSource = Mockito.mock(AlbumDataSource.class);
+        AlbumPresenter presenter = new AlbumPresenter(model, Mockito.mock(Context.class), mediaPlayerWrapper,dataSource);
         presenter.SetView(Mockito.mock(AlbumPresenterViewContract.class));
         presenter.Start("1");
 
@@ -176,7 +178,8 @@ public class AlbumPresenterTests {
 
         MediaPlayerWrapper mediaPlayerWrapper = Mockito.mock(MediaPlayerWrapper.class);
 
-        AlbumPresenter presenter = new AlbumPresenter(model, Mockito.mock(Context.class), mediaPlayerWrapper);
+        AlbumDataSource dataSource = Mockito.mock(AlbumDataSource.class);
+        AlbumPresenter presenter = new AlbumPresenter(model, Mockito.mock(Context.class), mediaPlayerWrapper,dataSource);
         presenter.SetView(Mockito.mock(AlbumPresenterViewContract.class));
         presenter.Start("1");
 
@@ -230,7 +233,8 @@ public class AlbumPresenterTests {
 
         MediaPlayerWrapper mediaPlayerWrapper = Mockito.mock(MediaPlayerWrapper.class);
 
-        AlbumPresenter presenter = new AlbumPresenter(model, Mockito.mock(Context.class), mediaPlayerWrapper);
+        AlbumDataSource dataSource = Mockito.mock(AlbumDataSource.class);
+        AlbumPresenter presenter = new AlbumPresenter(model, Mockito.mock(Context.class), mediaPlayerWrapper,dataSource);
         presenter.SetView(Mockito.mock(AlbumPresenterViewContract.class));
         presenter.Start("1");
 
@@ -252,19 +256,15 @@ public class AlbumPresenterTests {
     }
 
 
+
     @Test
     public void TestThatLoadingStarts() {
         AlbumModel albumModel = Mockito.mock(AlbumModel.class);
         Context context = Mockito.mock(Context.class);
-        AlbumPresenter presenter = new AlbumPresenter(albumModel, context, Mockito.mock(MediaPlayerWrapper.class));
+        AlbumDataSource dataSource = Mockito.mock(AlbumDataSource.class);
+        AlbumPresenter presenter = new AlbumPresenter(Mockito.mock(AlbumModel.class), Mockito.mock(Context.class), Mockito.mock(MediaPlayerWrapper.class),dataSource);
         presenter.SetView(Mockito.mock(AlbumPresenterViewContract.class));
         presenter.Start("1234");
-
-    }
-
-    @Test
-    public void TestThatLoadingStopsWhenWeAreOutOfData() {
-
     }
 
     @Test
@@ -276,7 +276,8 @@ public class AlbumPresenterTests {
     public void TestThatWeCanGoNextIfWeFailToLoadFrameMedia() {
         AlbumModel model = Mockito.mock(AlbumModel.class);
         Context context = Mockito.mock(Context.class);
-        AlbumPresenter presenter = new AlbumPresenter(model, context, Mockito.mock(MediaPlayerWrapper.class));
+        AlbumDataSource dataSource = Mockito.mock(AlbumDataSource.class);
+        AlbumPresenter presenter = new AlbumPresenter(Mockito.mock(AlbumModel.class), Mockito.mock(Context.class), Mockito.mock(MediaPlayerWrapper.class),dataSource);
         presenter.SetView(Mockito.mock(AlbumPresenterViewContract.class));
         Assert.fail();
     }
@@ -285,7 +286,8 @@ public class AlbumPresenterTests {
     public void TestDetailsFailButFrameMediaDoesnt() {
         AlbumModel model = Mockito.mock(AlbumModel.class);
         Context context = Mockito.mock(Context.class);
-        AlbumPresenter presenter = new AlbumPresenter(model, context, Mockito.mock(MediaPlayerWrapper.class));
+        AlbumDataSource dataSource = Mockito.mock(AlbumDataSource.class);
+        AlbumPresenter presenter = new AlbumPresenter(Mockito.mock(AlbumModel.class), Mockito.mock(Context.class), Mockito.mock(MediaPlayerWrapper.class),dataSource);
         presenter.SetView(Mockito.mock(AlbumPresenterViewContract.class));
     }
 

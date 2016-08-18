@@ -1,9 +1,12 @@
 package com.teamunemployment.breadcrumbs.Album;
 
+import android.app.Activity;
+import android.app.ActivityOptions;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Point;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.PersistableBundle;
 import android.support.annotation.Nullable;
@@ -71,6 +74,7 @@ public class  AlbumView extends AppCompatActivity implements AlbumPresenterViewC
         ((App) getApplication()).getNetComponent().inject(this);
         Bundle extras = getIntent().getExtras();
         albumId = extras.getString(ALBUM_EXTRA_KEY);
+
         if (albumId != null) {
             presenter.SetView(this);
             presenter.setProgressBar(horizonalProgress);
@@ -82,16 +86,34 @@ public class  AlbumView extends AppCompatActivity implements AlbumPresenterViewC
         if (savedInstanceState != null) {
             Log.d(TAG, "Found saved instance state - " + savedInstanceState.getInt("position"));
         }
-
     }
 
     @OnClick(R.id.open_map) void openMap() {
-        Intent TrailViewer = new Intent();
-        TrailViewer.setClassName("com.teamunemployment.breadcrumbs", "com.teamunemployment.breadcrumbs.client.Maps.MapViewer");
-        Bundle extras = new Bundle();
-        extras.putString("TrailId", albumId);
-        TrailViewer.putExtras(extras);
-        context.startActivity(TrailViewer);
+        presenter.Pause();
+        if (albumId.endsWith("L")) {
+            Intent TrailViewer = new Intent();
+            TrailViewer.setClassName("com.teamunemployment.breadcrumbs", "com.teamunemployment.breadcrumbs.client.Maps.LocalMap");
+            Bundle extras = new Bundle();
+            extras.putString("TrailId", albumId);
+            TrailViewer.putExtras(extras);
+            context.startActivity(TrailViewer);
+        } else {
+            Intent TrailViewer = new Intent();
+            TrailViewer.setClassName("com.teamunemployment.breadcrumbs", "com.teamunemployment.breadcrumbs.client.Maps.MapViewer");
+            Bundle extras = new Bundle();
+            extras.putString("TrailId", albumId);
+            TrailViewer.putExtras(extras);
+            Activity contextActivity = (Activity) context;
+
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                ActivityOptions options = ActivityOptions.makeSceneTransitionAnimation(contextActivity, mapFab, mapFab.getTransitionName());
+
+                contextActivity.startActivity(TrailViewer, options.toBundle());
+            } else {
+                contextActivity.startActivityForResult(TrailViewer, 1);
+            }
+        }
+
     }
 
     @OnClick(R.id.next_storyboard_item) void next() {
@@ -189,7 +211,7 @@ public class  AlbumView extends AppCompatActivity implements AlbumPresenterViewC
     @Override
     protected void onResume() {
         Log.d(TAG, "OnResume called");
-        presenter.restart();
+        presenter.Resume();
         super.onResume();
     }
 
@@ -257,7 +279,6 @@ public class  AlbumView extends AppCompatActivity implements AlbumPresenterViewC
 
     @Override
     public void setScreenMessage(final String message, final float posX, final float posY) {
-
 
         // Grab our screen size.
         Display dm = getWindowManager().getDefaultDisplay();
