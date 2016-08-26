@@ -416,8 +416,8 @@ public class RetrieveData {
 	@GET
 	@Path("/SaveComment/{UserId}/{EntityId}/{CommentText}")
 	public String SaveCommentForAnEntity(@PathParam("UserId") String UserId,
-										 @PathParam("EntityId") String EntityId,
-										 @PathParam("CommentText") String CommentText) {
+                    @PathParam("EntityId") String EntityId,
+                    @PathParam("CommentText") String CommentText) {
 		Trail trail = new Trail();
 		return trail.SaveCommentForAnEntity(UserId, EntityId, CommentText);		
 	}
@@ -425,8 +425,9 @@ public class RetrieveData {
 	@GET
 	@Path("/LoadCommentsForEvent/{EventId}") 
 	public String LoadCommentsForEvent(@PathParam("EventId") String EventId) {
+            
 		NodeController nc = new NodeController();
-		return nc.FetchNodeAndItsRelations(Integer.parseInt(EventId), "Linked_To");
+		return nc.FetchNodeAndItsRelationsAsAnArray(Integer.parseInt(EventId), "Linked_To");
 	}
     
     @GET

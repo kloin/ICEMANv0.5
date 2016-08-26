@@ -229,8 +229,8 @@ public class MapViewer extends Activity implements OnMapClickListener, OnMapLong
 	private void setupEnterAnimation() {
 		Transition transition = TransitionInflater.from(this)
 				.inflateTransition(R.transition.changebounds_with_arcmotion);
-		getWindow().setSharedElementEnterTransition(transition);
-		transition.addListener(new Transition.TransitionListener() {
+			getWindow().setSharedElementEnterTransition(transition);
+			transition.addListener(new Transition.TransitionListener() {
 			@Override
 			public void onTransitionStart(Transition transition) {
 

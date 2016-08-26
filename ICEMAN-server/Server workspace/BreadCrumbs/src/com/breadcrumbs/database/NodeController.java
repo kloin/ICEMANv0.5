@@ -22,6 +22,7 @@ import org.neo4j.cypher.javacompat.ExecutionResult;
 import com.breadcrumbs.database.DBMaster.myLabels;
 import com.breadcrumbs.database.DBMaster.myRelationships;
 import com.breadcrumbs.models.NodeConverter;
+import java.util.ArrayList;
 import org.json.JSONArray;
 
 
@@ -81,7 +82,26 @@ public class NodeController implements INodeController {
 			System.out.println("Fetched node...");
 		}			
 	}
-
+        
+	public String FetchNodeAndItsRelationsAsAnArray(int id, String relationship) {
+		dbInstance = DBMaster.GetAnInstanceOfDBMaster().GetDatabaseInstance();
+		ExecutionEngine engine = new ExecutionEngine( dbInstance );
+		ExecutionResult result = null;
+		Transaction tx = dbInstance.beginTx();
+		try {
+		    result = engine.execute("START trail=node("+ id + ") MATCH (trail)-[:"+relationship +"]->(crumb) RETURN distinct trail,crumb");
+		    tx.success();
+		    return convertIteratorToJSONArray(result);		
+		} catch (Exception ex) {
+			ex.printStackTrace();
+			System.out.print("issues with fetching node and its relations");
+			tx.failure();
+			return "failed";
+		} finally {
+			tx.close();
+		}	    		
+	}	
+        
 	@Override
 	public String FetchNodeAndItsRelations(int id, String relationship) {
 		dbInstance = DBMaster.GetAnInstanceOfDBMaster().GetDatabaseInstance();
@@ -184,6 +204,29 @@ public class NodeController implements INodeController {
 		}
 		
 		return json.toString();
+	}
+        
+        public String convertIteratorToJSONArrayOfJustIdsAndMime(ExecutionResult result) {
+		//Convert our result into json;
+		Iterator<Map<String, Object>> it = result.iterator();
+		NodeConverter nodeConverter = new NodeConverter();
+		JSONObject json = new JSONObject();
+                JSONArray jsonArray = new JSONArray();
+		//DOnt know if this index shit is neccessary
+		int index = 0;
+		while (it.hasNext()) {
+			/* Haha im sorry let me explain. We know its an iterator of maps which, each have <KEY, NODE>, so we get that map.
+			 * Then, next line we want to get the values, which we know will be always just one node.
+			   Then, convert the collection to an array and get the first value (there will always only be one value).*/			 
+			Map nodeItemMap = it.next();
+			Collection valuesCollection = nodeItemMap.values();
+			Node tempNode = (Node) valuesCollection.toArray()[0];
+                        ArrayList keys = new ArrayList<String>();
+                        keys.add("Extension");
+                        jsonArray.put(nodeConverter.ConvertSingleNodeToJSONWithSelectedParams(tempNode, keys));			
+		}
+		
+		return jsonArray.toString();
 	}
         
         public String convertIteratorToCSVString(ExecutionResult result) {

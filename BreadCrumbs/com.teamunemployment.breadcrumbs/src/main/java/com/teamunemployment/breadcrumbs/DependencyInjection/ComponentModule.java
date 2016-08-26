@@ -5,17 +5,18 @@ import android.content.Context;
 import android.media.MediaPlayer;
 
 import com.teamunemployment.breadcrumbs.Album.AlbumModel;
-import com.teamunemployment.breadcrumbs.Album.AlbumModelPresenterContract;
 import com.teamunemployment.breadcrumbs.Album.AlbumPresenter;
-import com.teamunemployment.breadcrumbs.Album.AlbumPresenterViewContract;
 import com.teamunemployment.breadcrumbs.Album.repo.LocalAlbumRepo;
 import com.teamunemployment.breadcrumbs.Album.repo.RemoteAlbumRepo;
 import com.teamunemployment.breadcrumbs.AlbumDataSource;
+import com.teamunemployment.breadcrumbs.BreadcrumbsTimer;
 import com.teamunemployment.breadcrumbs.MediaPlayerWrapper;
 import com.teamunemployment.breadcrumbs.Network.LoadBalancer;
+import com.teamunemployment.breadcrumbs.PreferencesAPI;
 import com.teamunemployment.breadcrumbs.Profile.data.LocalProfileRepository;
 import com.teamunemployment.breadcrumbs.Profile.data.RemoteProfileRepository;
 import com.teamunemployment.breadcrumbs.RESTApi.AlbumService;
+import com.teamunemployment.breadcrumbs.RESTApi.CrumbService;
 import com.teamunemployment.breadcrumbs.RESTApi.FileManager;
 import com.teamunemployment.breadcrumbs.RESTApi.NodeService;
 import com.teamunemployment.breadcrumbs.database.DatabaseController;
@@ -45,11 +46,10 @@ public class ComponentModule {
 
     @Provides
     Retrofit provideRetrofit() {
-        Retrofit retrofit = new Retrofit.Builder()
+        return new Retrofit.Builder()
                 .addConverterFactory(GsonConverterFactory.create())
                 .baseUrl(LoadBalancer.RequestServerAddress() + "/rest/")
                 .build();
-        return retrofit;
     }
 
     @Provides
@@ -58,8 +58,13 @@ public class ComponentModule {
     }
 
     @Provides
-    RemoteAlbumRepo provideRemoteAlbumRepo(AlbumService albumService) {
-       return new RemoteAlbumRepo(albumService);
+    CrumbService provideCrumbService(Retrofit retrofit) {
+        return retrofit.create(CrumbService.class);
+    }
+
+    @Provides
+    RemoteAlbumRepo provideRemoteAlbumRepo(AlbumService albumService, CrumbService crumbService) {
+       return new RemoteAlbumRepo(albumService, crumbService);
     }
 
     @Provides
@@ -88,10 +93,15 @@ public class ComponentModule {
     }
 
     @Provides
+    PreferencesAPI providePreferencesApi(Context context) {
+        return new PreferencesAPI(context);
+    }
+
+    @Provides
     AlbumModel provideAlbumModel(RemoteAlbumRepo remoteAlbumRepo, LocalAlbumRepo localAlbumRepo,
                                  Context context, FileManager fileManager, LocalProfileRepository localProfileRepository,
-                                 RemoteProfileRepository remoteProfileRepository) {
-        return new AlbumModel(remoteAlbumRepo, localAlbumRepo, context, fileManager, localProfileRepository, remoteProfileRepository);
+                                 RemoteProfileRepository remoteProfileRepository, PreferencesAPI preferencesAPI) {
+        return new AlbumModel(remoteAlbumRepo, localAlbumRepo, context, fileManager, localProfileRepository, remoteProfileRepository, preferencesAPI);
     }
 
     @Provides
@@ -105,13 +115,17 @@ public class ComponentModule {
     }
 
     @Provides
-    AlbumDataSource provideAlbumDatasource(Context context) {
+    AlbumDataSource provideAlbumDataSource(Context context) {
         return new AlbumDataSource(context);
     }
 
     @Provides
     AlbumPresenter provideAlbumPresenter(AlbumModel model, Application application, MediaPlayerWrapper mediaPlayerWrapper,
-                                         AlbumDataSource albumDataSource) {
-        return new AlbumPresenter(model, application.getApplicationContext(), mediaPlayerWrapper, albumDataSource);
+                                         AlbumDataSource albumDataSource, BreadcrumbsTimer timer) {
+        return new AlbumPresenter(model, application.getApplicationContext(), mediaPlayerWrapper, albumDataSource, timer);
+    }
+
+    @Provides BreadcrumbsTimer provideBreadCrumbsTimer() {
+        return new BreadcrumbsTimer();
     }
 }

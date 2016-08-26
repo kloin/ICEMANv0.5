@@ -4,14 +4,18 @@ import android.support.annotation.Nullable;
 import android.util.Log;
 
 import com.teamunemployment.breadcrumbs.Album.AlbumModel;
+import com.teamunemployment.breadcrumbs.Album.data.Comment;
 import com.teamunemployment.breadcrumbs.Album.data.FrameDetails;
 import com.teamunemployment.breadcrumbs.Album.data.MimeDetails;
 import com.teamunemployment.breadcrumbs.RESTApi.AlbumService;
+import com.teamunemployment.breadcrumbs.RESTApi.CrumbService;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedList;
+
+import javax.inject.Inject;
 
 import okhttp3.ResponseBody;
 import retrofit2.Call;
@@ -24,9 +28,12 @@ public class RemoteAlbumRepo {
 
     private static final String TAG = "RemoteAlbumRepo";
     private AlbumService albumService;
+    private CrumbService crumbService;
 
-    public RemoteAlbumRepo(AlbumService albumService) {
+    @Inject
+    public RemoteAlbumRepo(AlbumService albumService, CrumbService crumbService) {
         this.albumService = albumService;
+        this.crumbService = crumbService;
     }
 
     public ArrayList<MimeDetails> LoadMimeDetailsForAnAlbum(String albumId) {
@@ -94,4 +101,40 @@ public class RemoteAlbumRepo {
         return false;
     }
 
+    /**
+     * Save a comment to the remote server.
+     * @param comment The comment object to save.
+     */
+    public String SaveComment(Comment comment) {
+        Call<ResponseBody> call = crumbService.saveComment(comment.getUserId(), comment.getEntityId(), comment.getCommentText());
+        try {
+            Response<ResponseBody> responseBodyResponse = call.execute();
+            return responseBodyResponse.body().string();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return "-1";
+    }
+
+    public void DeleteComment(String commentId) {
+       // crumbService.deleteComment(commentId);
+    }
+
+    /**
+     * Get an array list of comments for a frame.
+     * @param frameId The id of the frame we are gettign comments for.
+     * @return The array of comment objects.
+     */
+    public ArrayList<Comment> LoadCommentsForFrame(String frameId) {
+        Call<ArrayList<Comment>> call = crumbService.getCommentsForEvent(frameId);
+        try {Response<ArrayList<Comment>> response = call.execute();
+           if (response != null && response.body() != null && response.code() == 200) {
+               return response.body();
+           }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        return new ArrayList<>();
+    }
 }

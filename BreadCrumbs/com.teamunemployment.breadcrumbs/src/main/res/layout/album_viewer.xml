@@ -107,4 +107,59 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"/>
     </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/comments_bottom_sheet"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/white"
+        app:behavior_peekHeight="200dp"
+        app:behavior_hideable="true"
+        app:layout_behavior="android.support.design.widget.BottomSheetBehavior">
+        <TextView
+            android:id="@+id/comments_count"
+            android:text="0 Comments"
+            android:gravity="center"
+            android:layout_marginLeft="16dp"
+            android:layout_width="wrap_content"
+            android:layout_height="50dp"/>
+        <View
+            android:id="@+id/comments_text_divider"
+            android:layout_width="match_parent"
+            android:layout_height="1px"
+            android:background="@color/my_divider"
+            android:layout_below="@+id/comments_count"/>
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/comments_recycler"
+            android:layout_below="@+id/comments_text_divider"
+            android:layout_above="@+id/comment_above_divider"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+        </android.support.v7.widget.RecyclerView>
+        <View
+            android:id="@+id/comment_above_divider"
+            android:layout_width="match_parent"
+            android:layout_height="1px"
+            android:background="@color/my_divider"
+            android:layout_above="@+id/comment_input"/>
+        <EditText
+            android:id="@+id/comment_input"
+            android:layout_alignParentBottom="true"
+            android:gravity="center_vertical"
+            android:layout_marginLeft="16dp"
+            android:layout_width="match_parent"
+            android:layout_toLeftOf="@+id/send_comment_button"
+            android:minHeight="50dp"
+            android:layout_height="wrap_content"/>
+        <ImageView
+            android:id="@+id/send_comment_button"
+            android:src="@drawable/ic_send_white_24dp"
+            android:tint="@color/good_to_go"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentRight="true"
+            android:layout_marginRight="16dp"
+            android:layout_width="wrap_content"
+            android:layout_height="50dp"/>
+    </RelativeLayout>
 </android.support.design.widget.CoordinatorLayout>

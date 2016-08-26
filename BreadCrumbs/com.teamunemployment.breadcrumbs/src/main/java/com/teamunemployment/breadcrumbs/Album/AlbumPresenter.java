@@ -8,17 +8,20 @@ import android.graphics.SurfaceTexture;
 import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.Surface;
 import android.view.TextureView;
 import android.view.View;
 import android.widget.ProgressBar;
 
+import com.teamunemployment.breadcrumbs.Album.data.Comment;
 import com.teamunemployment.breadcrumbs.Album.data.FrameDetails;
 import com.teamunemployment.breadcrumbs.Album.data.MimeDetails;
 import com.teamunemployment.breadcrumbs.AlbumDataSource;
 import com.teamunemployment.breadcrumbs.BreadcrumbsTimer;
 import com.teamunemployment.breadcrumbs.MediaPlayerWrapper;
+import com.teamunemployment.breadcrumbs.Network.LoadBalancer;
 import com.teamunemployment.breadcrumbs.RandomUsefulShit.Utils;
 
 import java.io.IOException;
@@ -27,12 +30,19 @@ import java.util.ListIterator;
 
 import javax.inject.Inject;
 
+import de.hdodenhof.circleimageview.CircleImageView;
+
 /**
  * @author Josiah Kendall
  */
 public class AlbumPresenter implements AlbumModelPresenterContract, TextureView.SurfaceTextureListener,
         BreadcrumbsTimer.TimerCompleteListener {
 
+    public static final int STOPPED = 0;
+    public static final int PAUSED = 1;
+    public static final int PLAYING = 2;
+
+    private int playState = 0;
     private static final String TAG = "AlbumPresenter";
     private static final String MP4 = ".mp4";
     private AlbumPresenterViewContract view;
@@ -45,9 +55,11 @@ public class AlbumPresenter implements AlbumModelPresenterContract, TextureView.
     private ProgressBar progressBar;
     private boolean firstStart = true;
     private MediaPlayerWrapper mediaPlayerWrapper;
+    private RecyclerView recyclerView;
 
     private MimeDetails currentFrame;
     private AlbumDataSource albumDataSource;
+    private boolean closed = false;
 
     // If we go backward, it moves the pointer on the iterator so far back so that when we go foreward,
     // it just returns the object that we are lookking at. If we are going backwards, this is desirable, (think skipping back in a song)
@@ -56,14 +68,19 @@ public class AlbumPresenter implements AlbumModelPresenterContract, TextureView.
     private boolean requestPrepareAndPlayWhenSurfaceReady = false;
 
     @Inject
-    public AlbumPresenter(AlbumModel model, Context context, MediaPlayerWrapper mediaPlayerWrapper, AlbumDataSource albumDataSource) {
+    public AlbumPresenter(AlbumModel model, Context context, MediaPlayerWrapper mediaPlayerWrapper, AlbumDataSource albumDataSource, BreadcrumbsTimer timer) {
         this.context = context;
         this.model = model;
         this.mediaPlayerWrapper = mediaPlayerWrapper;
         this.albumDataSource = albumDataSource;
+        this.timer = timer;
 
         // Set our communication contract between the model and the presenter
         model.setContract(this);
+    }
+
+    public void BindRecyclerView(RecyclerView recyclerView) {
+        this.recyclerView = recyclerView;
     }
 
     /**
@@ -172,9 +189,25 @@ public class AlbumPresenter implements AlbumModelPresenterContract, TextureView.
         }).start();
     }
 
+    /**
+     * Toggle pause state
+     */
+    public void togglePauseState() {
+        if (timer.getTimerState() == BreadcrumbsTimer.STATE_RUNNING) {
+            // do pause, show comments
+            Pause();
+        } else if (timer.getTimerState() == BreadcrumbsTimer.STATE_PAUSED) {
+            Resume();
+        }
+    }
+
     // Not used yet but maybe in the future
     public void Pause() {
-        if (currentFrame.getExtension().equals(MP4)) {
+        view.showCommentsBottomSheet();
+        view.showDimScreenOverlay();
+        LoadComments();
+        // curent frame should never be null here, but it will be when we are testing.
+        if (currentFrame != null && currentFrame.getExtension() != null && currentFrame.getExtension().equals(MP4)) {
             mediaPlayerWrapper.Pause();
         }
         timer.Pause();
@@ -183,7 +216,8 @@ public class AlbumPresenter implements AlbumModelPresenterContract, TextureView.
     // Resume playback. Happens when the app is closed and reopened on this page, or when we move to another
     // activity and then back again.
     public void Resume() {
-
+        view.hideCommentsBottomSheet();
+        view.hideDimScreenOverlay();
         // Resume gets called on a start too. Therefore we have this prereq check.
         if (firstStart) {
             firstStart = false;
@@ -192,10 +226,25 @@ public class AlbumPresenter implements AlbumModelPresenterContract, TextureView.
 
         // Current frame must not be null. We also only want to resume here if it is a photo. The video
         // resume callback is handled by the TextureView lifecycle.
-        if (currentFrame != null && !currentFrame.getExtension().equals(MP4)) {
-            timer.Resume();
-            timer.Start();
+        if (currentFrame != null && currentFrame.getExtension().equals(MP4)) {
+            mediaPlayerWrapper.Play();
+            if (closed) {
+                int duration = mediaPlayerWrapper.getDuration();
+                closed = false;
+                timer.RestartTimer();
+                timer.setDuration(duration);
+                timer.setOnFinishedListener(this);
+                timer.setProgressBar(progressBar);
+                timer.setTimerMax(duration);
+                int position = mediaPlayerWrapper.getCurrentPosition();
+                Log.d(TAG, "Timer position: " + position);
+                timer.setCurrentTime(position);
+                timer.Start();
+            }
         }
+
+        timer.Resume();
+        //timer.Start();
     }
 
     /**
@@ -291,13 +340,15 @@ public class AlbumPresenter implements AlbumModelPresenterContract, TextureView.
         // debug stuff. Should never be true.
         Log.d(TAG, "Loading bitmap - are we on the main thread? - " + Utils.WeAreRunningOnTheUIThread());
 
-        // TODO - need to fix this potential npe. knowing android this will occur on some random ass phones
         String url = albumDataSource.getDataSource() + "/"+frame.getId() + frame.getExtension();
         Bitmap bitmap = BitmapFactory.decodeFile(url);
         view.setImageBitmap(bitmap);
 
         // reset/set timer.
-        timer = new BreadcrumbsTimer(5000, this, progressBar);
+        timer.RestartTimer();
+        timer.setDuration(5000);
+        timer.setOnFinishedListener(this);
+        timer.setProgressBar(progressBar);
         timer.setTimerMax(5000);
         timer.Start();
     }
@@ -309,7 +360,7 @@ public class AlbumPresenter implements AlbumModelPresenterContract, TextureView.
     private void setVideoFrame(FrameDetails frame) {
         view.setImageVisibility(View.INVISIBLE);
         view.setVideoVisibility(View.VISIBLE);
-        // TODO find a solution to this. This will almost definitely crash on some devices.
+
         String url = albumDataSource.getDataSource() + "/"+frame.getId() + frame.getExtension();
 
         // Reset the media player back to an idle state.
@@ -318,12 +369,15 @@ public class AlbumPresenter implements AlbumModelPresenterContract, TextureView.
         // Set the datasource
         mediaPlayerWrapper.SetTrack(url);
 
-        // TODO - tidy this.
         int prepareResult = mediaPlayerWrapper.Prepare();
         if (prepareResult == MediaPlayerWrapper.PREPARED) {
             mediaPlayerWrapper.Play();
             int duration = mediaPlayerWrapper.getDuration();
-            timer = new BreadcrumbsTimer(duration, this, progressBar);
+            timer.RestartTimer();
+            timer.setDuration(duration);
+            timer.setOnFinishedListener(this);
+            timer.setProgressBar(progressBar);
+
             timer.setTimerMax(duration);
             timer.Start();
         } else if (prepareResult == MediaPlayerWrapper.INITIALIZED) {
@@ -344,9 +398,14 @@ public class AlbumPresenter implements AlbumModelPresenterContract, TextureView.
                 mediaPlayerWrapper.Play();
 
                 int duration = mediaPlayerWrapper.getDuration();
-                timer = new BreadcrumbsTimer(duration, this, progressBar);
+                timer.RestartTimer();
+                timer.setDuration(duration);
+                timer.setOnFinishedListener(this);
+                timer.setProgressBar(progressBar);
                 timer.setTimerMax(duration);
                 timer.Start();
+
+                // Reset flag.
                 requestPrepareAndPlayWhenSurfaceReady = false;
             }
         }
@@ -363,11 +422,13 @@ public class AlbumPresenter implements AlbumModelPresenterContract, TextureView.
         // If we press back before we have loaded the first item, all this stuff is not iniailized so it npe
         if (timer != null) {
             timer.Stop();
+
             mediaPlayerWrapper.setSurfaceView(null);
 
             if (currentFrame.getExtension().equals(MP4)) {
                 // Pause, as we may want to resume at a later date.
                 mediaPlayerWrapper.Pause();
+                closed = true;
             }
         }
 
@@ -389,11 +450,10 @@ public class AlbumPresenter implements AlbumModelPresenterContract, TextureView.
             mimeDetailsIterator.next();
         }
 
-        if (mimeDetailsIterator.hasNext()) {
+        if (mimeDetailsIterator != null && mimeDetailsIterator.hasNext()) {
             PlayFrame(mimeDetailsIterator.next());
             hasGoneBackwardLast = false;
         } else {
-            Log.d(TAG, "Cannot go foreward, finishing now.");
             view.showMessage("Finished");
             view.finishUp();
         }
@@ -403,7 +463,7 @@ public class AlbumPresenter implements AlbumModelPresenterContract, TextureView.
      * Go foreward to the next item in the list
      */
     public void foreward() {
-       mediaPlayerWrapper.Stop();
+        mediaPlayerWrapper.Stop();
         if (timer != null) {
             timer.Stop();
         }
@@ -447,4 +507,63 @@ public class AlbumPresenter implements AlbumModelPresenterContract, TextureView.
     public MimeDetails getCurrentFrame() {
       return currentFrame;
     }
+
+    /**
+     * Play state getter
+     * @return The current player state.
+     */
+    public int getPlayState() {
+        return playState;
+    }
+
+    public void onBottomSheetChanged(View bottomSheet, int newState) {
+
+    }
+
+    public void onBottomSheetSlide(View bottomSheet, float slideOffset) {
+
+    }
+
+    /**
+     * Save a comment
+     * @param textToSave
+     */
+    public void saveComment(final String textToSave) {
+        // Save our comment
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                model.SaveComment(textToSave, currentFrame.getId());
+                LoadComments();
+            }
+        }).start();
+    }
+
+    /**
+     * Load the comments for a frame.
+     */
+    public void LoadComments() {
+        model.GetCommentsForFrame(currentFrame.getId(), commentsCallback);
+    }
+
+    public void SynchronouslyLoadUsersProfilePicId(String userId, CircleImageView profileImage) {
+        String id = model.LoadUserProfilePic(userId);
+        String url = LoadBalancer.RequestCurrentDataAddress() + "/images/"+ id + "T.jpg";
+        view.SetImageViewWithImage(url, profileImage);
+
+    }
+
+    private void processCommentsArray(ArrayList<Comment> comments) {
+        // need to set the recyclerview here.
+        view.setCommentsCount(comments.size());
+        CommentAdapter commentAdapter = new CommentAdapter(comments, context, this);
+        view.setRecyclerViewAdapter(commentAdapter);
+    }
+
+    private AlbumModel.loadedCommentsCallback commentsCallback = new AlbumModel.loadedCommentsCallback() {
+        @Override
+        public void onLoaded(ArrayList<Comment> comments) {
+            processCommentsArray(comments);
+        }
+    };
 }

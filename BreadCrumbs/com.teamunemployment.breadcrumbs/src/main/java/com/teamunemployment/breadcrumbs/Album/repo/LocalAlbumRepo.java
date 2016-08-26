@@ -3,6 +3,7 @@ package com.teamunemployment.breadcrumbs.Album.repo;
 import android.support.annotation.Nullable;
 
 import com.teamunemployment.breadcrumbs.Album.Frame;
+import com.teamunemployment.breadcrumbs.Album.data.Comment;
 import com.teamunemployment.breadcrumbs.Album.data.FrameDetails;
 import com.teamunemployment.breadcrumbs.Album.data.MimeDetails;
 import com.teamunemployment.breadcrumbs.FileManager.MediaRecordModel;
@@ -69,23 +70,24 @@ public class LocalAlbumRepo {
         return false;
     }
 
-
-    public void SaveMimeDetailsToFrame(MimeDetails mimeDetails) {
+    public void SaveMimeDetailsToFrame(MimeDetails mimeDetails, String albumId) {
         // If A Frame exists
         FrameDetails frameDetails = databaseController.GetFrameDetails(mimeDetails.getId());
+
         if (frameDetails== null) {
             frameDetails = new FrameDetails();
             frameDetails.setId(mimeDetails.getId());
             frameDetails.setExtension(mimeDetails.getExtension());
+            frameDetails.setTrailId(albumId);
             databaseController.SaveFrameDetails(frameDetails);
         }
     }
 
-    public void SaveFrameMimeData(ArrayList<MimeDetails> mimeDetailsArray) {
+    public void SaveFrameMimeData(ArrayList<MimeDetails> mimeDetailsArray, String albumId) {
         Iterator<MimeDetails> frameDetailsIterator = mimeDetailsArray.iterator();
         while (frameDetailsIterator.hasNext()) {
             MimeDetails details = frameDetailsIterator.next();
-            SaveMimeDetailsToFrame(details);
+            SaveMimeDetailsToFrame(details, albumId);
         }
     }
 
@@ -112,5 +114,35 @@ public class LocalAlbumRepo {
 
     public MediaRecordModel FindMediaFileRecord(String frameId) {
         return databaseController.GetMediaFileRecord(frameId);
+    }
+
+    /**
+     * Save a comment for a frame.
+     * @param comment The comment to save
+     */
+    public void SaveComment(Comment comment) {
+        // TODO save a comment object to the database.
+        if (comment != null) {
+            databaseController.SaveComment(comment);
+        }
+    }
+
+    public void DeleteComment(String commentId) {
+        databaseController.DeleteComment(commentId);
+    }
+
+    public ArrayList<Comment> LoadCommentsForAFrame(String frameId) {
+        return databaseController.GetAllCommentsForAFrame(frameId);
+    }
+
+    /**
+     * Save all the comments in an array.
+     */
+    public void SaveComments(ArrayList<Comment> comments) {
+        Iterator<Comment> commentIterator = comments.iterator();
+        while (commentIterator.hasNext()) {
+            Comment next = commentIterator.next();
+            SaveComment(next);
+        }
     }
 }

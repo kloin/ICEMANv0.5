@@ -47,6 +47,10 @@ public class MediaPlayerWrapper implements MediaPlayer.OnPreparedListener{
         mediaPlayerState = 0;
     }
 
+    public int getCurrentPosition() {
+        return mediaPlayer.getCurrentPosition();
+    }
+
     public void setSurfaceView(Surface videoSurface) {
         this.videoSurface = videoSurface;
         mediaPlayer.setSurface(videoSurface);
@@ -71,7 +75,6 @@ public class MediaPlayerWrapper implements MediaPlayer.OnPreparedListener{
     public int getCurrentState() {
         return mediaPlayerState;
     }
-
 
     /**
      * Returns the current dataSource

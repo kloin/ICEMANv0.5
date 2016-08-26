@@ -16,6 +16,7 @@ import android.util.Log;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
+import com.teamunemployment.breadcrumbs.Album.data.Comment;
 import com.teamunemployment.breadcrumbs.Album.data.FrameDetails;
 import com.teamunemployment.breadcrumbs.Album.data.MimeDetails;
 import com.teamunemployment.breadcrumbs.FileManager.MediaRecordModel;
@@ -50,7 +51,7 @@ import java.util.Iterator;
  */
 public class DatabaseController extends SQLiteOpenHelper {
 
-    private static final int DATABASE_VERSION = 8;
+    private static final int DATABASE_VERSION = 9;
     private static final String POLYLINES = "polylines";
 	private static final String DATABASE_NAME="users";
     private static final String TRAIL_POINTS_INDEX = "trailIndexDb";
@@ -70,6 +71,7 @@ public class DatabaseController extends SQLiteOpenHelper {
     private static final String FOLLOWING_TABLE = "following_table";
     private static final String FRAME_DETAILS = "frame_details";
     private static final String STORED_MEDIA_FILES = "stored_files";
+    private static final String COMMENT_TABLE = "comments_db";
     //public static final String
     private static final String TAG = "DBC";
     private Context mContext;
@@ -128,7 +130,18 @@ public class DatabaseController extends SQLiteOpenHelper {
             db.execSQL("CREATE TABLE IF NOT EXISTS " + STORED_MEDIA_FILES + " (_id INTEGER PRIMARY KEY AUTOINCREMENT, " +
                     "FrameId INTEGER," +
                     "Size REAL);");
+            oldVersion = 8;
         }
+
+        if (oldVersion == 8) {
+            db.execSQL("CREATE TABLE IF NOT EXISTS " + COMMENT_TABLE + " (_id INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                    "EntityId INTEGER," +
+                    "CommentText TEXT," +
+                    "UserId INTEGER," +
+                    "ServerId INTEGER);");
+        }
+
+
     }
 
 	public void SaveUser(String userId, String userName, int age, String pin) {
@@ -603,6 +616,12 @@ public class DatabaseController extends SQLiteOpenHelper {
         db.execSQL("CREATE TABLE " + STORED_MEDIA_FILES + " (_id INTEGER PRIMARY KEY AUTOINCREMENT, " +
                 "FrameId INTEGER," +
                 "Size REAL);");
+
+        db.execSQL("CREATE TABLE " + COMMENT_TABLE + " (_id INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                "EntityId INTEGER," +
+                "CommentText TEXT," +
+                "UserId INTEGER," +
+                "ServerId INTEGER);");
     }
 
     public void SaveActivityPoint(int currentActivity, int pastActivity, Double latitude, Double longitude, int granularity) {
@@ -1775,5 +1794,78 @@ public class DatabaseController extends SQLiteOpenHelper {
         }
 
         return null;
+    }
+
+    /**
+     * Save a comment locally
+     * @param comment The comment object to save.
+     * @return The local database id value. Returns -1 if it failed to save.
+     */
+    public long SaveComment(Comment comment) {
+        if (GetCommentById(comment.getId())!= null) {
+            return -1;
+        }
+        ContentValues cv = new ContentValues();
+        cv.put("UserId", Integer.parseInt(comment.getUserId()));
+        cv.put("CommentText", comment.getCommentText());
+        cv.put("EntityId", Integer.parseInt(comment.getEntityId()));
+        cv.put("ServerId", Integer.parseInt(comment.getId()));
+        SQLiteDatabase localDb = getWritableDatabase();
+        return localDb.insert(COMMENT_TABLE, null, cv);
+    }
+
+    /**
+     * Get a comment
+     * @param id The server id of the comment.
+     * @return The comment object representing the comment that we are looking for. returns a null if
+     * the comment was not found.
+     */
+    @Nullable
+    public Comment GetCommentById(String id) {
+        Cursor constantsCursor=getReadableDatabase().rawQuery("SELECT * FROM "+ COMMENT_TABLE+" WHERE ServerId ="+id+" ORDER BY _id", null);
+        if (constantsCursor.moveToFirst()) {
+
+            String serverId = constantsCursor.getString(constantsCursor.getColumnIndex("ServerId"));
+            String entityId = constantsCursor.getString(constantsCursor.getColumnIndex("EntityId"));
+            String commentText = constantsCursor.getString(constantsCursor.getColumnIndex("CommentText"));
+            String userId = constantsCursor.getString(constantsCursor.getColumnIndex("UserId"));
+            Comment comment = new Comment();
+            comment.setUserId(userId);
+            comment.setCommentText(commentText);
+            comment.setEntityId(entityId);
+            comment.setId(serverId);
+            return comment;
+        }
+
+        return null;
+    }
+
+    public int DeleteComment(String id) {
+        return getWritableDatabase().delete(COMMENT_TABLE, "ServerId=" + id, null);
+    }
+
+    /**
+     * Get all our locally saved comments for a frame
+     * @param frameId The id of the frame.
+     * @return the arraylist of comment objects.
+     */
+    public ArrayList<Comment> GetAllCommentsForAFrame(String frameId) {
+        ArrayList<Comment> comments = new ArrayList<>();
+        Cursor constantsCursor=getReadableDatabase().rawQuery("SELECT * FROM "+ COMMENT_TABLE+" WHERE EntityId ="+frameId+" ORDER BY _id", null);
+        while (constantsCursor.moveToNext()) {
+
+            String serverId = constantsCursor.getString(constantsCursor.getColumnIndex("ServerId"));
+            String entityId = constantsCursor.getString(constantsCursor.getColumnIndex("EntityId"));
+            String commentText = constantsCursor.getString(constantsCursor.getColumnIndex("CommentText"));
+            String userId = constantsCursor.getString(constantsCursor.getColumnIndex("UserId"));
+            Comment comment = new Comment();
+            comment.setUserId(userId);
+            comment.setCommentText(commentText);
+            comment.setEntityId(entityId);
+            comment.setId(serverId);
+            comments.add(comment);
+        }
+
+        return comments;
     }
 }

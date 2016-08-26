@@ -24,12 +24,15 @@ import okio.Buffer;
  */
 public class MockClient implements Interceptor {
 
-    private Context context;
     private String content;
     private int code;
 
     public MockClient(Context ctx, String content, int code) {
-        this.context = ctx;
+        this.content = content;
+        this.code = code;
+    }
+
+    public MockClient(String content, int code) {
         this.content = content;
         this.code = code;
     }

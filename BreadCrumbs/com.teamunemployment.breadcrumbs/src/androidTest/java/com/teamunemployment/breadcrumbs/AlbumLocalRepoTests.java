@@ -6,6 +6,8 @@ import android.test.RenamingDelegatingContext;
 
 import com.teamunemployment.breadcrumbs.Album.Frame;
 import com.teamunemployment.breadcrumbs.Album.data.FrameDetails;
+import com.teamunemployment.breadcrumbs.Album.data.MimeDetails;
+import com.teamunemployment.breadcrumbs.Album.repo.LocalAlbumRepo;
 import com.teamunemployment.breadcrumbs.database.DatabaseController;
 
 import junit.framework.Assert;
@@ -13,8 +15,10 @@ import junit.framework.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.util.ArrayList;
+
 /**
- * Created by jek40 on 7/08/2016.
+ * @author Josiah Kendall
  */
 public class AlbumLocalRepoTests {
     private Context context;
@@ -90,6 +94,33 @@ public class AlbumLocalRepoTests {
     public void TestThatWeCanHandleNotFindingFrameDetails() {
         FrameDetails frameDetails = databaseController.GetFrameDetails("-1234");
         Assert.assertTrue(frameDetails == null);
+    }
+
+    @Test
+    public void TestThatWeCanSaveFrameMimeList() {
+        MimeDetails mimeDetails = new MimeDetails();
+        mimeDetails.setExtension(".mp4");
+        mimeDetails.setId("1");
+        MimeDetails mimeDetails2 = new MimeDetails();
+        mimeDetails2.setExtension(".mp4");
+        mimeDetails2.setId("2");
+        MimeDetails mimeDetails3 = new MimeDetails();
+        mimeDetails3.setExtension(".mp4");
+        mimeDetails3.setId("3");
+        MimeDetails mimeDetails4 = new MimeDetails();
+        mimeDetails4.setExtension(".mp4");
+        mimeDetails4.setId("4");
+
+        ArrayList<MimeDetails> mimes = new ArrayList<>();
+        mimes.add(mimeDetails);
+        mimes.add(mimeDetails2);
+        mimes.add(mimeDetails3);
+        mimes.add(mimeDetails4);
+
+        LocalAlbumRepo localAlbumRepo = new LocalAlbumRepo(databaseController);
+        localAlbumRepo.SaveFrameMimeData(mimes);
+
+
     }
 
 }

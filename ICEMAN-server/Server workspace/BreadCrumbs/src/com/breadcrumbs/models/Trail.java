@@ -696,4 +696,15 @@ public class Trail {
         }
         return dbMaster.ExecuteCypherQueryReturnCSVString(cypherQuery);	
     }
+
+    /**
+     * Load a list of frames with id, mime combo. Used to load media in background while watching 
+     * @param albumId
+     * @return The list of JSONOBjects that with the id and mime for each frame in an album. 
+     */
+    public String LoadFrameMimesForAnAlbum(String albumId) {
+        DBMaster dbMaster = DBMaster.GetAnInstanceOfDBMaster();
+        String cypherQuery = "MATCH (crumb:Crumb) WHERE crumb.TrailId = '"+albumId+"' RETURN crumb ORDER by crumb.Id";
+        return dbMaster.ExecuteCypherQueryJSONStringReturnMimeDetailsForCrumb(cypherQuery);	
+    }
 }

@@ -15,6 +15,8 @@ import static org.mockito.Mockito.verify;
 
 /**
  * @author Josiah
+ *
+ * Tests for the timer class.
  */
 public class BreadcrumbsTimerTests {
 
@@ -82,7 +84,27 @@ public class BreadcrumbsTimerTests {
         timer.runTimerLoop();   //64
         timer.runTimerLoop();   //80
         timer.runTimerLoop();   //96
+        Assert.assertTrue(timer.getTimerState() == BreadcrumbsTimer.STATE_RUNNING);
+        timer.Stop();
         timer.RestartTimer();
+        timer.setTimerMax(100);
+        timer.setDuration(100);
+        timer.setTimerState(BreadcrumbsTimer.STATE_RUNNING);
+        Assert.assertTrue(timer.getTimerState() == BreadcrumbsTimer.STATE_RUNNING);
+        timer.runTimerLoop();   //16
+        Assert.assertTrue(timer.getTimerState() == BreadcrumbsTimer.STATE_RUNNING);
+        timer.runTimerLoop();   //32
+        Assert.assertTrue(timer.getTimerState() == BreadcrumbsTimer.STATE_RUNNING);
+        timer.runTimerLoop();   //48
+        Assert.assertTrue(timer.getTimerState() == BreadcrumbsTimer.STATE_RUNNING);
+        timer.runTimerLoop();   //64
+        Assert.assertTrue(timer.getTimerState() == BreadcrumbsTimer.STATE_RUNNING);
+        timer.runTimerLoop();   //80
+        Assert.assertTrue(timer.getTimerState() == BreadcrumbsTimer.STATE_RUNNING);
+        timer.runTimerLoop();   //96
+        Assert.assertTrue(timer.getTimerState() == BreadcrumbsTimer.STATE_RUNNING);
+        timer.runTimerLoop();   //112
+        Assert.assertTrue(timer.getTimerState() == BreadcrumbsTimer.STATE_STOPPED);
     }
 
     @Test

@@ -563,6 +563,29 @@ public class DBMaster {
 		return nodeString;
 	}
         
+        public String ExecuteCypherQueryJSONStringReturnMimeDetailsForCrumb(String cypherQuery) {
+		String nodeString = "";
+		NodeController nc = new NodeController();
+		ExecutionEngine engine = new ExecutionEngine( _db );
+		ExecutionResult result = null;
+		Transaction tx = _db.beginTx();
+		try {
+		    result = engine.execute(cypherQuery);
+		    JSONArray tempNode = new JSONArray(nc.convertIteratorToJSONArrayOfJustIdsAndMime(result));	
+		    nodeString = tempNode.toString();
+		    tx.success();
+		} catch (Exception ex) {
+			ex.printStackTrace();
+			System.out.print("issues with fetching node and its relations");
+			tx.failure();
+			//return "failed";
+		} finally {
+			tx.close();
+		}
+		
+		return nodeString;
+	}
+        
           // Method to get all the details needed for all the home cards.
     public String ExecuteCypherQueryJSONStringReturnCrumbCardDetails(String cypherQuery) {
         String nodeString = "";

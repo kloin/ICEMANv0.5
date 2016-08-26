@@ -9,26 +9,30 @@ import android.graphics.Point;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.PersistableBundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.design.widget.BottomSheetBehavior;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
+import android.text.Editable;
 import android.util.Log;
 import android.view.Display;
 import android.view.TextureView;
 import android.view.View;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.squareup.picasso.Picasso;
-import com.teamunemployment.breadcrumbs.Album.data.MimeDetails;
 import com.teamunemployment.breadcrumbs.App;
 import com.teamunemployment.breadcrumbs.Network.LoadBalancer;
 import com.teamunemployment.breadcrumbs.R;
-import com.teamunemployment.breadcrumbs.client.Maps.MapViewer;
 
 import javax.inject.Inject;
 
@@ -47,6 +51,7 @@ public class  AlbumView extends AppCompatActivity implements AlbumPresenterViewC
     public static final String ALBUM_EXTRA_KEY = "AlbumId";
     private Context context;
     private String albumId;
+    private BottomSheetBehavior bottomSheetBehavior;
 
     @Inject AlbumPresenter presenter;
 
@@ -63,17 +68,21 @@ public class  AlbumView extends AppCompatActivity implements AlbumPresenterViewC
     @Bind(R.id.next_storyboard_item) FloatingActionButton nextButton;
     @Bind(R.id.horizontal_progress) ProgressBar horizonalProgress;
     @Bind(R.id.open_map) FloatingActionButton mapFab;
+    @Bind(R.id.comments_bottom_sheet) View commentsBottomSheet;
+    @Bind(R.id.comment_input) EditText commentInput;
+    @Bind(R.id.comments_count) TextView commentCount;
+    @Bind(R.id.comments_recycler) RecyclerView recyclerView;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.album_viewer);
-        Log.d(TAG, "launching activity");
         ButterKnife.bind(this);
         context = this;
         ((App) getApplication()).getNetComponent().inject(this);
         Bundle extras = getIntent().getExtras();
         albumId = extras.getString(ALBUM_EXTRA_KEY);
+        setUpBottomSheet();
 
         if (albumId != null) {
             presenter.SetView(this);
@@ -86,7 +95,16 @@ public class  AlbumView extends AppCompatActivity implements AlbumPresenterViewC
         if (savedInstanceState != null) {
             Log.d(TAG, "Found saved instance state - " + savedInstanceState.getInt("position"));
         }
+
+        setUpRecyclerView();
     }
+
+    private void setUpRecyclerView() {
+        LinearLayoutManager layoutManager = new LinearLayoutManager(this);
+        recyclerView.setLayoutManager(layoutManager);
+        presenter.BindRecyclerView(recyclerView);
+    }
+
 
     @OnClick(R.id.open_map) void openMap() {
         presenter.Pause();
@@ -124,6 +142,32 @@ public class  AlbumView extends AppCompatActivity implements AlbumPresenterViewC
         presenter.reverse();
     }
 
+    @OnClick(R.id.image_view) void pauseImage() {
+        presenter.togglePauseState();
+    }
+
+    @OnClick(R.id.video_view) void pauseVideo() {
+        presenter.togglePauseState();
+    }
+
+    @OnClick(R.id.send_comment_button) void saveComment() {
+
+        Editable editable = commentInput.getText();
+        if (editable == null || editable.toString().isEmpty()) {
+            return;
+        }
+
+        String textToSave = editable.toString();
+        presenter.saveComment(textToSave);
+
+        commentInput.setText("");
+        commentInput.clearFocus();
+    }
+
+    /**
+     * Show a snackbar with the given message
+     * @param s The message to show.
+     */
     @Override
     public void showMessage(final String s) {
         runOnUiThread(new Runnable() {
@@ -233,6 +277,56 @@ public class  AlbumView extends AppCompatActivity implements AlbumPresenterViewC
     }
 
     @Override
+    public void showCommentsBottomSheet() {
+        bottomSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
+    }
+
+    @Override
+    public void showDimScreenOverlay() {
+        bufferinOverlay.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    public void hideCommentsBottomSheet() {
+        bottomSheetBehavior.setState(BottomSheetBehavior.STATE_HIDDEN);
+    }
+
+    @Override
+    public void hideDimScreenOverlay() {
+        bufferinOverlay.setVisibility(View.INVISIBLE);
+    }
+
+    @Override
+    public void setCommentsCount(final int size) {
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                commentCount.setText(size + " Comments");
+            }
+        });
+    }
+
+    @Override
+    public void setRecyclerViewAdapter(final CommentAdapter commentAdapter) {
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                recyclerView.setAdapter(commentAdapter);
+            }
+        });
+    }
+
+    @Override
+    public void SetImageViewWithImage(final String url, final CircleImageView profileImage) {
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                Picasso.with(context).load(url).fit().centerCrop().into(profileImage);
+            }
+        });
+    }
+
+    @Override
     public void setImageVisibility(final int visibility) {
         runOnUiThread(new Runnable() {
             @Override
@@ -261,7 +355,7 @@ public class  AlbumView extends AppCompatActivity implements AlbumPresenterViewC
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                Picasso.with(context).load(LoadBalancer.RequestCurrentDataAddress() + "/images/" + id + ".jpg").fit().centerCrop().noFade().into(imageView);
+                Picasso.with(context).load(LoadBalancer.RequestCurrentDataAddress() + "/images/" + id + ".jpg").placeholder(R.drawable.profileblank).fit().centerCrop().noFade().into(imageView);
             }
         });
     }
@@ -316,5 +410,26 @@ public class  AlbumView extends AppCompatActivity implements AlbumPresenterViewC
     public void onBackPressed() {
         presenter.stop();
         super.onBackPressed();
+    }
+
+    /**
+     * Set up our comments bottom sheet.
+     */
+    private void setUpBottomSheet() {
+
+        //test
+        bottomSheetBehavior = BottomSheetBehavior.from(commentsBottomSheet);
+        bottomSheetBehavior.setBottomSheetCallback(new BottomSheetBehavior.BottomSheetCallback() {
+            @Override
+            public void onStateChanged(@NonNull View bottomSheet, int newState) {
+                // React to state change
+                presenter.onBottomSheetChanged(bottomSheet, newState);
+            }
+
+            @Override
+            public void onSlide(@NonNull View bottomSheet, float slideOffset) {
+                presenter.onBottomSheetSlide(bottomSheet, slideOffset);
+            }
+        });
     }
 }

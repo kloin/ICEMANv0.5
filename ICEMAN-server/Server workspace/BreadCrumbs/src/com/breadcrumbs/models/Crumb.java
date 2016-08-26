@@ -301,6 +301,29 @@ public class Crumb {
             dbm = DBMaster.GetAnInstanceOfDBMaster();
             dbm.ExecuteCypherQueryNoReturn(cypherDelete);
     }
+    
+    public String GetFrame(String frameId) {
+        DBMaster dbMaster = DBMaster.GetAnInstanceOfDBMaster();
+        GraphDatabaseService _db = dbMaster.GetDatabaseInstance();
+        Node userNode = dbMaster.RetrieveNode(Long.parseLong(frameId));
+        if (userNode == null) {
+            return "500";
+        }
+        
+        Transaction tx = _db.beginTx();
+        try {
+            NodeConverter nodeConverter = new NodeConverter();
+            JSONObject result = nodeConverter.ConvertSingleNodeToJSON(userNode);
+            return result.toString();
+        } catch (Exception ex) {
+            System.out.println("Failed to retrieve node");
+            ex.printStackTrace();
+            tx.failure();
+            return "500";
+        } finally {
+            tx.finish();
+        }
+    }
 
     public String AddCrumbWithFloatingDescription(String chat, String posX, String posY, String userId, String trailId, String latitude, String longitude, String icon, String extension, String placeId, String suburb, String city, String country, String timeStamp) {
         Trail trailManager = new Trail();

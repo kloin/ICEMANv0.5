@@ -6,6 +6,7 @@ import android.net.ConnectivityManager;
 import com.teamunemployment.breadcrumbs.Album.AlbumModel;
 import com.teamunemployment.breadcrumbs.Album.AlbumModelPresenterContract;
 import com.teamunemployment.breadcrumbs.Album.Frame;
+import com.teamunemployment.breadcrumbs.Album.data.Comment;
 import com.teamunemployment.breadcrumbs.Album.data.FrameDetails;
 import com.teamunemployment.breadcrumbs.Album.data.MimeDetails;
 import com.teamunemployment.breadcrumbs.Album.repo.LocalAlbumRepo;
@@ -15,9 +16,11 @@ import com.teamunemployment.breadcrumbs.Explore.Model;
 import com.teamunemployment.breadcrumbs.FileManager.MediaRecordModel;
 import com.teamunemployment.breadcrumbs.MockClient;
 import com.teamunemployment.breadcrumbs.Network.LoadBalancer;
+import com.teamunemployment.breadcrumbs.PreferencesAPI;
 import com.teamunemployment.breadcrumbs.Profile.data.LocalProfileRepository;
 import com.teamunemployment.breadcrumbs.Profile.data.RemoteProfileRepository;
 import com.teamunemployment.breadcrumbs.RESTApi.AlbumService;
+import com.teamunemployment.breadcrumbs.RESTApi.CrumbService;
 import com.teamunemployment.breadcrumbs.RESTApi.FileManager;
 import com.teamunemployment.breadcrumbs.RESTApi.NodeService;
 import com.teamunemployment.breadcrumbs.RESTApi.UserService;
@@ -40,6 +43,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyString;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -67,13 +71,14 @@ public class AlbumModelTests {
                 .build();
 
         DatabaseController databaseController = Mockito.mock(DatabaseController.class);
-        RemoteAlbumRepo remoteAlbumRepo = new RemoteAlbumRepo(retrofit.create(AlbumService.class));
+        RemoteAlbumRepo remoteAlbumRepo = new RemoteAlbumRepo(retrofit.create(AlbumService.class), retrofit.create(CrumbService.class));
         LocalAlbumRepo localAlbumRepo = Mockito.mock(LocalAlbumRepo.class);
         AlbumModelPresenterContract contract = Mockito.mock(AlbumModelPresenterContract.class);
         FileManager fileManager = new FileManager(context);
         LocalProfileRepository localProfileRepository = Mockito.mock(LocalProfileRepository.class);
         RemoteProfileRepository remoteProfileRepository = Mockito.mock(RemoteProfileRepository.class);
-        AlbumModel albumModel = new AlbumModel(remoteAlbumRepo, localAlbumRepo,context, fileManager, localProfileRepository, remoteProfileRepository );
+        PreferencesAPI preferencesAPI = mock(PreferencesAPI.class);
+        AlbumModel albumModel = new AlbumModel(remoteAlbumRepo, localAlbumRepo,context, fileManager, localProfileRepository, remoteProfileRepository, preferencesAPI);
         albumModel.setContract(contract);
 
         ArrayList<MimeDetails> list = albumModel.LoadMimeDetails("Doesnt Matter");
@@ -119,7 +124,8 @@ public class AlbumModelTests {
         FileManager fileManager = Mockito.mock(FileManager.class);
         LocalProfileRepository localProfileRepository = Mockito.mock(LocalProfileRepository.class);
         RemoteProfileRepository remoteProfileRepository = Mockito.mock(RemoteProfileRepository.class);
-        AlbumModel albumModel = new AlbumModel(remoteAlbumRepo, localAlbumRepo,context, fileManager, localProfileRepository, remoteProfileRepository );
+        PreferencesAPI preferencesAPI = mock(PreferencesAPI.class);
+        AlbumModel albumModel = new AlbumModel(remoteAlbumRepo, localAlbumRepo,context, fileManager, localProfileRepository, remoteProfileRepository, preferencesAPI);
         albumModel.setContract(contract);
         ArrayList<MimeDetails> mimes = albumModel.LoadMimeDetails("dont care");
         Assert.assertTrue(mimes.get(0).equals(mime1));
@@ -156,7 +162,8 @@ public class AlbumModelTests {
         FileManager fileManager = Mockito.mock(FileManager.class);
         LocalProfileRepository localProfileRepository = Mockito.mock(LocalProfileRepository.class);
         RemoteProfileRepository remoteProfileRepository = Mockito.mock(RemoteProfileRepository.class);
-        AlbumModel albumModel = new AlbumModel(remoteAlbumRepo, localAlbumRepo,context, fileManager, localProfileRepository, remoteProfileRepository );
+        PreferencesAPI preferencesAPI = mock(PreferencesAPI.class);
+        AlbumModel albumModel = new AlbumModel(remoteAlbumRepo, localAlbumRepo,context, fileManager, localProfileRepository, remoteProfileRepository, preferencesAPI);
         albumModel.setContract(contract);
         ArrayList<MimeDetails> mimes = albumModel.LoadMimeDetails("dont care");
         Assert.assertTrue(mimes.get(0).equals(mime1));
@@ -192,7 +199,8 @@ public class AlbumModelTests {
         FileManager fileManager = Mockito.mock(FileManager.class);
         LocalProfileRepository localProfileRepository = Mockito.mock(LocalProfileRepository.class);
         RemoteProfileRepository remoteProfileRepository = Mockito.mock(RemoteProfileRepository.class);
-        AlbumModel albumModel = new AlbumModel(remoteAlbumRepo, localAlbumRepo,context, fileManager, localProfileRepository, remoteProfileRepository );
+        PreferencesAPI preferencesAPI = mock(PreferencesAPI.class);
+        AlbumModel albumModel = new AlbumModel(remoteAlbumRepo, localAlbumRepo,context, fileManager, localProfileRepository, remoteProfileRepository, preferencesAPI);
         albumModel.setContract(contract);
         ArrayList<MimeDetails> mimes = albumModel.LoadMimeDetails("dont care");
 
@@ -210,7 +218,8 @@ public class AlbumModelTests {
         FileManager fileManager = Mockito.mock(FileManager.class);
         LocalProfileRepository localProfileRepository = Mockito.mock(LocalProfileRepository.class);
         RemoteProfileRepository remoteProfileRepository = Mockito.mock(RemoteProfileRepository.class);
-        AlbumModel albumModel = new AlbumModel(remoteAlbumRepo, localAlbumRepo,context, fileManager, localProfileRepository, remoteProfileRepository );
+        PreferencesAPI preferencesAPI = mock(PreferencesAPI.class);
+        AlbumModel albumModel = new AlbumModel(remoteAlbumRepo, localAlbumRepo,context, fileManager, localProfileRepository, remoteProfileRepository, preferencesAPI);
         albumModel.setContract(contract);
         ArrayList<MimeDetails> list = albumModel.LoadMimeDetails("Doesnt Matter");
         Assert.assertTrue(list.size() == 0);
@@ -238,7 +247,8 @@ public class AlbumModelTests {
         FileManager fileManager = Mockito.mock(FileManager.class);
         LocalProfileRepository localProfileRepository = Mockito.mock(LocalProfileRepository.class);
         RemoteProfileRepository remoteProfileRepository = Mockito.mock(RemoteProfileRepository.class);
-        AlbumModel albumModel = new AlbumModel(remoteAlbumRepo, localAlbumRepo,context, fileManager, localProfileRepository, remoteProfileRepository );
+        PreferencesAPI preferencesAPI = mock(PreferencesAPI.class);
+        AlbumModel albumModel = new AlbumModel(remoteAlbumRepo, localAlbumRepo,context, fileManager, localProfileRepository, remoteProfileRepository, preferencesAPI);
         albumModel.setContract(contract);
         ArrayList<MimeDetails> list = albumModel.LoadMimeDetails("Doesnt Matter");
 
@@ -278,7 +288,8 @@ public class AlbumModelTests {
         FileManager fileManager = Mockito.mock(FileManager.class);
         LocalProfileRepository localProfileRepository = Mockito.mock(LocalProfileRepository.class);
         RemoteProfileRepository remoteProfileRepository = Mockito.mock(RemoteProfileRepository.class);
-        AlbumModel albumModel = new AlbumModel(remoteAlbumRepo, localAlbumRepo,context, fileManager, localProfileRepository, remoteProfileRepository );
+        PreferencesAPI preferencesAPI = mock(PreferencesAPI.class);
+        AlbumModel albumModel = new AlbumModel(remoteAlbumRepo, localAlbumRepo,context, fileManager, localProfileRepository, remoteProfileRepository, preferencesAPI);
         albumModel.setContract(contract);
         ArrayList<MimeDetails> mimes = albumModel.LoadMimeDetails("dont care");
         albumModel.StartDownloadingFrames();
@@ -317,7 +328,8 @@ public class AlbumModelTests {
         when(localAlbumRepo.FindMediaFileRecord(any(String.class))).thenReturn(null);
         LocalProfileRepository localProfileRepository = Mockito.mock(LocalProfileRepository.class);
         RemoteProfileRepository remoteProfileRepository = Mockito.mock(RemoteProfileRepository.class);
-        AlbumModel albumModel = new AlbumModel(remoteAlbumRepo, localAlbumRepo,context, fileManager, localProfileRepository, remoteProfileRepository );
+        PreferencesAPI preferencesAPI = mock(PreferencesAPI.class);
+        AlbumModel albumModel = new AlbumModel(remoteAlbumRepo, localAlbumRepo,context, fileManager, localProfileRepository, remoteProfileRepository, preferencesAPI);
         // Be sure that we recieve a call to download a new file, as this one is not locally stored.
         albumModel.DownloadFrame("1", ".mp4", "640");
         verify(fileManager, times(1)).DownloadAndSaveLocalFile(any(String.class), anyString(), anyString());
@@ -355,7 +367,8 @@ public class AlbumModelTests {
         when(localAlbumRepo.FindMediaFileRecord(any(String.class))).thenReturn(Mockito.mock(MediaRecordModel.class));
         LocalProfileRepository localProfileRepository = Mockito.mock(LocalProfileRepository.class);
         RemoteProfileRepository remoteProfileRepository = Mockito.mock(RemoteProfileRepository.class);
-        AlbumModel albumModel = new AlbumModel(remoteAlbumRepo, localAlbumRepo,context, fileManager, localProfileRepository, remoteProfileRepository );
+        PreferencesAPI preferencesAPI = mock(PreferencesAPI.class);
+        AlbumModel albumModel = new AlbumModel(remoteAlbumRepo, localAlbumRepo,context, fileManager, localProfileRepository, remoteProfileRepository, preferencesAPI);
         // Be sure that we recieve a call to download a new file, as this one is not locally stored.
         albumModel.DownloadFrame("1", ".mp4", "640");
         verify(fileManager, times(0)).DownloadAndSaveLocalFile(any(String.class), anyString(), anyString());
@@ -398,7 +411,8 @@ public class AlbumModelTests {
         when(localAlbumRepo.FindMediaFileRecord(any(String.class))).thenReturn(Mockito.mock(MediaRecordModel.class));
         LocalProfileRepository localProfileRepository = Mockito.mock(LocalProfileRepository.class);
         RemoteProfileRepository remoteProfileRepository = Mockito.mock(RemoteProfileRepository.class);
-        AlbumModel albumModel = new AlbumModel(remoteAlbumRepo, localAlbumRepo,context, fileManager, localProfileRepository, remoteProfileRepository );
+        PreferencesAPI preferencesAPI = mock(PreferencesAPI.class);
+        AlbumModel albumModel = new AlbumModel(remoteAlbumRepo, localAlbumRepo,context, fileManager, localProfileRepository, remoteProfileRepository, preferencesAPI);
         albumModel.DownloadFrame(mime1.getId(), mime1.getExtension(), "280");
         verify(localAlbumRepo, times(1)).LoadFrameDetails(mime1.getId());
     }
@@ -436,7 +450,8 @@ public class AlbumModelTests {
         when(localAlbumRepo.FindMediaFileRecord(any(String.class))).thenReturn(Mockito.mock(MediaRecordModel.class));
         LocalProfileRepository localProfileRepository = Mockito.mock(LocalProfileRepository.class);
         RemoteProfileRepository remoteProfileRepository = Mockito.mock(RemoteProfileRepository.class);
-        AlbumModel albumModel = new AlbumModel(remoteAlbumRepo, localAlbumRepo,context, fileManager, localProfileRepository, remoteProfileRepository );
+        PreferencesAPI preferencesAPI = mock(PreferencesAPI.class);
+        AlbumModel albumModel = new AlbumModel(remoteAlbumRepo, localAlbumRepo,context, fileManager, localProfileRepository, remoteProfileRepository, preferencesAPI);
         albumModel.DownloadFrame(mime1.getId(), mime1.getExtension(), "280");
         verify(remoteAlbumRepo, times(0)).LoadFrameDetails(mime1.getId());
     }
@@ -474,11 +489,151 @@ public class AlbumModelTests {
         when(localAlbumRepo.FindMediaFileRecord(any(String.class))).thenReturn(Mockito.mock(MediaRecordModel.class));
         LocalProfileRepository localProfileRepository = Mockito.mock(LocalProfileRepository.class);
         RemoteProfileRepository remoteProfileRepository = Mockito.mock(RemoteProfileRepository.class);
-        AlbumModel albumModel = new AlbumModel(remoteAlbumRepo, localAlbumRepo,context, fileManager, localProfileRepository, remoteProfileRepository );
+        PreferencesAPI preferencesAPI = mock(PreferencesAPI.class);
+        AlbumModel albumModel = new AlbumModel(remoteAlbumRepo, localAlbumRepo,context, fileManager, localProfileRepository, remoteProfileRepository, preferencesAPI);
         albumModel.DownloadFrame(mime1.getId(), mime1.getExtension(), "280");
         verify(localAlbumRepo, times(1)).SaveFrameDetails(any(FrameDetails.class));
         verify(localAlbumRepo, times(1)).LoadFrameDetails(anyString());
         verify(remoteAlbumRepo, times(1)).LoadFrameDetails(anyString());
+    }
+
+    @Test
+    public void TestThatWeSaveCommentBothLocallyAndRemotely() {
+        RemoteAlbumRepo remoteAlbumRepo = Mockito.mock(RemoteAlbumRepo.class);
+        LocalAlbumRepo localAlbumRepo = Mockito.mock(LocalAlbumRepo.class);
+        AlbumModelPresenterContract contract = Mockito.mock(AlbumModelPresenterContract.class);
+        Context context = Mockito.mock(Context.class);
+        FileManager fileManager = Mockito.mock(FileManager.class);
+        when(localAlbumRepo.FindMediaFileRecord(any(String.class))).thenReturn(Mockito.mock(MediaRecordModel.class));
+        LocalProfileRepository localProfileRepository = Mockito.mock(LocalProfileRepository.class);
+        RemoteProfileRepository remoteProfileRepository = Mockito.mock(RemoteProfileRepository.class);
+        PreferencesAPI preferencesAPI = mock(PreferencesAPI.class);
+        AlbumModel albumModel = new AlbumModel(remoteAlbumRepo, localAlbumRepo,context, fileManager, localProfileRepository, remoteProfileRepository, preferencesAPI);
+
+        albumModel.SaveComment("Test1", "1");
+
+        verify(remoteAlbumRepo, times(1)).SaveComment(any(Comment.class));
+        verify(localAlbumRepo, times(1)).SaveComment(any(Comment.class));
+    }
+
+    @Test
+    public void TestLoadingWhenNoCommentsExistLocally() {
+        RemoteAlbumRepo remoteAlbumRepo = Mockito.mock(RemoteAlbumRepo.class);
+        LocalAlbumRepo localAlbumRepo = Mockito.mock(LocalAlbumRepo.class);
+        AlbumModelPresenterContract contract = Mockito.mock(AlbumModelPresenterContract.class);
+        Context context = Mockito.mock(Context.class);
+        FileManager fileManager = Mockito.mock(FileManager.class);
+        when(localAlbumRepo.FindMediaFileRecord(any(String.class))).thenReturn(Mockito.mock(MediaRecordModel.class));
+        LocalProfileRepository localProfileRepository = Mockito.mock(LocalProfileRepository.class);
+        RemoteProfileRepository remoteProfileRepository = Mockito.mock(RemoteProfileRepository.class);
+        PreferencesAPI preferencesAPI = mock(PreferencesAPI.class);
+        AlbumModel albumModel = new AlbumModel(remoteAlbumRepo, localAlbumRepo,context, fileManager, localProfileRepository, remoteProfileRepository, preferencesAPI);
+
+        ArrayList<Comment> mockComments = new ArrayList<>();
+        Comment comment1 = new Comment();
+        comment1.setCommentText("Test");
+        comment1.setUserId("1");
+        comment1.setEntityId("12");
+        comment1.setId("123");
+
+        Comment comment2 = new Comment();
+        comment2.setCommentText("Test");
+        comment2.setUserId("1");
+        comment2.setEntityId("12");
+        comment2.setId("223");
+
+        mockComments.add(comment1);
+        mockComments.add(comment2);
+
+        when(remoteAlbumRepo.LoadCommentsForFrame(anyString())).thenReturn(mockComments);
+
+        ArrayList<Comment> commentsMockArray = new ArrayList<>();
+        when(localAlbumRepo.LoadCommentsForAFrame(anyString())).thenReturn(commentsMockArray);
+
+        AlbumModel.loadedCommentsCallback commentsCallback = mock(AlbumModel.loadedCommentsCallback.class);
+
+        albumModel.GetCommentsForFrame("1", commentsCallback);
+        verify(commentsCallback, times(1)).onLoaded(any(ArrayList.class));
+    }
+
+    @Test
+    public void TestThatWeCanLoadFromLocalAndRemote() {
+        RemoteAlbumRepo remoteAlbumRepo = Mockito.mock(RemoteAlbumRepo.class);
+        LocalAlbumRepo localAlbumRepo = Mockito.mock(LocalAlbumRepo.class);
+        AlbumModelPresenterContract contract = Mockito.mock(AlbumModelPresenterContract.class);
+        Context context = Mockito.mock(Context.class);
+        FileManager fileManager = Mockito.mock(FileManager.class);
+        when(localAlbumRepo.FindMediaFileRecord(any(String.class))).thenReturn(Mockito.mock(MediaRecordModel.class));
+        LocalProfileRepository localProfileRepository = Mockito.mock(LocalProfileRepository.class);
+        RemoteProfileRepository remoteProfileRepository = Mockito.mock(RemoteProfileRepository.class);
+        PreferencesAPI preferencesAPI = mock(PreferencesAPI.class);
+        AlbumModel albumModel = new AlbumModel(remoteAlbumRepo, localAlbumRepo,context, fileManager, localProfileRepository, remoteProfileRepository, preferencesAPI);
+
+        ArrayList<Comment> mockComments = new ArrayList<>();
+        Comment comment1 = new Comment();
+        comment1.setCommentText("Test");
+        comment1.setUserId("1");
+        comment1.setEntityId("12");
+        comment1.setId("123");
+
+        Comment comment2 = new Comment();
+        comment2.setCommentText("Test");
+        comment2.setUserId("1");
+        comment2.setEntityId("12");
+        comment2.setId("223");
+
+        mockComments.add(comment1);
+        mockComments.add(comment2);
+
+        when(remoteAlbumRepo.LoadCommentsForFrame(anyString())).thenReturn(mockComments);
+
+        ArrayList<Comment> commentsMockArray = new ArrayList<>();
+        when(localAlbumRepo.LoadCommentsForAFrame(anyString())).thenReturn(mockComments);
+
+        AlbumModel.loadedCommentsCallback commentsCallback = mock(AlbumModel.loadedCommentsCallback.class);
+
+        albumModel.GetCommentsForFrame("1", commentsCallback);
+        verify(commentsCallback, times(2)).onLoaded(any(ArrayList.class));
+    }
+
+    @Test
+    public void TestThatWeCanHandleFindingNodataAnywhere() {
+        RemoteAlbumRepo remoteAlbumRepo = Mockito.mock(RemoteAlbumRepo.class);
+        LocalAlbumRepo localAlbumRepo = Mockito.mock(LocalAlbumRepo.class);
+        AlbumModelPresenterContract contract = Mockito.mock(AlbumModelPresenterContract.class);
+        Context context = Mockito.mock(Context.class);
+        FileManager fileManager = Mockito.mock(FileManager.class);
+        when(localAlbumRepo.FindMediaFileRecord(any(String.class))).thenReturn(Mockito.mock(MediaRecordModel.class));
+        LocalProfileRepository localProfileRepository = Mockito.mock(LocalProfileRepository.class);
+        RemoteProfileRepository remoteProfileRepository = Mockito.mock(RemoteProfileRepository.class);
+        PreferencesAPI preferencesAPI = mock(PreferencesAPI.class);
+        AlbumModel albumModel = new AlbumModel(remoteAlbumRepo, localAlbumRepo,context, fileManager, localProfileRepository, remoteProfileRepository, preferencesAPI);
+
+        ArrayList<Comment> mockComments = new ArrayList<>();
+        Comment comment1 = new Comment();
+        comment1.setCommentText("Test");
+        comment1.setUserId("1");
+        comment1.setEntityId("12");
+        comment1.setId("123");
+
+        Comment comment2 = new Comment();
+        comment2.setCommentText("Test");
+        comment2.setUserId("1");
+        comment2.setEntityId("12");
+        comment2.setId("223");
+
+        mockComments.add(comment1);
+        mockComments.add(comment2);
+
+
+        ArrayList<Comment> commentsMockArray = new ArrayList<>();
+        when(remoteAlbumRepo.LoadCommentsForFrame(anyString())).thenReturn(commentsMockArray);
+        when(localAlbumRepo.LoadCommentsForAFrame(anyString())).thenReturn(commentsMockArray);
+
+        AlbumModel.loadedCommentsCallback commentsCallback = mock(AlbumModel.loadedCommentsCallback.class);
+
+        albumModel.GetCommentsForFrame("1", commentsCallback);
+        verify(commentsCallback, times(0)).onLoaded(any(ArrayList.class));
     }
 
     /**
@@ -556,6 +711,7 @@ public class AlbumModelTests {
     private String getBlankResponse() {
         return "{}";
     }
+
 
 
 

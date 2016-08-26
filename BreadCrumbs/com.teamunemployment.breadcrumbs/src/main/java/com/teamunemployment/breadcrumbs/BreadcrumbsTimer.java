@@ -20,7 +20,9 @@ public class BreadcrumbsTimer {
         state = STATE_RUNNING;
     }
 
-
+    public void setProgressBar(ProgressBar progressBar) {
+        this.progressBar = progressBar;
+    }
 
     public interface TimerCompleteListener {
         void onCompleted();
@@ -32,6 +34,14 @@ public class BreadcrumbsTimer {
     private ProgressBar progressBar;
     private Timer t;
     private int currentTime = 0;
+
+
+    /**
+     * Default constructor.
+     */
+    public BreadcrumbsTimer() {
+        this.duration = 0;
+    }
 
     public BreadcrumbsTimer(int duration, TimerCompleteListener timerCompleteListener) {
         this.duration = duration;
@@ -50,6 +60,10 @@ public class BreadcrumbsTimer {
         this.progressBar = progressBar;
     }
 
+    public void setOnFinishedListener(TimerCompleteListener onFinishedListener) {
+        this.onFinishedListener = onFinishedListener;
+    }
+
     /**
      * Set the duration of the timer.
      * @param max The length of the progressbar in milliseconds
@@ -58,7 +72,14 @@ public class BreadcrumbsTimer {
         if (progressBar != null) {
             progressBar.setMax(max);
         }
+    }
 
+    public void setDuration(int duration) {
+        this.duration = duration;
+    }
+
+    public void setState(int state) {
+        this.state = state;
     }
 
     /**
@@ -66,6 +87,7 @@ public class BreadcrumbsTimer {
      */
     public void RestartTimer() {
         this.duration = 0;
+        this.currentTime = 0;
         if (t != null) {
             t.cancel();
             t = null;
@@ -90,6 +112,10 @@ public class BreadcrumbsTimer {
      */
     public void setTimerState(int state) {
         this.state = state;
+    }
+
+    public void setCurrentTime(int currentTime) {
+        this.currentTime = currentTime;
     }
     /**
      * Start the timer.
@@ -147,7 +173,6 @@ public class BreadcrumbsTimer {
             if (currentTime < duration) {
                 if (progressBar != null) {
                     progressBar.setProgress(currentTime);
-
                 }
             } else {
                 // Stop video, and go to the next page

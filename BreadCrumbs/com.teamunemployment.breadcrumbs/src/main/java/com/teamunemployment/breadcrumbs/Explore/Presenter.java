@@ -39,7 +39,7 @@ public class Presenter {
                 .baseUrl(LoadBalancer.RequestServerAddress() + "/rest/")
                 .build();
 
-        // TODO - replace with dagger
+        // TODO - replace with dagger2
         // Build dependencies for our model
         UserService userService = retrofit.create(UserService.class);
         NodeService nodeService = retrofit.create(NodeService.class);

@@ -3,7 +3,9 @@ package test.java.test.java.com.breadcrumbs.models;
 import com.breadcrumbs.database.DBMaster;
 import com.breadcrumbs.models.Crumb;
 import com.breadcrumbs.models.Trail;
+import com.breadcrumbs.resource.RestFrame;
 import com.breadcrumbs.resource.RetrieveData;
+import org.json.JSONArray;
 import org.json.JSONObject;
 import org.junit.Assert;
 import org.junit.Test;
@@ -114,6 +116,32 @@ public class CrumbTest {
         Assert.assertTrue(jsonObject.length() == 2);
     }
     
+    @Test
+    public void TestThatWeCanFetchFrameDetails() {
+        RetrieveData retrieveData = new RetrieveData();
+        String id = retrieveData.CreateNewUser("Me", "7873", "21", "M", " ", " ", " ");
+        String trailId = retrieveData.SaveTrail("OOOHRAA", "just testing yo", id);
+        String crumbId = retrieveData.SaveCrumb("testing123", id, trailId, "-36.8", "174.5", "icon", ".jpg", "1", "Greenlane", "Auckland", "New Zealand", "time");
+        RestFrame restFrame = new RestFrame();
+        String result = restFrame.FetchFrameDetails(crumbId);
+        JSONObject resultObject = new JSONObject(result);
+        Assert.assertTrue(resultObject.getString("Chat").equals("testing123"));
+    }
     
-    
+    @Test
+    public void TestThatWeCanFetchMimesAndIdsForAllFramesInAnAlbum() {
+        RetrieveData retrieveData = new RetrieveData();
+        String id = retrieveData.CreateNewUser("Me", "7873", "21", "M", " ", " ", " ");
+        String trailId = retrieveData.SaveTrail("OOOHRAA", "just testing yo", id);
+        String crumbId = retrieveData.SaveCrumb("testing123", id, trailId, "-36.8", "174.5", "icon", ".jpg", "1", "Greenlane", "Auckland", "New Zealand", "time");
+        String crumbId2 = retrieveData.SaveCrumb("testing123", id, trailId, "-36.8", "174.5", "icon", ".mp4", "1", "Greenlane", "Auckland", "New Zealand", "time");        
+        RestFrame restFrame = new RestFrame();
+        String result = restFrame.FetchFrameMimesForAnAlbum(trailId);
+        JSONArray jsonArray = new JSONArray(result);
+        JSONObject first = (JSONObject) jsonArray.get(0);
+        JSONObject second = (JSONObject) jsonArray.get(1);
+        Assert.assertTrue(first.getString("Extension").equals(".jpg"));
+        Assert.assertTrue(second.getString("Extension").equals(".mp4"));        
+        
+    }
 }

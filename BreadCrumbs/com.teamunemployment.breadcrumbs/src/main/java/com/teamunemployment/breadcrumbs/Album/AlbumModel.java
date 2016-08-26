@@ -5,6 +5,7 @@ import android.util.Log;
 import android.view.View;
 
 import com.squareup.picasso.Picasso;
+import com.teamunemployment.breadcrumbs.Album.data.Comment;
 import com.teamunemployment.breadcrumbs.Album.data.FrameDetails;
 import com.teamunemployment.breadcrumbs.Album.data.MimeDetails;
 import com.teamunemployment.breadcrumbs.Album.repo.LocalAlbumRepo;
@@ -12,6 +13,7 @@ import com.teamunemployment.breadcrumbs.Album.repo.RemoteAlbumRepo;
 import com.teamunemployment.breadcrumbs.FileManager.MediaRecordModel;
 import com.teamunemployment.breadcrumbs.Network.LoadBalancer;
 import com.teamunemployment.breadcrumbs.Network.NetworkConnectivityManager;
+import com.teamunemployment.breadcrumbs.PreferencesAPI;
 import com.teamunemployment.breadcrumbs.Profile.data.LocalProfileRepository;
 import com.teamunemployment.breadcrumbs.Profile.data.RemoteProfileRepository;
 import com.teamunemployment.breadcrumbs.RESTApi.FileManager;
@@ -28,6 +30,7 @@ import javax.inject.Inject;
 public class AlbumModel{
     private static final String TAG = "AlbumModel";
 
+    private ArrayList<Comment> commentsArray = new ArrayList<>();
     private RemoteAlbumRepo remoteAlbumRepo;
     private LocalAlbumRepo localAlbumRepo;
 
@@ -40,17 +43,36 @@ public class AlbumModel{
     private FileManager fileManager;
     private RemoteProfileRepository remoteProfileRepo;
     private LocalProfileRepository localProfileRepo;
+    private PreferencesAPI preferencesAPI;
 
     @Inject
     public AlbumModel(RemoteAlbumRepo remoteAlbumRepo, LocalAlbumRepo localAlbumRepo,
                       Context context, FileManager fileManager, LocalProfileRepository localUserRepo,
-                      RemoteProfileRepository remoteProfileRepo) {
+                      RemoteProfileRepository remoteProfileRepo, PreferencesAPI preferencesAPI) {
         this.remoteAlbumRepo = remoteAlbumRepo;
         this.localAlbumRepo = localAlbumRepo;
         this.context = context;
         this.fileManager = fileManager;
         this.localProfileRepo = localUserRepo;
         this.remoteProfileRepo = remoteProfileRepo;
+        this.preferencesAPI = preferencesAPI;
+    }
+
+    /**
+     * Synchronously load the profile pic id for a user.
+     * @param userId The userId for whoim we are getting the profile pic id.
+     * @return The id of the photo that is this users profile pic.
+     */
+    public String LoadUserProfilePic(String userId) {
+        String picId = localProfileRepo.getProfilePictureId(Long.parseLong(userId));
+        if (picId == null) {
+            picId = remoteProfileRepo.getProfilePictureId(Long.parseLong(userId));
+        }
+        return picId;
+    }
+
+    public interface loadedCommentsCallback {
+        void onLoaded(ArrayList<Comment> comments);
     }
 
     public void setContract(AlbumModelPresenterContract albumModelPresenterContract) {
@@ -67,7 +89,7 @@ public class AlbumModel{
         // TODO - do remote check as well, and save it/ update it if neccessary. This is a bug. Not sure how/when this should be fixed. Probably go with callbacks
         if (mimes.size() == 0) {
             mimes = remoteAlbumRepo.LoadMimeDetailsForAnAlbum(albumId);
-            localAlbumRepo.SaveFrameMimeData(mimes);
+            localAlbumRepo.SaveFrameMimeData(mimes, albumId);
         }
         return mimes;
     }
@@ -232,10 +254,8 @@ public class AlbumModel{
 
                 String url = LoadBalancer.RequestCurrentDataAddress() + "/images/"+userProfilePicId + "T.jpg";
                 contract.setProfilePictureUrl(url);
-
             }
         }).start();
-
     }
 
     /**
@@ -270,5 +290,70 @@ public class AlbumModel{
         // Set our frame now it is loaded. This contains the reference to the locally downloaded media.
         contract.setBuffering(View.INVISIBLE);
         contract.setFrame(frameDetails);
+    }
+
+    /**
+     * Save a comment for a user
+     * @param textToSave The comment to save
+     * @param entityId The id of the frame/entity/crumb that we are saving against.
+     */
+    public void SaveComment(final String textToSave, final String entityId) {
+
+        // Fetch our current users Id
+        String currentUserId = preferencesAPI.GetUserId();
+
+        // Build our comment object
+        Comment comment = new Comment();
+        comment.setCommentText(textToSave);
+        comment.setEntityId(entityId);
+        comment.setUserId(currentUserId);
+        // Save both locally and remotel
+
+        String serverId = remoteAlbumRepo.SaveComment(comment);
+        if (!serverId.equals("-1")) {
+            comment.setId(serverId);
+            localAlbumRepo.SaveComment(comment);
+        }
+    }
+
+    public void DeleteComment(final String commentId) {
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                localAlbumRepo.DeleteComment(commentId);
+                remoteAlbumRepo.DeleteComment(commentId);
+            }
+        }).start();
+    }
+
+    /**
+     * Get all the comments for a frame. This puts the result (an array list of the object {@link Comment})
+     * on a callback in the presenter which called this method/model. Said callback then does the processing
+     * and the displaying of the comments.
+     * @param frameId The frame id
+     * @param commentsCallback The callback to trigger when we have data to display
+     */
+    public void GetCommentsForFrame(final String frameId, final loadedCommentsCallback commentsCallback) {
+        final ArrayList<Comment> comments = localAlbumRepo.LoadCommentsForAFrame(frameId);
+
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                if (comments.size() > 0) {
+                    commentsCallback.onLoaded(comments);
+                }
+            }
+        }).start();
+
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                ArrayList<Comment> comments1 = remoteAlbumRepo.LoadCommentsForFrame(frameId);
+                if (comments1.size() > 0) {
+                    commentsCallback.onLoaded(comments1);
+                    localAlbumRepo.SaveComments(comments1);
+                }
+            }
+        }).start();
     }
 }
