@@ -73,13 +73,16 @@ public class SaveCrumbService extends Service {
         public String description;
         public float descPosX;
         public float descPosY;
+        public int orientation;
 
-        public Event(int id, boolean isPhoto, String description, float descPosX, float descPosY) {
+        public Event(int id, boolean isPhoto, String description, float descPosX, float descPosY, int orientation) {
             this.eventId = id;
             this.isPhoto = isPhoto;
             this.description = description;
             this.descPosX = descPosX;
             this.descPosY = descPosY;
+            this.orientation = orientation;
+
         }
     }
 
@@ -106,9 +109,10 @@ public class SaveCrumbService extends Service {
         float descX = intent.getFloatExtra("PositionX", 0);
         float descY = intent.getFloatExtra("PositionY", 0);
 
+        int orientation = intent.getIntExtra("Orientation", 0);
         // We add our events to a list so that we can save them all with one location request. This
         // is for when the user saves multiple photos in short successesion, so we need a list of events.
-        eventsTosave.add(new Event(eventId, isPhoto, description, descX, descY));
+        eventsTosave.add(new Event(eventId, isPhoto, description, descX, descY, orientation));
 
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             Toast.makeText(context, "Cannot save without location permissions", Toast.LENGTH_LONG).show();
@@ -269,7 +273,6 @@ public class SaveCrumbService extends Service {
                 });
             }
         }).start();
-
     }
 
     //
@@ -291,7 +294,7 @@ public class SaveCrumbService extends Service {
             mime = ".mp4";
         }
 
-        dbc.SaveCrumb(localTrailId, event.description, userId, event.eventId, location.getLatitude(), location.getLongitude(), mime, " ", " ", placeId, suburb, city, country, event.descPosX, event.descPosY);
+        dbc.SaveCrumb(localTrailId, event.description, userId, event.eventId, location.getLatitude(), location.getLongitude(), mime, " ", " ", placeId, suburb, city, country, event.descPosX, event.descPosY, event.orientation);
         TrailManagerWorker trailManagerWorker = new TrailManagerWorker(context);
         trailManagerWorker.CreateEventMetadata(TrailManagerWorker.CRUMB, location);
         int lastActivity = DetectedActivity.WALKING;

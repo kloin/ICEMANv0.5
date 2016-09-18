@@ -4,7 +4,7 @@ import android.content.Context;
 import android.support.annotation.NonNull;
 import android.util.Log;
 
-import com.teamunemployment.breadcrumbs.data.Trip;
+import com.teamunemployment.breadcrumbs.Trails.Trip;
 import com.teamunemployment.breadcrumbs.data.TripPath;
 import com.teamunemployment.breadcrumbs.data.source.LocalRepository.TripLocalDataSource;
 import com.teamunemployment.breadcrumbs.data.source.RemoteRepository.RemoteTripDataSource;

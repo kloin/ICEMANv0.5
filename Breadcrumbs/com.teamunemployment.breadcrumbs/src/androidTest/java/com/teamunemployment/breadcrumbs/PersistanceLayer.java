@@ -1,16 +1,16 @@
 package com.teamunemployment.breadcrumbs;
 
 import android.content.Context;
-import android.preference.PreferenceManager;
 import android.support.test.InstrumentationRegistry;
 import android.test.RenamingDelegatingContext;
 
-import com.teamunemployment.breadcrumbs.Trails.TrailManagerWorker;
+import com.teamunemployment.breadcrumbs.Album.data.Comment;
+import com.teamunemployment.breadcrumbs.Album.data.FrameDetails;
+import com.teamunemployment.breadcrumbs.Album.data.MimeDetails;
+import com.teamunemployment.breadcrumbs.RESTApi.FileManager;
 import com.teamunemployment.breadcrumbs.caching.TextCaching;
 import com.teamunemployment.breadcrumbs.data.BreadcrumbsEncodedPolyline;
 import com.teamunemployment.breadcrumbs.data.TripPath;
-import com.teamunemployment.breadcrumbs.data.source.SyncManager;
-import com.teamunemployment.breadcrumbs.data.source.TripDataSource;
 import com.teamunemployment.breadcrumbs.database.DatabaseController;
 
 import junit.framework.Assert;
@@ -20,6 +20,8 @@ import org.junit.Before;
 import org.junit.Test;
 
 import java.util.ArrayList;
+
+import static org.junit.Assert.assertTrue;
 
 /**
  * @author Josiah Kendall
@@ -103,6 +105,122 @@ public class PersistanceLayer {
 
         databaseController.SaveActivityPoint(0, 0, 0.0, 0.0, 0);
 
+    }
+
+    @Test
+    public void TestThatWeCanLoadFrameDetailsFromCrumb() {
+        databaseController.SaveCrumb("0123454657", "This is a test", "0", 1234567, 1234.123, 1234.1234, ".jpg", "1234", "sjht", "ccxfgdfasewr", "Birkdale", "auckland", "newZeand",0.1f, 0.2f);
+        FrameDetails frameDetails = databaseController.GetFrameDetails("1234567");
+        Assert.assertTrue(frameDetails.getChat().equals("This is a test"));
+        Assert.assertTrue(frameDetails.getCity().equals("auckland"));
+    }
+
+    @Test
+    public void TestThatWeCanHandleNotFindingFrameDetails() {
+        FrameDetails frameDetails = databaseController.GetFrameDetails("-1234");
+        Assert.assertTrue(frameDetails == null);
+    }
+
+    @Test
+    public void TestThatWeCanLoadMimeDetailsFromLocal() {
+        databaseController.SaveCrumb("112233", "This is a test", "0", 1234567, 1234.123, 1234.1234, ".jpg", "1234", "sjht", "ccxfgdfasewr", "Birkdale", "auckland", "newZeand",0.1f, 0.2f);
+        databaseController.SaveCrumb("112233", "This is a test", "0", 12345678, 1234.123, 1234.1234, ".mp4", "1234", "sjht", "ccxfgdfasewr", "Birkdale", "auckland", "newZeand",0.1f, 0.2f);
+
+        ArrayList<MimeDetails> mimeDetails = databaseController.LoadMimeDetails("112233");
+        Assert.assertTrue(mimeDetails.get(0).getExtension().equals(".jpg"));
+        Assert.assertTrue(mimeDetails.get(1).getExtension().equals(".mp4"));
+        Assert.assertTrue(mimeDetails.get(0).getId().equals("1234567"));
+        Assert.assertTrue(mimeDetails.get(1).getId().equals("12345678"));
+    }
+
+    @Test
+    public void TestThatWeCanCreateNoMediaFolderIfItDoesNotExist() {
+        FileManager fileManager = new FileManager(context);
+        boolean doesFolderExist = fileManager.DoesOurHiddenFolderExist();
+        if (!doesFolderExist) {
+            fileManager.CreateOurHiddenFolder();
+        }
+        doesFolderExist = fileManager.DoesOurHiddenFolderExist();
+        Assert.assertTrue(doesFolderExist);
+    }
+
+    @Test
+    public void TestThatWeCanCreateFileUsingCaching() {
+        TextCaching textCaching = new TextCaching(context);
+        textCaching.CreateNoMediaFile();
+    }
+
+    @Test
+    public void TestThatWeCanSaveAndFetchCommentObject() {
+        Comment commentPreSave = new Comment();
+        commentPreSave.setId("12345");
+        commentPreSave.setEntityId("1");
+        commentPreSave.setUserId("123");
+        commentPreSave.setCommentText("This is a comment");
+        long rst = databaseController.SaveComment(commentPreSave);
+        assertTrue(rst != -1);
+        Comment commentPostSave = databaseController.GetCommentById(commentPreSave.getId());
+        assertTrue(commentPostSave != null);
+        assertTrue(commentPostSave.getCommentText().equals(commentPreSave.getCommentText()));
+    }
+
+    @Test
+    public void TestThatWeCanDeleteACommentObject() {
+        Comment commentPreSave = new Comment();
+        commentPreSave.setId("123455");
+        commentPreSave.setEntityId("2");
+        commentPreSave.setUserId("1234");
+        commentPreSave.setCommentText("This is a comment");
+        long rst = databaseController.SaveComment(commentPreSave);
+
+        databaseController.DeleteComment(commentPreSave.getId());
+        Comment nullComment = databaseController.GetCommentById(commentPreSave.getId());
+        assertTrue(nullComment==null);
+    }
+
+    @Test
+    public void TestThatWeCanLoadAllCommentsForAFrame() {
+        Comment commentPreSave = new Comment();
+        commentPreSave.setId("123455");
+        commentPreSave.setEntityId("55");
+        commentPreSave.setUserId("1234");
+        commentPreSave.setCommentText("This is a comment");
+        long rst = databaseController.SaveComment(commentPreSave);
+
+        Comment commentPreSave1 = new Comment();
+        commentPreSave1.setId("123455");
+        commentPreSave1.setEntityId("55");
+        commentPreSave1.setUserId("1234");
+        commentPreSave1.setCommentText("This is a comment2");
+        long rst1 = databaseController.SaveComment(commentPreSave1);
+
+        Comment commentPreSave2 = new Comment();
+        commentPreSave2.setId("123455");
+        commentPreSave2.setEntityId("55");
+        commentPreSave2.setUserId("1234");
+        commentPreSave2.setCommentText("This is a comment3");
+        long rst2 = databaseController.SaveComment(commentPreSave2);
+
+        ArrayList<Comment> comments = databaseController.GetAllCommentsForAnAlbum(commentPreSave.getEntityId());
+        assertTrue(comments.size() == 3);
+    }
+
+    @Test
+    public void TestThatWeDoNotSaveTheSaveCommentTwice() {
+        Comment commentPreSave = new Comment();
+        commentPreSave.setId("1");
+        commentPreSave.setEntityId("45");
+        commentPreSave.setUserId("1234");
+        commentPreSave.setCommentText("This is a comment");
+        long rst = databaseController.SaveComment(commentPreSave);
+        Comment commentPreSave2 = new Comment();
+        commentPreSave2.setId("1");
+        commentPreSave2.setEntityId("45");
+        commentPreSave2.setUserId("1234");
+        commentPreSave2.setCommentText("This is a comment");
+        long rst2 = databaseController.SaveComment(commentPreSave);
+        ArrayList<Comment> comments = databaseController.GetAllCommentsForAnAlbum(commentPreSave.getEntityId());
+        assertTrue(comments.size() == 1);
     }
 
 //    @Test

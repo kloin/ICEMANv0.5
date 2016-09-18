@@ -2,7 +2,7 @@ package com.teamunemployment.breadcrumbs.data.source;
 
 import android.support.annotation.NonNull;
 
-import com.teamunemployment.breadcrumbs.data.Trip;
+import com.teamunemployment.breadcrumbs.Trails.Trip;
 import com.teamunemployment.breadcrumbs.data.TripDetails;
 import com.teamunemployment.breadcrumbs.data.TripPath;
 

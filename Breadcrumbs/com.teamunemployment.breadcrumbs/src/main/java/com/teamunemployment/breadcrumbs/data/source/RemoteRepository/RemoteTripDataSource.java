@@ -11,8 +11,8 @@ import com.google.maps.android.PolyUtil;
 import com.teamunemployment.breadcrumbs.Location.SimpleGps;
 import com.teamunemployment.breadcrumbs.Network.LoadBalancer;
 import com.teamunemployment.breadcrumbs.Network.ServiceProxy.AsyncDataRetrieval;
+import com.teamunemployment.breadcrumbs.Trails.Trip;
 import com.teamunemployment.breadcrumbs.data.BreadcrumbsPolyline;
-import com.teamunemployment.breadcrumbs.data.Trip;
 import com.teamunemployment.breadcrumbs.data.TripDetails;
 import com.teamunemployment.breadcrumbs.data.TripPath;
 import com.teamunemployment.breadcrumbs.data.source.TripDataSource;
@@ -51,7 +51,6 @@ public class RemoteTripDataSource implements TripDataSource {
             }
         }, context);
         asyncDataRetrieval.execute();
-
     }
 
     @Override

@@ -7,9 +7,9 @@ import android.util.Log;
 
 import com.google.android.gms.location.DetectedActivity;
 import com.teamunemployment.breadcrumbs.Models;
+import com.teamunemployment.breadcrumbs.Trails.Trip;
 import com.teamunemployment.breadcrumbs.data.BreadcrumbsEncodedPolyline;
 import com.teamunemployment.breadcrumbs.data.BreadcrumbsPolyline;
-import com.teamunemployment.breadcrumbs.data.Trip;
 import com.teamunemployment.breadcrumbs.data.TripDetails;
 import com.teamunemployment.breadcrumbs.data.TripPath;
 import com.teamunemployment.breadcrumbs.data.source.TripDataSource;
