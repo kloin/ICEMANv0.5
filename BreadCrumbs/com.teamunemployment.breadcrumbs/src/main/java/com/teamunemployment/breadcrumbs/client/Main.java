@@ -13,6 +13,7 @@ import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.Signature;
 import android.database.Cursor;
+import android.database.sqlite.SQLiteCantOpenDatabaseException;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
@@ -329,18 +330,23 @@ public class Main extends AppCompatActivity {
 	//Check if a user already has an account.
 	private boolean userHasPreviouslyLoggedIn() {
 		//Check for the first id that would be there (needs to be changed)
-		Cursor cursor = dbc.getReadableDatabase().rawQuery("SELECT * FROM users", null);
-		//IF present, we have a user.
-		 if(cursor.getCount()<1) {
-             cursor.close();
-             return false;
-	 	}
-        cursor.moveToFirst();
-        //This is our id we want.
-        String id = Integer.toString(cursor.getInt(1));
-		//Set the id so we can use it in the app.
-        gc.SetUserId(id);
-		return true;
+		try {
+			Cursor cursor = dbc.getReadableDatabase().rawQuery("SELECT * FROM users", null);
+			//IF present, we have a user.
+			if(cursor.getCount()<1) {
+				cursor.close();
+				return false;
+			}
+			cursor.moveToFirst();
+			//This is our id we want.
+			String id = Integer.toString(cursor.getInt(1));
+			//Set the id so we can use it in the app.
+			gc.SetUserId(id);
+			return true;
+		} catch (SQLiteCantOpenDatabaseException ex) {
+			return false;
+		}
+
 	}
 
 	private void newAccountClickHandler() {

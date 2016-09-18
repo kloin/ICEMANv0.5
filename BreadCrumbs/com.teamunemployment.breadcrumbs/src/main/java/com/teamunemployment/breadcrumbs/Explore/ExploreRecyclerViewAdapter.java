@@ -101,7 +101,6 @@ public class ExploreRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVie
     public void onBindViewHolder(final RecyclerView.ViewHolder holder, int position) {
 
         final ExploreCardModel cardModel = dataset.get(position);
-
         int viewType = cardModel.getViewType();
 
         switch (viewType) {
@@ -116,7 +115,7 @@ public class ExploreRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVie
                 }).start();
                 break;
             case ExploreCardModel.FOLLOWING_HEADER:
-                bindHeader(holder, "Favourites", appCompatActivityContext.getResources().getColor(R.color.red_300), R.drawable.ic_favorite_border_white_24dp);
+                bindHeader(holder, "Following", appCompatActivityContext.getResources().getColor(R.color.red_300), R.drawable.ic_favorite_border_white_24dp);
                 break;
             case ExploreCardModel.LOCAL_CARD:
                 break;
@@ -163,7 +162,6 @@ public class ExploreRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVie
     }
 
     private void scaleImage(ImageView view) {
-
             // Set the imageView height to be the same as the width.
             ViewGroup.LayoutParams layoutParams = view.getLayoutParams();
             int TRAIL_COVER_PHOTO_HEIGHT = calculateScreenWidth();

@@ -40,6 +40,9 @@ public class SaveCrumbActivity extends AppCompatActivity implements SaveCrumbAct
     public int _xDelta = 0;
     public int _yDelta = 0;
     public Point size;
+
+    private int orientation = 0;
+
     @Bind(R.id.done_button) FloatingActionButton saveCrumbFab;
     @Bind(R.id.place_name) TextView placeNameTextView;
     @Bind(R.id.media) ImageView mediaView;
@@ -66,7 +69,7 @@ public class SaveCrumbActivity extends AppCompatActivity implements SaveCrumbAct
         setContentView(R.layout.add_screen);
         ButterKnife.bind(this);
         backCameraOpen = getIntent().getBooleanExtra("IsBackCameraOpen", true);
-
+        orientation = getIntent().getIntExtra("Orientation", 0);
         // Create presenter
         presenter = new SaveCrumbPresenter(this);
 
@@ -174,7 +177,6 @@ public class SaveCrumbActivity extends AppCompatActivity implements SaveCrumbAct
     }
 
     @OnClick(R.id.set_edit_text) void ToggleEditText() {
-
         presenter.toggleEditText();
     }
 

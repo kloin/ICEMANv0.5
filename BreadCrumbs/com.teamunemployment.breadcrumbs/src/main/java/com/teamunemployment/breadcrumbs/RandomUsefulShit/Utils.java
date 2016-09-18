@@ -132,6 +132,31 @@ public class Utils {
         return Bitmap.createScaledBitmap(bitmap, 120, 120,true);
     }
 
+    @Nullable
+    public static Bitmap fetchBitmapFromLocalFile(String eventId, String mediaType, Context context) {
+        Bitmap bitmap = null;
+        // If video, idk what we are going to do.
+        if (mediaType.equals(".mp4")) {
+            // show a default thumbnail
+            String fileName = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES).toString() + "/"+eventId + ".mp4";
+
+            long id = Utils.FetchContentIdFromFilePath(fileName, context.getContentResolver());
+            ContentResolver crThumb = context.getContentResolver();
+            BitmapFactory.Options options=new BitmapFactory.Options();
+            options.inSampleSize = 1;
+            bitmap = MediaStore.Video.Thumbnails.getThumbnail(crThumb, id, MediaStore.Video.Thumbnails.MICRO_KIND, options);
+        } else {
+            // Grab the
+            String fileName = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES).toString() + "/"+eventId + ".jpg";
+
+            bitmap = Utils.FetchScaledBitmapFromFile(fileName, 60, 60);
+
+        }
+
+        return bitmap;
+
+    }
+
     /*
         Fetch a bitmap with specified witdth and height scaling
 

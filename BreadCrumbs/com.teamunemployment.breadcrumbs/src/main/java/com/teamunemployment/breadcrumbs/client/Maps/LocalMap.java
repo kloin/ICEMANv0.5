@@ -16,6 +16,7 @@ import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
@@ -215,6 +216,7 @@ public class LocalMap extends MapViewer {
             return false;
         }
 
+
         int serverTrailId = preferencesAPI.GetServerTrailId();
         if (serverTrailId == -1) {
             // Issue, it should have this at this point
@@ -241,7 +243,13 @@ public class LocalMap extends MapViewer {
      */
     private boolean handleFirstTimePublishing() {
         String trailName = fetchCurrentTrailName();
-
+        // Check if we have
+        JSONObject crumbs = databaseController.fetchMetadataFromDB(trailId, false);
+        if (crumbs.length() == 0) {
+            // No data, dont allow saving.
+            Toast.makeText(context,"Cannot save - album has no content", Toast.LENGTH_LONG).show();
+            return false;
+        }
         // This is the use case where the trail title has no data. This is an issue an we cannot save
         if (trailName.isEmpty()) {
             return false;
@@ -249,11 +257,13 @@ public class LocalMap extends MapViewer {
         startPublishingNotification();
         String userId = preferencesAPI.GetUserId();
 
+
         String url = MessageFormat.format("{0}/rest/login/saveTrail/{1}/{2}/{3}",
                 LoadBalancer.RequestServerAddress(),
                 trailName,
                 " ",
                 userId);
+
 
         // Save
         Log.d("UPLOAD", "Attempting to create a new Trail with url: " + url);

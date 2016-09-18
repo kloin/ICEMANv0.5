@@ -39,7 +39,7 @@ import org.neo4j.graphdb.Transaction;
 public class Crumb {
 	
     private DBMaster dbm;
-    public String AddCrumb(String chat, String userId, String trailId, String latitude, String longitude, String icon, String extension, String placeId, String suburb, String city, String country, String timeStamp) {
+    public String AddCrumb(String chat, String userId, String trailId, String latitude, String longitude, String icon, String extension, String placeId, String suburb, String city, String country, String timeStamp, String orientation) {
             Trail trailManager = new Trail();
             //create node using node controller
             Hashtable<String, Object> keysAndItems = new Hashtable<String, Object>();
@@ -55,6 +55,8 @@ public class Crumb {
             keysAndItems.put("City", city);
             keysAndItems.put("Country", country);
             keysAndItems.put("TimeStamp", timeStamp);
+            keysAndItems.put("Orientation", orientation);
+
 
             dbm = DBMaster.GetAnInstanceOfDBMaster();
             int crumbId = dbm.SaveNode(keysAndItems, com.breadcrumbs.database.DBMaster.myLabels.Crumb);	

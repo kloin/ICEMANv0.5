@@ -14,8 +14,8 @@ import retrofit2.http.Path;
  */
 public interface CrumbService {
 
-    @GET("login/SaveComment/{UserId}/{EntityId}/{CommentText}")
-    Call<ResponseBody> saveComment(@Path("UserId") String userId, @Path("EntityId") String entityId, @Path("CommentText") String commentText);
+    @GET("TrailManager/AddCommentToAlbum/{AlbumId}/{UserId}/{CommentText}")
+    Call<ResponseBody> addCommentToAlbum(@Path("AlbumId") String albumId, @Path("UserId") String userId, @Path("CommentText") String commentText);
 
     @GET("login/LoadCommentsForEvent/{EventId}")
     Call<ArrayList<Comment>> getCommentsForEvent(@Path("EventId") String eventId);

@@ -6,10 +6,14 @@ import android.media.MediaPlayer;
 
 import com.teamunemployment.breadcrumbs.Album.AlbumModel;
 import com.teamunemployment.breadcrumbs.Album.AlbumPresenter;
+import com.teamunemployment.breadcrumbs.Album.LocalAlbumSummary.Data.LocalAlbumSummaryRepo;
+import com.teamunemployment.breadcrumbs.Album.LocalAlbumSummary.LocalAlbumModel;
+import com.teamunemployment.breadcrumbs.Album.LocalAlbumSummary.LocalAlbumSummaryPresenter;
 import com.teamunemployment.breadcrumbs.Album.repo.LocalAlbumRepo;
 import com.teamunemployment.breadcrumbs.Album.repo.RemoteAlbumRepo;
 import com.teamunemployment.breadcrumbs.AlbumDataSource;
 import com.teamunemployment.breadcrumbs.BreadcrumbsTimer;
+import com.teamunemployment.breadcrumbs.LocalTripRepo;
 import com.teamunemployment.breadcrumbs.MediaPlayerWrapper;
 import com.teamunemployment.breadcrumbs.Network.LoadBalancer;
 import com.teamunemployment.breadcrumbs.PreferencesAPI;
@@ -63,8 +67,8 @@ public class ComponentModule {
     }
 
     @Provides
-    RemoteAlbumRepo provideRemoteAlbumRepo(AlbumService albumService, CrumbService crumbService) {
-       return new RemoteAlbumRepo(albumService, crumbService);
+    RemoteAlbumRepo provideRemoteAlbumRepo(AlbumService albumService, NodeService nodeService) {
+       return new RemoteAlbumRepo(albumService, nodeService);
     }
 
     @Provides
@@ -97,11 +101,19 @@ public class ComponentModule {
         return new PreferencesAPI(context);
     }
 
+
+    @Provides
+    LocalTripRepo provideLocalTripRepo(DatabaseController databaseController) {
+        return new LocalTripRepo(databaseController);
+    }
+
     @Provides
     AlbumModel provideAlbumModel(RemoteAlbumRepo remoteAlbumRepo, LocalAlbumRepo localAlbumRepo,
-                                 Context context, FileManager fileManager, LocalProfileRepository localProfileRepository,
-                                 RemoteProfileRepository remoteProfileRepository, PreferencesAPI preferencesAPI) {
-        return new AlbumModel(remoteAlbumRepo, localAlbumRepo, context, fileManager, localProfileRepository, remoteProfileRepository, preferencesAPI);
+                                 Context context, FileManager fileManager, LocalProfileRepository
+                                         localProfileRepository,RemoteProfileRepository remoteProfileRepository,
+                                 PreferencesAPI preferencesAPI, LocalTripRepo localTripRepo) {
+        return new AlbumModel(remoteAlbumRepo, localAlbumRepo, context, fileManager, localProfileRepository,
+                remoteProfileRepository, preferencesAPI, localTripRepo);
     }
 
     @Provides
@@ -125,7 +137,24 @@ public class ComponentModule {
         return new AlbumPresenter(model, application.getApplicationContext(), mediaPlayerWrapper, albumDataSource, timer);
     }
 
-    @Provides BreadcrumbsTimer provideBreadCrumbsTimer() {
+    @Provides
+    BreadcrumbsTimer provideBreadCrumbsTimer() {
         return new BreadcrumbsTimer();
+    }
+
+
+    @Provides
+    LocalAlbumSummaryRepo provideLocalAlbumSummaryRepo(DatabaseController databaseController, PreferencesAPI preferencesAPI) {
+        return new LocalAlbumSummaryRepo(databaseController, preferencesAPI);
+    }
+
+    @Provides
+    LocalAlbumModel provideLocalAlbumModel(LocalAlbumSummaryRepo localAlbumSummaryRepo) {
+        return new LocalAlbumModel(localAlbumSummaryRepo);
+    }
+
+    @Provides
+    LocalAlbumSummaryPresenter provideLocalAlbumSummaryPresenter(LocalAlbumModel albumModel) {
+        return new LocalAlbumSummaryPresenter(albumModel);
     }
 }

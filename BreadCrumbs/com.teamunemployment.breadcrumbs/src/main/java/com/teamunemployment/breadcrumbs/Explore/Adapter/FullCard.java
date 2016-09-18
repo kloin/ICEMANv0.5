@@ -32,6 +32,7 @@ import de.hdodenhof.circleimageview.CircleImageView;
 public class FullCard extends RecyclerView.ViewHolder implements ExploreCardContract {
     public static final int FULL_CARD = 2;
     private static final String EVENT_FLAG = "FULL_CARD";
+
     @Bind(R.id.profilePicture) CircleImageView profilePicture;
     @Bind(R.id.belongs_to) TextView belongsTo;
     @Bind(R.id.main_photo) ImageView mainPhoto;
@@ -92,7 +93,11 @@ public class FullCard extends RecyclerView.ViewHolder implements ExploreCardCont
             @Override
             public void run() {
                 belongsTo.setText(user.getUsername());
-                Picasso.with(context).load(LoadBalancer.RequestCurrentDataAddress() + "/images/"+ user.getProfilePicId()+"T.jpg").into(profilePicture);
+                Picasso.with(context).load(LoadBalancer.RequestCurrentDataAddress() + "/images/"+ user.getProfilePicId()+"T.jpg")
+                        .fit()
+                        .centerCrop()
+                        .placeholder(R.drawable.profileblank)
+                        .into(profilePicture);
             }
         });
     }

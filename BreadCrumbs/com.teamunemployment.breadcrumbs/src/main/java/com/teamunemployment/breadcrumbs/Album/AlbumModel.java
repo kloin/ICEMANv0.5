@@ -4,25 +4,35 @@ import android.content.Context;
 import android.util.Log;
 import android.view.View;
 
-import com.squareup.picasso.Picasso;
 import com.teamunemployment.breadcrumbs.Album.data.Comment;
 import com.teamunemployment.breadcrumbs.Album.data.FrameDetails;
 import com.teamunemployment.breadcrumbs.Album.data.MimeDetails;
 import com.teamunemployment.breadcrumbs.Album.repo.LocalAlbumRepo;
 import com.teamunemployment.breadcrumbs.Album.repo.RemoteAlbumRepo;
+import com.teamunemployment.breadcrumbs.AlbumDataSource;
 import com.teamunemployment.breadcrumbs.FileManager.MediaRecordModel;
+import com.teamunemployment.breadcrumbs.LocalTripRepo;
 import com.teamunemployment.breadcrumbs.Network.LoadBalancer;
 import com.teamunemployment.breadcrumbs.Network.NetworkConnectivityManager;
 import com.teamunemployment.breadcrumbs.PreferencesAPI;
 import com.teamunemployment.breadcrumbs.Profile.data.LocalProfileRepository;
 import com.teamunemployment.breadcrumbs.Profile.data.RemoteProfileRepository;
 import com.teamunemployment.breadcrumbs.RESTApi.FileManager;
+import com.teamunemployment.breadcrumbs.RESTApi.NodeService;
+import com.teamunemployment.breadcrumbs.Trails.Trip;
+import com.teamunemployment.breadcrumbs.User;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import javax.inject.Inject;
+
+import okhttp3.ResponseBody;
+import retrofit2.Call;
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
 
 /**
  * @author Josiah Kendall.
@@ -44,11 +54,13 @@ public class AlbumModel{
     private RemoteProfileRepository remoteProfileRepo;
     private LocalProfileRepository localProfileRepo;
     private PreferencesAPI preferencesAPI;
+    private LocalTripRepo localTripRepo;
 
     @Inject
     public AlbumModel(RemoteAlbumRepo remoteAlbumRepo, LocalAlbumRepo localAlbumRepo,
                       Context context, FileManager fileManager, LocalProfileRepository localUserRepo,
-                      RemoteProfileRepository remoteProfileRepo, PreferencesAPI preferencesAPI) {
+                      RemoteProfileRepository remoteProfileRepo, PreferencesAPI preferencesAPI,
+                      LocalTripRepo localTripRepo) {
         this.remoteAlbumRepo = remoteAlbumRepo;
         this.localAlbumRepo = localAlbumRepo;
         this.context = context;
@@ -56,6 +68,7 @@ public class AlbumModel{
         this.localProfileRepo = localUserRepo;
         this.remoteProfileRepo = remoteProfileRepo;
         this.preferencesAPI = preferencesAPI;
+        this.localTripRepo = localTripRepo;
     }
 
     /**
@@ -71,12 +84,55 @@ public class AlbumModel{
         return picId;
     }
 
+    /**
+     * Load the user details for an album.
+     * @param albumDataSource The datasource for the album that we are loading the user details for.
+     */
+    public User LoadUserDetails(AlbumDataSource albumDataSource) {
+
+        if (albumDataSource.getIsLocal()) {
+            String userId = preferencesAPI.GetUserCoverPhoto();
+            String username = preferencesAPI.GetUserName();
+            User user = new User();
+            user.setUsername(username);
+            user.setProfilePicId(userId);
+            return user;
+        }
+        Trip trip = localTripRepo.LoadTrip(Long.parseLong(albumDataSource.GetAlbumId()));
+        if (trip== null) {
+            trip = remoteAlbumRepo.LoadTrip(Long.parseLong(albumDataSource.GetAlbumId()));
+        }
+        User user = new User();
+        user.setProfilePicId(localProfileRepo.getProfilePictureId(Long.parseLong(trip.getUserId())));
+        user.setUsername(localProfileRepo.getUserName(Long.parseLong(trip.getUserId())));
+        return user;
+    }
+
+    public String LoadViewCount(AlbumDataSource albumDataSource) {
+        if (albumDataSource.getIsLocal()) {
+            return "NA";
+        }
+
+        Trip trip = localTripRepo.LoadTrip(Long.parseLong(albumDataSource.GetAlbumId()));
+        return trip.getViews();
+    }
+
     public interface loadedCommentsCallback {
         void onLoaded(ArrayList<Comment> comments);
     }
 
     public void setContract(AlbumModelPresenterContract albumModelPresenterContract) {
         this.contract = albumModelPresenterContract;
+    }
+
+    /**
+     * Add a view to an album
+     * @param albumDataSource The datasource for said album.
+     */
+    public void AddViewToModel(final AlbumDataSource albumDataSource) {
+        if (!albumDataSource.getIsLocal()) {
+            remoteAlbumRepo.AddViewToAlbum(albumDataSource.GetAlbumId());
+        }
     }
 
     /**
@@ -152,7 +208,7 @@ public class AlbumModel{
     }
 
      /**
-     * Simple method to trigger the download of a frame.
+     * Trigger the download of a frame.
      * @param frameId The id of a frame.
      * @param extension The extension of said frame - either mp4 or jpeg.
      */
@@ -161,26 +217,33 @@ public class AlbumModel{
         FrameDetails frameDetails = localAlbumRepo.LoadFrameDetails(frameId);
         if (frameDetails == null) {
             frameDetails = remoteAlbumRepo.LoadFrameDetails(frameId);
+
+            // This will not take long so currently it is in the same thread.
             localAlbumRepo.SaveFrameDetails(frameDetails);
         }
 
         // If we have an mp4 file, we need to do a manual fetch.
         if (extension.equals(".mp4")) {
+
+            // This is a check to see if we are "buffering" so to speak. We want to display asap,
+            // so set our target res to the minimum for max speed.
             if (isAwaitingFrame()) {
                 targetRes = "280";
             }
+
+            // Check if we need to download the media for this frame.
             MediaRecordModel record = localAlbumRepo.FindMediaFileRecord(frameId);
             if (record == null) {
                 MediaRecordModel recordModel = fileManager.DownloadAndSaveLocalFile(frameId, targetRes, extension);
                 // Save this record to the database.
                 if (recordModel == null) {
                     // This means that we did not find the media on the server. This is really bad.
-
                     return;
                 }
                 localAlbumRepo.SaveMediaFileRecord(recordModel);
             }
         } else {
+            // same check, but jpeg.
             MediaRecordModel record = localAlbumRepo.FindMediaFileRecord(frameId);
             if (record == null) {
                 MediaRecordModel recordModel = fileManager.DownloadAndSaveLocalFile(frameId, targetRes, extension);
@@ -195,6 +258,8 @@ public class AlbumModel{
         }
         // Kinda a hack. This just means that we are not currently downloading anything.
         setTargetFrameId("-1");
+
+        // If we are waiting for a frame, we dont want to
         if (isAwaitingFrame()) {
             if (contract != null) {
                 setWaitingFlag(false);
@@ -317,24 +382,20 @@ public class AlbumModel{
     }
 
     public void DeleteComment(final String commentId) {
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
+
                 localAlbumRepo.DeleteComment(commentId);
                 remoteAlbumRepo.DeleteComment(commentId);
-            }
-        }).start();
     }
 
     /**
-     * Get all the comments for a frame. This puts the result (an array list of the object {@link Comment})
+     * Get all the comments for an album. This puts the result (an array list of the object {@link Comment})
      * on a callback in the presenter which called this method/model. Said callback then does the processing
      * and the displaying of the comments.
-     * @param frameId The frame id
+     * @param albumId The frame id
      * @param commentsCallback The callback to trigger when we have data to display
      */
-    public void GetCommentsForFrame(final String frameId, final loadedCommentsCallback commentsCallback) {
-        final ArrayList<Comment> comments = localAlbumRepo.LoadCommentsForAFrame(frameId);
+    public void GetCommentsForAlbum(final String albumId, final loadedCommentsCallback commentsCallback) {
+        final ArrayList<Comment> comments = localAlbumRepo.LoadCommentsForAnAlbum(albumId);
 
         new Thread(new Runnable() {
             @Override
@@ -348,7 +409,7 @@ public class AlbumModel{
         new Thread(new Runnable() {
             @Override
             public void run() {
-                ArrayList<Comment> comments1 = remoteAlbumRepo.LoadCommentsForFrame(frameId);
+                ArrayList<Comment> comments1 = remoteAlbumRepo.LoadCommentsForAnAlbum(albumId);
                 if (comments1.size() > 0) {
                     commentsCallback.onLoaded(comments1);
                     localAlbumRepo.SaveComments(comments1);

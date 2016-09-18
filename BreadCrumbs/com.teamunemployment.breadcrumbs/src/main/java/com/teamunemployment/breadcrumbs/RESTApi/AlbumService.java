@@ -24,4 +24,7 @@ public interface AlbumService {
 
     @GET("Frame/LoadFrameMimesForAlbum/{AlbumId}")
     Call<ArrayList<MimeDetails>> GetFrameMimesForAlbum(@Path("AlbumId") String albumId);
+
+    @GET("login/GetPropertyFromNode/{AlbumId}/{Property}")
+    Call<ResponseBody> GetOwnerId(@Path("AlbumId") String albumId, @Path("Property") String property);
 }

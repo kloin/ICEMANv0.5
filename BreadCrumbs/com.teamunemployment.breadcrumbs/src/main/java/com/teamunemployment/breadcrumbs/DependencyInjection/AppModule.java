@@ -9,7 +9,6 @@ import dagger.Provides;
 
 /**
  * @author Josiah Kendall
- *
  * The app level singleton module for dagger.
  */
 @Module

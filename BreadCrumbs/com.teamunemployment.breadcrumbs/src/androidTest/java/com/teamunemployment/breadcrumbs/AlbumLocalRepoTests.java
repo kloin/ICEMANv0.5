@@ -118,7 +118,7 @@ public class AlbumLocalRepoTests {
         mimes.add(mimeDetails4);
 
         LocalAlbumRepo localAlbumRepo = new LocalAlbumRepo(databaseController);
-        localAlbumRepo.SaveFrameMimeData(mimes);
+        localAlbumRepo.SaveFrameMimeData(mimes, "1");
 
 
     }

@@ -87,7 +87,6 @@ public class UploadFile extends AsyncTask<Void, Integer, String> {
                     .post(requestBody)
                     .build();
 
-
             OkHttpClient client = new OkHttpClient();
             Response response = client.newCall(request).execute();
             return response.body().string();

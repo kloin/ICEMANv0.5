@@ -255,7 +255,6 @@ public class TrailManagerWorker {
         }
     }
 
-
     // ==================================================================================
     //                      local methods
     // ====================================================================================
@@ -302,7 +301,7 @@ public class TrailManagerWorker {
     private int saveCrumb(Crumb crumb) {
         String trailId = Integer.toString(mPreferencesAPI.GetServerTrailId());
         // Create url request
-        String url = MessageFormat.format("{0}/rest/login/savecrumb/{1}/{2}/{3}/{4}/{5}/{6}/{7}/{8}/{9}/{10}/{11}/{12}/{13}/{14}",
+        String url = MessageFormat.format("{0}/rest/login/savecrumb/{1}/{2}/{3}/{4}/{5}/{6}/{7}/{8}/{9}/{10}/{11}/{12}/{13}/{14}/{15}",
                 LoadBalancer.RequestServerAddress(),
                 crumb.GetDescription(),
                 crumb.GetDescPosX(),
@@ -318,6 +317,7 @@ public class TrailManagerWorker {
                 crumb.GetCity(), // cioty
                 crumb.GetCountry(), // country
                 crumb.GetTimestamp()); // timestamp
+                crumb.GetOrientation();
         url = url.replaceAll(" ", "%20");
 
         // Index is where we are in the list of metadata
@@ -370,7 +370,7 @@ public class TrailManagerWorker {
 
             // Update the saved crumb index
             if (crumb.GetMediaType().endsWith("4")) {
-              //  saveThumbnail(crumb, response.body().string());
+                saveThumbnail(crumb, response.body().string());
             }
             mPreferencesAPI.SetLastSavedMediaCrumbIndex(crumb.GetIndex());
         } catch (UnknownHostException | UnsupportedEncodingException e) {
@@ -382,8 +382,6 @@ public class TrailManagerWorker {
         // By deafault this means success. Not sure this is correct.
         return 0;
     }
-
-
 
     /**
      * @return The metadata for this trail.
@@ -410,7 +408,7 @@ public class TrailManagerWorker {
     }
 
     /**
-     * THIS IS SHIT
+     * THIS IS SHIT. causes memory leaks. Need to refactor this.
      * ====================
      * Simple inner class to handle the async uploading of a file to the server. We have this in here
      * because we want the network request to run off the main UI thread, but we also want to be able

@@ -54,7 +54,6 @@ public class  AlbumView extends AppCompatActivity implements AlbumPresenterViewC
     private BottomSheetBehavior bottomSheetBehavior;
 
     @Inject AlbumPresenter presenter;
-
     @Bind(R.id.root) CoordinatorLayout root;
     @Bind(R.id.viewport_holder) RelativeLayout viewPortHolder;
     @Bind(R.id.image_view) ImageView imageView;
@@ -72,6 +71,8 @@ public class  AlbumView extends AppCompatActivity implements AlbumPresenterViewC
     @Bind(R.id.comment_input) EditText commentInput;
     @Bind(R.id.comments_count) TextView commentCount;
     @Bind(R.id.comments_recycler) RecyclerView recyclerView;
+    @Bind(R.id.no_content_placeholder) RelativeLayout noContentPlaceholder;
+    @Bind(R.id.play_count) TextView playCount;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -83,7 +84,6 @@ public class  AlbumView extends AppCompatActivity implements AlbumPresenterViewC
         Bundle extras = getIntent().getExtras();
         albumId = extras.getString(ALBUM_EXTRA_KEY);
         setUpBottomSheet();
-
         if (albumId != null) {
             presenter.SetView(this);
             presenter.setProgressBar(horizonalProgress);
@@ -105,9 +105,8 @@ public class  AlbumView extends AppCompatActivity implements AlbumPresenterViewC
         presenter.BindRecyclerView(recyclerView);
     }
 
-
     @OnClick(R.id.open_map) void openMap() {
-        presenter.Pause();
+        //presenter.Pause();
         if (albumId.endsWith("L")) {
             Intent TrailViewer = new Intent();
             TrailViewer.setClassName("com.teamunemployment.breadcrumbs", "com.teamunemployment.breadcrumbs.client.Maps.LocalMap");
@@ -131,7 +130,6 @@ public class  AlbumView extends AppCompatActivity implements AlbumPresenterViewC
                 contextActivity.startActivityForResult(TrailViewer, 1);
             }
         }
-
     }
 
     @OnClick(R.id.next_storyboard_item) void next() {
@@ -184,11 +182,9 @@ public class  AlbumView extends AppCompatActivity implements AlbumPresenterViewC
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
-
                 bufferinOverlay.setVisibility(visibility);
                 bufferingSymbol.setVisibility(visibility);
                 nextButton.setEnabled(false);
-
             }
         });
     }
@@ -279,6 +275,9 @@ public class  AlbumView extends AppCompatActivity implements AlbumPresenterViewC
     @Override
     public void showCommentsBottomSheet() {
         bottomSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
+        mapFab.setEnabled(false);
+        nextButton.setEnabled(false);
+        reverseButton.setEnabled(false);
     }
 
     @Override
@@ -289,6 +288,11 @@ public class  AlbumView extends AppCompatActivity implements AlbumPresenterViewC
     @Override
     public void hideCommentsBottomSheet() {
         bottomSheetBehavior.setState(BottomSheetBehavior.STATE_HIDDEN);
+        nextButton.setVisibility(View.VISIBLE);
+        reverseButton.setVisibility(View.VISIBLE);
+        mapFab.setEnabled(true);
+        nextButton.setEnabled(true);
+        reverseButton.setEnabled(true);
     }
 
     @Override
@@ -322,6 +326,28 @@ public class  AlbumView extends AppCompatActivity implements AlbumPresenterViewC
             @Override
             public void run() {
                 Picasso.with(context).load(url).fit().centerCrop().into(profileImage);
+            }
+        });
+    }
+
+    @Override
+    public void showNoContentMessage() {
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                nextButton.setVisibility(View.GONE);
+                reverseButton.setVisibility(View.GONE);
+                noContentPlaceholder.setVisibility(View.VISIBLE);
+            }
+        });
+    }
+
+    @Override
+    public void setImageViewCount(final String countString) {
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                playCount.setText(countString);
             }
         });
     }
@@ -411,6 +437,8 @@ public class  AlbumView extends AppCompatActivity implements AlbumPresenterViewC
         presenter.stop();
         super.onBackPressed();
     }
+
+
 
     /**
      * Set up our comments bottom sheet.

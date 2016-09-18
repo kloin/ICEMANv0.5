@@ -239,7 +239,7 @@ public class SaveVideoActivity  extends Activity implements TextureView.SurfaceT
         String localTrailId = Integer.toString(mPreferencesApi.GetLocalTrailId());
 
         // save our crumb to the db. It will be saved to the server when we publish
-        dbc.SaveCrumb(localTrailId," ", userId, eventId, location.getLatitude(), location.getLongitude(), ".mp4", timeStamp, "icon", placeId, suburb, city, country, 0,0);
+        dbc.SaveCrumb(localTrailId," ", userId, eventId, location.getLatitude(), location.getLongitude(), ".mp4", timeStamp, "icon", placeId, suburb, city, country, 0,0, 0);
         TrailManagerWorker trailManagerWorker = new TrailManagerWorker(context);
         trailManagerWorker.CreateEventMetadata(TrailManagerWorker.CRUMB, location);
     }
@@ -269,7 +269,6 @@ public class SaveVideoActivity  extends Activity implements TextureView.SurfaceT
         if (mMediaPlayer != null) {
             mMediaPlayer.release();
         }
-
     }
 
     @Override
@@ -280,7 +279,6 @@ public class SaveVideoActivity  extends Activity implements TextureView.SurfaceT
 
     private void buildMediaPlayer(final String videoPath) {
         final MediaPlayer mediaPlayer = new MediaPlayer();
-
         try {
             mediaPlayer.setDataSource(videoPath);
             mediaPlayer.setSurface(mSurface);
@@ -295,7 +293,6 @@ public class SaveVideoActivity  extends Activity implements TextureView.SurfaceT
                     duration = mMediaPlayer.getDuration();
                     setUpProgressBar();
                     startTimer();
-
                 }
             };
 

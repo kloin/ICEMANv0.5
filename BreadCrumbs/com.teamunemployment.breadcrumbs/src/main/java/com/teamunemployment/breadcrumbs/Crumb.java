@@ -159,4 +159,14 @@ public class Crumb {
         }
         return -1;
     }
+
+    public int GetOrientation() {
+        try {
+            return mCrumb.getInt("Orientation");
+        } catch (JSONException ex) {
+            Log.d("CrumbModel", "Failed to find the parameter Orientation");
+        }
+
+        return 0;
+    }
 }

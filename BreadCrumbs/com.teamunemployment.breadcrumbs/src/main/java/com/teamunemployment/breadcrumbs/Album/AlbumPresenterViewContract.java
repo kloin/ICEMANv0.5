@@ -29,4 +29,6 @@ public interface AlbumPresenterViewContract {
     void setCommentsCount(int size);
     void setRecyclerViewAdapter(CommentAdapter commentAdapter);
     void SetImageViewWithImage(String url, CircleImageView profileImage);
+    void showNoContentMessage();
+    void setImageViewCount(String countString);
 }

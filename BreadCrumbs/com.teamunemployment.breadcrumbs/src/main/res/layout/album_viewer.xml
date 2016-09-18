@@ -45,23 +45,86 @@
             android:max="15000"
             android:progressBackgroundTint="#00000000" />
 
-        <de.hdodenhof.circleimageview.CircleImageView
-            android:id="@+id/album_owner_image"
-            android:layout_marginLeft="16dp"
-            android:layout_marginTop="28dp"
-            android:layout_width="40dp"
-            android:src="@drawable/profileblank"
-            android:layout_height="40dp"/>
         <TextView
-            android:id="@+id/album_owner_text"
-            android:layout_marginLeft="72dp"
-            android:text=""
-            android:gravity="center"
-            android:textColor="@color/white"
-            android:layout_alignTop="@+id/album_owner_image"
-            android:layout_alignBottom="@+id/album_owner_image"
+            android:id="@+id/floating_description"
+            android:padding="20dp"
+            style="@style/CodeFontWhite"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"/>
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/no_content_placeholder"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/white"
+        android:visibility="gone">
+            <TextView
+                android:id="@+id/album_prompt_header"
+                android:text="This is your album"
+                android:layout_marginTop="-20dp"
+                android:layout_centerVertical="true"
+                android:layout_centerHorizontal="true"
+                style="@style/Base.TextAppearance.AppCompat.Title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+            <TextView
+                android:id="@+id/album_prompt"
+                android:layout_below="@+id/album_prompt_header"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="20dp"
+                android:text="Photos and videos you take will be visible here."/>
+    </RelativeLayout>
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+        <de.hdodenhof.circleimageview.CircleImageView
+                android:id="@+id/album_owner_image"
+                android:layout_marginLeft="16dp"
+                android:layout_marginTop="28dp"
+                android:layout_width="40dp"
+                android:src="@drawable/profileblank"
+                android:layout_height="40dp"/>
+            <TextView
+                android:id="@+id/album_owner_text"
+                android:layout_marginLeft="72dp"
+                android:text=""
+                android:gravity="center"
+                android:textColor="@color/white"
+                android:layout_alignTop="@+id/album_owner_image"
+                android:layout_alignBottom="@+id/album_owner_image"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+
+            <ImageView
+                android:id="@+id/views_image"
+                android:layout_toLeftOf="@+id/play_count"
+                android:src="@drawable/ic_play_circle_outline_white_24dp"
+                android:layout_alignTop="@+id/album_owner_image"
+                android:layout_alignBottom="@+id/album_owner_image"
+                android:layout_marginRight="12dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+
+            <TextView
+                android:id="@+id/play_count"
+                android:layout_centerVertical="true"
+                android:gravity="center"
+                android:layout_alignParentRight="true"
+                android:textColor="@color/white"
+                android:text="245"
+                android:layout_alignTop="@+id/album_owner_image"
+                android:layout_alignBottom="@+id/album_owner_image"
+                android:layout_marginRight="16dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent">
 
         <android.support.design.widget.FloatingActionButton
             android:id="@+id/next_storyboard_item"
@@ -92,20 +155,14 @@
             android:id="@+id/open_map"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParentRight="true"
             android:layout_alignParentBottom="true"
+            android:layout_alignParentRight="true"
             app:fabSize="mini"
             android:layout_marginBottom="10dp"
             android:layout_marginRight="10dp"
             android:transitionName="transition_reveal_contact"
             android:src="@drawable/ic_map_black_24dp"
             app:backgroundTint="@color/white" />
-        <TextView
-            android:id="@+id/floating_description"
-            android:padding="20dp"
-            style="@style/CodeFontWhite"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"/>
     </RelativeLayout>
 
     <RelativeLayout
@@ -162,4 +219,6 @@
             android:layout_width="wrap_content"
             android:layout_height="50dp"/>
     </RelativeLayout>
+
+
 </android.support.design.widget.CoordinatorLayout>

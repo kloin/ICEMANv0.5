@@ -594,8 +594,11 @@ public class CameraController extends SurfaceView implements SurfaceHolder.Callb
             Intent save = new Intent();
             Bundle extras = new Bundle();
             extras.putBoolean("IsBackCameraOpen", backCameraOpen);
+            Display display = ((WindowManager) context.getSystemService(Context.WINDOW_SERVICE)).getDefaultDisplay();
+            int orientation = display.getRotation();
+            extras.putInt("Orientation", 0);
             // If our location isnt null we want to pass this in as the save location.
-
+            Toast.makeText(context, "Orientation is: " + orientation, Toast.LENGTH_LONG).show();
             save.putExtras(extras);
             save.setClassName("com.teamunemployment.breadcrumbs", "com.teamunemployment.breadcrumbs.SaveCrumb.SaveCrumbActivity");
             context.startActivity(save);

@@ -1,12 +1,9 @@
 package com.teamunemployment.breadcrumbs.Album;
 
 import android.content.Context;
-import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.SurfaceTexture;
-import android.media.MediaPlayer;
-import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -18,11 +15,14 @@ import android.widget.ProgressBar;
 import com.teamunemployment.breadcrumbs.Album.data.Comment;
 import com.teamunemployment.breadcrumbs.Album.data.FrameDetails;
 import com.teamunemployment.breadcrumbs.Album.data.MimeDetails;
+import com.teamunemployment.breadcrumbs.Album.repo.LocalAlbumRepo;
 import com.teamunemployment.breadcrumbs.AlbumDataSource;
 import com.teamunemployment.breadcrumbs.BreadcrumbsTimer;
 import com.teamunemployment.breadcrumbs.MediaPlayerWrapper;
 import com.teamunemployment.breadcrumbs.Network.LoadBalancer;
+import com.teamunemployment.breadcrumbs.RESTApi.NodeService;
 import com.teamunemployment.breadcrumbs.RandomUsefulShit.Utils;
+import com.teamunemployment.breadcrumbs.User;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -31,6 +31,10 @@ import java.util.ListIterator;
 import javax.inject.Inject;
 
 import de.hdodenhof.circleimageview.CircleImageView;
+import okhttp3.ResponseBody;
+import retrofit2.Call;
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
 
 /**
  * @author Josiah Kendall
@@ -99,15 +103,35 @@ public class AlbumPresenter implements AlbumModelPresenterContract, TextureView.
         this.progressBar = pb;
     }
 
+    public void DeleteComment(final String commentId) {
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                model.DeleteComment(commentId);
+            }
+        }).start();
+
+    }
     /**
      * Start loading an album
      * @param albumId The id of the album that we are displaying.
      */
-    public void Start(String albumId) {
+    public void Start(final String albumId) {
         albumDataSource.SetAlbumId(albumId);
-
+        AddViewToAlbum();
+        view.hideCommentsBottomSheet();
+        view.hideDimScreenOverlay();
         // Routine pre game checks.
         doPreReqChecks(albumDataSource.GetAlbumId());
+
+        // Need to sort out these threads.
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                loadUserInfo();
+                loadViews();
+            }
+        }).start();
 
         new Thread(new Runnable() {
             @Override
@@ -117,7 +141,11 @@ public class AlbumPresenter implements AlbumModelPresenterContract, TextureView.
 
                 // If we have nothing to display, we cant really do shit. This shouldn't happen in theory, but need safety.
                 if (mimeDetailsArrayList == null || mimeDetailsArrayList.size() == 0) {
-                    view.showMessage("Unable to play.");
+                    if (!albumDataSource.getIsLocal()) {
+                        view.showMessage("Unable to play.");
+                    } else {
+                        view.showNoContentMessage();
+                    }
                     return;
                 }
 
@@ -139,6 +167,20 @@ public class AlbumPresenter implements AlbumModelPresenterContract, TextureView.
                 }
             }
         }).start();
+    }
+
+    // Load user profile pic and name.
+    private void loadUserInfo() {
+        // try local
+        User user = model.LoadUserDetails(albumDataSource);
+        String profileUrl = LoadBalancer.RequestCurrentDataAddress() + "/images/" + user.getProfilePicId()+"T.jpg";
+        view.setProfilePicture(profileUrl);
+        view.setUserName(user.getUsername());
+    }
+
+    private void loadViews() {
+        String viewCount = model.LoadViewCount(albumDataSource);
+        view.setImageViewCount(viewCount);
     }
 
     /**
@@ -203,8 +245,11 @@ public class AlbumPresenter implements AlbumModelPresenterContract, TextureView.
 
     // Not used yet but maybe in the future
     public void Pause() {
-        view.showCommentsBottomSheet();
+        if (!albumDataSource.getIsLocal()) {
+            view.showCommentsBottomSheet();
+        }
         view.showDimScreenOverlay();
+
         LoadComments();
         // curent frame should never be null here, but it will be when we are testing.
         if (currentFrame != null && currentFrame.getExtension() != null && currentFrame.getExtension().equals(MP4)) {
@@ -216,8 +261,11 @@ public class AlbumPresenter implements AlbumModelPresenterContract, TextureView.
     // Resume playback. Happens when the app is closed and reopened on this page, or when we move to another
     // activity and then back again.
     public void Resume() {
-        view.hideCommentsBottomSheet();
+        if (!albumDataSource.getIsLocal()) {
+            view.hideCommentsBottomSheet();
+        }
         view.hideDimScreenOverlay();
+
         // Resume gets called on a start too. Therefore we have this prereq check.
         if (firstStart) {
             firstStart = false;
@@ -264,8 +312,9 @@ public class AlbumPresenter implements AlbumModelPresenterContract, TextureView.
             setImageFrame(frame);
         }
 
-        getProfilePicture(frame.getUserId());
-        getProfileName(frame.getUserId());
+        //TODO move this to a different method.
+//        getProfilePicture(frame.getUserId());
+//        getProfileName(frame.getUserId());
         
         String xPosString = frame.getDescPosX();
         String yPosString = frame.getDescPosY();
@@ -279,21 +328,6 @@ public class AlbumPresenter implements AlbumModelPresenterContract, TextureView.
         }
     }
 
-    /**
-     * Set the owner profile pic.
-     * @param userId The owner id.
-     */
-    public void getProfilePicture(String userId) {
-        model.FetchProfilePicture(userId);
-    }
-
-    /**
-     * Get the users name.
-     * @param userId The owner Id.
-     */
-    public void getProfileName(String userId) {
-        model.FetchUserName(userId);
-    }
 
     /**
      * Set buffering of video. This sets the visibility of the indeterminate progress circle
@@ -377,12 +411,18 @@ public class AlbumPresenter implements AlbumModelPresenterContract, TextureView.
             timer.setDuration(duration);
             timer.setOnFinishedListener(this);
             timer.setProgressBar(progressBar);
-
             timer.setTimerMax(duration);
             timer.Start();
         } else if (prepareResult == MediaPlayerWrapper.INITIALIZED) {
             requestPrepareAndPlayWhenSurfaceReady = true;
         }
+    }
+
+    /**
+     * Add a view to the album we are currently viewing. This only happens if the view is not local.
+     */
+    public void AddViewToAlbum() {
+        model.AddViewToModel(albumDataSource);
     }
 
     @Override
@@ -396,7 +436,6 @@ public class AlbumPresenter implements AlbumModelPresenterContract, TextureView.
             } else if (requestPrepareAndPlayWhenSurfaceReady) {
                 mediaPlayerWrapper.Prepare();
                 mediaPlayerWrapper.Play();
-
                 int duration = mediaPlayerWrapper.getDuration();
                 timer.RestartTimer();
                 timer.setDuration(duration);
@@ -425,7 +464,7 @@ public class AlbumPresenter implements AlbumModelPresenterContract, TextureView.
 
             mediaPlayerWrapper.setSurfaceView(null);
 
-            if (currentFrame.getExtension().equals(MP4)) {
+            if (currentFrame != null && currentFrame.getExtension().equals(MP4)) {
                 // Pause, as we may want to resume at a later date.
                 mediaPlayerWrapper.Pause();
                 closed = true;
@@ -471,7 +510,7 @@ public class AlbumPresenter implements AlbumModelPresenterContract, TextureView.
             mimeDetailsIterator.next();
         }
 
-        if (mimeDetailsIterator.hasNext()) {
+        if (mimeDetailsIterator != null && mimeDetailsIterator.hasNext()) {
             PlayFrame(mimeDetailsIterator.next());
             hasGoneBackwardLast = false;
         } else {
@@ -485,7 +524,7 @@ public class AlbumPresenter implements AlbumModelPresenterContract, TextureView.
      */
     public void reverse() {
         mediaPlayerWrapper.Stop();
-        if (mimeDetailsIterator.hasPrevious()) {
+        if (mimeDetailsIterator!= null && mimeDetailsIterator.hasPrevious()) {
             PlayFrame(mimeDetailsIterator.previous());
             hasGoneBackwardLast = true;
         } else {
@@ -533,7 +572,7 @@ public class AlbumPresenter implements AlbumModelPresenterContract, TextureView.
         new Thread(new Runnable() {
             @Override
             public void run() {
-                model.SaveComment(textToSave, currentFrame.getId());
+                model.SaveComment(textToSave, albumDataSource.GetAlbumId());
                 LoadComments();
             }
         }).start();
@@ -543,14 +582,13 @@ public class AlbumPresenter implements AlbumModelPresenterContract, TextureView.
      * Load the comments for a frame.
      */
     public void LoadComments() {
-        model.GetCommentsForFrame(currentFrame.getId(), commentsCallback);
+        model.GetCommentsForAlbum(albumDataSource.GetAlbumId(), commentsCallback);
     }
 
     public void SynchronouslyLoadUsersProfilePicId(String userId, CircleImageView profileImage) {
         String id = model.LoadUserProfilePic(userId);
         String url = LoadBalancer.RequestCurrentDataAddress() + "/images/"+ id + "T.jpg";
         view.SetImageViewWithImage(url, profileImage);
-
     }
 
     private void processCommentsArray(ArrayList<Comment> comments) {

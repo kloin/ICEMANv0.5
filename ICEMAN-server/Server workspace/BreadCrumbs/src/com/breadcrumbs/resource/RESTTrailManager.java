@@ -19,6 +19,7 @@ import org.joda.time.LocalDate;
 import org.json.JSONObject;
 
 import com.breadcrumbs.database.DBMaster;
+import com.breadcrumbs.database.NodeController;
 import com.breadcrumbs.heavylifting.TrailManager20;
 import com.breadcrumbs.heavylifting.TripManager;
 import com.breadcrumbs.models.Polyline2;
@@ -69,6 +70,21 @@ public class RESTTrailManager {
                     "/GetFavouritedTripsForAUser/{UserId}/{MaxCount}" +
                     "/GetIdsOfMostPopularTrips/{MaxCount}";
         }
+        
+    @GET
+    @Path("/AddCommentToAlbum/{AlbumId}/{UserId}/{CommentText}")
+    public String AddCommentToAlbum(@PathParam("AlbumId") String albumId, 
+            @PathParam("UserId") String userId, @PathParam("CommentText") String commentText) {
+        Trail trail = new Trail();
+        return trail.SaveCommentForAnEntity(userId, albumId, commentText);	
+    }
+        
+    @GET
+    @Path("/GetAllCommentsForAnAlbum/{AlbumId}")
+    public String GetAllCommentsForAnAlbum(@PathParam("AlbumId") String albumId) {
+        NodeController nc = new NodeController();
+        return nc.FetchNodeAndItsRelationsAsAnArray(Integer.parseInt(albumId), "Linked_To");
+    }
         
         @GET
         @Path("/GetTwentyTripIds") 
@@ -259,12 +275,7 @@ public class RESTTrailManager {
             Trail trail = new Trail();
             return trail.GetNumberOfVideosInATrail(TrailId);
         }
-        
-	@GET
-	@Path("DeleteAllTrails") 
-	public void DeleteAllTrails() {
-		//USE WITH CAUTION _ THIS SHOULD BE REMOVED BEFORE A PROPER RELEASE
-	}
+       
         
     @GET
     @Path("FollowTrail/{TrailId}/{UserId}")
@@ -376,7 +387,27 @@ public class RESTTrailManager {
         Trail trail = new Trail();
         return trail.FindAllPinnedTrailsForAUser(userId);
     }
+
+    @GET
+    @Path("/DeleteComment/{CommentId}")
+    public void DeleteComment(@PathParam("CommentId") String comment0Id) {
+        Trail trail = new Trail();
+        trail.DeleteNodeAndRelationship(comment0Id);
+    }
     
+    @GET
+    @Path("/GetAllAlbumsFromFollowedUser/{UserId}")
+    public String GetAllAlbumsFromFollowedUser(@PathParam("UserId") String userId) {
+        String cypherQuery = "START n = node("+userId+") MATCH (n)-[r:Has_Pinned]->(a:User)-[r2:Controls]->(t:Trail) return t";
+        DBMaster dBMaster = DBMaster.GetAnInstanceOfDBMaster();
+        return dBMaster.ExecuteCypherQueryJSONListStringReturn(cypherQuery);
+    }
     
-    
+    @GET
+    @Path("/GetAllAlbumIdsFromFollowedUsers/{UserId}")
+    public String GetAllAlbumIdsFromFollowedUsers(@PathParam("UserId") String userId) {
+        String cypherQuery = "START n = node("+userId+") MATCH (n)-[r:Has_Pinned]->(a:User)-[r2:Controls]->(t:Trail) return t";
+        DBMaster dBMaster = DBMaster.GetAnInstanceOfDBMaster();
+        return dBMaster.ExecuteCypherQueryReturnCSVString(cypherQuery);
+    }
 }

@@ -87,6 +87,7 @@ public class ProfileFragment extends Fragment implements ProfileContract.ViewCon
     @Bind(R.id.user_web_edit) EditText websiteEdit;
     @Bind(R.id.trips_list_view) LinearLayout listView;
     @Bind(R.id.root) CoordinatorLayout root;
+    @Bind(R.id.new_album) TextView newAlbumButton;
 
     private boolean displayFabAsFollowed = false;
     private LayoutInflater inflater;
@@ -95,6 +96,7 @@ public class ProfileFragment extends Fragment implements ProfileContract.ViewCon
     private long userId;
     private PreferencesAPI preferencesAPI;
     private boolean isOwner = false;
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -105,11 +107,12 @@ public class ProfileFragment extends Fragment implements ProfileContract.ViewCon
         preferencesAPI = new PreferencesAPI(getContext());
         Bundle bundle = getActivity().getIntent().getExtras();
         setUserId(bundle);
-
         DatabaseController controller = new DatabaseController(appCompatActivity);
         presenter = new Presenter(this, controller, appCompatActivity, userId);
         presenter.Start();
-
+        if (!isOwner) {
+            setNewAlbumButtonInvisible();
+        }
         initialiseCollapsableToolbar();
         initialiseTextWatchers();
         return rootView;
@@ -243,23 +246,21 @@ public class ProfileFragment extends Fragment implements ProfileContract.ViewCon
                     for(int index = 0; index < tripArrayAdapter.getCount(); index += 1) {
                         final View item = tripArrayAdapter.getView(index, null, null);
                         listView.addView(item);
-                        View view = inflater.inflate(R.layout.list_divider, listView);
+                        inflater.inflate(R.layout.list_divider, listView);
                         final int finalIndex = index;
                         item.setOnClickListener(new View.OnClickListener() {
                             @Override
                             public void onClick(View view) {
                                 Intent TrailViewer = new Intent();
-                                TrailViewer.setClassName("com.teamunemployment.breadcrumbs", "com.teamunemployment.breadcrumbs.client.Maps.MapViewer");
+                                TrailViewer.setClassName("com.teamunemployment.breadcrumbs", "com.teamunemployment.breadcrumbs.Album.AlbumView");
                                 Bundle extras = new Bundle();
-                                extras.putString("TrailId", trips.get(finalIndex).getId());
+                                extras.putString("AlbumId", trips.get(finalIndex).getId());
                                 TrailViewer.putExtras(extras);
                                 appCompatActivity.startActivity(TrailViewer);
                             }
                         });
 
                         setDelete(item, trips, finalIndex);
-
-
                     }
                 }
             });
@@ -290,10 +291,10 @@ public class ProfileFragment extends Fragment implements ProfileContract.ViewCon
                         .SetTitle("Delete Album")
                         .SetCallBack(deleteCallback)
                         .Show();
-
             }
         });
     }
+
     @Override
     public void setProfilePicture(final String url) {
         appCompatActivity.runOnUiThread(new Runnable() {
@@ -515,6 +516,11 @@ public class ProfileFragment extends Fragment implements ProfileContract.ViewCon
     @Override
     public void setDeleteButtonVisible(boolean isVisible) {
 
+    }
+
+    @Override
+    public void setNewAlbumButtonInvisible() {
+        newAlbumButton.setVisibility(View.GONE);
     }
 
     @Override

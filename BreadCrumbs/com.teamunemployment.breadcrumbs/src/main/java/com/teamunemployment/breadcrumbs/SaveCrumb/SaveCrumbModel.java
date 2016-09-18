@@ -43,6 +43,8 @@ public class SaveCrumbModel {
     private float descriptionPositionX;
     private float descriptionPositionY;
 
+    private int orientation = 0;
+
     public void setDescriptionPosition(float x, float y) {
         descriptionPositionX = x;
         descriptionPositionY = y;
@@ -146,6 +148,18 @@ public class SaveCrumbModel {
         return simpleGps.FetchPlaceNameForLocation(address);
     }
 
+    /**
+     * Set the orientation data of our photo or video.
+     * @param orientation
+     */
+    public void setMediaOrientation(int orientation) {
+        this.orientation = orientation;
+    }
+
+    public int getOrientation() {
+        return orientation;
+    }
+
     public void setDescription(String description) {
         if (description.length() > 140) {
             presenter.showMessage("Descriptions are limited to 140 characters");
@@ -194,6 +208,7 @@ public class SaveCrumbModel {
         saveCrumbService.putExtra("PlaceName", placeName);
         saveCrumbService.putExtra("PositionX", descriptionPositionX);
         saveCrumbService.putExtra("PositionY", descriptionPositionY);
+        saveCrumbService.putExtra("Orientation", orientation);
 
         context.startService(saveCrumbService);
         preferencesAPI.SetEventId(eventId+1); // This is a flag - should be saved in the DB because user can clear shared preferences
@@ -202,6 +217,12 @@ public class SaveCrumbModel {
     private void saveBitmap(int eventId) {
         String fileName =  Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES).toString() + "/"+eventId;
         com.teamunemployment.breadcrumbs.caching.Utils.SaveBitmap(fileName, GlobalContainer.GetContainerInstance().GetBitMap());
+    }
+
+    private void saveThumbnail(int eventId) {
+       // Bitmap bitmap = Utils.FetchBitmapThumbnailFromFile()
+        //String fileName =  Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES).toString() + "/"+eventId + "T";
+       // com.teamunemployment.breadcrumbs.caching.Utils.SaveBitmap(fileName, bitmap);
     }
 
     public void CleanUp() {

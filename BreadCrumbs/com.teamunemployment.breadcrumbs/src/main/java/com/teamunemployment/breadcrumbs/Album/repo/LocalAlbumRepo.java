@@ -2,7 +2,6 @@ package com.teamunemployment.breadcrumbs.Album.repo;
 
 import android.support.annotation.Nullable;
 
-import com.teamunemployment.breadcrumbs.Album.Frame;
 import com.teamunemployment.breadcrumbs.Album.data.Comment;
 import com.teamunemployment.breadcrumbs.Album.data.FrameDetails;
 import com.teamunemployment.breadcrumbs.Album.data.MimeDetails;
@@ -131,8 +130,8 @@ public class LocalAlbumRepo {
         databaseController.DeleteComment(commentId);
     }
 
-    public ArrayList<Comment> LoadCommentsForAFrame(String frameId) {
-        return databaseController.GetAllCommentsForAFrame(frameId);
+    public ArrayList<Comment> LoadCommentsForAnAlbum(String frameId) {
+        return databaseController.GetAllCommentsForAnAlbum(frameId);
     }
 
     /**

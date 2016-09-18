@@ -35,6 +35,7 @@ public interface ProfileContract {
         void setUserEditButtonVisible(boolean visible);
         void setIAmFollowingThisUser(boolean followingThisUser);
         void setDeleteButtonVisible(boolean isVisible);
+        void setNewAlbumButtonInvisible();
 
     }
 

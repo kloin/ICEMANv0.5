@@ -247,7 +247,7 @@ public class SaveEventFragment extends Activity {
 				String fileName =  Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES).toString() + "/"+eventId;
 				// save our crumb to the db. It will be saved to the server when we publish
 				Utils.SaveBitmap(fileName, media);
-				dbc.SaveCrumb(localTrailId, " ", userId, eventId, location.getLatitude(), location.getLongitude(), ".jpg", timeStamp, "", placeId, suburb, finalCity, finalCountry, 0, 0);
+				dbc.SaveCrumb(localTrailId, " ", userId, eventId, location.getLatitude(), location.getLongitude(), ".jpg", timeStamp, "", placeId, suburb, finalCity, finalCountry, 0, 0, 0);
 				TrailManagerWorker trailManagerWorker = new TrailManagerWorker(context);
 				trailManagerWorker.CreateEventMetadata(TrailManagerWorker.CRUMB, location);
 			}

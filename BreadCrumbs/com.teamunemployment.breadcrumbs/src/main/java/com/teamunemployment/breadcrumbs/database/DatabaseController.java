@@ -139,9 +139,19 @@ public class DatabaseController extends SQLiteOpenHelper {
                     "CommentText TEXT," +
                     "UserId INTEGER," +
                     "ServerId INTEGER);");
+            oldVersion += 1;
         }
 
+        if (oldVersion == 9) {
+            String upgradeQuery = "ALTER TABLE " + CRUMBS +" ADD COLUMN orientation Integer";
+            db.execSQL(upgradeQuery);
+            oldVersion += 1;
+        }
 
+        if (oldVersion == 10) {
+            String upgradeQuery = "ALTER TABLE " + TRAIL_SUMMARY +" ADD COLUMN IsPublic INTEGER";
+            db.execSQL(upgradeQuery);
+        }
     }
 
 	public void SaveUser(String userId, String userName, int age, String pin) {
@@ -391,7 +401,8 @@ public class DatabaseController extends SQLiteOpenHelper {
     // Store our crumbs and details to the database until we are ready to save.
     public void SaveCrumb(String trailId, String description, String userId, int eventId, double latitude,
                           double longitude, String mime, String timeStamp, String icon, String placeId,
-                          String suburb, String city, String country, float descriptionPositionX, float descriptionPositonY) {
+                          String suburb, String city, String country, float descriptionPositionX,
+                          float descriptionPositonY, int orientation) {
 
         ContentValues cv = new ContentValues();
         cv.put("trailId", trailId);
@@ -409,6 +420,7 @@ public class DatabaseController extends SQLiteOpenHelper {
         cv.put("latitude", latitude);
         cv.put("descPosX", descriptionPositionX);
         cv.put("descPosY", descriptionPositonY);
+        cv.put("orientation",orientation);
 
         SQLiteDatabase localDb = getWritableDatabase();
         long id = localDb.insert(CRUMBS, null, cv);
@@ -535,7 +547,8 @@ public class DatabaseController extends SQLiteOpenHelper {
                 "latitude REAL," +
                 "longitude REAL," +
                 "descPosX REAL," +
-                "descPosY REAL);");
+                "descPosY ," +
+                "orientation INTEGER);");
 
         // Database for RestZones.
         db.execSQL("CREATE TABLE " + RESTZONES + " (_id INTEGER PRIMARY KEY AUTOINCREMENT, " +
@@ -570,6 +583,7 @@ public class DatabaseController extends SQLiteOpenHelper {
                 "TrailName TEXT," +
                 "SavedIndex INTEGER," +
                 "CoverPhotoId TEXT," +
+                "IsPublic INTEGER," +
                 "StartDate TIMESTAMP," +
                 "LastUpdate TIMESTAMP," +
                 "IsPublished INTEGER,"+
@@ -622,6 +636,7 @@ public class DatabaseController extends SQLiteOpenHelper {
                 "CommentText TEXT," +
                 "UserId INTEGER," +
                 "ServerId INTEGER);");
+
     }
 
     public void SaveActivityPoint(int currentActivity, int pastActivity, Double latitude, Double longitude, int granularity) {
@@ -959,6 +974,39 @@ public class DatabaseController extends SQLiteOpenHelper {
         cursor.getCount();
         cursor.close();
         db.close();
+    }
+
+    public void SaveAlbumPublicity(boolean isPublic, int trailId) {
+        String query = "UPDATE "+TRAIL_SUMMARY + " SET IsPublic= ? WHERE _id = "+Integer.toString(trailId);
+        db = getWritableDatabase();
+        String publicFlag = "0";
+        if (!isPublic) {
+             publicFlag = "1";
+        }
+        Cursor cursor = db.rawQuery(query, new String[] {publicFlag});
+        cursor.getCount();
+        cursor.close();
+        db.close();
+    }
+
+    public boolean getIsPublic() {
+        Cursor cursor = null;
+        int isPublic = 0;
+        try {
+            cursor = getReadableDatabase().rawQuery("SELECT * FROM " + TRAIL_SUMMARY + " ORDER BY _id", null);
+            // WE just want the latest trail.
+            if(cursor.getCount() > 0) {
+                cursor.moveToLast();
+                isPublic = cursor.getInt(cursor.getColumnIndex("IsPublic"));
+            }
+            if (isPublic == 0) {
+                return true;
+            } else {
+                return false;
+            }
+        } finally {
+            cursor.close();
+        }
     }
 
     /**
@@ -1845,13 +1893,13 @@ public class DatabaseController extends SQLiteOpenHelper {
     }
 
     /**
-     * Get all our locally saved comments for a frame
-     * @param frameId The id of the frame.
+     * Get all our locally saved comments for an album
+     * @param albumId The id of the frame.
      * @return the arraylist of comment objects.
      */
-    public ArrayList<Comment> GetAllCommentsForAFrame(String frameId) {
+    public ArrayList<Comment> GetAllCommentsForAnAlbum(String albumId) {
         ArrayList<Comment> comments = new ArrayList<>();
-        Cursor constantsCursor=getReadableDatabase().rawQuery("SELECT * FROM "+ COMMENT_TABLE+" WHERE EntityId ="+frameId+" ORDER BY _id", null);
+        Cursor constantsCursor=getReadableDatabase().rawQuery("SELECT * FROM "+ COMMENT_TABLE+" WHERE EntityId ="+albumId+" ORDER BY _id", null);
         while (constantsCursor.moveToNext()) {
 
             String serverId = constantsCursor.getString(constantsCursor.getColumnIndex("ServerId"));

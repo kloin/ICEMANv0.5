@@ -175,7 +175,7 @@ public class HomeActivity extends AppCompatActivity {
                     Intent newIntent = new Intent();
                     String localTrailString = Integer.toString(localTrail) + "L";
                     newIntent.putExtra("AlbumId", localTrailString);
-                    newIntent.setClassName("com.teamunemployment.breadcrumbs", "com.teamunemployment.breadcrumbs.Album.AlbumView");
+                    newIntent.setClassName("com.teamunemployment.breadcrumbs", "com.teamunemployment.breadcrumbs.Album.LocalAlbumSummary.LocalAlbumView");
                     startActivity(newIntent);
                 }
             }, 120);
@@ -207,7 +207,7 @@ public class HomeActivity extends AppCompatActivity {
                     int localTrail = preferencesAPI.GetLocalTrailId();
                     String localTrailString = Integer.toString(localTrail) + "L";
                     newIntent.putExtra("AlbumId", localTrailString);
-                    newIntent.setClassName("com.teamunemployment.breadcrumbs", "com.teamunemployment.breadcrumbs.Album.AlbumView");
+                    newIntent.setClassName("com.teamunemployment.breadcrumbs", "com.teamunemployment.breadcrumbs.Album.LocalAlbumSummary.LocalAlbumView");
                     startActivity(newIntent);
                 } else {
                     if (coarseLocation == PackageManager.PERMISSION_DENIED && fineLocation == PackageManager.PERMISSION_DENIED) {
@@ -282,7 +282,7 @@ public class HomeActivity extends AppCompatActivity {
                     int localTrail = preferencesAPI.GetLocalTrailId();
                     String localTrailString = Integer.toString(localTrail) + "L";
                     newIntent.putExtra("AlbumId", localTrailString);
-                    newIntent.setClassName("com.teamunemployment.breadcrumbs", "com.teamunemployment.breadcrumbs.Album.AlbumView");
+                    newIntent.setClassName("com.teamunemployment.breadcrumbs", "com.teamunemployment.breadcrumbs.Album.LocalAlbumSummary.LocalAlbumView");
                     startActivity(newIntent);
                 }
                 return;

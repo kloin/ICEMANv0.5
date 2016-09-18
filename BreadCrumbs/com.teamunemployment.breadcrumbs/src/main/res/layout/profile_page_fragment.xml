@@ -64,15 +64,14 @@
         </android.support.design.widget.CollapsingToolbarLayout>
     </android.support.design.widget.AppBarLayout>
     <android.support.v4.widget.NestedScrollView
-        android:layout_gravity="fill_vertical"
+
         android:background="@color/white"
-        android:fillViewport="true"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         app:layout_behavior="@string/appbar_scrolling_view_behavior">
             <RelativeLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_height="match_parent">
                 <View
                     android:layout_width="match_parent"
                     android:layout_height="1px"
@@ -139,6 +138,7 @@
                     android:layout_height="wrap_content"/>
                 <TextView
                     android:id="@+id/user_web"
+                    android:autoLink="web"
                     android:layout_marginLeft="6dp"
                     android:layout_below="@+id/user_about"
                     android:layout_toRightOf="@+id/website_icon"

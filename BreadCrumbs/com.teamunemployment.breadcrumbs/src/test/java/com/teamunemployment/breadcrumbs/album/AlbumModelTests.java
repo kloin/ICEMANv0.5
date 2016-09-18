@@ -5,14 +5,11 @@ import android.net.ConnectivityManager;
 
 import com.teamunemployment.breadcrumbs.Album.AlbumModel;
 import com.teamunemployment.breadcrumbs.Album.AlbumModelPresenterContract;
-import com.teamunemployment.breadcrumbs.Album.Frame;
 import com.teamunemployment.breadcrumbs.Album.data.Comment;
 import com.teamunemployment.breadcrumbs.Album.data.FrameDetails;
 import com.teamunemployment.breadcrumbs.Album.data.MimeDetails;
 import com.teamunemployment.breadcrumbs.Album.repo.LocalAlbumRepo;
 import com.teamunemployment.breadcrumbs.Album.repo.RemoteAlbumRepo;
-import com.teamunemployment.breadcrumbs.Explore.Data.ExploreRemoteRepository;
-import com.teamunemployment.breadcrumbs.Explore.Model;
 import com.teamunemployment.breadcrumbs.FileManager.MediaRecordModel;
 import com.teamunemployment.breadcrumbs.MockClient;
 import com.teamunemployment.breadcrumbs.Network.LoadBalancer;
@@ -20,21 +17,16 @@ import com.teamunemployment.breadcrumbs.PreferencesAPI;
 import com.teamunemployment.breadcrumbs.Profile.data.LocalProfileRepository;
 import com.teamunemployment.breadcrumbs.Profile.data.RemoteProfileRepository;
 import com.teamunemployment.breadcrumbs.RESTApi.AlbumService;
-import com.teamunemployment.breadcrumbs.RESTApi.CrumbService;
 import com.teamunemployment.breadcrumbs.RESTApi.FileManager;
 import com.teamunemployment.breadcrumbs.RESTApi.NodeService;
-import com.teamunemployment.breadcrumbs.RESTApi.UserService;
-import com.teamunemployment.breadcrumbs.Trails.Trip;
 import com.teamunemployment.breadcrumbs.database.DatabaseController;
 
 import junit.framework.Assert;
 
-import org.json.JSONException;
 import org.junit.Test;
 import org.mockito.Mockito;
 
 import java.util.ArrayList;
-import java.util.LinkedList;
 import java.util.ListIterator;
 
 import okhttp3.OkHttpClient;
@@ -71,7 +63,7 @@ public class AlbumModelTests {
                 .build();
 
         DatabaseController databaseController = Mockito.mock(DatabaseController.class);
-        RemoteAlbumRepo remoteAlbumRepo = new RemoteAlbumRepo(retrofit.create(AlbumService.class), retrofit.create(CrumbService.class));
+        RemoteAlbumRepo remoteAlbumRepo = new RemoteAlbumRepo(retrofit.create(AlbumService.class), retrofit.create(NodeService.class));
         LocalAlbumRepo localAlbumRepo = Mockito.mock(LocalAlbumRepo.class);
         AlbumModelPresenterContract contract = Mockito.mock(AlbumModelPresenterContract.class);
         FileManager fileManager = new FileManager(context);
@@ -204,7 +196,7 @@ public class AlbumModelTests {
         albumModel.setContract(contract);
         ArrayList<MimeDetails> mimes = albumModel.LoadMimeDetails("dont care");
 
-        verify(localAlbumRepo, times(1)).SaveFrameMimeData(any(ArrayList.class));
+        verify(localAlbumRepo, times(1)).SaveFrameMimeData(any(ArrayList.class), anyString());
         Assert.assertTrue(mimes.get(0).equals(mime1));
     }
 
@@ -510,6 +502,7 @@ public class AlbumModelTests {
         PreferencesAPI preferencesAPI = mock(PreferencesAPI.class);
         AlbumModel albumModel = new AlbumModel(remoteAlbumRepo, localAlbumRepo,context, fileManager, localProfileRepository, remoteProfileRepository, preferencesAPI);
 
+        when(remoteAlbumRepo.SaveComment(any(Comment.class))).thenReturn("1");
         albumModel.SaveComment("Test1", "1");
 
         verify(remoteAlbumRepo, times(1)).SaveComment(any(Comment.class));
@@ -545,19 +538,19 @@ public class AlbumModelTests {
         mockComments.add(comment1);
         mockComments.add(comment2);
 
-        when(remoteAlbumRepo.LoadCommentsForFrame(anyString())).thenReturn(mockComments);
+        when(remoteAlbumRepo.LoadCommentsForAnAlbum(anyString())).thenReturn(mockComments);
 
         ArrayList<Comment> commentsMockArray = new ArrayList<>();
-        when(localAlbumRepo.LoadCommentsForAFrame(anyString())).thenReturn(commentsMockArray);
+        when(localAlbumRepo.LoadCommentsForAnAlbum(anyString())).thenReturn(commentsMockArray);
 
         AlbumModel.loadedCommentsCallback commentsCallback = mock(AlbumModel.loadedCommentsCallback.class);
 
-        albumModel.GetCommentsForFrame("1", commentsCallback);
+        albumModel.GetCommentsForAlbum("1", commentsCallback);
         verify(commentsCallback, times(1)).onLoaded(any(ArrayList.class));
     }
 
     @Test
-    public void TestThatWeCanLoadFromLocalAndRemote() {
+    public void TestThatWeCanLoadFromLocalAndRemote() throws InterruptedException {
         RemoteAlbumRepo remoteAlbumRepo = Mockito.mock(RemoteAlbumRepo.class);
         LocalAlbumRepo localAlbumRepo = Mockito.mock(LocalAlbumRepo.class);
         AlbumModelPresenterContract contract = Mockito.mock(AlbumModelPresenterContract.class);
@@ -585,14 +578,15 @@ public class AlbumModelTests {
         mockComments.add(comment1);
         mockComments.add(comment2);
 
-        when(remoteAlbumRepo.LoadCommentsForFrame(anyString())).thenReturn(mockComments);
+        when(remoteAlbumRepo.LoadCommentsForAnAlbum(anyString())).thenReturn(mockComments);
 
         ArrayList<Comment> commentsMockArray = new ArrayList<>();
-        when(localAlbumRepo.LoadCommentsForAFrame(anyString())).thenReturn(mockComments);
+        when(localAlbumRepo.LoadCommentsForAnAlbum(anyString())).thenReturn(mockComments);
 
         AlbumModel.loadedCommentsCallback commentsCallback = mock(AlbumModel.loadedCommentsCallback.class);
 
-        albumModel.GetCommentsForFrame("1", commentsCallback);
+        albumModel.GetCommentsForAlbum("1", commentsCallback);
+        Thread.sleep(100);
         verify(commentsCallback, times(2)).onLoaded(any(ArrayList.class));
     }
 
@@ -627,12 +621,12 @@ public class AlbumModelTests {
 
 
         ArrayList<Comment> commentsMockArray = new ArrayList<>();
-        when(remoteAlbumRepo.LoadCommentsForFrame(anyString())).thenReturn(commentsMockArray);
-        when(localAlbumRepo.LoadCommentsForAFrame(anyString())).thenReturn(commentsMockArray);
+        when(remoteAlbumRepo.LoadCommentsForAnAlbum(anyString())).thenReturn(commentsMockArray);
+        when(localAlbumRepo.LoadCommentsForAnAlbum(anyString())).thenReturn(commentsMockArray);
 
         AlbumModel.loadedCommentsCallback commentsCallback = mock(AlbumModel.loadedCommentsCallback.class);
 
-        albumModel.GetCommentsForFrame("1", commentsCallback);
+        albumModel.GetCommentsForAlbum("1", commentsCallback);
         verify(commentsCallback, times(0)).onLoaded(any(ArrayList.class));
     }
 

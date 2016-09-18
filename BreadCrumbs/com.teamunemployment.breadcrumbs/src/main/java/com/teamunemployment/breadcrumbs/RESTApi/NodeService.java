@@ -1,5 +1,6 @@
 package com.teamunemployment.breadcrumbs.RESTApi;
 
+import com.teamunemployment.breadcrumbs.Album.data.Comment;
 import com.teamunemployment.breadcrumbs.Trails.Trip;
 
 import java.util.ArrayList;
@@ -16,6 +17,9 @@ import retrofit2.http.Path;
  */
 public interface NodeService {
 
+    @GET("login/DeleteNode/{NodeId}")
+    Call<ResponseBody> deleteNode(@Path("NodeId") String nodeId);
+
     @GET("login/GetPropertyFromNode/{NodeId}/{Property}")
     Call<ResponseBody> getStringProperty(@Path("NodeId") String nodeId, @Path("Property") String property);
 
@@ -30,6 +34,9 @@ public interface NodeService {
 
     @GET("TrailManager/GetTwentyTripIds")
     Call<ResponseBody> getTwentyTripIds();
+
+    @GET("TrailManager/GetAllAlbumsFromFollowedUser/{UserId}")
+    Call<ArrayList<Trip>> getAllAlbumsFromFollowedUsers(@Path("UserId") String userId);
 
     @GET("TrailManager/GetTrip/{TripId}")
     Call<Trip> getTrip(@Path("TripId") String tripId);
@@ -61,5 +68,12 @@ public interface NodeService {
     @GET("TrailManager/GetNumberOfCrumbsForATrail/{TrailId}")
     Call<ResponseBody> getNumberOfCrumbsForATrail(@Path("TrailId") String trailId);
 
+    @GET("TrailManager/GetAllCommentsForAnAlbum/{AlbumId}")
+    Call<ArrayList<Comment>> getAllCommentsForAnAlbum(@Path("AlbumId") String albumId);
 
+    @GET("TrailManager/AddCommentToAlbum/{AlbumId}/{UserId}/{CommentText}")
+    Call<ResponseBody> addCommentToAlbum(@Path("AlbumId") String albumId, @Path("UserId") String userId, @Path("CommentText") String commentText);
+
+    @GET("TrailManager/GetAllAlbumIdsFromFollowedUsers/{UserId}")
+    Call<ResponseBody> getAllAlbumIdsFromFollowedUsers(@Path("UserId") String userId);
 }

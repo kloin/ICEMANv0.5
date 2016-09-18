@@ -141,6 +141,27 @@ public class ExploreRemoteRepository {
         return new ArrayList<>();
     }
 
+    /**
+     * Load the Albums that belong to users that we are following
+     * @param userId
+     * @return An arraylist of album/trip ids.
+     */
+    public ArrayList<String> LoadAlbumsOwnedByUsersWeAreFollowing(String userId) {
+        Call<ResponseBody> call = nodeService.getAllAlbumIdsFromFollowedUsers(userId);
+        try {
+            Response<ResponseBody> response = call.execute();
+            if (response.code() == 200) {
+                String commaSeperatedIds = response.body().string();
+                String[] ids = commaSeperatedIds.split(",");
+                ArrayList<String> idsArray = new ArrayList<>(Arrays.asList(ids));
+                return idsArray;
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return new ArrayList<>();
+    }
+
     public ArrayList<String> LoadPopularTrips(int max) {
         Call<ResponseBody> call = nodeService.getIdsOfMostPopularTrips(Integer.toString(max));
         try {

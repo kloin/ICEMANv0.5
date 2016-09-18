@@ -190,7 +190,6 @@ public class MapViewer extends Activity implements OnMapClickListener, OnMapLong
         ((MapFragment) getFragmentManager().findFragmentById(R.id.map)).getMapAsync(this);
 		mContext = this;
 		trailId = this.getIntent().getStringExtra("TrailId");
-		//addViewToTrail(trailId);
 
 		if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
 			setupEnterAnimation();
@@ -1149,30 +1148,6 @@ public class MapViewer extends Activity implements OnMapClickListener, OnMapLong
 		} else {
 			mContext.startActivityForResult(viewCrumbsIntent, 1);
 		}
-	}
-
-	/**
-	 * When we view this trail, we need to add a view to it.
-	 * @param trailId The trail to add a view to.
-     */
-	private void addViewToTrail(final String trailId) {
-		Retrofit retrofit = new Retrofit.Builder()
-				// .addCallAdapterFactory(RxJavaCallAdapterFactory.create())
-				.addConverterFactory(GsonConverterFactory.create())
-				.baseUrl(LoadBalancer.RequestServerAddress() + "/rest/")
-				.build();
-		final NodeService nodeService = retrofit.create(NodeService.class);
-		new Thread(new Runnable() {
-			@Override
-			public void run() {
-				Call<ResponseBody> responseCall = nodeService.addTrailView(trailId);
-				try {
-					responseCall.execute();
-				} catch (IOException e) {
-					e.printStackTrace();
-				}
-			}
-		}).start();
 	}
 
 	@Override

@@ -51,6 +51,7 @@ public class ExploreFragment extends Fragment implements ViewContract {
             if (parent != null)
                 parent.removeView(rootView);
         }
+
         rootView = inflater.inflate(R.layout.explore_fragment, container, false);
         context = rootView.getContext();
         ButterKnife.bind(this, rootView);

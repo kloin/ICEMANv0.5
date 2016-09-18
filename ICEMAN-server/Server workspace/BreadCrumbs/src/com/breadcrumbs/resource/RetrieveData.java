@@ -153,7 +153,7 @@ public class RetrieveData {
     }
     
     @GET
-    @Path("/savecrumb/{chat}/{userId}/{trailId}/{latitude}/{longitude}/{icon}/{extension}/{placeId}/{suburb}/{city}/{country}/{timeStamp}")
+    @Path("/savecrumb/{chat}/{userId}/{trailId}/{latitude}/{longitude}/{icon}/{extension}/{placeId}/{suburb}/{city}/{country}/{timeStamp}/{orientation}")
     public String SaveCrumb (@PathParam("chat")String chat,
     					   @PathParam("userId")String userId,
     					   @PathParam("trailId")String trailId,
@@ -165,9 +165,10 @@ public class RetrieveData {
     					   @PathParam("suburb") String suburb,
     					   @PathParam("city") String city,
     					   @PathParam("country") String country,
-    					   @PathParam("timeStamp") String timeStamp) {
+    					   @PathParam("timeStamp") String timeStamp,
+                                           @PathParam("orientation") String orientation) {
     	Crumb crumb = new Crumb();    	
-    	return crumb.AddCrumb(chat, userId, trailId, latitude, longitude, icon, extension, placeId, suburb, city, country, timeStamp); 
+    	return crumb.AddCrumb(chat, userId, trailId, latitude, longitude, icon, extension, placeId, suburb, city, country, timeStamp, orientation); 
     }
     
     @POST
@@ -284,7 +285,7 @@ public class RetrieveData {
      * @param timeStamp The time the crumb was created.
     */
     @POST
-    @Path("/savecrumb/{chat}/{userId}/{trailId}/{latitude}/{longitude}/{icon}/{extension}/{placeId}/{suburb}/{city}/{country}/{timeStamp}")
+    @Path("/savecrumb/{chat}/{userId}/{trailId}/{latitude}/{longitude}/{icon}/{extension}/{placeId}/{suburb}/{city}/{country}/{timeStamp}/{orientation}")
     @Consumes(MediaType.MULTIPART_FORM_DATA)
     public String UploadCrumb(MultiPart data, 
             @PathParam("chat")String chat,
@@ -298,12 +299,13 @@ public class RetrieveData {
             @PathParam("suburb") String suburb,
             @PathParam("city") String city,
             @PathParam("country") String country,
-            @PathParam("timeStamp") String timeStamp) {   
+            @PathParam("timeStamp") String timeStamp,
+            @PathParam("orientation") String orientation) {   
         
         Crumb crumb =new Crumb();
         
         // Save the crumb metadata.
-        String id = crumb.AddCrumb(chat, userId, trailId, latitude, longitude, icon, extension, placeId, suburb, city, country, timeStamp);
+        String id = crumb.AddCrumb(chat, userId, trailId, latitude, longitude, icon, extension, placeId, suburb, city, country, timeStamp, orientation);
         
         // Now save the multipart data (our image/video).
         List<BodyPart> parts = data.getBodyParts();
@@ -369,15 +371,6 @@ public class RetrieveData {
     	System.out.println("Saved New User");
     	return Integer.toString(db.SaveNode(keysAndItems, com.breadcrumbs.database.DBMaster.myLabels.User));
     }
-    // USE THIS BRO
-//    @GET
-//    @Path("/DeleteAllData")
-//    public String Obliterate() {
-//    	// USE THIS WITH CAUTION - probably will not be kept around after testing because this would be dumb
-//    	Trail trail = new Trail();
-//    	trail.Obliterate();
-//    	return "go fuck your self";
-//    }
     
     @GET
     @Path("/DeleteNode/{nodeId}")
@@ -385,7 +378,7 @@ public class RetrieveData {
     	Trail trail = new Trail();
     	return trail.DeleteNodeAndRelationship(nodeId);
     }
-    
+ 
     @GET
     @Path("/GetUser/{userId}")
     public String GetUser (@PathParam("UserId") int userId) throws JSONException {

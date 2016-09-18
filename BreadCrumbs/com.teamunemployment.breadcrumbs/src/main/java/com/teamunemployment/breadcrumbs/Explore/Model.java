@@ -39,14 +39,23 @@ public class Model {
         // This is a master list of ids to ensure theat we dont add the same trip twice.
         ArrayList<String> ids = new ArrayList<>();
 
-        // Load up to ten trips that we are following.
+        // Load up to ten trips that we are following. - dont know if i want this anymore.
         ArrayList<String> trips = LoadFollowingTrips(userId, 4);
 
+//        // Load following trips.
+//        if (trips.size() > 0) {
+//            cardModels.add(new ExploreCardModel(ExploreCardModel.FOLLOWING_HEADER, "Following", R.drawable.ic_account_plus_grey600_24dp));
+//            cardModels.addAll(addModels(trips, ExploreCardModel.FOLLOWING_CARD, ids));
+//        }
+
+        ArrayList<String> followedUsersTrips = LoadAlbumsOwnedByUsersWeAreFollowing(userId);
         // Load following trips.
-        if (trips.size() > 0) {
+        if (followedUsersTrips.size() > 0) {
             cardModels.add(new ExploreCardModel(ExploreCardModel.FOLLOWING_HEADER, "Following", R.drawable.ic_account_plus_grey600_24dp));
-            cardModels.addAll(addModels(trips, ExploreCardModel.FOLLOWING_CARD, ids));
+            cardModels.addAll(addModels(followedUsersTrips, ExploreCardModel.TRENDING_CARD, ids));
+            ids.addAll(trips);
         }
+
 
         // add trending banner
         cardModels.add(new ExploreCardModel(ExploreCardModel.TRENDING_HEADER, "Trending", R.drawable.ic_location_on_white_24dp));
@@ -65,13 +74,15 @@ public class Model {
             cardModels.addAll(addModels(global, ExploreCardModel.GLOBAL_CARD, ids));
         }
 
-
-
         return cardModels;
     }
 
     public ArrayList<String> LoadFollowingTrips(long userId, int maxTrips) {
         return remoteRepository.LoadFollowingTrips(userId, maxTrips);
+    }
+
+    public ArrayList<String> LoadAlbumsOwnedByUsersWeAreFollowing(long userId) {
+        return remoteRepository.LoadAlbumsOwnedByUsersWeAreFollowing(Long.toString(userId));
     }
 
     public ArrayList<String> LoadUpToTwentyPopularAlbumIdsFromAroundTheGlobe() {

@@ -9,6 +9,8 @@ import com.teamunemployment.breadcrumbs.Album.data.FrameDetails;
 import com.teamunemployment.breadcrumbs.Album.data.MimeDetails;
 import com.teamunemployment.breadcrumbs.RESTApi.AlbumService;
 import com.teamunemployment.breadcrumbs.RESTApi.CrumbService;
+import com.teamunemployment.breadcrumbs.RESTApi.NodeService;
+import com.teamunemployment.breadcrumbs.Trails.Trip;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -28,12 +30,12 @@ public class RemoteAlbumRepo {
 
     private static final String TAG = "RemoteAlbumRepo";
     private AlbumService albumService;
-    private CrumbService crumbService;
+    private NodeService nodeService;
 
     @Inject
-    public RemoteAlbumRepo(AlbumService albumService, CrumbService crumbService) {
+    public RemoteAlbumRepo(AlbumService albumService, NodeService crumbService) {
         this.albumService = albumService;
-        this.crumbService = crumbService;
+        this.nodeService = crumbService;
     }
 
     public ArrayList<MimeDetails> LoadMimeDetailsForAnAlbum(String albumId) {
@@ -72,7 +74,6 @@ public class RemoteAlbumRepo {
      * @param albumId
      * @return A Linked list of the ids.
      */
-    @Nullable
     public LinkedList<String> LoadFrameIds(String albumId) {
         Call<ResponseBody> call = albumService.GetFrameIdsForAnAlbum(albumId);
         try {
@@ -91,6 +92,26 @@ public class RemoteAlbumRepo {
     }
 
     /**
+     * Load the user id for an album
+     * @param albumId The album for which we want the owner.
+     * @return The user if the this album
+     */
+    public String LoadOwnerId(String albumId) {
+        Call<ResponseBody> call = albumService.GetOwnerId(albumId, "UserId");
+        try {
+            Response<ResponseBody> response = call.execute();
+            if (response != null && response.code() ==200) {
+                String userId = response.body().string();
+                return userId;
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        return null;
+    }
+
+    /**
      * Download a file from our server.
      * @param id The id of the file to download
      * @param mime The file type (.jpg) (.mp4)
@@ -106,10 +127,12 @@ public class RemoteAlbumRepo {
      * @param comment The comment object to save.
      */
     public String SaveComment(Comment comment) {
-        Call<ResponseBody> call = crumbService.saveComment(comment.getUserId(), comment.getEntityId(), comment.getCommentText());
+        Call<ResponseBody> call = nodeService.addCommentToAlbum(comment.getEntityId(),comment.getUserId(), comment.getCommentText());
         try {
             Response<ResponseBody> responseBodyResponse = call.execute();
-            return responseBodyResponse.body().string();
+            if (responseBodyResponse.body() != null && responseBodyResponse.code() == 200) {
+                return responseBodyResponse.body().string();
+            }
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -118,15 +141,27 @@ public class RemoteAlbumRepo {
 
     public void DeleteComment(String commentId) {
        // crumbService.deleteComment(commentId);
+        Call<ResponseBody> call =nodeService.deleteNode(commentId);
+        try {Response<ResponseBody> response = call.execute();
+            if (response != null && response.body() != null && response.code() == 200) {
+               // Success
+                Log.d(TAG, "Successfully deleted comment");
+                return;
+            } else {
+                Log.e(TAG, "Failed to delete comment. Error code:" + response.code());
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     /**
-     * Get an array list of comments for a frame.
-     * @param frameId The id of the frame we are gettign comments for.
+     * Get an array list of comments for an album.
+     * @param albumId The id of the frame we are gettign comments for.
      * @return The array of comment objects.
      */
-    public ArrayList<Comment> LoadCommentsForFrame(String frameId) {
-        Call<ArrayList<Comment>> call = crumbService.getCommentsForEvent(frameId);
+    public ArrayList<Comment> LoadCommentsForAnAlbum(String albumId) {
+        Call<ArrayList<Comment>> call = nodeService.getAllCommentsForAnAlbum(albumId);
         try {Response<ArrayList<Comment>> response = call.execute();
            if (response != null && response.body() != null && response.code() == 200) {
                return response.body();
@@ -136,5 +171,36 @@ public class RemoteAlbumRepo {
         }
 
         return new ArrayList<>();
+    }
+
+    /**
+     * Add a view to an album
+     * @param albumId The identifier of the viewed album.
+     */
+    public void AddViewToAlbum(final String albumId) {
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                Call<ResponseBody> responseCall = nodeService.addTrailView(albumId);
+                try {
+                    responseCall.execute();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }).start();
+    }
+
+    public Trip LoadTrip(long id) {
+        Call<Trip> call = nodeService.getTrip(Long.toString(id));
+        try {Response<Trip> response = call.execute();
+            if (response != null && response.body() != null && response.code() == 200) {
+                return response.body();
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        return new Trip();
     }
 }

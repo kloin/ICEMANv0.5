@@ -101,6 +101,7 @@
         <service android:name=".BackgroundServices.SaveCrumbService" android:exported="false"/>
         <service android:name=".client.ImageChooser.SaveLocalImageAsProfilePic" android:exported="false"/>
 
+        <activity android:name=".Album.LocalAlbumSummary.LocalAlbumView" android:screenOrientation="portrait"/>
         <activity android:name=".Album.AlbumView" android:screenOrientation="portrait"/>
         <activity android:name=".client.TrailManager" android:screenOrientation="portrait">
         </activity>

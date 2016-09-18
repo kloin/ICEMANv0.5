@@ -7,7 +7,7 @@ import com.teamunemployment.breadcrumbs.Trails.Trip;
 import java.util.ArrayList;
 
 /**
- * Created by jek40 on 30/06/2016.
+ * @author Josiah Kendall.
  */
 public class ProfileRepository {
 
