@@ -65,7 +65,7 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 
 /**
- * Created by jek40 on 3/07/2016.
+ * @author Josiah Kendall.
  */
 public class ProfileFragment extends Fragment implements ProfileContract.ViewContract {
 
