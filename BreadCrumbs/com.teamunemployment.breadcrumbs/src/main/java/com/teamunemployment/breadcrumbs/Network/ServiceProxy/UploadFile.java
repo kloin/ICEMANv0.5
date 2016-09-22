@@ -20,7 +20,7 @@ import okhttp3.RequestBody;
 import okhttp3.Response;
 
 /**
- * Created by jek40 on 4/05/2016.
+ * @author Josiah Kendall
  */
 public class UploadFile extends AsyncTask<Void, Integer, String> {
     private ProgressBar progressBar;

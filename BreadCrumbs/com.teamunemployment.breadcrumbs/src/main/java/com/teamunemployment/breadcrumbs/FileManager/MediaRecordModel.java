@@ -1,7 +1,7 @@
 package com.teamunemployment.breadcrumbs.FileManager;
 
 /**
- * Created by jek40 on 7/08/2016.
+ * @author Josiah Kendall
  */
 public class MediaRecordModel {
 

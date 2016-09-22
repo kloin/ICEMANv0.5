@@ -35,9 +35,9 @@ public class LocalAlbumView extends AppCompatActivity implements LocalAlbumSumma
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.local_album_summary_view);
-        ((App) getApplication()).getNetComponent().inject(this);
+        ((App) getApplication()).getNetComponent().injectView(this);
         ButterKnife.bind(this);
-
+        presenter.setViewContract(this);
         presenter.loadInfo();
     }
 

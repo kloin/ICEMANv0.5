@@ -142,7 +142,8 @@
             android:screenOrientation="portrait">
         </activity>
         <activity android:name=".client.UploadTrail" android:screenOrientation="portrait"></activity>
-
+        <activity android:name="com.theartofdev.edmodo.cropper.CropImageActivity"
+                  android:theme="@style/Base.Theme.AppCompat"/>
         <activity android:name=".client.NavMenu.Profile.ProfilePicChooser" android:screenOrientation="portrait"/>
         <activity android:name=".client.EditExistingTrail" android:screenOrientation="portrait"/>
         <activity android:name=".client.NavMenu.About" android:screenOrientation="portrait"/>
