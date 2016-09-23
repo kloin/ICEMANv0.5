@@ -1446,8 +1446,8 @@ public class MapViewer extends Activity implements OnMapClickListener, OnMapLong
 					//next = crumbs.get
 					String id = keys.next();
 					next = crumbs.getJSONObject(id);
-					mapDisplayManager.DrawLocalCrumbFromJson(next);
-					mapDisplayManager.clusterManager.cluster();
+					//mapDisplayManager.DrawLocalCrumbFromJson(next);
+					//mapDisplayManager.clusterManager.cluster();
 				}
 				// Now that we are done, we want to set the focus to the last crumb added
 

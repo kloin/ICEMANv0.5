@@ -287,7 +287,7 @@ public class MapDisplayManager implements GoogleMap.OnMarkerClickListener, Googl
         float x = 0;
         float y = 0;
         if (posXString != null) {
-             x = Float.parseFloat(posXString);
+            x = Float.parseFloat(posXString);
         }
 
         if (posYString != null) {
@@ -376,7 +376,8 @@ public class MapDisplayManager implements GoogleMap.OnMarkerClickListener, Googl
         } else if (city != null) {
             placeName = placeName + ", " + city;
         }
-            Log.d(TAG, "Loading location crumb with and Id: " + id + " and a description of: " + description);
+
+        Log.d(TAG, "Loading location crumb with and Id: " + id + " and a description of: " + description);
         mDataObjects.add(new CrumbCardDataObject(mediaType, eventId, placeId, Latitude, Longitude, 0, placeName, description, x, y));
         Bitmap bitmap = fetchBitmapFromLocalFile(eventId, mediaType); // Needs to be async
         DisplayCrumb displayCrumb = new DisplayCrumb(Latitude, Longitude, mediaType, id, R.drawable.wine_glass, placeId,suburb, city, country, timeStamp, description, bitmap, 0, x, y);
