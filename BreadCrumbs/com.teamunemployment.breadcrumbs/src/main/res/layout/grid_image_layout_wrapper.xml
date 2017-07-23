@@ -17,7 +17,6 @@
         <TextView
             android:id="@+id/select_cover_photo_image"
             android:text="Select Cover photo"
-
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             style="@style/Base.TextAppearance.Widget.AppCompat.Toolbar.Title"
@@ -38,8 +37,8 @@
         android:numColumns="2"
         android:layout_below="@+id/select_profile_cover_photo_toolbar"
         android:stretchMode="columnWidth"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content" >
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" >
 
     </GridView>
 </RelativeLayout>

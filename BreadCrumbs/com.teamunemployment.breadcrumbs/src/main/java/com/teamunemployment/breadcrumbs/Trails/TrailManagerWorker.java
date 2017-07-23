@@ -30,11 +30,13 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.File;
+import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.UnknownHostException;
 import java.text.MessageFormat;
 import java.util.Iterator;
 
+import okhttp3.Headers;
 import okhttp3.MediaType;
 import okhttp3.MultipartBody;
 import okhttp3.OkHttpClient;
@@ -43,7 +45,7 @@ import okhttp3.RequestBody;
 import okhttp3.Response;
 
 /**
- * Created by jek40 on 30/03/2016.
+ * @author Josiah Kendall
  */
 public class TrailManagerWorker {
     private static final String TAG = "TrailManagerWorker";
@@ -122,11 +124,40 @@ public class TrailManagerWorker {
 
             // Save the crumbs in this trail
             saveCrumbs(crumbsWithMedia);
+
+            // Need to savecover photo in here.
+            saveCoverPhoto(trailId);
         } catch (JSONException e) {
             e.printStackTrace();
         }
     }
 
+    /**
+     * Save the cover photo for our album.
+     * @param trailId
+     */
+    private void saveCoverPhoto(String trailId) {
+        MediaType MEDIA_TYPE_PNG = MediaType.parse("image/png");
+        String fileName =  Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES).toString() + "/coverphoto.jpg";
+        OkHttpClient client = new OkHttpClient();
+        RequestBody requestBody = new MultipartBody.Builder()
+                .setType(MultipartBody.FORM)
+                .addFormDataPart("data", "coverphoto.jpg",
+                        RequestBody.create(MEDIA_TYPE_PNG, new File(fileName)))
+                .build();
+
+        Request request = new Request.Builder()
+                .header("Authorization", "Client-ID 1 ")
+                .url(LoadBalancer.RequestServerAddress() + "/rest/login/UploadCoverPhoto/"+ trailId)
+                .post(requestBody)
+                .build();
+        try {
+            Response response = client.newCall(request).execute();
+            Log.d(TAG, "Saved cover photo with response code: " + response.code() + " and string : " + response.body().string());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 
     private void savePath(JSONObject metadata, String serverTrailId) {
         String url = MessageFormat.format("{0}/rest/TrailManager/SavePath/{1}",

@@ -170,7 +170,11 @@ public class Utils {
         BitmapFactory.Options bmOptions = new BitmapFactory.Options();
         bitmap = BitmapFactory.decodeFile(image.getAbsolutePath(),bmOptions);
         // Filter by default as I think it creates better results when downsizing.
-        return Bitmap.createScaledBitmap(bitmap, width, height, true);
+        if (bitmap != null) {
+            return Bitmap.createScaledBitmap(bitmap, width, height, true);
+        }
+
+        return bitmap;
     }
 
     public static String FetchLocalPathToImageFile(String eventId) {
@@ -206,9 +210,6 @@ public class Utils {
             // I pass in "external" because that's the MediaStore's name for the external
             // storage on my device (the other possibility is "internal")
             Uri videosUri = MediaStore.Video.Media.getContentUri("external");
-
-            // Log.d(TAG,"videosUri = " + videosUri.toString());
-
             String[] projection = {MediaStore.Video.VideoColumns._ID};
 
             // TODO This will break if we have no matching item in the MediaStore.

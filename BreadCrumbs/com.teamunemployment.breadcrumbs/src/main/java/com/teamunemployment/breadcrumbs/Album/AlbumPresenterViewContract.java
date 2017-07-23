@@ -31,4 +31,6 @@ public interface AlbumPresenterViewContract {
     void SetImageViewWithImage(String url, CircleImageView profileImage);
     void showNoContentMessage();
     void setImageViewCount(String countString);
+    void setSettingsButton(int visible);
+    void setPlayCountVisibility(int visibility);
 }

@@ -14,10 +14,9 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
 /**
- * Created by jek40 on 2/07/2016.
+ * @author Josiah Kendall
  */
 public class ProfileModeltests {
-
 
     private ProfileModel model;
     private ProfileContract.ViewContract view;

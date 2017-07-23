@@ -1,7 +1,10 @@
 package com.teamunemployment.breadcrumbs.client.Cards;
 
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Color;
+import android.os.Environment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,6 +16,7 @@ import com.teamunemployment.breadcrumbs.Network.LoadBalancer;
 import com.teamunemployment.breadcrumbs.R;
 import com.teamunemployment.breadcrumbs.RandomUsefulShit.Utils;
 
+import java.io.File;
 import java.util.ArrayList;
 
 /**
@@ -62,19 +66,32 @@ public class ImageChooserGridViewAdapter extends BaseAdapter {
 
             if (id.endsWith("L")) {
                 id =  id.substring(0, id.length()-1);
-                Picasso.with(context).load(Utils.FetchLocalPathToImageFile(id)).fit().centerCrop().into(imageView);
+                File sd = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES);
+                File image = new File(sd, id + ".jpg");
+                BitmapFactory.Options bmOptions = new BitmapFactory.Options();
+                Bitmap bitmap = BitmapFactory.decodeFile(image.getAbsolutePath(),bmOptions);
+                imageView.setImageBitmap(bitmap);
+                ViewGroup.LayoutParams params = imageView.getLayoutParams();
+                params.height = params.width;
+                imageView.setLayoutParams(params);
             } else {
                 Picasso.with(context).load(LoadBalancer.RequestCurrentDataAddress() + "/images/"+id+".jpg").fit().centerCrop().into(imageView);
             }
 
-            // Glide.with(context).load("http://placehold.it/350x150").centerCrop().placeholder(Color.GRAY).crossFade().into(imageView);
         } else {
             gridView = (View) convertView;
             ImageView imageView = (ImageView) gridView
                     .findViewById(R.id.grid_image);
             if (id.endsWith("L")) {
                 id =  id.substring(0, id.length()-1);
-                Picasso.with(context).load(Utils.FetchLocalPathToImageFile(id)).fit().centerCrop().into(imageView);
+                File sd = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES);
+                File image = new File(sd, id + ".jpg");
+                BitmapFactory.Options bmOptions = new BitmapFactory.Options();
+                Bitmap bitmap = BitmapFactory.decodeFile(image.getAbsolutePath(),bmOptions);
+                imageView.setImageBitmap(bitmap);
+                ViewGroup.LayoutParams params = imageView.getLayoutParams();
+                params.height = params.width;
+                imageView.setLayoutParams(params);
 
             } else {
                 Picasso.with(context).load(LoadBalancer.RequestCurrentDataAddress() + "/images/"+id+".jpg").fit().centerCrop().into(imageView);

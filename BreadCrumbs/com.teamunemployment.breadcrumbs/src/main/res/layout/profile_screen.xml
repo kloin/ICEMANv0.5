@@ -39,7 +39,7 @@
                     android:layout_alignParentLeft="true"
                     android:layout_alignParentStart="true"
                     android:background="@color/white"
-                    android:scaleType="centerCrop" />
+                    android:scaleType="centerCrop"/>
 
                 <TextView
                     android:id="@+id/profile_select_prompt"
@@ -50,7 +50,6 @@
                     android:gravity="right"
                     android:text="Tap to Change"
                     android:textSize="16sp" />
-
             </RelativeLayout>
 
             <android.support.v7.widget.Toolbar

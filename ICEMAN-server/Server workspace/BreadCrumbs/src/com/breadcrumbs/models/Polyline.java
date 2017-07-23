@@ -19,7 +19,8 @@ import org.junit.Assert;
  * head event, distance and transport method etc
  */
 public class Polyline {
-    // Finals are public now cos fuck you. No seriously I will only be fetching them. These should really be private but I may change that at a later date because I will probably also want to edit them. This is just done for speed
+    // Finals are public now cos fuck you. No seriously I will only be fetching them. 
+    // These could be private but I may change that at a later date because I will probably also want to edit them. This is just done for speed
     public final String EncodedPolyline;
     public final int IsEncoded;
     public final int BaseNodeId;

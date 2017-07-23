@@ -16,7 +16,7 @@ import org.junit.Test;
 
 /**
  * TESTS
- * @author jek40
+ * @author Josiah kendall.
  */
 public class TrailManagerTests {
     

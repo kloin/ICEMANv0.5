@@ -110,10 +110,14 @@ public class AlbumModel{
 
     public String LoadViewCount(AlbumDataSource albumDataSource) {
         if (albumDataSource.getIsLocal()) {
+            // This is the default. We should probably just return 0.
             return "NA";
         }
 
         Trip trip = localTripRepo.LoadTrip(Long.parseLong(albumDataSource.GetAlbumId()));
+        if (trip == null) {
+            return "NA";
+        }
         return trip.getViews();
     }
 
@@ -382,7 +386,6 @@ public class AlbumModel{
     }
 
     public void DeleteComment(final String commentId) {
-
                 localAlbumRepo.DeleteComment(commentId);
                 remoteAlbumRepo.DeleteComment(commentId);
     }

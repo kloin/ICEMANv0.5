@@ -7,10 +7,10 @@ buildscript {
             dirs 'libs'
         }
     }
+
     dependencies {
         classpath 'com.android.tools.build:gradle:2.1.0'
         classpath 'com.google.gms:google-services:3.0.0'
-
         // Think this is required for butterknife
         classpath 'com.neenbedankt.gradle.plugins:android-apt:1.8'
     }
@@ -19,6 +19,7 @@ buildscript {
 allprojects {
     repositories {
         jcenter()
+        maven { url "https://jitpack.io" }
         flatDir {
             dirs 'libs'
         }

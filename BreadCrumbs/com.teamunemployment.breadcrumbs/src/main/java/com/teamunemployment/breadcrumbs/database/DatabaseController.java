@@ -53,7 +53,7 @@ public class DatabaseController extends SQLiteOpenHelper {
 
     private static final int DATABASE_VERSION = 9;
     private static final String POLYLINES = "polylines";
-	private static final String DATABASE_NAME="users";
+    private static final String DATABASE_NAME = "users";
     private static final String TRAIL_POINTS_INDEX = "trailIndexDb";
     private static final String TRIP_TABLE = "Trips_db";
     private static final String GPS_TABLE = "GPS_POINTS";
@@ -63,11 +63,11 @@ public class DatabaseController extends SQLiteOpenHelper {
     private static final String METADATA = "metadataDb";
     private static final String WEATHER = "weatherDb";
     private static final String USERS = "users_db";
-	public static final String USERID="userid";
-	public static final String USERNAME="username";
-	public static final String AGE="age";
-	public static final String PIN="pin";
-    public static final String TRAILID="trailid";
+    public static final String USERID = "userid";
+    public static final String USERNAME = "username";
+    public static final String AGE = "age";
+    public static final String PIN = "pin";
+    public static final String TRAILID = "trailid";
     private static final String FOLLOWING_TABLE = "following_table";
     private static final String FRAME_DETAILS = "frame_details";
     private static final String STORED_MEDIA_FILES = "stored_files";
@@ -75,43 +75,44 @@ public class DatabaseController extends SQLiteOpenHelper {
     //public static final String
     private static final String TAG = "DBC";
     private Context mContext;
-	private SQLiteDatabase db;
+    private SQLiteDatabase db;
 
     private PreferencesAPI mPreferencesApi;
-	public DatabaseController(Context context) {
-		super(context, "users", null, DATABASE_VERSION);
+
+    public DatabaseController(Context context) {
+        super(context, "users", null, DATABASE_VERSION);
         this.mContext = context;
         mPreferencesApi = new PreferencesAPI(context);
-	}
+    }
 
-	@Override
-	public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
+    @Override
+    public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         // TODO: Need to fix this shit
-        Log.d(TAG, "Updating from version: " + oldVersion + " to version: "+ newVersion);
+        Log.d(TAG, "Updating from version: " + oldVersion + " to version: " + newVersion);
         // Upgade from version one to two
         if (oldVersion == 1) {
-            String upgradeQuery = "ALTER TABLE " + TRAIL_SUMMARY +" ADD COLUMN PublishPoint INTEGER";
+            String upgradeQuery = "ALTER TABLE " + TRAIL_SUMMARY + " ADD COLUMN PublishPoint INTEGER";
             db.execSQL(upgradeQuery);
             oldVersion = 2;
         }
 
         if (oldVersion == 3) {
-            String upgradeQuery = "ALTER TABLE " + TRIP_TABLE +" ADD COLUMN TrailName TEXT";
-            String upgrade2 = "ALTER TABLE " + TRIP_TABLE +" ADD COLUMN Distance TEXT";
+            String upgradeQuery = "ALTER TABLE " + TRIP_TABLE + " ADD COLUMN TrailName TEXT";
+            String upgrade2 = "ALTER TABLE " + TRIP_TABLE + " ADD COLUMN Distance TEXT";
             db.execSQL(upgradeQuery);
             db.execSQL(upgrade2);
             oldVersion = 4;
         }
 
         if (oldVersion == 4) {
-           // String upgradeQuery = "ALTER TABLE " + CRUMBS +" ADD COLUMN descPosX REAL";
-           // db.execSQL(upgradeQuery);
-           // upgradeQuery = "ALTER TABLE " + CRUMBS +" ADD COLUMN descPosY REAL";
-           // db.execSQL(upgradeQuery);
+            // String upgradeQuery = "ALTER TABLE " + CRUMBS +" ADD COLUMN descPosX REAL";
+            // db.execSQL(upgradeQuery);
+            // upgradeQuery = "ALTER TABLE " + CRUMBS +" ADD COLUMN descPosY REAL";
+            // db.execSQL(upgradeQuery);
             oldVersion = 5;
         }
 
-        if ( oldVersion ==5) {
+        if (oldVersion == 5) {
             db.execSQL("CREATE TABLE IF NOT EXISTS " + FOLLOWING_TABLE + " (_id INTEGER PRIMARY KEY AUTOINCREMENT, " +
                     "UserId INTEGER," +
                     "FollowedUserId INTEGER);");
@@ -143,28 +144,28 @@ public class DatabaseController extends SQLiteOpenHelper {
         }
 
         if (oldVersion == 9) {
-            String upgradeQuery = "ALTER TABLE " + CRUMBS +" ADD COLUMN orientation Integer";
+            String upgradeQuery = "ALTER TABLE " + CRUMBS + " ADD COLUMN orientation Integer";
             db.execSQL(upgradeQuery);
             oldVersion += 1;
         }
 
         if (oldVersion == 10) {
-            String upgradeQuery = "ALTER TABLE " + TRAIL_SUMMARY +" ADD COLUMN IsPublic INTEGER";
+            String upgradeQuery = "ALTER TABLE " + TRAIL_SUMMARY + " ADD COLUMN IsPublic INTEGER";
             db.execSQL(upgradeQuery);
         }
     }
 
-	public void SaveUser(String userId, String userName, int age, String pin) {
-		ContentValues cv = new ContentValues();
+    public void SaveUser(String userId, String userName, int age, String pin) {
+        ContentValues cv = new ContentValues();
 
-		cv.put(USERID, userId);
-		cv.put(USERNAME, userName);
-		cv.put(AGE, age);
-		cv.put(PIN, pin);
+        cv.put(USERID, userId);
+        cv.put(USERNAME, userName);
+        cv.put(AGE, age);
+        cv.put(PIN, pin);
         SQLiteDatabase localdb = getWritableDatabase();
         localdb.insert("users", null, cv);
         localdb.close();
-	}
+    }
 
     public boolean CheckUserExists(String userId) {
         db = getReadableDatabase();
@@ -175,7 +176,7 @@ public class DatabaseController extends SQLiteOpenHelper {
                 cursor.close();
                 return true;
             }
-        }catch (SQLiteException ex) {
+        } catch (SQLiteException ex) {
             Log.d("DB", "Checking for user failed, most likely due to database not existing.");
             ex.printStackTrace();
         }
@@ -198,9 +199,9 @@ public class DatabaseController extends SQLiteOpenHelper {
 
         // We also want it in the DB.
         db = getWritableDatabase();
-        db.rawQuery("UPDATE "+ TRAIL_POINTS_INDEX +
-                    " SET trailIndex="+trailIndex +
-                    " WHERE trailid="+trailId, null);
+        db.rawQuery("UPDATE " + TRAIL_POINTS_INDEX +
+                " SET trailIndex=" + trailIndex +
+                " WHERE trailid=" + trailId, null);
     }
 
     // Method to get the number of points we have currently saved, so we know the where the point needs to go in the trail.
@@ -209,12 +210,12 @@ public class DatabaseController extends SQLiteOpenHelper {
         if (trailPointIndex == 0) {
             // This is incase we fail to get it out the shared preferences for whatever reason (cleared cache etc)
             db = getWritableDatabase();
-            Cursor cursor = db.rawQuery("Select * from "+TRAIL_POINTS_INDEX+" where trailid="+trailId, null);
+            Cursor cursor = db.rawQuery("Select * from " + TRAIL_POINTS_INDEX + " where trailid=" + trailId, null);
             if (cursor.getCount() > 0) {
                 trailPointIndex = cursor.getInt(cursor.getColumnIndex("trailIndex"));
             } else {
-                db.rawQuery("INSERT INTO "+ TRAIL_POINTS_INDEX + " (trailid, trailIndex)" +
-                        " VALUES ("+trailId + ","+trailPointIndex+");", null);
+                db.rawQuery("INSERT INTO " + TRAIL_POINTS_INDEX + " (trailid, trailIndex)" +
+                        " VALUES (" + trailId + "," + trailPointIndex + ");", null);
             }
         }
 
@@ -237,36 +238,36 @@ public class DatabaseController extends SQLiteOpenHelper {
         int trailPointIndex = getTrailPointIndex(trailId);
 
         Double lastLatitude = Double.parseDouble(PreferenceManager.getDefaultSharedPreferences(mContext).getString("LastLat", "-1"));
-        Double lastLongitude =  Double.parseDouble(PreferenceManager.getDefaultSharedPreferences(mContext).getString("LastLong", "-1"));
+        Double lastLongitude = Double.parseDouble(PreferenceManager.getDefaultSharedPreferences(mContext).getString("LastLong", "-1"));
 
         // Here we check if the point is a satasfactory distance from the previously saved point, so that
         // we do not save shitty repeated points whilst we are at one location for a long period of time.
         // This should be done by the Fused GPS but it does not seem to be consistently working.
         //if (lastLatitude > 0 && lastLongitude > 0) {
-            Location oldLocation = new Location("Old Location");
-            oldLocation.setLatitude(lastLatitude);
-            oldLocation.setLongitude(lastLongitude);
+        Location oldLocation = new Location("Old Location");
+        oldLocation.setLatitude(lastLatitude);
+        oldLocation.setLongitude(lastLongitude);
 
-            float[] distances = new float[1];
-            Location.distanceBetween(lastLatitude,
-                    lastLongitude, location.getLatitude(),
-                    location.getLongitude(), distances);
+        float[] distances = new float[1];
+        Location.distanceBetween(lastLatitude,
+                lastLongitude, location.getLatitude(),
+                location.getLongitude(), distances);
 
-            // Check distances, if less than X meters moved, we dont want to be saving the point
-            for (float distance : distances) {
-                if (distance > 2000 || distance < 100) {
-                    if (distance > 2000) {
-                        // Update the location. THis is done so that the next point we get will probably be back to normal,
-                        // which will again miss anc come through this if statement and not save. The next point however will be ok.
-                        // The need for this is that if we do not record for a long time for whatever reason, this statement will stop
-                        // the tracking from being permanantly disabled.
-                        preferences.edit().putString("LastLat", Double.toString(location.getLatitude())).commit();
-                        preferences.edit().putString("LastLong", Double.toString(location.getLongitude())).commit();
-                    }
-                    Log.d("GPS", "Not saving point - too close to last");
-                    return;
+        // Check distances, if less than X meters moved, we dont want to be saving the point
+        for (float distance : distances) {
+            if (distance > 2000 || distance < 100) {
+                if (distance > 2000) {
+                    // Update the location. THis is done so that the next point we get will probably be back to normal,
+                    // which will again miss anc come through this if statement and not save. The next point however will be ok.
+                    // The need for this is that if we do not record for a long time for whatever reason, this statement will stop
+                    // the tracking from being permanantly disabled.
+                    preferences.edit().putString("LastLat", Double.toString(location.getLatitude())).commit();
+                    preferences.edit().putString("LastLong", Double.toString(location.getLongitude())).commit();
                 }
+                Log.d("GPS", "Not saving point - too close to last");
+                return;
             }
+        }
         //}
 
         // Need to make sure I am saving these.
@@ -318,11 +319,11 @@ public class DatabaseController extends SQLiteOpenHelper {
         final String trailId = PreferenceManager.getDefaultSharedPreferences(mContext).getString("TRAILID", "-1");
 
         db = getWritableDatabase();
-        Cursor cursor = db.rawQuery("SELECT * from trailPoints where trailId="+trailId, null);
+        Cursor cursor = db.rawQuery("SELECT * from trailPoints where trailId=" + trailId, null);
         cursor.moveToFirst();
 
         // This makes us only update when we have X amount of points.
-        if (cursor.getCount() < pointCount ) {
+        if (cursor.getCount() < pointCount) {
             Log.d("GPS", "Not enough new points to save to server");
             return;
         }
@@ -338,10 +339,10 @@ public class DatabaseController extends SQLiteOpenHelper {
                 @Override
                 public void onFinished(String result) {
                     Log.d("GPS", "Successfully saved points to server");
-                   DeleteAllSavedTrailPoints(trailId);
+                    DeleteAllSavedTrailPoints(trailId);
                     Log.d("GPS", "Deleted all saved points.");
-        }
-    }, jsonObject);
+                }
+            }, jsonObject);
 
             post.execute();
         }
@@ -357,7 +358,7 @@ public class DatabaseController extends SQLiteOpenHelper {
 
     public JSONObject getAllSavedTrailPoints(String trailId) {
         JSONObject allTrailPoints = new JSONObject();
-        Cursor constantsCursor=getReadableDatabase().rawQuery("SELECT * FROM trailPoints WHERE trailId ="+trailId+" ORDER BY timeStamp",
+        Cursor constantsCursor = getReadableDatabase().rawQuery("SELECT * FROM trailPoints WHERE trailId =" + trailId + " ORDER BY timeStamp",
                 null);
         int numberOfPointsIndex = 0;
         JSONObject lastNode = null;
@@ -379,8 +380,8 @@ public class DatabaseController extends SQLiteOpenHelper {
                 pointJsonNode.put("timeStamp", timeStamp);
                 pointJsonNode.put("trailId", trailId);
                 pointJsonNode.put("index", index);
-                pointJsonNode.put("next", index+1);
-                allTrailPoints.put("Index:"+numberOfPointsIndex, pointJsonNode);
+                pointJsonNode.put("next", index + 1);
+                allTrailPoints.put("Index:" + numberOfPointsIndex, pointJsonNode);
                 // Also need to set last node and next node. So :
                 numberOfPointsIndex += 1;
             } catch (JSONException e) {
@@ -391,6 +392,7 @@ public class DatabaseController extends SQLiteOpenHelper {
         Log.i("BC.DatabaseController", "Found Trail Points: " + allTrailPoints.toString());
         return allTrailPoints;
     }
+
     public void saveLinkedTrail(String Id) {
         ContentValues cv = new ContentValues();
         cv.put(TRAILID, Id);
@@ -420,7 +422,6 @@ public class DatabaseController extends SQLiteOpenHelper {
         cv.put("latitude", latitude);
         cv.put("descPosX", descriptionPositionX);
         cv.put("descPosY", descriptionPositonY);
-        cv.put("orientation",orientation);
 
         SQLiteDatabase localDb = getWritableDatabase();
         long id = localDb.insert(CRUMBS, null, cv);
@@ -432,7 +433,7 @@ public class DatabaseController extends SQLiteOpenHelper {
         AddMetadata(eventId, timeStamp, latitude, longitude, trailId, TrailManagerWorker.CRUMB, mPreferencesApi.GetTransportMethod());
     }
 
-    public void SaveVideoCrumb(String trailId, String userId, int eventId, double latitude, double longitude, String mime, String timeStamp, String icon,String placeId, String suburb, String city,
+    public void SaveVideoCrumb(String trailId, String userId, int eventId, double latitude, double longitude, String mime, String timeStamp, String icon, String placeId, String suburb, String city,
                                String country) {
         ContentValues cv = new ContentValues();
         cv.put("trailId", trailId);
@@ -470,7 +471,7 @@ public class DatabaseController extends SQLiteOpenHelper {
 
     public JSONObject GetAllRestZonesForATrail(String trailId) {
         JSONObject metadata = new JSONObject();
-        Cursor constantsCursor=getReadableDatabase().rawQuery("SELECT * FROM "+RESTZONES+" WHERE trailId ="+trailId+" ORDER BY _id",
+        Cursor constantsCursor = getReadableDatabase().rawQuery("SELECT * FROM " + RESTZONES + " WHERE trailId =" + trailId + " ORDER BY _id",
                 null);
         int count = 0;
 
@@ -491,7 +492,7 @@ public class DatabaseController extends SQLiteOpenHelper {
                 metadataNode.put("longitude", longitude);
                 metadataNode.put("timeStamp", timeStamp);
                 metadataNode.put("trailId", trailId);
-                metadataNode.put("eventId", eventId );
+                metadataNode.put("eventId", eventId);
                 metadataNode.put("id", id);
                 metadata.put(Integer.toString(count), metadataNode);
                 // Also need to set last node and next node. So :
@@ -506,8 +507,8 @@ public class DatabaseController extends SQLiteOpenHelper {
     }
 
 
-	@Override
-	public void onCreate(SQLiteDatabase db) {
+    @Override
+    public void onCreate(SQLiteDatabase db) {
         this.db = db;
 
         db.execSQL("CREATE TABLE users (_id INTEGER PRIMARY KEY AUTOINCREMENT, userid TEXT," +
@@ -566,7 +567,7 @@ public class DatabaseController extends SQLiteOpenHelper {
                 "timeStamp TEXT, " +
                 "latitude REAL, " +
                 "longitude REAL," +
-                "transportMethod INTEGER,"+
+                "transportMethod INTEGER," +
                 "type INTEGER);");
 
         db.execSQL("CREATE TABLE " + WEATHER + " (_id INTEGER PRIMARY KEY AUTOINCREMENT, " +
@@ -586,16 +587,16 @@ public class DatabaseController extends SQLiteOpenHelper {
                 "IsPublic INTEGER," +
                 "StartDate TIMESTAMP," +
                 "LastUpdate TIMESTAMP," +
-                "IsPublished INTEGER,"+
+                "IsPublished INTEGER," +
                 "PublishPoint INTEGER);");
 
         db.execSQL("CREATE TABLE " + GPS_TABLE + " (_id INTEGER PRIMARY KEY AUTOINCREMENT, " +
-            "TrailId TEXT," +
-            "CurrentActivity INTEGER," +
-            "LastActivity INTEGER," +
-            "Latitude REAL," +
-            "Longitude REAL," +
-            "Granularity INTEGER);");
+                "TrailId TEXT," +
+                "CurrentActivity INTEGER," +
+                "LastActivity INTEGER," +
+                "Latitude REAL," +
+                "Longitude REAL," +
+                "Granularity INTEGER);");
 
         db.execSQL("CREATE TABLE " + POLYLINES + " (_id INTEGER PRIMARY KEY AUTOINCREMENT, " +
                 "TrailId TEXT," +
@@ -603,7 +604,7 @@ public class DatabaseController extends SQLiteOpenHelper {
                 "BaseLatitude REAL," +
                 "BaseLongitude REAL," +
                 "HeadLatitude REAL," +
-                "HeadLongitude REAL,"+
+                "HeadLongitude REAL," +
                 "Polyline TEXT);");
 
         db.execSQL("CREATE TABLE " + USERS + " (_id INTEGER PRIMARY KEY AUTOINCREMENT, " +
@@ -619,7 +620,7 @@ public class DatabaseController extends SQLiteOpenHelper {
                 "TrailName TEXT," +
                 "CoverPhotoId TEXT," +
                 "Description TEXT," +
-                "Id INTEGER,"+
+                "Id INTEGER," +
                 "Distance Text," +
                 "Views INTEGER);");
 
@@ -663,8 +664,8 @@ public class DatabaseController extends SQLiteOpenHelper {
         ContentValues cv = new ContentValues();
         int trailIdInt = 1;
         if (trailId != null) {
-         trailIdInt = Integer.parseInt(trailId);
-            trailIdInt+= 1;
+            trailIdInt = Integer.parseInt(trailId);
+            trailIdInt += 1;
         }
 
         cv.put("StartDate", startDate);
@@ -675,7 +676,7 @@ public class DatabaseController extends SQLiteOpenHelper {
         cv.put("SavedIndex", 0);
         cv.put("IsPublished", 1); // 0 means published
 
-       // cv.put("EndDate", ""); // End date is unkown - we can change this later.
+        // cv.put("EndDate", ""); // End date is unkown - we can change this later.
 
         SQLiteDatabase localDb = getWritableDatabase();
         long newId = localDb.insert(TRAIL_SUMMARY, null, cv);
@@ -710,7 +711,7 @@ public class DatabaseController extends SQLiteOpenHelper {
     public void AddMetadata(int eventId, String timeStamp, double latitude, double longitude, String trailId, int type, int transportMethod) {
         ContentValues cv = new ContentValues();
         cv.put("eventId", eventId);
-        cv.put("trailId", trailId );
+        cv.put("trailId", trailId);
         cv.put("timeStamp", timeStamp);
         cv.put("latitude", latitude);
         cv.put("longitude", longitude);
@@ -721,12 +722,12 @@ public class DatabaseController extends SQLiteOpenHelper {
         db.close();
     }
 
-	public SQLiteDatabase GetDBInstance() {
-		return this.db;
-	}
+    public SQLiteDatabase GetDBInstance() {
+        return this.db;
+    }
 
     public int GetSavedIndexForTrail(String trailId) {
-        Cursor constantsCursor=getReadableDatabase().rawQuery("SELECT * FROM " + TRAIL_SUMMARY + " WHERE _id =" + trailId + " ORDER BY _id",
+        Cursor constantsCursor = getReadableDatabase().rawQuery("SELECT * FROM " + TRAIL_SUMMARY + " WHERE _id =" + trailId + " ORDER BY _id",
                 null);
         if (constantsCursor.moveToFirst()) {
             int count = constantsCursor.getInt(constantsCursor.getColumnIndex("SavedIndex"));
@@ -745,7 +746,7 @@ public class DatabaseController extends SQLiteOpenHelper {
         int currentIndex = mPreferencesApi.GetCurrentIndex();
 
         JSONObject metadata = new JSONObject();
-        Cursor constantsCursor=getReadableDatabase().rawQuery("SELECT * FROM "+METADATA+" WHERE trailId ="+trailId+" AND _id >"+ currentIndex + " ORDER BY _id",
+        Cursor constantsCursor = getReadableDatabase().rawQuery("SELECT * FROM " + METADATA + " WHERE trailId =" + trailId + " AND _id >" + currentIndex + " ORDER BY _id",
                 null);
         JSONObject lastNode = null;
 
@@ -825,7 +826,7 @@ public class DatabaseController extends SQLiteOpenHelper {
 
     public void updateTrailSavedPoint(String trailId, int count) {
 
-        String query = "UPDATE "+TRAIL_SUMMARY + " SET SavedIndex="+ count+ " WHERE _id = "+trailId;
+        String query = "UPDATE " + TRAIL_SUMMARY + " SET SavedIndex=" + count + " WHERE _id = " + trailId;
         db = getWritableDatabase();
         Cursor cursor = db.rawQuery(query, null);
 
@@ -837,7 +838,7 @@ public class DatabaseController extends SQLiteOpenHelper {
 
     public void updateTrailPublishPoint(String trailId, int index) {
 
-        String query = "UPDATE "+TRAIL_SUMMARY + " SET PublishPoint="+ index+ " WHERE _id = "+trailId;
+        String query = "UPDATE " + TRAIL_SUMMARY + " SET PublishPoint=" + index + " WHERE _id = " + trailId;
         db = getWritableDatabase();
         Cursor cursor = db.rawQuery(query, null);
 
@@ -849,7 +850,7 @@ public class DatabaseController extends SQLiteOpenHelper {
 
     public JSONObject GetTrailSummary(String trailId) {
         JSONObject metadata = new JSONObject();
-        Cursor constantsCursor=getReadableDatabase().rawQuery("SELECT * FROM " + TRAIL_SUMMARY + " WHERE _id =" + trailId + " ORDER BY _id",
+        Cursor constantsCursor = getReadableDatabase().rawQuery("SELECT * FROM " + TRAIL_SUMMARY + " WHERE _id =" + trailId + " ORDER BY _id",
                 null);
         while (constantsCursor.moveToNext()) {
             JSONObject trailSummaryNode = new JSONObject();
@@ -867,7 +868,7 @@ public class DatabaseController extends SQLiteOpenHelper {
                 if (!lastUpdate.isEmpty()) {
                     trailSummaryNode.put("LastUpdate", lastUpdate);
                 }
-             ///   trailSummaryNode.put("IsPublished", isPublished == 0);
+                ///   trailSummaryNode.put("IsPublished", isPublished == 0);
 
                 return trailSummaryNode;
             } catch (JSONException e) {
@@ -879,7 +880,7 @@ public class DatabaseController extends SQLiteOpenHelper {
     }
 
     public void SetLastUpdate(String trailId, String timestamp) {
-        String query = "UPDATE "+TRAIL_SUMMARY + " SET LastUpdate='"+ timestamp+ "' WHERE _id = "+trailId;
+        String query = "UPDATE " + TRAIL_SUMMARY + " SET LastUpdate='" + timestamp + "' WHERE _id = " + trailId;
         db = getWritableDatabase();
         Cursor cursor = db.rawQuery(query, null);
 
@@ -891,7 +892,7 @@ public class DatabaseController extends SQLiteOpenHelper {
 
     public JSONObject getCrumbsWithoutMedia(String trailId) {
         JSONObject returnObject = new JSONObject();
-        Cursor constantsCursor=getReadableDatabase().rawQuery("SELECT * FROM "+METADATA+" WHERE trailId ="+trailId+" ORDER BY _id",
+        Cursor constantsCursor = getReadableDatabase().rawQuery("SELECT * FROM " + METADATA + " WHERE trailId =" + trailId + " ORDER BY _id",
                 null);
         int numberOfPointsIndex = 0;
         JSONObject lastNode = null;
@@ -920,7 +921,7 @@ public class DatabaseController extends SQLiteOpenHelper {
 
     public JSONObject GetCrumbsWithMedia(String trailId, int aboveIndex) {
         JSONObject returnObject = new JSONObject();
-        Cursor constantsCursor=getReadableDatabase().rawQuery("SELECT * FROM "+CRUMBS+" WHERE trailId ="+trailId+" AND _id > "+aboveIndex+" ORDER BY _id",
+        Cursor constantsCursor = getReadableDatabase().rawQuery("SELECT * FROM " + CRUMBS + " WHERE trailId =" + trailId + " AND _id > " + aboveIndex + " ORDER BY _id",
                 null);
         int count = 0;
         while (constantsCursor.moveToNext()) {
@@ -966,9 +967,9 @@ public class DatabaseController extends SQLiteOpenHelper {
 
     public void SaveTrailName(String trailName, int trailId) {
 
-        String query = "UPDATE "+TRAIL_SUMMARY + " SET TrailName= ? WHERE _id = "+Integer.toString(trailId);
+        String query = "UPDATE " + TRAIL_SUMMARY + " SET TrailName= ? WHERE _id = " + Integer.toString(trailId);
         db = getWritableDatabase();
-        Cursor cursor = db.rawQuery(query, new String[] {trailName});
+        Cursor cursor = db.rawQuery(query, new String[]{trailName});
 
         // WHY DOES THIS MAKE IT WORK? I FUCKING HATE SQL. If you remove this line, it wont update the row.
         cursor.getCount();
@@ -977,13 +978,13 @@ public class DatabaseController extends SQLiteOpenHelper {
     }
 
     public void SaveAlbumPublicity(boolean isPublic, int trailId) {
-        String query = "UPDATE "+TRAIL_SUMMARY + " SET IsPublic= ? WHERE _id = "+Integer.toString(trailId);
+        String query = "UPDATE " + TRAIL_SUMMARY + " SET IsPublic= ? WHERE _id = " + Integer.toString(trailId);
         db = getWritableDatabase();
         String publicFlag = "0";
         if (!isPublic) {
-             publicFlag = "1";
+            publicFlag = "1";
         }
-        Cursor cursor = db.rawQuery(query, new String[] {publicFlag});
+        Cursor cursor = db.rawQuery(query, new String[]{publicFlag});
         cursor.getCount();
         cursor.close();
         db.close();
@@ -995,7 +996,7 @@ public class DatabaseController extends SQLiteOpenHelper {
         try {
             cursor = getReadableDatabase().rawQuery("SELECT * FROM " + TRAIL_SUMMARY + " ORDER BY _id", null);
             // WE just want the latest trail.
-            if(cursor.getCount() > 0) {
+            if (cursor.getCount() > 0) {
                 cursor.moveToLast();
                 isPublic = cursor.getInt(cursor.getColumnIndex("IsPublic"));
             }
@@ -1031,7 +1032,7 @@ public class DatabaseController extends SQLiteOpenHelper {
         try {
             cursor = getReadableDatabase().rawQuery("SELECT * FROM " + TRAIL_SUMMARY + " ORDER BY _id", null);
             // WE just want the latest trail.
-            if(cursor.getCount() > 0) {
+            if (cursor.getCount() > 0) {
                 cursor.moveToLast();
                 trailName = cursor.getString(cursor.getColumnIndex("TrailName"));
             }
@@ -1043,7 +1044,7 @@ public class DatabaseController extends SQLiteOpenHelper {
 
     private JSONObject fetchCrumbs(String trailId) {
         JSONObject returnObject = new JSONObject();
-        Cursor constantsCursor=getReadableDatabase().rawQuery("SELECT * FROM "+CRUMBS+" WHERE trailId ="+trailId+" ORDER BY _id", null);
+        Cursor constantsCursor = getReadableDatabase().rawQuery("SELECT * FROM " + CRUMBS + " WHERE trailId =" + trailId + " ORDER BY _id", null);
         int count = 0;
         while (constantsCursor.moveToNext()) {
             JSONObject node = new JSONObject();
@@ -1069,7 +1070,7 @@ public class DatabaseController extends SQLiteOpenHelper {
                 node.put(Models.Crumb.LATITUDE, latitude);
                 node.put(Models.Crumb.LONGITUDE, longitude);
                 node.put(Models.Crumb.TIMESTAMP, timeStamp);
-                node.put(Models.Crumb.DESCRIPTION   , description);
+                node.put(Models.Crumb.DESCRIPTION, description);
                 node.put("UserId", userId);
                 node.put("Icon", icon);
                 node.put(Models.Crumb.PLACEID, placeId);
@@ -1094,31 +1095,31 @@ public class DatabaseController extends SQLiteOpenHelper {
     public void SetCurrentTrailName(String trailName) {
         Cursor cursor = null;
         int id = -1;
-        try{
+        try {
             cursor = getReadableDatabase().rawQuery("SELECT * FROM " + TRAIL_SUMMARY + " ORDER BY _id", null);
             // WE just want the latest trail.
-            if(cursor.getCount() > 0) {
+            if (cursor.getCount() > 0) {
                 cursor.moveToLast();
-               id = cursor.getInt(cursor.getColumnIndex("_id"));
+                id = cursor.getInt(cursor.getColumnIndex("_id"));
             }
-        }finally {
+        } finally {
             cursor.close();
         }
 
-        getWritableDatabase().rawQuery("UPDATE " + TRAIL_SUMMARY + " SET TrailName = '" + trailName + "' WHERE _id="+id, null);
+        getWritableDatabase().rawQuery("UPDATE " + TRAIL_SUMMARY + " SET TrailName = '" + trailName + "' WHERE _id=" + id, null);
     }
 
     public String GetStartDateForCurrentTrail() {
         Cursor cursor = null;
         String date = "";
-        try{
+        try {
             cursor = getReadableDatabase().rawQuery("SELECT * FROM " + TRAIL_SUMMARY + " ORDER BY _id", null);
-            if(cursor.getCount() > 0) {
+            if (cursor.getCount() > 0) {
                 cursor.moveToLast();
                 date = cursor.getString(cursor.getColumnIndex("StartDate"));
             }
             return date;
-        }finally {
+        } finally {
             cursor.close();
         }
     }
@@ -1134,14 +1135,14 @@ public class DatabaseController extends SQLiteOpenHelper {
      */
     public void DeleteCrumb(String crumbId) {
         SQLiteDatabase localdb = getWritableDatabase();
-        int result = localdb.delete(CRUMBS, "eventId = "+ crumbId, null);
+        int result = localdb.delete(CRUMBS, "eventId = " + crumbId, null);
         Log.d("DBC", "Requested deletion of crumb with id: " + crumbId + ", deleted " + result + " row(s)");
         localdb.close();
     }
 
     public Location GetLastSavedLocation() {
-        Cursor cursor = getReadableDatabase().rawQuery("SELECT * FROM "+GPS_TABLE +" ORDER BY _id", null);
-        if(cursor.getCount() > 0) {
+        Cursor cursor = getReadableDatabase().rawQuery("SELECT * FROM " + GPS_TABLE + " ORDER BY _id", null);
+        if (cursor.getCount() > 0) {
             cursor.moveToLast();
             Double latitude = cursor.getDouble(cursor.getColumnIndex("Latitude"));
             Double longitude = cursor.getDouble(cursor.getColumnIndex("Longitude"));
@@ -1158,12 +1159,13 @@ public class DatabaseController extends SQLiteOpenHelper {
 
     /**
      * Grab all the gps points from the database that we have saved from a local database.
+     *
      * @param localTrailId
      * @return This is the jsonObject of all the activity recordings that we have made.
      */
     public JSONObject GetAllActivityData(int localTrailId) {
         JSONObject metadata = new JSONObject();
-        Cursor constantsCursor=getReadableDatabase().rawQuery("SELECT * FROM "+GPS_TABLE+" WHERE trailId ="+localTrailId +" ORDER BY _id", null);
+        Cursor constantsCursor = getReadableDatabase().rawQuery("SELECT * FROM " + GPS_TABLE + " WHERE trailId =" + localTrailId + " ORDER BY _id", null);
         int currentIndex = 0;
         while (constantsCursor.moveToNext()) {
             JSONObject metadataNode = new JSONObject();
@@ -1196,20 +1198,20 @@ public class DatabaseController extends SQLiteOpenHelper {
     }
 
     /**
-     *
      * Tis is a pretty shitty code but it should be safe. This area needs a rewrite so I'll do that in the future, this is "for now"...
      * Grab all the gps points from the database that we have saved from a local database.
+     *
      * @param localTrailId
-     * @param index We only are interested in data above the index, as this was the last 'Save' point
+     * @param index        We only are interested in data above the index, as this was the last 'Save' point
      * @return This is the jsonObject of all the activity recordings that we have made.
      */
-    public JSONObject  GetAllUnsavedActivityData(int localTrailId, int index) {
+    public JSONObject GetAllUnsavedActivityData(int localTrailId, int index) {
         if (index > 0) {
             index -= 1; // This stops us skipping a line. pretty shitty fix but fck it.
         }
 
         JSONObject metadata = new JSONObject();
-        Cursor constantsCursor=getReadableDatabase().rawQuery("SELECT * FROM "+GPS_TABLE+" WHERE trailId ="+localTrailId +" ORDER BY _id", null);
+        Cursor constantsCursor = getReadableDatabase().rawQuery("SELECT * FROM " + GPS_TABLE + " WHERE trailId =" + localTrailId + " ORDER BY _id", null);
         int currentIndex = 0;
 
         // Need reference index because the server reads from 0, but the current index will only be 0 on first use case.
@@ -1243,24 +1245,25 @@ public class DatabaseController extends SQLiteOpenHelper {
             currentIndex += 1;
         }
 
-        updateTrailPublishPoint(Integer.toString(localTrailId), currentIndex-1);
+        updateTrailPublishPoint(Integer.toString(localTrailId), currentIndex - 1);
 
         return metadata;
     }
 
     /**
      * Grab all the gps points from the database that we have saved from a local database.
+     *
      * @param localTrailId
-     * @param index We only are interested in data above the index, as this was the last 'Save' point
+     * @param index        We only are interested in data above the index, as this was the last 'Save' point
      * @return This is the jsonObject of all the activity recordings that we have made.
      */
-    public JSONObject  GetAllActivityData(int localTrailId, int index) {
+    public JSONObject GetAllActivityData(int localTrailId, int index) {
         if (index > 0) {
             index -= 1; // This stops us skipping a line. pretty shitty fix but fck it.
         }
 
         JSONObject metadata = new JSONObject();
-        Cursor constantsCursor=getReadableDatabase().rawQuery("SELECT * FROM "+GPS_TABLE+" WHERE trailId ="+localTrailId +" ORDER BY _id", null);
+        Cursor constantsCursor = getReadableDatabase().rawQuery("SELECT * FROM " + GPS_TABLE + " WHERE trailId =" + localTrailId + " ORDER BY _id", null);
         int currentIndex = 0;
 
         // Need reference index because the server reads from 0, but the current index will only be 0 on first use case.
@@ -1294,7 +1297,7 @@ public class DatabaseController extends SQLiteOpenHelper {
             currentIndex += 1;
         }
 
-        updateTrailSavedPoint(Integer.toString(localTrailId), currentIndex-1);
+        updateTrailSavedPoint(Integer.toString(localTrailId), currentIndex - 1);
 
         return metadata;
     }
@@ -1321,27 +1324,28 @@ public class DatabaseController extends SQLiteOpenHelper {
     }
 
 
-
     /**
      * Get a {@link TripDetails} object for the corresponding (local) trip id.
+     *
      * @param id The id of the trip as it is stored in the database (e.g _id)
      * @return
      */
     public TripDetails GetTripDetails(String id) {
-        Cursor constantsCursor=getReadableDatabase().rawQuery("SELECT * FROM " + TRAIL_SUMMARY + " WHERE _id =" + id + " ORDER BY _id", null);
+        Cursor constantsCursor = getReadableDatabase().rawQuery("SELECT * FROM " + TRAIL_SUMMARY + " WHERE _id =" + id + " ORDER BY _id", null);
         constantsCursor.moveToFirst();
 
         String startDate = constantsCursor.getString(constantsCursor.getColumnIndex("StartDate"));
         String serverId = constantsCursor.getString(constantsCursor.getColumnIndex("TrailId"));
         String trailName = constantsCursor.getString(constantsCursor.getColumnIndex("TrailName"));
 
-        return new TripDetails(serverId,trailName,startDate);
+        return new TripDetails(serverId, trailName, startDate);
     }
 
     /**
      * Get the lat long points from the database. Note that this should be used for displaying a trail when no
      * network is available. I Still think this is a bad solution however, so future me should be pretty cautious about using this
      * except for in a super specific use case. (i.e
+     *
      * @param id The trail id in the database of the trail that we are getting points for.
      * @return The {@link TripPath} model with the poliyline as an arrayList of latLng points.
      */
@@ -1372,6 +1376,7 @@ public class DatabaseController extends SQLiteOpenHelper {
 
     /**
      * Save a {@link BreadcrumbsEncodedPolyline} to our database.
+     *
      * @param polyline
      * @param id
      */
@@ -1398,7 +1403,7 @@ public class DatabaseController extends SQLiteOpenHelper {
     }
 
     public TripPath FetchTripPath(String id) {
-        Cursor constantsCursor=getReadableDatabase().rawQuery("SELECT * FROM " + POLYLINES + " WHERE TrailId =" + id + " ORDER BY _id", null);
+        Cursor constantsCursor = getReadableDatabase().rawQuery("SELECT * FROM " + POLYLINES + " WHERE TrailId =" + id + " ORDER BY _id", null);
         final ArrayList<BreadcrumbsEncodedPolyline> polylines = new ArrayList<>();
         while (constantsCursor.moveToNext()) {
             int isEncoded = constantsCursor.getInt(constantsCursor.getColumnIndex("IsEncoded"));
@@ -1410,10 +1415,10 @@ public class DatabaseController extends SQLiteOpenHelper {
                 Double baseLon = constantsCursor.getDouble(constantsCursor.getColumnIndex("BaseLongitude"));
 
                 // Polyline with the head lat / long
-                BreadcrumbsEncodedPolyline polyline = new BreadcrumbsEncodedPolyline( true, polylineString, baseLat, baseLon, headLat, headLon);
+                BreadcrumbsEncodedPolyline polyline = new BreadcrumbsEncodedPolyline(true, polylineString, baseLat, baseLon, headLat, headLon);
                 polylines.add(polyline);
             } else {
-                BreadcrumbsEncodedPolyline polyline = new BreadcrumbsEncodedPolyline(isEncoded== 0, polylineString);
+                BreadcrumbsEncodedPolyline polyline = new BreadcrumbsEncodedPolyline(isEncoded == 0, polylineString);
                 polylines.add(polyline);
             }
         }
@@ -1422,8 +1427,8 @@ public class DatabaseController extends SQLiteOpenHelper {
     }
 
     public String GetUserName(long userId) {
-        Cursor constantsCursor=getReadableDatabase().rawQuery("SELECT * FROM " + USERS + " WHERE UserId =" + userId, null);
-        if(constantsCursor.moveToFirst()) {
+        Cursor constantsCursor = getReadableDatabase().rawQuery("SELECT * FROM " + USERS + " WHERE UserId =" + userId, null);
+        if (constantsCursor.moveToFirst()) {
             String userName = constantsCursor.getString(constantsCursor.getColumnIndex("Username"));
             return userName;
         }
@@ -1432,7 +1437,7 @@ public class DatabaseController extends SQLiteOpenHelper {
     }
 
     public String GetUserAbout(long userId) {
-        Cursor constantsCursor=getReadableDatabase().rawQuery("SELECT * FROM " + USERS + " WHERE UserId =" + userId, null);
+        Cursor constantsCursor = getReadableDatabase().rawQuery("SELECT * FROM " + USERS + " WHERE UserId =" + userId, null);
         if (constantsCursor.moveToFirst()) {
             String about = constantsCursor.getString(constantsCursor.getColumnIndex("About"));
             return about;
@@ -1442,7 +1447,7 @@ public class DatabaseController extends SQLiteOpenHelper {
     }
 
     public String getUserWeb(long userId) {
-        Cursor constantsCursor=getReadableDatabase().rawQuery("SELECT * FROM " + USERS + " WHERE UserId =" + userId, null);
+        Cursor constantsCursor = getReadableDatabase().rawQuery("SELECT * FROM " + USERS + " WHERE UserId =" + userId, null);
         if (constantsCursor.moveToFirst()) {
             String web = constantsCursor.getString(constantsCursor.getColumnIndex("Web"));
             return web;
@@ -1451,8 +1456,8 @@ public class DatabaseController extends SQLiteOpenHelper {
     }
 
     public String GetUserProfilePic(long userId) {
-        Cursor constantsCursor=getReadableDatabase().rawQuery("SELECT * FROM " + USERS + " WHERE UserId =" + userId, null);
-        if(constantsCursor.moveToFirst()) {
+        Cursor constantsCursor = getReadableDatabase().rawQuery("SELECT * FROM " + USERS + " WHERE UserId =" + userId, null);
+        if (constantsCursor.moveToFirst()) {
             String picId = constantsCursor.getString(constantsCursor.getColumnIndex("ProfilePicId"));
             return picId;
         }
@@ -1460,7 +1465,7 @@ public class DatabaseController extends SQLiteOpenHelper {
     }
 
     public int GetPublishPoint(int trailId) {
-        Cursor constantsCursor=getReadableDatabase().rawQuery("SELECT * FROM " + TRAIL_SUMMARY + " WHERE _id =" + trailId + " ORDER BY _id",
+        Cursor constantsCursor = getReadableDatabase().rawQuery("SELECT * FROM " + TRAIL_SUMMARY + " WHERE _id =" + trailId + " ORDER BY _id",
                 null);
         if (constantsCursor.moveToFirst()) {
             int count = constantsCursor.getInt(constantsCursor.getColumnIndex("PublishPoint"));
@@ -1474,10 +1479,10 @@ public class DatabaseController extends SQLiteOpenHelper {
         ContentValues values = new ContentValues();
         values.put("ProfilePicId", Integer.parseInt(profilePicId));
         SQLiteDatabase lcoaldb = getWritableDatabase();
-        long result = lcoaldb.update(USERS, values, "UserId" +" = ?",
-                new String[] { String.valueOf(userId)});
+        long result = lcoaldb.update(USERS, values, "UserId" + " = ?",
+                new String[]{String.valueOf(userId)});
 
-        if(result <= 0){
+        if (result <= 0) {
             values.put("UserId", (int) userId);
             result = lcoaldb.insert(USERS, null, values);
         }
@@ -1487,10 +1492,10 @@ public class DatabaseController extends SQLiteOpenHelper {
         ContentValues values = new ContentValues();
         values.put("Username", text);
         SQLiteDatabase db = getWritableDatabase();
-        long result = db.update(USERS, values,"UserId" +" = ?",
-                new String[] { String.valueOf(userId)});
+        long result = db.update(USERS, values, "UserId" + " = ?",
+                new String[]{String.valueOf(userId)});
 
-        if(result <= 0){
+        if (result <= 0) {
             values.put("UserId", (int) userId);
             result = db.insert(USERS, null, values);
         }
@@ -1499,11 +1504,11 @@ public class DatabaseController extends SQLiteOpenHelper {
     public void SaveUserWebField(long userId, String text) {
         ContentValues values = new ContentValues();
         values.put("Web", text);
-        SQLiteDatabase lcoalDb  = getWritableDatabase();
-        long result = lcoalDb.update(USERS, values,"UserId" +" = ?",
-                new String[] { String.valueOf(userId)});
+        SQLiteDatabase lcoalDb = getWritableDatabase();
+        long result = lcoalDb.update(USERS, values, "UserId" + " = ?",
+                new String[]{String.valueOf(userId)});
 
-        if(result <= 0){
+        if (result <= 0) {
             values.put("UserId", (int) userId);
             result = lcoalDb.insert(USERS, null, values);
         }
@@ -1512,11 +1517,11 @@ public class DatabaseController extends SQLiteOpenHelper {
     public void SaveUserAboutField(long userId, String text) {
         ContentValues values = new ContentValues();
         values.put("About", text);
-        SQLiteDatabase lcoalDb  = getWritableDatabase();
-        long result = lcoalDb.update(USERS, values, "UserId" +" = ?",
-                new String[] { String.valueOf(userId)});
+        SQLiteDatabase lcoalDb = getWritableDatabase();
+        long result = lcoalDb.update(USERS, values, "UserId" + " = ?",
+                new String[]{String.valueOf(userId)});
 
-        if(result <= 0){
+        if (result <= 0) {
             values.put("UserId", (int) userId);
             result = lcoalDb.insert(USERS, null, values);
         }
@@ -1525,7 +1530,7 @@ public class DatabaseController extends SQLiteOpenHelper {
     public void SaveUserTrips(ArrayList<Trip> trips) {
         // For each trip
         Iterator<Trip> tripIterator = trips.iterator();
-        while(tripIterator.hasNext()) {
+        while (tripIterator.hasNext()) {
             Trip trip = tripIterator.next();
             saveUserTrip(trip);
         }
@@ -1542,10 +1547,10 @@ public class DatabaseController extends SQLiteOpenHelper {
         values.put("CoverPhotoId", trip.getCoverPhotoId());
         values.put("Description", trip.getDescription());
         values.put("Id", trip.getId());
-        SQLiteDatabase lcoalDb  = getWritableDatabase();
-        long result = lcoalDb.update(USERS, values, "UserId" +" = ?",
-                new String[] { trip.getUserId()});
-        if(result <= 0){
+        SQLiteDatabase lcoalDb = getWritableDatabase();
+        long result = lcoalDb.update(USERS, values, "UserId" + " = ?",
+                new String[]{trip.getUserId()});
+        if (result <= 0) {
             result = lcoalDb.insert(USERS, null, values);
         }
         lcoalDb.close();
@@ -1561,13 +1566,13 @@ public class DatabaseController extends SQLiteOpenHelper {
 
     public void RemoveBroadcaster(long broadcastUserId, long followingUserId) {
         SQLiteDatabase localDb = getWritableDatabase();
-        localDb.delete(FOLLOWING_TABLE, "UserId = ? AND FollowedUserId = ?", new String[] {Long.toString(followingUserId), Long.toString(broadcastUserId)});
+        localDb.delete(FOLLOWING_TABLE, "UserId = ? AND FollowedUserId = ?", new String[]{Long.toString(followingUserId), Long.toString(broadcastUserId)});
         localDb.close();
     }
 
     public boolean isUserFollowingOtherUser(long userId, long visitorId) {
-        Cursor constantsCursor=getReadableDatabase().rawQuery("SELECT * FROM " + FOLLOWING_TABLE + " WHERE UserId = ? AND FollowedUserId = ?",
-                new String[] {Long.toString(visitorId), Long.toString(userId)});
+        Cursor constantsCursor = getReadableDatabase().rawQuery("SELECT * FROM " + FOLLOWING_TABLE + " WHERE UserId = ? AND FollowedUserId = ?",
+                new String[]{Long.toString(visitorId), Long.toString(userId)});
         if (constantsCursor.moveToFirst()) {
             return true;
         }
@@ -1576,13 +1581,14 @@ public class DatabaseController extends SQLiteOpenHelper {
 
     /**
      * Return an instance of the trip with the corresponding id. Returns null if trip was not found.
+     *
      * @param tripId
      * @return The trip that correlates with the trip Id, or null if a trip was not found.
      */
     @Nullable
     public Trip LoadTrip(long tripId) {
-        Cursor constantsCursor=getReadableDatabase().rawQuery("SELECT * FROM " + TRIP_TABLE + " WHERE  Id = " + Long.toString(tripId), null);
-        if(constantsCursor.moveToFirst()) {
+        Cursor constantsCursor = getReadableDatabase().rawQuery("SELECT * FROM " + TRIP_TABLE + " WHERE  Id = " + Long.toString(tripId), null);
+        if (constantsCursor.moveToFirst()) {
             int userId = constantsCursor.getInt(constantsCursor.getColumnIndex("UserId"));
             String coverPhotoId = constantsCursor.getString(constantsCursor.getColumnIndex("CoverPhotoId"));
             String description = constantsCursor.getString(constantsCursor.getColumnIndex("Description"));
@@ -1631,7 +1637,7 @@ public class DatabaseController extends SQLiteOpenHelper {
 
     private void deleteAnyPreexistingTrip(long tripId) {
         SQLiteDatabase localDb = getWritableDatabase();
-        localDb.delete(TRIP_TABLE, "Id = ?", new String[] {Long.toString(tripId)});
+        localDb.delete(TRIP_TABLE, "Id = ?", new String[]{Long.toString(tripId)});
 
     }
 
@@ -1648,13 +1654,13 @@ public class DatabaseController extends SQLiteOpenHelper {
 
     private void deleteAnyPreExistingUser(String userId) {
         SQLiteDatabase localDb = getWritableDatabase();
-        localDb.delete(USERS, "UserId = ?", new String[] {userId});
+        localDb.delete(USERS, "UserId = ?", new String[]{userId});
     }
 
     @Nullable
     public User GetUser(String userId) {
-        Cursor constantsCursor=getReadableDatabase().rawQuery("SELECT * FROM " + USERS + " WHERE  UserId = ?", new String[] {userId});
-        if(constantsCursor.moveToFirst()) {
+        Cursor constantsCursor = getReadableDatabase().rawQuery("SELECT * FROM " + USERS + " WHERE  UserId = ?", new String[]{userId});
+        if (constantsCursor.moveToFirst()) {
             int profilePicId = constantsCursor.getInt(constantsCursor.getColumnIndex("ProfilePicId"));
             String about = constantsCursor.getString(constantsCursor.getColumnIndex("About"));
             String username = constantsCursor.getString(constantsCursor.getColumnIndex("Username"));
@@ -1673,11 +1679,12 @@ public class DatabaseController extends SQLiteOpenHelper {
 
     /**
      * Load the crumb details for a frame.
+     *
      * @param frameId
      * @return
      */
     public FrameDetails GetFrameDetails(String frameId) {
-        Cursor constantsCursor=getReadableDatabase().rawQuery("SELECT * FROM "+CRUMBS+" WHERE EventId ="+frameId+" ORDER BY _id", null);
+        Cursor constantsCursor = getReadableDatabase().rawQuery("SELECT * FROM " + CRUMBS + " WHERE EventId =" + frameId + " ORDER BY _id", null);
         FrameDetails frameDetails = new FrameDetails();
 
         if (constantsCursor.moveToFirst()) {
@@ -1718,6 +1725,7 @@ public class DatabaseController extends SQLiteOpenHelper {
 
     /**
      * Update the frame details of a crumb
+     *
      * @param frameDetails
      */
     public long UpdateFrameDetails(FrameDetails frameDetails) {
@@ -1742,7 +1750,7 @@ public class DatabaseController extends SQLiteOpenHelper {
         cv.put("latitude", frameDetails.getLongitude());
         cv.put("descPosX", frameDetails.getDescPosX());
         cv.put("descPosY", frameDetails.getDescPosY());
-        return localDb.update(CRUMBS,cv, "eventId=?", new String[]{frameDetails.getId()});
+        return localDb.update(CRUMBS, cv, "eventId=?", new String[]{frameDetails.getId()});
     }
 
     /**
@@ -1777,14 +1785,14 @@ public class DatabaseController extends SQLiteOpenHelper {
     }
 
 
-
     /**
      * Load an arraylist of previously saved mime details for this
+     *
      * @param albumId
      * @return
      */
     public ArrayList<MimeDetails> LoadMimeDetails(String albumId) {
-        Cursor constantsCursor=getReadableDatabase().rawQuery("SELECT * FROM "+CRUMBS+" WHERE TrailId ="+albumId+" ORDER BY _id", null);
+        Cursor constantsCursor = getReadableDatabase().rawQuery("SELECT * FROM " + CRUMBS + " WHERE TrailId =" + albumId + " ORDER BY _id", null);
         ArrayList<MimeDetails> mimes = new ArrayList<>();
         while (constantsCursor.moveToNext()) {
             //Get all columns
@@ -1803,6 +1811,7 @@ public class DatabaseController extends SQLiteOpenHelper {
 
     /**
      * Save a record of what we files we have stored locally.
+     *
      * @param record The record of the file to save.
      */
     public void SaveMediaFileRecord(MediaRecordModel record) {
@@ -1816,6 +1825,7 @@ public class DatabaseController extends SQLiteOpenHelper {
 
     /**
      * Delete a media record
+     *
      * @param id The id of the media record to delete. This is not the database id, but the frame id.
      * @return -1 if not successful.
      */
@@ -1825,12 +1835,13 @@ public class DatabaseController extends SQLiteOpenHelper {
 
     /**
      * Get a media Record object from the database.
+     *
      * @param id The id of the record. THis is the frame id from the server, not the database id.
      * @return The found object, or null if no object was found.
      */
     @Nullable
     public MediaRecordModel GetMediaFileRecord(String id) {
-        Cursor constantsCursor=getReadableDatabase().rawQuery("SELECT * FROM "+STORED_MEDIA_FILES+" WHERE FrameId ="+id+" ORDER BY _id", null);
+        Cursor constantsCursor = getReadableDatabase().rawQuery("SELECT * FROM " + STORED_MEDIA_FILES + " WHERE FrameId =" + id + " ORDER BY _id", null);
 
         if (constantsCursor.moveToFirst()) {
             //Get all columns
@@ -1846,11 +1857,12 @@ public class DatabaseController extends SQLiteOpenHelper {
 
     /**
      * Save a comment locally
+     *
      * @param comment The comment object to save.
      * @return The local database id value. Returns -1 if it failed to save.
      */
     public long SaveComment(Comment comment) {
-        if (GetCommentById(comment.getId())!= null) {
+        if (GetCommentById(comment.getId()) != null) {
             return -1;
         }
         ContentValues cv = new ContentValues();
@@ -1864,13 +1876,14 @@ public class DatabaseController extends SQLiteOpenHelper {
 
     /**
      * Get a comment
+     *
      * @param id The server id of the comment.
      * @return The comment object representing the comment that we are looking for. returns a null if
      * the comment was not found.
      */
     @Nullable
     public Comment GetCommentById(String id) {
-        Cursor constantsCursor=getReadableDatabase().rawQuery("SELECT * FROM "+ COMMENT_TABLE+" WHERE ServerId ="+id+" ORDER BY _id", null);
+        Cursor constantsCursor = getReadableDatabase().rawQuery("SELECT * FROM " + COMMENT_TABLE + " WHERE ServerId =" + id + " ORDER BY _id", null);
         if (constantsCursor.moveToFirst()) {
 
             String serverId = constantsCursor.getString(constantsCursor.getColumnIndex("ServerId"));
@@ -1894,12 +1907,13 @@ public class DatabaseController extends SQLiteOpenHelper {
 
     /**
      * Get all our locally saved comments for an album
+     *
      * @param albumId The id of the frame.
      * @return the arraylist of comment objects.
      */
     public ArrayList<Comment> GetAllCommentsForAnAlbum(String albumId) {
         ArrayList<Comment> comments = new ArrayList<>();
-        Cursor constantsCursor=getReadableDatabase().rawQuery("SELECT * FROM "+ COMMENT_TABLE+" WHERE EntityId ="+albumId+" ORDER BY _id", null);
+        Cursor constantsCursor = getReadableDatabase().rawQuery("SELECT * FROM " + COMMENT_TABLE + " WHERE EntityId =" + albumId + " ORDER BY _id", null);
         while (constantsCursor.moveToNext()) {
 
             String serverId = constantsCursor.getString(constantsCursor.getColumnIndex("ServerId"));

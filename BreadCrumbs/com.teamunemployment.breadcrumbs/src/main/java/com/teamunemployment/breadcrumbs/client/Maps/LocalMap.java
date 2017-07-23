@@ -7,6 +7,8 @@ import android.content.Intent;
 import android.content.res.ColorStateList;
 import android.graphics.Color;
 import android.location.Location;
+import android.net.Uri;
+import android.os.Environment;
 import android.support.v7.app.NotificationCompat;
 import android.support.v7.widget.SwitchCompat;
 import android.text.Editable;
@@ -53,6 +55,8 @@ import com.teamunemployment.breadcrumbs.data.source.TripDataSource;
 import com.teamunemployment.breadcrumbs.database.DatabaseController;
 import com.teamunemployment.breadcrumbs.database.Models.LocalTrailModel;
 import com.teamunemployment.breadcrumbs.database.Models.TrailSummaryModel;
+import com.theartofdev.edmodo.cropper.CropImage;
+import com.theartofdev.edmodo.cropper.CropImageView;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -66,7 +70,7 @@ import java.util.List;
 import mehdi.sakout.fancybuttons.FancyButton;
 
 /**
- * Created by jek40 on 22/05/2016.
+ * @author Josiah Kendall
  */
 public class LocalMap extends MapViewer {
     private PreferencesAPI preferencesAPI;
@@ -593,6 +597,7 @@ public class LocalMap extends MapViewer {
      * Launch a grid view from which we can select the
      */
     private void launchCoverPhotoSelector() {
+
         Intent selectCoverPhotoIntent = new Intent(context, TrailCoverImageSelector.class);
         startActivityForResult(selectCoverPhotoIntent, 155);
     }
@@ -603,9 +608,14 @@ public class LocalMap extends MapViewer {
         if (requestCode == 155) {
             if (resultCode == RESULT_OK) {
                 Log.d(TAG, "Recieved result for saving cover photo.");
-
+                // launch photo editor.
                 // The user picked an image. We need to set this image.
                 String id = data.getStringExtra("Id");
+                String imageuri = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES).toString() + "/4.jpg";
+                Uri uri = Uri.parse(imageuri);
+                CropImage.activity(uri)
+                        .setGuidelines(CropImageView.Guidelines.ON)
+                        .start(this);
                 setCoverPhoto(id);
                 setUpReadOnlyMode();
             }
@@ -615,9 +625,7 @@ public class LocalMap extends MapViewer {
             if (resultCode == RESULT_OK) {
                 // We have deleted some crumbs, so we need to remove them from our list of data objects and refresh the map.
                 ArrayList<CrumbCardDataObject> deleted = data.getParcelableArrayListExtra("DeletedCrumbs");
-
                 deleteAndRefresh(deleted);
-
             }
         }
     }

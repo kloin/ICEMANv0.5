@@ -62,7 +62,6 @@ public class HomeActivity extends AppCompatActivity {
         initialiseFragHolder();
         setUpBottomBar(savedInstanceState);
         startTrackingIfNeccessary();
-
     }
 
     @Override
@@ -270,7 +269,7 @@ public class HomeActivity extends AppCompatActivity {
                         startActivity(newIntent);
                     }
                 } else {
-                    Log.d(TAG, "User refuesed to give camera permission. What a fucken idiot.");
+                    Log.d(TAG, "User refused to give camera permission. What a fucken idiot.");
                 }
                 return;
             }

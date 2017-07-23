@@ -92,10 +92,26 @@ public class Crumb {
             e.printStackTrace();
         }
         
+        createThumbnail(crumbId);
         // Grab our global blocking queue. Add our item to the backlog for compression.
         compressVideo(crumbId);
         
         return result;            
+    }
+    
+    /**
+     * Create a thumbnail for a mp4 file.
+     * @param id The identifier for the mp4 fle that we are grabbing a thumbnail.
+     */
+    private void createThumbnail(String id) {
+        try {
+            ProcessBuilder pb = new ProcessBuilder(
+                    "/var/lib/tomcat7/create_thumbnail_for_video.sh", id);
+            Process p = pb.start();
+        } catch (IOException ex) {
+            System.out.println("Failed to compress due to IO Exception");
+            Logger.getLogger(CompressVideo.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
     
     public void compressVideo(String id) {
@@ -124,7 +140,7 @@ public class Crumb {
             result = ConvertAndSaveVideo(inputStream, crumbId);
         } else {
             result = ConvertAndSaveImage(inputStream, crumbId);
-            updateCoverPhoto(trailId, crumbId);
+            //updateCoverPhoto(trailId, crumbId);
         }
         
         return result;

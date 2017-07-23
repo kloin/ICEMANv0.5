@@ -32,6 +32,7 @@ import android.widget.TextView;
 import com.squareup.picasso.Picasso;
 import com.teamunemployment.breadcrumbs.App;
 import com.teamunemployment.breadcrumbs.Network.LoadBalancer;
+import com.teamunemployment.breadcrumbs.PreferencesAPI;
 import com.teamunemployment.breadcrumbs.R;
 
 import javax.inject.Inject;
@@ -53,6 +54,9 @@ public class  AlbumView extends AppCompatActivity implements AlbumPresenterViewC
     private String albumId;
     private BottomSheetBehavior bottomSheetBehavior;
 
+    @Inject
+    public PreferencesAPI preferencesAPI;
+
     @Inject AlbumPresenter presenter;
     @Bind(R.id.root) CoordinatorLayout root;
     @Bind(R.id.viewport_holder) RelativeLayout viewPortHolder;
@@ -73,6 +77,8 @@ public class  AlbumView extends AppCompatActivity implements AlbumPresenterViewC
     @Bind(R.id.comments_recycler) RecyclerView recyclerView;
     @Bind(R.id.no_content_placeholder) RelativeLayout noContentPlaceholder;
     @Bind(R.id.play_count) TextView playCount;
+    @Bind(R.id.settings) FloatingActionButton setttingsFab;
+    @Bind(R.id.views_image) ImageView playCountIcon;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -130,6 +136,15 @@ public class  AlbumView extends AppCompatActivity implements AlbumPresenterViewC
                 contextActivity.startActivityForResult(TrailViewer, 1);
             }
         }
+    }
+
+    @OnClick(R.id.settings) void openSettings() {
+        Intent newIntent = new Intent();
+        int localTrail = preferencesAPI.GetLocalTrailId();
+        String localTrailString = Integer.toString(localTrail) + "L";
+        newIntent.putExtra("AlbumId", localTrailString);
+        newIntent.setClassName("com.teamunemployment.breadcrumbs", "com.teamunemployment.breadcrumbs.Album.LocalAlbumSummary.LocalAlbumView");
+        startActivity(newIntent);
     }
 
     @OnClick(R.id.next_storyboard_item) void next() {
@@ -353,6 +368,17 @@ public class  AlbumView extends AppCompatActivity implements AlbumPresenterViewC
     }
 
     @Override
+    public void setSettingsButton(int visible) {
+        setttingsFab.setVisibility(visible);
+    }
+
+    @Override
+    public void setPlayCountVisibility(int visibility) {
+        playCount.setVisibility(visibility);
+        playCountIcon.setVisibility(visibility);
+    }
+
+    @Override
     public void setImageVisibility(final int visibility) {
         runOnUiThread(new Runnable() {
             @Override
@@ -435,7 +461,7 @@ public class  AlbumView extends AppCompatActivity implements AlbumPresenterViewC
     @Override
     public void onBackPressed() {
         presenter.stop();
-        super.onBackPressed();
+        finish();
     }
 
 
@@ -444,7 +470,6 @@ public class  AlbumView extends AppCompatActivity implements AlbumPresenterViewC
      * Set up our comments bottom sheet.
      */
     private void setUpBottomSheet() {
-
         //test
         bottomSheetBehavior = BottomSheetBehavior.from(commentsBottomSheet);
         bottomSheetBehavior.setBottomSheetCallback(new BottomSheetBehavior.BottomSheetCallback() {

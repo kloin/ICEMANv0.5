@@ -320,7 +320,6 @@ public class RetrieveData {
             DeleteNode(id);
             return "Error";
         }
-        
     }
     
     @POST
@@ -506,4 +505,16 @@ public class RetrieveData {
        crumb.compressVideo(nodeId);
        return "Added video. Compression queue now : " + GetCompressionQueueSize();
    }
+   
+    @POST
+    @Path("UploadCoverPhoto/{TrailId}")
+    public String UploadCoverPhoto(MultiPart data, @PathParam("TrailId") String trailId) {
+        Crumb crumbModel = new Crumb();
+        List<BodyPart> parts = data.getBodyParts();
+        BodyPartEntity bpe = (BodyPartEntity) parts.get(0).getEntity();
+        InputStream stream = bpe.getInputStream();
+        crumbModel.ConvertAndSaveImage(stream, "coverphoto");
+        crumbModel.updateCoverPhoto(trailId, "coverphoto");
+        return "coverphoto";
+    }
 }

@@ -58,7 +58,6 @@ public class CrumbModelUnitTests{
         return location;
     }
 
-
     @Test
     public void TestThatSettingUpSaveCrumbScreenDoesNotCrashIfLocationWasNull() {
         simpleGps = Mockito.mock(SimpleGps.class);
@@ -202,7 +201,6 @@ public class CrumbModelUnitTests{
         verify(presenter, times(1)).setLocation("MOCK");
     }
 
-
     @Test
     public void TestThatWeCanSetBitmapWhenLoading() {
         simpleGps = Mockito.mock(SimpleGps.class);
@@ -236,7 +234,6 @@ public class CrumbModelUnitTests{
 
     @Test
     public void TestThatLocationDoesntBreakWWhenNull() {
-
         model.load(null);
         verify(presenter, times(1)).setLocation("");
         verify(presenter, times(1)).showMessage("Failed to find location");

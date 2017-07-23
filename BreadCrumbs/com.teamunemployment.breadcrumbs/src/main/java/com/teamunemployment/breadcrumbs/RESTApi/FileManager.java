@@ -6,6 +6,7 @@ import android.os.StatFs;
 import android.util.Log;
 
 import com.teamunemployment.breadcrumbs.FileManager.MediaRecordModel;
+import com.teamunemployment.breadcrumbs.Network.LoadBalancer;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -38,7 +39,7 @@ public class FileManager {
      */
     public MediaRecordModel DownloadMP4FileFromTheServer(String id, String extension, String res) {
         checkSufficientSpace();
-        String fileURL = "http://104.199.132.109:8080/images/"+id + "." + res + extension;
+        String fileURL = LoadBalancer.RequestCurrentDataAddress() + "/images/"+id + "." + res + extension;
         final String cacheDir = context.getExternalCacheDir().getAbsolutePath();
         createNoMediaFile(cacheDir);
         String filename = cacheDir + "/" + id + extension;
@@ -95,10 +96,10 @@ public class FileManager {
 
     private MediaRecordModel DownloadJPGFromServer(String id, String ext) {
         checkSufficientSpace();
-        String fileURL = "http://104.199.132.109:8080/images/"+id  + ext;
+        String fileURL = LoadBalancer.RequestCurrentDataAddress()+"/images/"+id  + ext;
         final String cacheDir = context.getExternalCacheDir().getAbsolutePath();
-
         String filename = cacheDir + "/" + id + ext;
+
         try {
             File rootFile = new File(cacheDir);
             if (!rootFile.exists()) {

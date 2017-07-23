@@ -1,7 +1,7 @@
--injars 'C:\Users\jek40\Desktop\ICEMANv0.5\ICEMAN-client\com.teamunemployment.breadcrumbs\build\intermediates\transforms\jarMerging\debug\jars\1\1f\combined.jar'
--outjars 'C:\Users\jek40\Desktop\ICEMANv0.5\ICEMAN-client\com.teamunemployment.breadcrumbs\build\intermediates\multi-dex\debug\componentClasses.jar'
+-injars 'C:\Users\one_outz_uso\Desktop\ICEMANv0.5\ICEMAN-client\com.teamunemployment.breadcrumbs\build\intermediates\transforms\jarMerging\debug\jars\1\1f\combined.jar'
+-outjars 'C:\Users\one_outz_uso\Desktop\ICEMANv0.5\ICEMAN-client\com.teamunemployment.breadcrumbs\build\intermediates\multi-dex\debug\componentClasses.jar'
 
--libraryjars 'C:\Users\jek40\AppData\Local\Android\sdk\build-tools\23.0.2\lib\shrinkedAndroid.jar'
+-libraryjars 'C:\Users\one_outz_uso\AppData\Local\Android\Sdk\build-tools\23.0.2\lib\shrinkedAndroid.jar'
 
 -forceprocessing
 -dontoptimize
@@ -9,7 +9,7 @@
 -dontusemixedcaseclassnames
 -dontpreverify
 -dontwarn
--printconfiguration 'C:\Users\jek40\Desktop\ICEMANv0.5\ICEMAN-client\com.teamunemployment.breadcrumbs\build\intermediates\multi-dex\debug\components.flags'
+-printconfiguration 'C:\Users\one_outz_uso\Desktop\ICEMANv0.5\ICEMAN-client\com.teamunemployment.breadcrumbs\build\intermediates\multi-dex\debug\components.flags'
 
 
 -keep class com.teamunemployment.breadcrumbs.client.Main {

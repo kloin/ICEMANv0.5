@@ -102,6 +102,7 @@ public class FullCard extends RecyclerView.ViewHolder implements ExploreCardCont
         });
     }
 
+    // Log an opening of a trip in analytics
     private void addClickToAnalytics() {
         Bundle bundle = new Bundle();
         bundle.putString(FirebaseAnalytics.Param.ITEM_ID, trip.getId());

@@ -1,10 +1,14 @@
 [
     {
-        "merged": "C:\\Users\\jek40\\Desktop\\ICEMANv0.5\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\res\\merged\\debug\\menu\\camera.xml",
-        "source": "C:\\Users\\jek40\\Desktop\\ICEMANv0.5\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\res\\menu\\camera.xml"
+        "merged": "C:\\Users\\one_outz_uso\\Desktop\\ICEMANv0.5\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\res\\merged\\debug\\menu\\main.xml",
+        "source": "C:\\Users\\one_outz_uso\\Desktop\\ICEMANv0.5\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\res\\menu\\main.xml"
     },
     {
-        "merged": "C:\\Users\\jek40\\Desktop\\ICEMANv0.5\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\res\\merged\\debug\\menu\\main.xml",
-        "source": "C:\\Users\\jek40\\Desktop\\ICEMANv0.5\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\res\\menu\\main.xml"
+        "merged": "C:\\Users\\one_outz_uso\\Desktop\\ICEMANv0.5\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\res\\merged\\debug\\menu\\camera.xml",
+        "source": "C:\\Users\\one_outz_uso\\Desktop\\ICEMANv0.5\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\res\\menu\\camera.xml"
+    },
+    {
+        "merged": "C:\\Users\\one_outz_uso\\Desktop\\ICEMANv0.5\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\build\\intermediates\\res\\merged\\debug\\menu\\menu_main.xml",
+        "source": "C:\\Users\\one_outz_uso\\Desktop\\ICEMANv0.5\\ICEMAN-client\\com.teamunemployment.breadcrumbs\\res\\menu\\menu_main.xml"
     }
 ]

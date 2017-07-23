@@ -347,9 +347,9 @@ public class MapViewer extends Activity implements OnMapClickListener, OnMapLong
 	 * Set up the details for the trail. Made public so that we can override for local trails.
 	 */
 	public void SetUpDetailsItems() {
-			findViewById(R.id.settings_my_trail).setVisibility(View.GONE);
-			findViewById(R.id.toggle_tracking).setVisibility(View.GONE);
-			findViewById(R.id.publish_trail).setVisibility(View.GONE);
+		findViewById(R.id.settings_my_trail).setVisibility(View.GONE);
+		findViewById(R.id.toggle_tracking).setVisibility(View.GONE);
+		findViewById(R.id.publish_trail).setVisibility(View.GONE);
 	}
 
 	// Handler for when the view is expanded.
@@ -455,7 +455,6 @@ public class MapViewer extends Activity implements OnMapClickListener, OnMapLong
 	 * on whether it is our trail or not) so I think that really needs a rename.
 	 */
 	public void SetUpBottomSheetFab() {
-
 		if(!WE_LIKE) {
 			bottomSheetFab.setBackgroundTintList(ColorStateList.valueOf(Color.WHITE));
 			bottomSheetFab.setImageDrawable(context.getResources().getDrawable(R.drawable.ic_favorite_border_black_24dp));

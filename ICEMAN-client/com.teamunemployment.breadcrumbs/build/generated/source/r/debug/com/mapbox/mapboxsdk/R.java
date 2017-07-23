@@ -16,8 +16,8 @@ public final class R {
 		public static final int zoomLevel = 0x7f01009a;
 	}
 	public static final class color {
-		public static final int black = 0x7f0e000f;
-		public static final int white = 0x7f0e0072;
+		public static final int black = 0x7f0f000f;
+		public static final int white = 0x7f0f0075;
 	}
 	public static final class drawable {
 		public static final int clusteri = 0x7f020054;
@@ -26,18 +26,18 @@ public final class R {
 		public static final int location_marker = 0x7f0200f8;
 	}
 	public static final class id {
-		public static final int tooltip_description = 0x7f0f018d;
-		public static final int tooltip_subdescription = 0x7f0f018e;
-		public static final int tooltip_title = 0x7f0f018c;
+		public static final int tooltip_description = 0x7f10018e;
+		public static final int tooltip_subdescription = 0x7f10018f;
+		public static final int tooltip_title = 0x7f10018d;
 	}
 	public static final class layout {
-		public static final int tooltip = 0x7f030078;
+		public static final int tooltip = 0x7f04007a;
 	}
 	public static final class string {
-		public static final int mapboxAndroidSDKVersion = 0x7f080082;
-		public static final int toolTipAddress = 0x7f080084;
-		public static final int toolTipDescription = 0x7f080085;
-		public static final int toolTipTitle = 0x7f080086;
+		public static final int mapboxAndroidSDKVersion = 0x7f090082;
+		public static final int toolTipAddress = 0x7f090084;
+		public static final int toolTipDescription = 0x7f090085;
+		public static final int toolTipTitle = 0x7f090086;
 	}
 	public static final class styleable {
 		public static final int[] MapView = { 0x7f010096, 0x7f010097, 0x7f010098, 0x7f010099, 0x7f01009a, 0x7f01009b };

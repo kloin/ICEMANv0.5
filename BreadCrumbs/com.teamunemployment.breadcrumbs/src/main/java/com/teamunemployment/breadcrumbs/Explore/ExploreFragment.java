@@ -55,7 +55,6 @@ public class ExploreFragment extends Fragment implements ViewContract {
         rootView = inflater.inflate(R.layout.explore_fragment, container, false);
         context = rootView.getContext();
         ButterKnife.bind(this, rootView);
-
         preferencesAPI = new PreferencesAPI(context);
         presenter = new Presenter(context, this);
         long userId = Long.parseLong(preferencesAPI.GetUserId());

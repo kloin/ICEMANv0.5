@@ -71,7 +71,8 @@
         app:layout_behavior="@string/appbar_scrolling_view_behavior">
             <RelativeLayout
                 android:layout_width="match_parent"
-                android:layout_height="match_parent">
+                android:layout_height="wrap_content">
+                
                 <View
                     android:layout_width="match_parent"
                     android:layout_height="1px"
@@ -84,22 +85,11 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"/>
 
-                <TextView
-                    android:id="@+id/new_album"
-                    android:text="New Album"
-                    android:textColor="@color/colorPrimary"
-                    android:layout_alignTop="@+id/trips_header"
-                    android:layout_alignBottom="@+id/trips_header"
-                    android:gravity="center_vertical"
-                    android:layout_marginRight="10dp"
-                    android:layout_alignParentRight="true"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"/>
+
                 <ImageView
                     android:id="@+id/about_icon"
                     android:src="@drawable/ic_description_black_24dp"
                     android:alpha="0.54"
-
                     android:layout_marginLeft="12dp"
                     android:layout_alignTop="@+id/user_about"
                     android:layout_alignBottom="@+id/user_about"
@@ -176,16 +166,50 @@
                     android:layout_below="@+id/profile_divider"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"/>
-                <TextView
-                    android:id="@+id/trips_count"
-                    android:text="(0)"
-                    android:layout_alignTop="@+id/trips_header"
-                    android:layout_alignBottom="@+id/trips_header"
-                    android:gravity="center"
+                <LinearLayout
+                    android:id="@+id/trips_count_wrapper"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
                     android:layout_below="@+id/profile_divider"
                     android:layout_toRightOf="@+id/trips_header"
+                    android:layout_alignTop="@+id/trips_header"
+                    android:layout_alignParentRight="true"
+                    android:layout_alignBottom="@+id/trips_header">
+                    <TextView
+                        android:id="@+id/trips_count"
+                        android:text="(0)"
+                        android:layout_alignTop="@+id/trips_header"
+                        android:layout_alignBottom="@+id/trips_header"
+                        android:gravity="center"
+                        android:layout_gravity="center"
+                        android:layout_below="@+id/profile_divider"
+                        android:layout_toRightOf="@+id/trips_header"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"/>
+
+                </LinearLayout>
+                <LinearLayout
+                    android:orientation="horizontal"
+                    android:id="@+id/new_album_button_wrapper"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"/>
+                    android:layout_height="match_parent"
+                    android:layout_below="@+id/profile_divider"
+                    android:layout_alignTop="@+id/trips_header"
+                    android:layout_alignParentRight="true"
+                    android:layout_alignBottom="@+id/trips_header">
+                    <TextView
+                        android:id="@+id/new_album"
+                        android:text="New Album"
+                        android:textColor="@color/colorPrimary"
+                        android:layout_alignTop="@+id/trips_header"
+                        android:layout_alignBottom="@+id/trips_header"
+                        android:gravity="center"
+                        android:layout_gravity="center"
+                        android:layout_marginRight="10dp"
+                        android:layout_alignParentRight="true"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"/>
+                    </LinearLayout>
                 <LinearLayout
                     android:id="@+id/trips_list_view"
                     android:layout_below="@id/trips_header"

@@ -112,6 +112,7 @@ public class AlbumPresenter implements AlbumModelPresenterContract, TextureView.
         }).start();
 
     }
+
     /**
      * Start loading an album
      * @param albumId The id of the album that we are displaying.
@@ -124,6 +125,13 @@ public class AlbumPresenter implements AlbumModelPresenterContract, TextureView.
         // Routine pre game checks.
         doPreReqChecks(albumDataSource.GetAlbumId());
 
+        if (albumDataSource.getIsLocal()) {
+            view.setSettingsButton(View.VISIBLE);
+            view.setPlayCountVisibility(View.GONE);
+        } else if (!albumDataSource.getIsLocal()) {
+            view.setSettingsButton(View.GONE);
+            view.setPlayCountVisibility(View.VISIBLE);
+        }
         // Need to sort out these threads.
         new Thread(new Runnable() {
             @Override
@@ -292,7 +300,6 @@ public class AlbumPresenter implements AlbumModelPresenterContract, TextureView.
         }
 
         timer.Resume();
-        //timer.Start();
     }
 
     /**
@@ -315,7 +322,8 @@ public class AlbumPresenter implements AlbumModelPresenterContract, TextureView.
         //TODO move this to a different method.
 //        getProfilePicture(frame.getUserId());
 //        getProfileName(frame.getUserId());
-        
+
+        // Load
         String xPosString = frame.getDescPosX();
         String yPosString = frame.getDescPosY();
         String description = frame.getChat();

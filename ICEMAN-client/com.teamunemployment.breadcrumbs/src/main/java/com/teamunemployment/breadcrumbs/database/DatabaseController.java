@@ -370,7 +370,7 @@ public class DatabaseController extends SQLiteOpenHelper {
                 "eventId TEXT, " +
                 "timeStamp TEXT, " +
                 "latitude REAL, " +
-                "longitude REAL;");
+                "longitude REAL);");
 
     // Database for metadata.
         db.execSQL("CREATE TABLE " + METADATA + " (_id INTEGER PRIMARY KEY AUTOINCREMENT, " +
@@ -378,7 +378,7 @@ public class DatabaseController extends SQLiteOpenHelper {
                 "trailId TEXT, " +
                 "timeStamp TEXT, " +
                 "latitude REAL, " +
-                "longitude REAL;");
+                "longitude REAL);");
 
         db.execSQL("CREATE TABLE " + WEATHER + " (_id INTEGER PRIMARY KEY AUTOINCREMENT, " +
                 "weatherId TEXT, " +
@@ -387,7 +387,7 @@ public class DatabaseController extends SQLiteOpenHelper {
                 "weatherDesc TEXT, " +
                 "latitude REAL, " +
                 "longitude REAL," +
-                "city TEXT;");
+                "city TEXT);");
     }
 
     public void AddWeather(String weatherId, String travelDay, String weatherDesc, Double latitude, Double longitude, String city, String temperature) {

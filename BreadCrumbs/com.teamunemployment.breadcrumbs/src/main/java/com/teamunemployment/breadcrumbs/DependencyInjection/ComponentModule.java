@@ -16,6 +16,7 @@ import com.teamunemployment.breadcrumbs.BreadcrumbsTimer;
 import com.teamunemployment.breadcrumbs.LocalTripRepo;
 import com.teamunemployment.breadcrumbs.MediaPlayerWrapper;
 import com.teamunemployment.breadcrumbs.Network.LoadBalancer;
+import com.teamunemployment.breadcrumbs.Preferences.Preferences;
 import com.teamunemployment.breadcrumbs.PreferencesAPI;
 import com.teamunemployment.breadcrumbs.Profile.data.LocalProfileRepository;
 import com.teamunemployment.breadcrumbs.Profile.data.RemoteProfileRepository;
@@ -149,12 +150,13 @@ public class ComponentModule {
     }
 
     @Provides
-    LocalAlbumModel provideLocalAlbumModel(LocalAlbumSummaryRepo localAlbumSummaryRepo) {
-        return new LocalAlbumModel(localAlbumSummaryRepo);
+    LocalAlbumModel provideLocalAlbumModel(LocalAlbumSummaryRepo localAlbumSummaryRepo, Context context, PreferencesAPI preferencesAPI) {
+        return new LocalAlbumModel(context, localAlbumSummaryRepo, preferencesAPI);
     }
 
     @Provides
-    LocalAlbumSummaryPresenter provideLocalAlbumSummaryPresenter(LocalAlbumModel albumModel) {
-        return new LocalAlbumSummaryPresenter(albumModel);
+    LocalAlbumSummaryPresenter provideLocalAlbumSummaryPresenter(LocalAlbumModel model, PreferencesAPI preferencesAPI, Context context,
+                                                                 DatabaseController databaseController) {
+        return new LocalAlbumSummaryPresenter(model, preferencesAPI, context, databaseController);
     }
 }

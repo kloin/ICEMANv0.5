@@ -69,6 +69,7 @@ public class HalfCard  extends RecyclerView.ViewHolder implements ExploreCardCon
     @Override
     public void bindUser(User user) {
         // Not required for this card type
+
     }
 
     @OnClick(R.id.main_photo) void openTrip() {

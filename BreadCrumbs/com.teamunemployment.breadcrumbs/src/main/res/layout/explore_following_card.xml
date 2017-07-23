@@ -29,24 +29,32 @@
                 style="@style/CodeFont"
                 android:layout_height="wrap_content"
                 android:textColor="@color/my_primary_text" />
-
-            <TextView
-                android:id="@+id/view_count"
-                android:text="364"
-                android:layout_alignParentRight="true"
-                android:layout_marginRight="16dp"
-                android:layout_alignTop="@+id/belongs_to"
-                android:layout_alignBottom="@+id/belongs_to"
-                android:gravity="center"
-                android:textColor="@color/good_to_go"
+            <LinearLayout
+                android:id="@+id/view_count_wrapper"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"/>
+                android:layout_height="match_parent"
+                android:layout_alignTop="@+id/belongs_to"
+                android:layout_alignParentRight="true"
+                android:layout_alignBottom="@+id/belongs_to">
+                <TextView
+                    android:id="@+id/view_count"
+                    android:text="364"
+                    android:layout_alignParentRight="true"
+                    android:layout_marginRight="16dp"
+                    android:layout_alignTop="@+id/belongs_to"
+                    android:layout_alignBottom="@+id/belongs_to"
+                    android:layout_gravity="center"
+                    android:gravity="center"
+                    android:textColor="@color/good_to_go"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"/>
+            </LinearLayout>
 
         <ImageView
             android:id="@+id/plays_icon"
             android:layout_alignBottom="@+id/belongs_to"
             android:layout_alignTop="@+id/belongs_to"
-            android:layout_toLeftOf="@+id/view_count"
+            android:layout_toLeftOf="@+id/view_count_wrapper"
             android:gravity="center"
             android:src="@drawable/exomedia_ic_play_arrow_black"
             android:alpha="0.54"
