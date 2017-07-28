@@ -107,6 +107,9 @@ public class CameraController extends SurfaceView implements SurfaceHolder.Callb
         Camera.Parameters parameters = mCamera.getParameters();
 
         Camera.Size size = getOptimalPreviewSize(parameters.getSupportedPictureSizes());
+        if (size == null) {
+
+        }
         parameters.setPictureSize(size.width, size.height);
         mCamera.setParameters(parameters);
 
@@ -196,7 +199,7 @@ public class CameraController extends SurfaceView implements SurfaceHolder.Callb
         // Try to find a size match which suits the whole screen minus the menu on the left.
         for (Camera.Size size : sizes){
             Log.d("CAM", "Checking size: width = " + size.width + ", Height = "+size.height);
-            if (size.height <1000 && size.height >= 720) {
+            if (size.height <2000 && size.height >= 360) {
                 return size;
             }
             //if (size.height != width) continue;
@@ -246,45 +249,82 @@ public class CameraController extends SurfaceView implements SurfaceHolder.Callb
     }
     // Set up the camera to record video
     public boolean setUpVideoCamera() {
+        mCamera.lock();
+        List<Camera.Size> supportedSizes = mCamera.getParameters().getSupportedVideoSizes();
         Camera.Parameters parameters = mCamera.getParameters();
+        if (parameters.getFocusMode().equals(Camera.Parameters.FOCUS_MODE_CONTINUOUS_PICTURE)) {
+            parameters.setFocusMode(Camera.Parameters.FOCUS_MODE_AUTO);
+        }
 
-        Camera.Size size = getOptimalPreviewSize(parameters.getSupportedPictureSizes());
-        parameters.setPictureSize(size.width, size.height);
+        // If the supported video sizes are the same as the preview sizes, the above call returns null. No idea why anyone ever thought that was a good idea.
+        if (supportedSizes == null) {
+            supportedSizes = mCamera.getParameters().getSupportedPreviewSizes();
+        }
         mCamera.setParameters(parameters);
-        recorder = new MediaRecorder();
+
         mCamera.unlock();
+        recorder = new MediaRecorder();
         recorder.setCamera(mCamera);
-
         recorder.setAudioSource(MediaRecorder.AudioSource.DEFAULT);
+
         recorder.setVideoSource(MediaRecorder.VideoSource.DEFAULT);
-        // recorder.setVideoSize(640, 480);
 
-        recorder.setVideoEncodingBitRate(3000000);
+        if (backCameraOpen) {
+            recorder.setOrientationHint(90);
+        } else {
+            recorder.setOrientationHint(270);
+        }
+        recorder.setVideoEncodingBitRate(6000000);
         recorder.setOutputFormat(MediaRecorder.OutputFormat.DEFAULT);
-        recorder.setVideoFrameRate(16); //might be auto-determined due to lighting
-        recorder.setVideoSize(size.width, size.height);
         recorder.setAudioEncoder(MediaRecorder.AudioEncoder.AMR_NB);
+        Camera.Size size = getOptimalVideoSize(supportedSizes);
+        // size = supportedSizes.get(0);
+        recorder.setVideoSize(size.width, size.height);
+
+        // Mp4 makes file size significantly smaller.
         recorder.setVideoEncoder(MediaRecorder.VideoEncoder.MPEG_4_SP);
+        recorder.setVideoFrameRate(30);
 
-        // CamcorderProfile cpHigh = CamcorderProfile.get(CamcorderProfile.QUALITY_HIGH);
-        // recorder.setProfile(cpHigh);
+        fileName = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES).toString();
 
-        fileName =  Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES).toString();
-        fileName += "/test.mp4";
+        fileName += "/test.mp4"; //
+        File fileTest = new File(fileName);
+        if (fileTest.exists()) {
+            fileTest.delete();
+        }
         recorder.setOutputFile(fileName);
-        recorder.setOrientationHint(90);
         recorder.setPreviewDisplay(mHolder.getSurface());
         try{
             recorder.prepare();
         } catch (Exception e) {
+            Log.d("RECORDER","Recorder failed to prepare");
+            e.printStackTrace();
             String message = e.getMessage();
             recorder.release();
             recorder = null;
             return false;
         }
-        video = true;
         recorder.start();
+        video = true;
         return video;
+    }
+
+    private Camera.Size getOptimalVideoSize(List<Camera.Size> sizes) {
+        // Source: http://stackoverflow.com/questions/7942378/android-camera-will-not-work-startpreview-fails
+        Camera.Size optimalSize = null;
+
+        for (Camera.Size size : sizes) {
+            Log.d("CAM", "Checking size: width = " + size.width + ", Height = "+size.height);
+            if (size.height <750) {
+                return size;
+            }
+        }
+
+        if (optimalSize == null) {
+            return sizes.get(sizes.size()-2); // random number really
+        }
+
+        return optimalSize;
     }
 
     public boolean disableVideoCamera() {
