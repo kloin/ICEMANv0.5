@@ -315,7 +315,7 @@ public class CameraController extends SurfaceView implements SurfaceHolder.Callb
 
         for (Camera.Size size : sizes) {
             Log.d("CAM", "Checking size: width = " + size.width + ", Height = "+size.height);
-            if (size.height <750) {
+            if (size.height <=1920) {
                 return size;
             }
         }

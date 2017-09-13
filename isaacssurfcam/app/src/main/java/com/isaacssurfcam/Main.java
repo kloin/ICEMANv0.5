@@ -57,11 +57,11 @@ import java.util.Date;
 import java.util.concurrent.TimeUnit;
 
 /**
- * Written by Josiah Kendall. \
+ * Written by Josiah Kendall.
  *
  * THis is a simple camera app that allows you to take a photo every X amount of seconds.
  */
-public class Main  extends Activity implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener {
+public class Main extends Activity implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener {
     private boolean cameraIsRunning = false;
     private static final String TAG = "BaseDriveActivity";
     private DriveId driveId;
@@ -71,6 +71,7 @@ public class Main  extends Activity implements GoogleApiClient.ConnectionCallbac
     private int progress = 0;
     private int duration = 0;
     private Handler mHandler;
+
     /**
      * DriveId of an existing folder to be used as a parent folder in
      * folder operations samples.
@@ -96,6 +97,11 @@ public class Main  extends Activity implements GoogleApiClient.ConnectionCallbac
      * Next available request code.
      */
     protected static final int NEXT_AVAILABLE_REQUEST_CODE = 2;
+
+    /**
+     * The duration of the video in seconds.
+     */
+    private static final int VIDEO_DURATION_IN_SECONDS = 20;
 
     private Bitmap bm;
     private GoogleApiClient mGoogleApiClient;
@@ -198,7 +204,6 @@ public class Main  extends Activity implements GoogleApiClient.ConnectionCallbac
         });
     }
 
-
     @Override
     protected void onActivityResult(int requestCode, int resultCode,
                                     Intent data) {
@@ -265,7 +270,7 @@ public class Main  extends Activity implements GoogleApiClient.ConnectionCallbac
 
     private void startCamera() {
         // We need to start up the camera and capture every x amount of seconds.
-        // Need to run this in an asyc thread.
+        // Need to run this in an async thread.
 
         // Wait 15 seconds, then stop and upload to google drive.
        final Handler handler = new Handler();
@@ -291,7 +296,8 @@ public class Main  extends Activity implements GoogleApiClient.ConnectionCallbac
                         Toast.makeText(context, "Finsihed Recording", Toast.LENGTH_LONG).show();
                         beginVideoUpload();
                     }
-                }, 10000);
+                },
+                        VIDEO_DURATION_IN_SECONDS*1000);
                 Toast.makeText(context, "Started Recording", Toast.LENGTH_LONG).show();
             }
         }, 5000);
