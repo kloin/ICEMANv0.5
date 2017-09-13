@@ -71,6 +71,8 @@ public class CameraController extends SurfaceView implements SurfaceHolder.Callb
     private boolean currentlyFilming = false;
     private String fileName;
 
+    private static final int MAX_CAMERA_SIZE = 1920;
+
     /*
         Default constructors for a custom surfaceView.
      */
@@ -315,7 +317,8 @@ public class CameraController extends SurfaceView implements SurfaceHolder.Callb
 
         for (Camera.Size size : sizes) {
             Log.d("CAM", "Checking size: width = " + size.width + ", Height = "+size.height);
-            if (size.height <=1920) {
+
+            if (size.height <=MAX_CAMERA_SIZE) {
                 return size;
             }
         }
